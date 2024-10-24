@@ -1,0 +1,31 @@
+repo_url : https://github.com/xrntkk/mkdocs
+site_name: Xrnt's blog
+site_author: Xrnt
+site_url: 
+theme:
+  name: material
+  features:
+    - content.code.copy
+    - content.code.annotate
+docs_dir: docs
+copyright: '2024 Content provided by xrnt'
+
+
+nav:
+  - 首页: index.md
+  - CTF: 
+   -Web_Writeup: Web.md
+  - about: about.md
+  
+
+    
+markdown_extensions:
+  - attr_list
+  - md_in_html
+  - pymdownx.superfences
+  - pymdownx.critic
+  - pymdownx.caret
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.tilde
+
