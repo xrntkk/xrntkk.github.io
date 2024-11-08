@@ -3,8 +3,13 @@ site_name: Xrnt's blog
 nav:
 - Home: index.md
 - CTF:
-    - WP: CTF/Writeup/Web.md
-    - Note: CTF/Web/Note.md
+    - Web:
+      - Java: 
+        - Fastjson: CTF/Web/Java/Fastjson.md
+        - Java反序列化: CTF/Web/Java/Java反序列化.md
+      - 未分类:
+        - Header头: CTF/Web/Header头.md
+    - Writeup : CTF/Writeup/Web.md
 - About: about.md
 
 theme:

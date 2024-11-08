@@ -1,35 +1,3 @@
-# Note
-
-# 特殊的Header头——X-Forwarded-For 与 X-Real-IP
-
-### X-Forwarded-For
-
-记录代理服务器的地址，每经过一个代理，该字段会加上一个记录，由于是记录来源地址，所以该字段不会保存最后一个代理服务器的地址
-
-> - 存储客户端 ip 和反向代理IP 列表，以逗号+空格分隔
-> - 记录最后直连实际服务器之前的整个代理过程
-> - 可能会被伪造 ip，但是直连实际服务器这段不会被伪造
-
-![在这里插入图片描述](https://i-blog.csdnimg.cn/blog_migrate/0502c9cb16192d595bbe61f8ee5f9fc9.png)
-
-### X-Real-IP
-
-也是用来记录服务器的地址，但是和上面的不同，它不把记录添加到结尾，而是直接替换。
-
-> - 请求实际服务器的 IP
-> - 每过一层代理都会被覆盖掉，只需第一层设置代理
-> - IP可以被伪造，但如果存在一级以上的代理，它就不会收到影响，因为每经过一次代理，它就会被覆盖
-
-![在这里插入图片描述](https://i-blog.csdnimg.cn/blog_migrate/3bbee021d2f59a0a6d7a41c3bb46a617.png)
-
-总结来自原文[特殊的Header头——X-Forwarded-For 与 X-Real-IP 学习_x-real-ip x-forwarded-for-CSDN博客](https://blog.csdn.net/m0_47404181/article/details/107143156)
-
-### x-client-ip
-
-
-
-
-
 # Java反序列化
 
 ### 什么是序列化和反序列化
@@ -62,16 +30,13 @@ private void readObject(java.io.ObjectInputStream s)throws java.io.IOException, 
 
    例如：
 
-   ```java
-    public void readObject(ObejectOutputStream ois) throws IOException, ClassNotFoundException {
-           ois.defaultReadObject();// 调用默认的反序列化方法
-           Runtime.getRuntime().exec("calc");// 执行命令,打开计算机       
-   
-       }
-   ```
 
-   
-
+```java
+public void readObject(ObejectOutputStream ois) throws IOException, ClassNotFoundException {
+       ois.defaultReadObject();// 调用默认的反序列化方法
+       Runtime.getRuntime().exec("calc");// 执行命令,打开计算机
+ }   
+```
 2. #### 入口参数中包含可控类，该类有危险方法，`readObject`时调用
 
 3. #### 入口类参数中包含可控类，该类又调用其他有危险方法的类，`readObject`时调用
@@ -336,7 +301,7 @@ public class UnserializeTest {
           serialize(hashmap);
 ```
 
-<img src="C:\Users\xrntk\AppData\Roaming\Typora\typora-user-images\image-20241105131422758.png" alt="image-20241105131422758"  />
+<img src="https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411072337857.png" alt="image-20241105131422758"  />
 
 ### Java静态代理
 
@@ -521,7 +486,7 @@ public class ProxyTest {
 
 ### Java类的动态加载
 
-<img src="https://segmentfault.com/img/bVbMls6" alt="image" style="zoom:150%;" />
+<img src="https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411072337995.png" alt="image" style="zoom:150%;" />
 
 
 
@@ -655,7 +620,7 @@ public class LoadClassTest {
 
 进一步跟进forname()方法
 
-<img src="C:\Users\xrntk\AppData\Roaming\Typora\typora-user-images\image-20241103142856797.png" alt="image-20241103142856797" style="zoom:150%;" />
+<img src="https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411072337756.png" alt="image-20241103142856797" style="zoom:150%;" />
 
 我们可以发现forname()默认就会进行初始化，图中可见参数二默认为`true`
 
@@ -693,7 +658,7 @@ public class LoadClassTest {
 
 ##### 双亲委派模型
 
-<img src="https://i-blog.csdnimg.cn/blog_migrate/9149a05dcbc01ba44b25092742905e43.png#pic_center" alt="双亲委派模型"  />
+<img src="https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411072337027.png" alt="双亲委派模型"  />
 
 
 
@@ -720,7 +685,7 @@ public class LoadClassTest {
 
 跟进loadClass
 
-<img src="C:\Users\xrntk\AppData\Roaming\Typora\typora-user-images\image-20241103151029558.png" alt="image-20241103151029558" style="zoom:200%;" />
+<img src="https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411072337349.png" alt="image-20241103151029558" style="zoom:200%;" />
 
 ...
 
@@ -946,13 +911,13 @@ public class cc1 {
 
 我们先看看`valueTransformer`是什么，查看它的构造函数
 
-![image-20241106134358410](C:\Users\xrntk\AppData\Roaming\Typora\typora-user-images\image-20241106134358410.png)
+![image-20241106134358410](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411072337829.png)
 
 这个构造函数是一个内部方法，接受了三个参数，其中包括我们要找的`valueTransformer`，但该方法只能通过类里面的其他方法进行调用
 
 我们继续找
 
-![image-20241106135054288](C:\Users\xrntk\AppData\Roaming\Typora\typora-user-images\image-20241106135054288.png)
+![image-20241106135054288](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411072337385.png)
 
 可以看到这个叫`decorate`将传入的参数赋给了`TransformedMap`,而且他是一个静态的方法，我们可以调用试试
 
@@ -965,17 +930,17 @@ public class cc1 {
 
 我虽然已经搞定了`valueTransformer`，但是我们还需要控制`checkSetValue`中的value值
 
-<img src="C:\Users\xrntk\AppData\Roaming\Typora\typora-user-images\image-20241106135932775.png" alt="image-20241106135932775" style="zoom:150%;" />
+<img src="https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411072337102.png" alt="image-20241106135932775" style="zoom:150%;" />
 
 我们先查找一下`checkSetValue`的调用
 
-![image-20241106133705385](C:\Users\xrntk\AppData\Roaming\Typora\typora-user-images\image-20241106133705385.png)
+![image-20241106133705385](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411072337905.png)
 
 我可以看到只有一个结果，也就是说他只被`AbstractInputCheckedMapDecorator`这个抽象类调用
 
 继续跟进去
 
-![image-20241106141030252](C:\Users\xrntk\AppData\Roaming\Typora\typora-user-images\image-20241106141030252.png)
+![image-20241106141030252](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411072337544.png)
 
 我们其实可以发现这个`AbstractInputCheckedMapDecorator`其实就是`TransformedMap`的一个父类，而在他之中的`MapEntry`类调用了`setValue`方法
 
@@ -983,7 +948,7 @@ public class cc1 {
 
 这里的`setValue`其实就是对Map.Entry方法进行了重写，由此可知我们只需要将上面`decorate`修饰的参数作为Map进行遍历，同时传入我们想要的value值，即可走到`TransformedMap`这一步，写一下
 
-![image-20241106142434392](C:\Users\xrntk\AppData\Roaming\Typora\typora-user-images\image-20241106142434392.png)
+![image-20241106142434392](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411072337799.png)
 
 成功打开计算器
 

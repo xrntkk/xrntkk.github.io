@@ -8,7 +8,7 @@
 
 
 
-![image-20241027235231018](/Users/xrntstudio/Library/Application Support/typora-user-images/image-20241027235231018.png)
+![image-20241027235231018](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/image-20241027235231018.png)
 
 ### 列表list：有序可变集合
 
@@ -36,7 +36,7 @@ name_list =list() #定义空列表2
 
 ###### 列表的下标：
 
-![正向索引](/Users/xrntstudio/Library/Application Support/typora-user-images/image-20241027231536748.png)
+![正向索引](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/image-20241027231536748.png)
 
 ![反向索引](/Users/xrntstudio/Library/Application Support/typora-user-images/image-20241027231553609.png)
 
@@ -44,7 +44,7 @@ name_list =list() #定义空列表2
 
 
 
-![列表常用操作](/Users/xrntstudio/Library/Application Support/typora-user-images/image-20241027231744754.png)
+![列表常用操作](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/image-20241027231744754.png)
 
 ```python
 name_list =['itheima','itcast','python']
@@ -121,7 +121,7 @@ my_tuple = tuple
 
 ###### 元组操作：与列表操作几乎一致，不过操作较少
 
-![image-20241027233835695](/Users/xrntstudio/Library/Application Support/typora-user-images/image-20241027233835695.png)
+![image-20241027233835695](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/image-20241027233835695.png)
 
 ###### 元组的遍历：同列表
 
@@ -154,7 +154,7 @@ student
 - 由两部分组成，一般通过字key 找到信息值value
 - 字典的key是不能重复的 如果出现重复的情况的话 后面的会覆盖前面的
 
-![image-20241027234212172](/Users/xrntstudio/Library/Application Support/typora-user-images/image-20241027234212172.png)
+![image-20241027234212172](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/image-20241027234212172.png)
 
 ###### 字典的定义：
 
@@ -166,7 +166,7 @@ dic_score ={
 }
 ```
 
-![image-20241027234346329](/Users/xrntstudio/Library/Application Support/typora-user-images/image-20241027234346329.png)
+![image-20241027234346329](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/image-20241027234346329.png)
 
 ###### 字典的使用与循环：
 
@@ -201,11 +201,11 @@ for key in stu_score:
 
 ###### 基本语法：
 
-![image-20241027235205691](/Users/xrntstudio/Library/Application Support/typora-user-images/image-20241027235205691.png)
+![image-20241027235205691](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/image-20241027235205691.png)
 
 ###### 集合操作：
 
-![image-20241027235307275](/Users/xrntstudio/Library/Application Support/typora-user-images/image-20241027235307275.png)
+![image-20241027235307275](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/image-20241027235307275.png)
 
 ###### 集合运算：高中内容
 
