@@ -301,7 +301,7 @@ public class UnserializeTest {
           serialize(hashmap);
 ```
 
-<img src="https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411072337857.png" alt="image-20241105131422758"  />
+<img src="assets/202411072337857.png" alt="image-20241105131422758"  />
 
 ### Java静态代理
 
@@ -486,7 +486,7 @@ public class ProxyTest {
 
 ### Java类的动态加载
 
-<img src="https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411072337995.png" alt="image" style="zoom:150%;" />
+<img src="assets/202411072337995.png" alt="image" style="zoom:150%;" />
 
 
 
@@ -620,7 +620,7 @@ public class LoadClassTest {
 
 进一步跟进forname()方法
 
-<img src="https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411072337756.png" alt="image-20241103142856797" style="zoom:150%;" />
+<img src="assets/202411072337756.png" alt="image-20241103142856797" style="zoom:150%;" />
 
 我们可以发现forname()默认就会进行初始化，图中可见参数二默认为`true`
 
@@ -658,7 +658,7 @@ public class LoadClassTest {
 
 ##### 双亲委派模型
 
-<img src="https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411072337027.png" alt="双亲委派模型"  />
+<img src="assets/202411072337027.png" alt="双亲委派模型"  />
 
 
 
@@ -685,7 +685,7 @@ public class LoadClassTest {
 
 跟进loadClass
 
-<img src="https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411072337349.png" alt="image-20241103151029558" style="zoom:200%;" />
+<img src="assets/202411072337349.png" alt="image-20241103151029558" style="zoom:200%;" />
 
 ...
 
@@ -911,13 +911,13 @@ public class cc1 {
 
 我们先看看`valueTransformer`是什么，查看它的构造函数
 
-![image-20241106134358410](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411072337829.png)
+![image-20241106134358410](assets/202411072337829.png)
 
 这个构造函数是一个内部方法，接受了三个参数，其中包括我们要找的`valueTransformer`，但该方法只能通过类里面的其他方法进行调用
 
 我们继续找
 
-![image-20241106135054288](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411072337385.png)
+![image-20241106135054288](assets/202411072337385.png)
 
 可以看到这个叫`decorate`将传入的参数赋给了`TransformedMap`,而且他是一个静态的方法，我们可以调用试试
 
@@ -930,17 +930,17 @@ public class cc1 {
 
 我虽然已经搞定了`valueTransformer`，但是我们还需要控制`checkSetValue`中的value值
 
-<img src="https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411072337102.png" alt="image-20241106135932775" style="zoom:150%;" />
+<img src="assets/202411072337102.png" alt="image-20241106135932775" style="zoom:150%;" />
 
 我们先查找一下`checkSetValue`的调用
 
-![image-20241106133705385](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411072337905.png)
+![image-20241106133705385](assets/202411072337905.png)
 
 我可以看到只有一个结果，也就是说他只被`AbstractInputCheckedMapDecorator`这个抽象类调用
 
 继续跟进去
 
-![image-20241106141030252](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411072337544.png)
+![image-20241106141030252](assets/202411072337544.png)
 
 我们其实可以发现这个`AbstractInputCheckedMapDecorator`其实就是`TransformedMap`的一个父类，而在他之中的`MapEntry`类调用了`setValue`方法
 
@@ -948,7 +948,7 @@ public class cc1 {
 
 这里的`setValue`其实就是对Map.Entry方法进行了重写，由此可知我们只需要将上面`decorate`修饰的参数作为Map进行遍历，同时传入我们想要的value值，即可走到`TransformedMap`这一步，写一下
 
-![image-20241106142434392](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411072337799.png)
+![image-20241106142434392](assets/202411072337799.png)
 
 成功打开计算器
 

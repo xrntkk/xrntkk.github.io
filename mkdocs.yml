@@ -7,7 +7,7 @@ nav:
     - Fastjson: CTF/Web/Java/Fastjson反序列化.md
     - Java反序列化: CTF/Web/Java/Java反序列化.md
   - Web基础:
-    - Header头: CTF/Web/Header头.md
+    - Header头: CTF/Web/Web基础/Header头.md
   - 网安Web培训: 
     - CTF/Web/网安Web培训/http+python基础+python抓包发包2.md
     - CTF/Web/网安Web培训/命令执行.md
