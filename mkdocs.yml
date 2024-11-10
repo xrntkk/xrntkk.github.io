@@ -14,8 +14,8 @@ nav:
           - CTF/Web/网安Web培训/命令执行.md
           - CTF/Web/网安Web培训/命令执行基础网安培训(RCE).md
           - CTF/Web/网安Web培训/命令执行进阶.md
-    - Writeup : 
-      - Web: CTF/Writeup/Web.md
+  - Writeup : 
+    - Web: Writeup/Web.md
 - Python:
   - Python数据容器: python/2_Python数据容器.md
 - About: about.md
