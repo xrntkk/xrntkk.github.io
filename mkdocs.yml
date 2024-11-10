@@ -74,10 +74,27 @@ repo_name: xrntkk.github.io # 右上角的名字
 
 markdown_extensions:
   - abbr
-  - pymdownx.caret
-  - pymdownx.mark
-  - pymdownx.tilde
+  - attr_list
+  - admonition
+  - def_list
+  - footnotes
   - md_in_html
+  - meta # 支持Markdown文件上方自定义标题标签等
+  - pymdownx.caret
+  - pymdownx.betterem
+  - pymdownx.critic
+  - pymdownx.details
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.snippets
+  - pymdownx.smartsymbols
+  - pymdownx.tilde
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format # 代码块高亮插件
   - pymdownx.arithmatex:  # latex支持
       generic: true
   - toc:
@@ -86,19 +103,26 @@ markdown_extensions:
       anchor_linenums: true
       linenums: true # 显示行号
       auto_title: true # 显示编程语言名称
-  - pymdownx.inlinehilite
-  - pymdownx.snippets
-  - pymdownx.superfences
-  - attr_list
   - pymdownx.emoji:
-      emoji_index: !!python/name:materialx.emoji.twemoji
-      emoji_generator: !!python/name:materialx.emoji.to_svg
-  - pymdownx.superfences # 代码块高亮插件
-  - meta # 支持Markdown文件上方自定义标题标签等
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+ 
+      
 
 plugins:
   - search
   - tags:
       tags_file: tag.md  #分类标签
+
+extra_javascript:
+  - javascripts/extra.js
+
+
+extra_css:
+  - stylesheets/extra.css # 自定义CSS
 
 
