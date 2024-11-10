@@ -865,7 +865,7 @@ var Admin = UserInfo{
 
 解压文件我们得到
 
-<img src="assets/202411072207588.png" alt="image-20241102003213997" style="zoom:200%;" />
+<img src="assets/202411102303478.png" alt="image-20241102003213997" style="zoom:200%;" />
 
 打开fl00g.txt，没有我们想要的flag
 
