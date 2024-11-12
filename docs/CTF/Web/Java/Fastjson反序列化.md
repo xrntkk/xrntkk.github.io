@@ -490,7 +490,60 @@ payload：
 
 
 
-#### **TemplatesImpl 反序列化(<=1.2.24)：**
+#### **TemplatesImpl 反序列化(<=1.2.24)[实战意义不大？]：**
+
+流程分析：
+
+首先TemplatesImpl类位于`com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl`
+
+![image-20241111205337699](assets/image-20241111205337699.png)
+
+在这个TemplatesImpl类中的`getTransletInstance()`方法会对`_class[_transletIndex]`进行实例化
+
+而这个\_class是一个Class类的数组，而\_transletIndex则是这个数组的一个下标
+
+![image-20241111205703021](assets/image-20241111205703021.png)
+
+而且在TemplatesImpl类中的 `getOutputProperties()` 方法调用 `newTransformer()` 方法，而 `newTransformer()` 又调用了 `getTransletInstance()` 方法。
+
+![image-20241111210518000](assets/image-20241111210518000.png)
+
+![image-20241111210550906](assets/image-20241111210550906.png)
+
+那也就说假如`getOutputProperties()`是类里面某一个成员的getter方法，且`_class`可控那我就可以通过fastjson的特性从而达到调用任意类的目的
+
+我们可以发现`getOutputProperties()`是_outputProperties的getter方法
+
+接下来我们查看一下_class的用法
+
+![image-20241111211337694](assets/image-20241111211337694.png)
+
+我们可以发现这三个方法都可以对_class进行赋值操作
+
+回想刚刚我们一开始看的getTransletInstance()方法，我们会发现当_class为空的时候会调用defineTransletClasses()方法
+
+![image-20241111212950200](assets/image-20241111212950200.png)
+
+那我们看看defineTransletClasses()是怎么给_class赋值的
+
+![image-20241111213713629](assets/image-20241111213713629.png)
+
+> 首先要求 `_bytecodes` 不为空，接着就会调用自定义的 ClassLoader 去加载 `_bytecodes` 中的 `byte[]` 。而 `_bytecodes` 也是该类的成员属性。
+>
+> 而如果这个类的父类为 `ABSTRACT_TRANSLET` 也就是`com.sun.org.apache.xalan.internal.xsltc.runtime.AbstractTranslet`，就会将类成员属性的，`_transletIndex` 设置为当前循环中的标记位，而如果是第一次调用，就是`_class[0]`。如果父类不是这个类，将会抛出异常。
+
+**有点不懂先引用一下**
+
+那这样一条完整的漏洞调用链就呈现出来了：
+
+- 构造一个 TemplatesImpl 类的反序列化字符串，其中 `_bytecodes` 是我们构造的恶意类的类字节码，这个类的父类是 AbstractTranslet，最终这个类会被加载并使用 `newInstance()` 实例化。
+- 在反序列化过程中，由于getter方法 `getOutputProperties()`，满足条件，将会被 fastjson 调用，而这个方法触发了整个漏洞利用流程：`getOutputProperties()` -> `newTransformer()` -> `getTransletInstance()` -> `defineTransletClasses()` / `EvilClass.newInstance()`.
+
+其中，为了满足漏洞点触发之前不报异常及退出，我们还需要满足 `_name` 不为 null ，`_tfactory` 不为 null 。
+
+由于部分需要我们更改的私有变量没有 setter 方法，需要使用 `Feature.SupportNonPublicField` 参数。
+
+> 在反序列化 JSON 字符串为 Java 对象时，启用`Feature.SupportNonPublicField`参数可以让库将 JSON 数据填充到 Java 对象的非公共字段中。
 
 payload:
 
@@ -502,6 +555,18 @@ payload:
     "_tfactory": {},
     "_outputProperties": {},
 }
+```
+
+#### Fastjson BCEL (<=1.2.24)
+
+补一下BCEL
+
+
+
+payload:
+
+```
+
 ```
 
 
@@ -521,6 +586,8 @@ payload:
 
 
 #### ParserConfig2 (fastjson-1.2.42)
+
+
 
 payload:
 
