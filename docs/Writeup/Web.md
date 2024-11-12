@@ -983,7 +983,49 @@ hint：有时候网站上的公开信息，就是管理员常用密码
 
 #### web15
 
+扫描到后台为url/admin，打开看到有个忘记密码，要求输入城市
 
+![image-20241112203115743](./assets/image-20241112203115743.png)
+
+![image-20241112203225217](./assets/image-20241112203225217.png)
+
+根据hint我们可以在主页底部找到一个qq邮箱，查询一下qq号
+
+<img src="./assets/image-20241112203325025.png" alt="image-20241112203325025" style="zoom:50%;" />
+
+得到信息，现居陕西西安
+
+输入西安成功重置密码，输入重置密码和帐号admin，成功得到flag
+
+#### Web16
+
+探针泄漏
+
+dirsearch 扫描不到这个探针，看wp才知道的
+
+探针在url/tz.php
+
+访问探针
+
+![image-20241112204025693](./assets/image-20241112204025693.png)
+
+![image-20241112204437105](./assets/image-20241112204437105.png)
+
+在指针里面可以找到phpinfo页面
+
+打开在phpinfo里面可以找到flag
+
+![](./assets/image-20241112204552383.png)
+
+#### web17
+
+sql备份泄漏
+
+![image-20241112205219664](./assets/image-20241112205219664.png)
+
+用dirsearch扫出来存在sql备份泄漏，下载backup.sql，打开得到flag
+
+![image-20241112205527202](./assets/image-20241112205527202.png)
 
 ### **命令执行**：
 
