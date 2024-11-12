@@ -559,9 +559,39 @@ payload:
 
 #### Fastjson BCEL (<=1.2.24)
 
-补一下BCEL
+bcel简单分析：
 
+环境配置
 
+```xml
+<dependency>
+      <groupId>commons-dbcp</groupId>
+      <artifactId>commons-dbcp</artifactId>
+      <version>1.4</version>
+</dependency>
+```
+
+我们先从`org.apache.commons.dbcp.BasicDataSource`开始分析
+
+![image-20241112184924629](assets/image-20241112184924629.png)
+
+在这个类里面假如这个diverClassLoad和diverClassName不为空则会用这个Classload加载这个diverClassName类
+
+![image-20241112185117502](assets/image-20241112185117502.png)
+
+![image-20241112185144616](assets/image-20241112185144616.png)
+
+而这两个量都有对应的setter方法，也就是说我们可以利用fastjson调用setter赋值的特性来给这两个量赋值从而实现任意类的调用
+
+那我们再看看这个createConnectionFactory()是否可控
+
+![image-20241112190545326](assets/image-20241112190545326.png)
+
+![image-20241112190525158](assets/image-20241112190525158.png)
+
+通过两部我们可以看到这个getConnection()方法可以调用到createConnectionFactory()
+
+那我们可以尝试一下
 
 payload:
 
