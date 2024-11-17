@@ -2,20 +2,28 @@ site_name: Xrnt's blog
 
 nav:
 - Home: index.md
-- CTF:  
-  - Java: 
-    - Fastjson: CTF/Web/Java/Fastjson反序列化.md
-    - Java反序列化: CTF/Web/Java/Java反序列化.md
+
+- Web:  
   - Web基础:
     - Header头: CTF/Web/Web基础/Header头.md
   - 网安Web培训: 
     - CTF/Web/网安Web培训/http+python基础+python抓包发包2.md
     - CTF/Web/网安Web培训/命令执行.md
     - CTF/Web/网安Web培训/命令执行进阶.md
+  - Java: 
+    - Fastjson: CTF/Web/Java/Fastjson反序列化.md
+    - Java反序列化: CTF/Web/Java/Java反序列化.md
+
+-Crypto:
+  - 网安Crypto培训:
+    - Crypto基础: CTF/Crypto/网安Crypto培训/Crypto.md
+
 - Writeup : 
   - Web: Writeup/Web.md
+
 - Python:
   - Python数据容器: python/2_Python数据容器.md
+  
 - About: about.md
 
 theme:
