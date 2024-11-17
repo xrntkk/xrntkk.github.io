@@ -14,7 +14,7 @@ nav:
     - Fastjson: CTF/Web/Java/Fastjson反序列化.md
     - Java反序列化: CTF/Web/Java/Java反序列化.md
 
--Crypto:
+- Crypto:
   - 网安Crypto培训:
     - Crypto基础: CTF/Crypto/网安Crypto培训/Crypto.md
 
@@ -23,7 +23,7 @@ nav:
 
 - Python:
   - Python数据容器: python/2_Python数据容器.md
-  
+
 - About: about.md
 
 theme:
