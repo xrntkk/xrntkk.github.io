@@ -19,7 +19,10 @@ nav:
     - Crypto基础: CTF/Crypto/网安Crypto培训/Crypto.md
 
 - Writeup : 
-  - Web: Writeup/Web.md
+  - Web: 
+    - SHCTF2024: Writeup/Web/SHCTF2024.md
+    - ctfshow_Web入门: Writeup/Web/ctfshow_web入门.md
+    - 杂题集: Writeup/Web/做的一些杂题.md
 
 - Python:
   - Python数据容器: python/2_Python数据容器.md
