@@ -13,6 +13,7 @@ nav:
   - Java: 
     - Fastjson: CTF/Web/Java/Fastjson反序列化.md
     - Java反序列化: CTF/Web/Java/Java反序列化.md
+    - JDBC反序列化: CTF/Web/Java/JDBC反序列化.md
 
 - Crypto:
   - 网安Crypto培训:
