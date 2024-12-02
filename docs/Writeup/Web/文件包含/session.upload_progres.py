@@ -3,7 +3,7 @@ from io import BytesIO
 from threading import Thread
 from urllib.parse import urljoin
 
-URL = 'http://48838228-2f99-4a7b-84a0-a7654c5c5345.challenge.ctf.show/'
+URL = 'http://71566c6e-995d-40a9-bb86-2acdefc4b03c.challenge.ctf.show/'
 PHPSESSID = 'shell'
 
 

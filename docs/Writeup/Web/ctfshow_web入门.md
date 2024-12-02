@@ -3545,6 +3545,546 @@ poc
 ?file=data://text/plain;base64,PD89c3lzdGVtKCJ0YWMgZmwwZy5waHAiKTsgPz4
 ```
 
+### php特性
+
+> 参考网站：
+>
+> [php一些特性函数（ctfshow）](https://blog.csdn.net/qq_62046696/article/details/125272550)
+
+#### web89
+
+```php
+<?php
+
+/*
+\# -*- coding: utf-8 -*-
+\# @Author: h1xa
+\# @Date:  2020-09-16 11:25:09
+\# @Last Modified by:  h1xa
+\# @Last Modified time: 2020-09-18 15:38:51
+\# @email: h1xa@ctfer.com
+\# @link: https://ctfer.com
+
+*/
+
+
+include("flag.php");
+highlight_file(__FILE__);
+
+if(isset($_GET['num'])){
+  $num = $_GET['num'];
+  if(preg_match("/[0-9]/", $num)){
+    die("no no no!");
+  }
+  if(intval($num)){
+    echo $flag;
+  }
+}
+```
+
+这题要用到数组绕过的特性来绕过preg_match的匹配
+
+##### preg_match函数：
+
+> preg_match函数是用于完成字符串的正则匹配的函数，如果找到一个匹配的，就返回1，否则就返回0。
+> preg_match只能处理字符串，如果传入的值是数组的话，就会报错，从而返回false，绕过了正则匹配。
+
+##### intval函数:
+
+> - 定义:intval()`函数是 PHP 中的一个内置函数。它用于获取变量的整数值。其基本语法是`intval($var, $base = 10)`。其中`$var`是要转换的变量，`$base`是可选参数，用于指定进制（当`$var`是字符串时），默认是十进制。
+>
+> - 特性：
+>
+>   1.如果变量本身是整数，`intval()`函数会返回变量本身的值。
+>
+>   2.当变量是字符串时，`intval()`会尝试将字符串转换为整数。它会从字符串的开头提取数字部分，直到遇到非数字字符为止。
+>
+>   3.如果字符串以非数字字符开头，`intval()`会返回 0。
+>
+>   4.当第二个参数`$base`被指定时，`intval()`可以将字符串按照指定的进制转换为十进制整数。
+>
+> - 注意事项
+>
+>   1.对于浮点数，`intval()`会直接截断小数部分，而不是进行四舍五入。
+>
+>   2.当处理超出整数范围的值时（在 PHP 中，根据平台和配置不同，整数范围有所不同），可能会出现意外的结果。例如，在 32 位系统上，`int`类型的最大值是`2147483647`，如果`intval()`处理的值超过这个范围，可能会导致数据丢失或者不正确的转换。
+
+这道题直接用数组绕过
+
+payload:
+
+```
+?num[]=1
+```
+
+#### web90
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-09-16 11:25:09
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-18 16:06:11
+# @email: h1xa@ctfer.com
+# @link: https://ctfer.com
+
+*/
+
+
+include("flag.php");
+highlight_file(__FILE__);
+if(isset($_GET['num'])){
+    $num = $_GET['num'];
+    if($num==="4476"){
+        die("no no no!");
+    }
+    if(intval($num,0)===4476){
+        echo $flag;
+    }else{
+        echo intval($num,0);
+    }
+}
+```
+
+设置`$base = 0`能提供一种根据字符串内容自动判断进制来进行转换的灵活方式。
+
+这道题可以利用intval的特性和php强比较的特性
+
+> 当变量是字符串时，`intval()`会尝试将字符串转换为整数。它会从字符串的开头提取数字部分，直到遇到非数字字符为止。
+
+![image-20241130160847046](assets/image-20241130160847046.png)
+
+#### web91
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: Firebasky
+# @Date:   2020-09-16 11:25:09
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-18 16:16:09
+# @link: https://ctfer.com
+
+*/
+
+show_source(__FILE__);
+include('flag.php');
+$a=$_GET['cmd'];
+if(preg_match('/^php$/im', $a)){
+    if(preg_match('/^php$/i', $a)){
+        echo 'hacker';
+    }
+    else{
+        echo $flag;
+    }
+}
+else{
+    echo 'nonononono';
+}
+```
+
+这题考察的是一个正则表达式的理解和绕过
+
+这两个正则表达式都是用来匹配字符串php的
+
+> ##### `/^php$/im` 的含义
+>
+> - `^`：表示字符串的开始。
+> - `php`：表示匹配字符 `php`。
+> - `$`：表示字符串的结束。
+> - `i`：表示不区分大小写。
+> - `m`：表示多行模式（multi-line）。
+
+要得到flag，我们需要让第一个判断为true，第二个判断为false
+
+而第二个正则表达式与正则表达式一的区别在于他没有进行多行匹配
+
+那我们只需要通过换行符就可以实现绕过
+
+payload:
+
+```
+cmd=%oaphp
+```
+
+#### web92
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: Firebasky
+# @Date:   2020-09-16 11:25:09
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-18 16:29:30
+# @link: https://ctfer.com
+
+*/
+
+include("flag.php");
+highlight_file(__FILE__);
+if(isset($_GET['num'])){
+    $num = $_GET['num'];
+    if($num==4476){
+        die("no no no!");
+    }
+    if(intval($num,0)==4476){
+        echo $flag;
+    }else{
+        echo intval($num,0);
+    }
+}
+```
+
+这题与90题的区别就在于这里进行的是弱类型的比较
+
+在弱类型的比较里面我们不能通过增加字母的方式绕过，如下
+
+```
+"123aa" == 123
+"123aa" === 123aa
+```
+
+我们可以通过其它方法来绕过
+
+如通过intval函数的特性，我们可以通过输入转换成其他进制的4476来进行绕过（前面说过当base=0时会自动进行进制的转换）。
+
+payload：
+
+```
+HEX: 0x117c //十进制前面补0x
+OCT: 010574 //八进制前面补0
+```
+
+或者
+
+官方题解
+
+> intval()函数如果$base为0则$var中存在字母的话遇到字母就停止读取,但是e这个字母比较特殊，可以在PHP中不是科学计数法。所以为了绕过前面的==4476，我们就可以构造 4476e123
+
+#### web93
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: Firebasky
+# @Date:   2020-09-16 11:25:09
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-18 16:32:58
+# @link: https://ctfer.com
+
+*/
+
+include("flag.php");
+highlight_file(__FILE__);
+if(isset($_GET['num'])){
+    $num = $_GET['num'];
+    if($num==4476){
+        die("no no no!");
+    }
+    if(preg_match("/[a-z]/i", $num)){
+        die("no no no!");
+    }
+    if(intval($num,0)==4476){
+        echo $flag;
+    }else{
+        echo intval($num,0);
+    }
+}
+```
+
+```
+preg_match("/[a-z]/i", $num)
+```
+
+相比上一题这题增加了一个字母的匹配，让我们不能用上一题e绕过的方法和十六进制绕过的方法
+
+但是八进制绕过依旧是可行的，因为他不包含字母
+
+payload:
+
+```
+num=010574
+```
+
+#### web94
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-09-16 11:25:09
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-18 16:46:19
+# @link: https://ctfer.com
+
+*/
+
+include("flag.php");
+highlight_file(__FILE__);
+if(isset($_GET['num'])){
+    $num = $_GET['num'];
+    if($num==="4476"){
+        die("no no no!");
+    }
+    if(preg_match("/[a-z]/i", $num)){
+        die("no no no!");
+    }
+    if(!strpos($num, "0")){
+        die("no no no!");
+    }
+    if(intval($num,0)===4476){
+        echo $flag;
+    }
+}
+```
+
+```
+!strpos($num, "0")
+```
+
+这题增加了一个条件，同时判断也变成了强判定，这里的`strpos()`函数用于查找字符串在另一个字符串中首次出现的位置。
+
+也就是这里我们需要让首位不等于0才能使这个判断为false
+
+##### strops函数绕过：
+
+> 对于strpos()函数，我们可以利用换行进行绕过（%0a）
+> payload:?num=%0a010574
+> 也可以小数点绕过
+> payload：?num=4476.0
+> 因为intval()函数只读取整数部分
+> 还可以八进制绕过(%20是空格的url编码形式)
+> payload：?num=%20010574
+> ?num= 010574 // 前面加个空格
+> ?num=+010574 
+> ?num=+4476.0
+
+我们选用其中一个绕过方法即可
+
+如空格绕过
+
+```
+?num=%20010574
+```
+
+这题因为用的是强判定也可以用这种方法
+
+```
+?num=4476.0
+```
+
+这种方法就是使其变为浮点型从而使强判定为false，绕过第一个判定
+
+#### web95
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-09-16 11:25:09
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-18 16:53:59
+# @link: https://ctfer.com
+
+*/
+
+include("flag.php");
+highlight_file(__FILE__);
+if(isset($_GET['num'])){
+    $num = $_GET['num'];
+    if($num==4476){
+        die("no no no!");
+    }
+    if(preg_match("/[a-z]|\./i", $num)){
+        die("no no no!!");
+    }
+    if(!strpos($num, "0")){
+        die("no no no!!!");
+    }
+    if(intval($num,0)===4476){
+        echo $flag;
+    }
+}
+```
+
+这题和上一题的区别就是改为了弱判定
+
+所以上一题的方法二就用不了了，我们用方法一即可
+
+payload:
+
+```
+?num=%20010574
+```
+
+#### web96
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-09-16 11:25:09
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-18 19:21:24
+# @link: https://ctfer.com
+
+*/
+
+
+highlight_file(__FILE__);
+
+if(isset($_GET['u'])){
+    if($_GET['u']=='flag.php'){
+        die("no no no");
+    }else{
+        highlight_file($_GET['u']);
+    }
+
+
+}
+```
+
+我们知道./指的的是当前目录，所以直接用./绕过即可，不影响文件读取
+
+payload:
+
+```
+?u=./flag.php
+```
+
+or
+
+```
+u=/var/www/html/flag.php
+?u=php://filter/read=convert.base64-encode/resource=flag.php
+```
+
+#### web97
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-09-16 11:25:09
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-18 19:36:32
+# @link: https://ctfer.com
+
+*/
+
+include("flag.php");
+highlight_file(__FILE__);
+if (isset($_POST['a']) and isset($_POST['b'])) {
+if ($_POST['a'] != $_POST['b'])
+if (md5($_POST['a']) === md5($_POST['b']))
+echo $flag;
+else
+print 'Wrong.';
+}
+?>
+```
+
+这是一道md5强比较的题目，绕过姿势挺多
+
+我们可以通过简单的数组绕过
+
+```
+a[]=1&b[]=2
+```
+
+虽然会报错但是能拿到flag
+
+![image-20241130204752518](assets/image-20241130204752518.png)
+
+#### web98
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-09-16 11:25:09
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-18 21:39:27
+# @link: https://ctfer.com
+
+*/
+
+include("flag.php");
+$_GET?$_GET=&$_POST:'flag';
+$_GET['flag']=='flag'?$_GET=&$_COOKIE:'flag';
+$_GET['flag']=='flag'?$_GET=&$_SERVER:'flag';
+highlight_file($_GET['HTTP_FLAG']=='flag'?$flag:__FILE__);
+
+?>
+```
+
+> [CTFSHOW web入门刷题 web98-112_ctfshow web98-CSDN博客](https://blog.csdn.net/bys617120/article/details/135314637)
+>
+> 这道题用到了三元运算符
+>
+> 首先判断是否GET传入了数据，如果传入了则将POST的地址赋值给了GET
+>
+> 其实就是用POST替换GET
+>
+> 如果GET存在flag字段的值则会继续替换，最后替换成SERVER
+>
+> 这里我们只要GET随便传入一个数据让post替换get
+>
+> 然后post传入 HTTP_FLAG=flag
+>
+> 这样最后highlight_file就能去显示$flag
+>
+
+这道题一开始没看懂代码，看了上面大佬的解释感觉其实也不难
+
+![image-20241201230323939](assets/image-20241201230323939.png)
+
+#### web99
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-09-16 11:25:09
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-18 22:36:12
+# @link: https://ctfer.com
+
+*/
+
+highlight_file(__FILE__);
+$allow = array();
+for ($i=36; $i < 0x36d; $i++) { 
+    array_push($allow, rand(1,$i));
+}
+if(isset($_GET['n']) && in_array($_GET['n'], $allow)){
+    file_put_contents($_GET['n'], $_POST['content']);
+}
+
+?>
+```
+
 
 
 ### 反序列化

