@@ -1,4 +1,4 @@
-# ** 	CTFshow_Web**
+# CTFshow_Web
 
 ### **信息收集**：（完工）
 
