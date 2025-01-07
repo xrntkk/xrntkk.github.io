@@ -3000,6 +3000,147 @@ $ffi->system($a);//通过$ffi去调用system函数
 
 
 
+#### web118
+
+原文地址：https://blog.csdn.net/Myon5/article/details/140145005
+
+输入数字和小写字母，回显 evil input
+
+![img](./assets/39825df758159aeb1423f84893826541.png)
+
+查看源码，发现这里会将提交的参数 code 传给 system 函数 
+
+![img](./assets/ef28276a3cf0375675a6bde71506fcec.png)
+
+使用 burpsuite 抓包进行单个字符的模糊测试 fuzz：
+
+![img](./assets/584e4b78646d635bd58f6507fe24c725.png)
+
+发现过滤掉了数字和小写字母以及一些符号，下面框起来的部分是可用的
+
+![img](./assets/cce43cb38968e67bc8db9d0b7dec6750.png)
+
+结合题目提示：flag 在 flag.php
+
+![img](./assets/8eb2710f201069ae75d2229e71d76be1.png)
+
+那么我们就需要构造出命令去读取 flag.php
+
+> 我们先来了解一下 Linux 的内置变量
+> 在 Linux 系统中，有许多内置变量（环境变量）用于配置系统行为和存储系统信息。
+>
+> （1）$BASH
+>
+> 描述：指向当前使用的Bash解释器的路径。
+> 示例：/bin/bash
+> 用途：用于确定正在使用的Bash版本和路径。
+>
+> （2） $PATH
+>
+> 描述：存储一系列路径，这些路径用于查找可执行文件，当你在命令行中输入命令时，系统会在这些路径中查找对应的可执行文件。
+> 示例：/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+> 用途：影响命令的查找和执行，可以添加自定义脚本或程序的路径。
+>
+> （3）$HOME
+>
+> 描述：当前用户的主目录路径。
+> 示例：/home/username
+> 用途：表示当前用户的主目录，通常用于存储用户配置文件和个人数据。
+>
+> （4）$PWD
+>
+> 描述：当前工作目录（Present Working Directory）。
+> 示例：/home/username/projects
+> 用途：表示当前的工作目录路径，常用于脚本和命令中获取或显示当前目录。
+>
+> （5）$USER
+>
+> 描述：当前登录的用户名。
+> 示例：username
+> 用途：表示当前用户的名称，常用于显示或检查用户信息。
+>
+> （6）$SHELL
+>
+> 描述：当前用户的默认shell。
+> 示例：/bin/bash
+> 用途：表示用户登录时使用的默认shell路径。
+>
+> （7）$UID
+>
+> 描述：当前用户的用户ID。
+> 示例：1000（普通用户），0（root用户）
+> 用途：标识当前用户的唯一ID。
+>
+> （8）$IFS
+>
+> 描述：内部字段分隔符（Internal Field Separator），用于分割输入的字段，默认为空格、制表符和换行符。
+> 示例：默认值为<space><tab><newline>
+> 用途：影响脚本中的字段分割，常用于处理输入和解析文本。
+
+此外还有很多的内置变量：
+
+![img](./assets/3b6a3d156d5f7a2118ef1e73708dc47f.png)
+
+接下来我们需要知道 Bash 变量的切片，与 python 的切片类似，目的还是从指定位置开始提取子字符串，用法：${VAR:offset:length}，看例子：
+
+```
+${PWD:1:2}
+```
+
+提取从第二个字符开始的两个字符，即 ro，在 Bash 中，字符串切片的索引也是从 0 开始的。
+
+![img](./assets/9a68ddaee573e2a4c8f029c1b1439303.png)
+
+如果只填一个参数，会默认从指定的位置开始提取到字符串的末尾：
+
+```
+${PWD:3}
+```
+
+![img](./assets/05801ab65baf0c3f8ef755d2440035d3.png)
+
+简单测一下我们就可以看出波浪号的效果：从结尾开始取
+
+![img](./assets/05801ab65baf0c3f8ef755d2440035d3-20250107141042427.png)
+
+但是这里数字被过滤了，因此我们使用大写字母绕过：
+
+可以发现任意的大小写字母与数字 0 等效
+
+![img](./assets/20028ec8b263329b22bf7127236e5cb9.png)
+
+不难想到这里的 $PWD 应该是 /var/www/html（网页服务所在的常见路径）；
+
+而 $PATH 的结尾应该也是 /bin（这个在前面我们已经测试过了）。
+
+![img](./assets/1f28e989351c75dc265bdf60244d9bad.png)
+
+因此我们可以构造出 nl 命令来读取 flag.php，由于 ? 可用，因此我们可以进行通配，绕过字母的过滤，构造 payload：
+
+```
+${PATH:~Q}${PWD:~Q} ????.???
+```
+
+![img](./assets/22118ba0371383bb7b3ff39f6dd322be.png)
+
+当然题目还给了其他 payload：
+
+```
+${PATH:${#HOME}:${#SHLVL}}${PATH:${#RANDOM}:${#SHLVL}} ?${PATH:${#RANDOM}:${#SHLVL}}??.???
+```
+
+在Bash中，${#var} 的语法用于获取变量 var 的长度（即字符数）。
+
+这种形式可以应用于任何变量，无论是字符串变量还是环境变量。
+
+我们知道 ${HOME} 是 /root，因此 ${#HOME} 就是 5。
+
+![img](./assets/699d0549b84964404cd7c602c5a687d5.png)
+
+以此类推，最终将这些数字应用到切片中去，绕过对数字的过滤，构造出我们想要执行的命令。
+
+
+
 
 
 ------
@@ -3544,6 +3685,26 @@ poc
 ```
 ?file=data://text/plain;base64,PD89c3lzdGVtKCJ0YWMgZmwwZy5waHAiKTsgPz4
 ```
+
+
+
+#### web116
+
+拿到题目环境，发现是个视频，下载视频用binwalk扫一下
+
+![image-20250107142748584](./assets/image-20250107142748584.png)
+
+提取图片，发现是源码
+
+![image-20250107142550734](./assets/image-20250107142550734.png)
+
+直接get传参读flag
+
+![image-20250107143725806](./assets/image-20250107143725806.png)
+
+
+
+
 
 ### php特性
 
