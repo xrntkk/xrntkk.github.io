@@ -5,48 +5,48 @@ nav:
 
 - Web:  
   - Web基础:
-    - Header头: CTF/Web/Web基础/Header头.md
-    - nodejs原型链污染: CTF/Web/Web基础/nodejs原型链污染.md
-    - php反序列化: CTF/Web/Web基础/php反序列化.md
-    - php原生类: CTF/Web/Web基础/php原生类.md
-    - pickle反序列化: CTF/Web/Web基础/pickle反序列化.md
-    - python原型链污染: CTF/Web/Web基础/python原型链污染.md
-    - Redis未授权利用总结: CTF/Web/Web基础/Redis未授权利用总结.md
-    - Ruby类污染及其例题WP: CTF/Web/Web基础/Ruby类污染及其例题WP.pdf
-    - sql注入: CTF/Web/Web基础/sql注入.md
+    - Header头: Web/Web基础/Header头.md
+    - nodejs原型链污染: Web/Web基础/nodejs原型链污染.md
+    - php反序列化: Web/Web基础/php反序列化.md
+    - php原生类: Web/Web基础/php原生类.md
+    - pickle反序列化: Web/Web基础/pickle反序列化.md
+    - python原型链污染: Web/Web基础/python原型链污染.md
+    - Redis未授权利用总结: Web/Web基础/Redis未授权利用总结.md
+    - Ruby类污染及其例题WP: Web/Web基础/Ruby类污染及其例题WP.pdf
+    - sql注入: Web/Web基础/sql注入.md
     # - ssrf: 
-    - SSTI: CTF/Web/Web基础/SSTI.md
-    - 命令执行: CTF/Web/Web基础/命令执行.md
-    - 任意文件读取: CTF/Web/Web基础/任意文件读取.md
-    - 正则表达式: CTF/Web/Web基础/正则表达式.md
-    - 网站收集: CTF/Web/Web基础/网站收集.md
+    - SSTI: Web/Web基础/SSTI.md
+    - 命令执行: Web/Web基础/命令执行.md
+    - 任意文件读取: Web/Web基础/任意文件读取.md
+    - 正则表达式: Web/Web基础/正则表达式.md
+    - 网站收集: Web/Web基础/网站收集.md
 
 
   - 网安Web培训: 
-    - http+python基础+python抓包发包: CTF/Web/网安Web培训/http+python基础+python抓包发包2.md
-    - 命令执行: CTF/Web/网安Web培训/命令执行.md
-    - 命令执行进阶: CTF/Web/网安Web培训/命令执行进阶.md
+    - http+python基础+python抓包发包: Web/网安Web培训/http+python基础+python抓包发包2.md
+    - 命令执行: Web/网安Web培训/命令执行.md
+    - 命令执行进阶: Web/网安Web培训/命令执行进阶.md
   - Java学习: 
-    - Fastjson: CTF/Web/Java学习/Fastjson反序列化.md
-    - Java反序列化基础&cc链: CTF/Web/Java学习/Java反序列化基础&cc链.md
-    - JDBC反序列化: CTF/Web/Java学习/JDBC反序列化.md
+    - Fastjson: Web/Java学习/Fastjson反序列化.md
+    - Java反序列化基础&cc链: Web/Java学习/Java反序列化基础&cc链.md
+    - JDBC反序列化: Web/Java学习/JDBC反序列化.md
     
 
 - Crypto:
   - 网安Crypto培训:
-    - Crypto基础: CTF/Crypto/网安Crypto培训/Crypto.md
+    - Crypto基础: Crypto/网安Crypto培训/Crypto.md
   - 密码学习:
-    - RSA算法: CTF/Crypto/密码学习/RSA算法.md
+    - RSA算法: Crypto/密码学习/RSA算法.md
 
 - Writeup :  
   - SHCTF2024: Writeup/Web/SHCTF_2024.md
   - ctfshow_Web入门: Writeup/Web/ctfshow_web入门.md
   - 杂题集: Writeup/Web/做的一些杂题.md
   - ctfshow单身杯_2024: Writeup/ctfshow单身杯_2024.md
-  - WuCup_2024: Writeup/WuCup_2024.md
+  # - WuCup_2024: Writeup/WuCup_2024.md
   - 国城杯_2024: Writeup/国城杯_2024.md
   - 强网拟态_2024: Writeup/强网拟态_2024.md
-  - 蜀道山_2024: Writeup/蜀道山_2024.md
+  # - 蜀道山_2024: Writeup/蜀道山_2024.md
 
 - Python:
   - Python数据容器: python/2_Python数据容器.md
