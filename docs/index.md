@@ -10,8 +10,6 @@
 
     ---
 
-    - [1.Writeup](./CTF/Writeup/Web/)
-    - [2.Java](./CTF/Web/Java/Fastjson)
-    - [3.网安培训讲义](./CTF/Web/%E7%BD%91%E5%AE%89Web%E5%9F%B9%E8%AE%AD/http%2Bpython基础%2Bpython抓包发包2/)
-    - [4.Python](./python)
+    刚接触ctf的菜鸡
+    本网站只是个人笔记记录，某些wp可能直接复制粘贴大佬的wp，基本上都有标出原文，如果存在没有的情况请联系我，感谢
 </div>
