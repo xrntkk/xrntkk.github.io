@@ -1,4 +1,10 @@
-# php反序列化
+### php反序列化文章
+
+[php序列化 - l3m0n - 博客园](https://www.cnblogs.com/iamstudy/articles/php_serialize_problem.html?utm_source=tuicool&utm_medium=referral#11-什么是序列化)
+
+
+
+
 
 ### 引用绕过
 
