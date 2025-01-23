@@ -1,0 +1,3349 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../../../Web/Java%E5%AD%A6%E4%B9%A0/JDBC%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/">
+      
+      
+        <link rel="next" href="../../%E5%AF%86%E7%A0%81%E5%AD%A6%E4%B9%A0/RSA%E7%AE%97%E6%B3%95/">
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.50">
+    
+    
+      
+        <title>Crypto基础 - Xrnt's note</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.a40c8224.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+  
+  
+    
+    
+  
+    
+    
+  
+    
+    
+  
+    
+    
+  
+    
+    
+  
+    
+    
+  
+    
+    
+  
+    
+    
+  
+    
+    
+  
+    
+    
+  
+    
+    
+  
+    
+    
+  
+  
+  <style>:root{--md-admonition-icon--note:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M1 7.775V2.75C1 1.784 1.784 1 2.75 1h5.025c.464 0 .91.184 1.238.513l6.25 6.25a1.75 1.75 0 0 1 0 2.474l-5.026 5.026a1.75 1.75 0 0 1-2.474 0l-6.25-6.25A1.75 1.75 0 0 1 1 7.775m1.5 0c0 .066.026.13.073.177l6.25 6.25a.25.25 0 0 0 .354 0l5.025-5.025a.25.25 0 0 0 0-.354l-6.25-6.25a.25.25 0 0 0-.177-.073H2.75a.25.25 0 0 0-.25.25ZM6 5a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/></svg>');--md-admonition-icon--abstract:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M2.5 1.75v11.5c0 .138.112.25.25.25h3.17a.75.75 0 0 1 0 1.5H2.75A1.75 1.75 0 0 1 1 13.25V1.75C1 .784 1.784 0 2.75 0h8.5C12.216 0 13 .784 13 1.75v7.736a.75.75 0 0 1-1.5 0V1.75a.25.25 0 0 0-.25-.25h-8.5a.25.25 0 0 0-.25.25m13.274 9.537zl-4.557 4.45a.75.75 0 0 1-1.055-.008l-1.943-1.95a.75.75 0 0 1 1.062-1.058l1.419 1.425 4.026-3.932a.75.75 0 1 1 1.048 1.074M4.75 4h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5M4 7.75A.75.75 0 0 1 4.75 7h2a.75.75 0 0 1 0 1.5h-2A.75.75 0 0 1 4 7.75"/></svg>');--md-admonition-icon--info:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13M6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75M8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2"/></svg>');--md-admonition-icon--tip:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M3.499.75a.75.75 0 0 1 1.5 0v.996C5.9 2.903 6.793 3.65 7.662 4.376l.24.202c-.036-.694.055-1.422.426-2.163C9.1.873 10.794-.045 12.622.26 14.408.558 16 1.94 16 4.25c0 1.278-.954 2.575-2.44 2.734l.146.508.065.22c.203.701.412 1.455.476 2.226.142 1.707-.4 3.03-1.487 3.898C11.714 14.671 10.27 15 8.75 15h-6a.75.75 0 0 1 0-1.5h1.376a4.5 4.5 0 0 1-.563-1.191 3.84 3.84 0 0 1-.05-2.063 4.65 4.65 0 0 1-2.025-.293.75.75 0 0 1 .525-1.406c1.357.507 2.376-.006 2.698-.318l.009-.01a.747.747 0 0 1 1.06 0 .75.75 0 0 1-.012 1.074c-.912.92-.992 1.835-.768 2.586.221.74.745 1.337 1.196 1.621H8.75c1.343 0 2.398-.296 3.074-.836.635-.507 1.036-1.31.928-2.602-.05-.603-.216-1.224-.422-1.93l-.064-.221c-.12-.407-.246-.84-.353-1.29a2.4 2.4 0 0 1-.507-.441 3.1 3.1 0 0 1-.633-1.248.75.75 0 0 1 1.455-.364c.046.185.144.436.31.627.146.168.353.305.712.305.738 0 1.25-.615 1.25-1.25 0-1.47-.95-2.315-2.123-2.51-1.172-.196-2.227.387-2.706 1.345-.46.92-.27 1.774.019 3.062l.042.19.01.05c.348.443.666.949.94 1.553a.75.75 0 1 1-1.365.62c-.553-1.217-1.32-1.94-2.3-2.768L6.7 5.527c-.814-.68-1.75-1.462-2.692-2.619a3.7 3.7 0 0 0-1.023.88c-.406.495-.663 1.036-.722 1.508.116.122.306.21.591.239.388.038.797-.06 1.032-.19a.75.75 0 0 1 .728 1.31c-.515.287-1.23.439-1.906.373-.682-.067-1.473-.38-1.879-1.193L.75 5.677V5.5c0-.984.48-1.94 1.077-2.664.46-.559 1.05-1.055 1.673-1.353z"/></svg>');--md-admonition-icon--success:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.75.75 0 0 1 .018-1.042.75.75 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0"/></svg>');--md-admonition-icon--question:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13M6.92 6.085h.001a.749.749 0 1 1-1.342-.67c.169-.339.436-.701.849-.977C6.845 4.16 7.369 4 8 4a2.76 2.76 0 0 1 1.637.525c.503.377.863.965.863 1.725 0 .448-.115.83-.329 1.15-.205.307-.47.513-.692.662-.109.072-.22.138-.313.195l-.006.004a6 6 0 0 0-.26.16 1 1 0 0 0-.276.245.75.75 0 0 1-1.248-.832c.184-.264.42-.489.692-.661q.154-.1.313-.195l.007-.004c.1-.061.182-.11.258-.161a1 1 0 0 0 .277-.245C8.96 6.514 9 6.427 9 6.25a.61.61 0 0 0-.262-.525A1.27 1.27 0 0 0 8 5.5c-.369 0-.595.09-.74.187a1 1 0 0 0-.34.398M9 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/></svg>');--md-admonition-icon--warning:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.082 11.378A1.75 1.75 0 0 1 14.082 15H1.918a1.75 1.75 0 0 1-1.543-2.575Zm1.763.707a.25.25 0 0 0-.44 0L1.698 13.132a.25.25 0 0 0 .22.368h12.164a.25.25 0 0 0 .22-.368Zm.53 3.996v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0M9 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/></svg>');--md-admonition-icon--failure:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M2.344 2.343za8 8 0 0 1 11.314 11.314A8.002 8.002 0 0 1 .234 10.089a8 8 0 0 1 2.11-7.746m1.06 10.253a6.5 6.5 0 1 0 9.108-9.275 6.5 6.5 0 0 0-9.108 9.275M6.03 4.97 8 6.94l1.97-1.97a.749.749 0 0 1 1.275.326.75.75 0 0 1-.215.734L9.06 8l1.97 1.97a.749.749 0 0 1-.326 1.275.75.75 0 0 1-.734-.215L8 9.06l-1.97 1.97a.749.749 0 0 1-1.275-.326.75.75 0 0 1 .215-.734L6.94 8 4.97 6.03a.75.75 0 0 1 .018-1.042.75.75 0 0 1 1.042-.018"/></svg>');--md-admonition-icon--danger:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M9.504.43a1.516 1.516 0 0 1 2.437 1.713L10.415 5.5h2.123c1.57 0 2.346 1.909 1.22 3.004l-7.34 7.142a1.25 1.25 0 0 1-.871.354h-.302a1.25 1.25 0 0 1-1.157-1.723L5.633 10.5H3.462c-1.57 0-2.346-1.909-1.22-3.004zm1.047 1.074L3.286 8.571A.25.25 0 0 0 3.462 9H6.75a.75.75 0 0 1 .694 1.034l-1.713 4.188 6.982-6.793A.25.25 0 0 0 12.538 7H9.25a.75.75 0 0 1-.683-1.06l2.008-4.418.003-.006-.004-.009-.006-.006-.008-.001q-.005 0-.009.004"/></svg>');--md-admonition-icon--bug:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M4.72.22a.75.75 0 0 1 1.06 0l1 .999a3.5 3.5 0 0 1 2.441 0l.999-1a.748.748 0 0 1 1.265.332.75.75 0 0 1-.205.729l-.775.776c.616.63.995 1.493.995 2.444v.327q0 .15-.025.292c.408.14.764.392 1.029.722l1.968-.787a.75.75 0 0 1 .556 1.392L13 7.258V9h2.25a.75.75 0 0 1 0 1.5H13v.5q-.002.615-.141 1.186l2.17.868a.75.75 0 0 1-.557 1.392l-2.184-.873A5 5 0 0 1 8 16a5 5 0 0 1-4.288-2.427l-2.183.873a.75.75 0 0 1-.558-1.392l2.17-.868A5 5 0 0 1 3 11v-.5H.75a.75.75 0 0 1 0-1.5H3V7.258L.971 6.446a.75.75 0 0 1 .558-1.392l1.967.787c.265-.33.62-.583 1.03-.722a1.7 1.7 0 0 1-.026-.292V4.5c0-.951.38-1.814.995-2.444L4.72 1.28a.75.75 0 0 1 0-1.06m.53 6.28a.75.75 0 0 0-.75.75V11a3.5 3.5 0 1 0 7 0V7.25a.75.75 0 0 0-.75-.75ZM6.173 5h3.654A.17.17 0 0 0 10 4.827V4.5a2 2 0 1 0-4 0v.327c0 .096.077.173.173.173"/></svg>');--md-admonition-icon--example:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M5 5.782V2.5h-.25a.75.75 0 0 1 0-1.5h6.5a.75.75 0 0 1 0 1.5H11v3.282l3.666 5.76C15.619 13.04 14.543 15 12.767 15H3.233c-1.776 0-2.852-1.96-1.899-3.458Zm-2.4 6.565a.75.75 0 0 0 .633 1.153h9.534a.75.75 0 0 0 .633-1.153L12.225 10.5h-8.45ZM9.5 2.5h-3V6c0 .143-.04.283-.117.403L4.73 9h6.54L9.617 6.403A.75.75 0 0 1 9.5 6Z"/></svg>');--md-admonition-icon--quote:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M1.75 2.5h10.5a.75.75 0 0 1 0 1.5H1.75a.75.75 0 0 1 0-1.5m4 5h8.5a.75.75 0 0 1 0 1.5h-8.5a.75.75 0 0 1 0-1.5m0 5h8.5a.75.75 0 0 1 0 1.5h-8.5a.75.75 0 0 1 0-1.5M2.5 7.75v6a.75.75 0 0 1-1.5 0v-6a.75.75 0 0 1 1.5 0"/></svg>');}</style>
+
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#crypto" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../.." title="Xrnt&#39;s note" class="md-header__button md-logo" aria-label="Xrnt's note" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Xrnt's note
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Crypto基础
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="分享" aria-label="分享" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/xrntkk/xrntkk.github.io" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    xrntkk.github.io
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../Web/Web%E5%9F%BA%E7%A1%80/Header%E5%A4%B4/" class="md-tabs__link">
+          
+  
+  Web
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
+          
+  
+  Crypto
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../Writeup/Web/ctfshow_web%E5%85%A5%E9%97%A8/" class="md-tabs__link">
+          
+  
+  Writeup
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../python/2_Python%E6%95%B0%E6%8D%AE%E5%AE%B9%E5%99%A8/" class="md-tabs__link">
+          
+  
+  Python
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../about/" class="md-tabs__link">
+        
+  
+    
+  
+  About
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Xrnt&#39;s note" class="md-nav__button md-logo" aria-label="Xrnt's note" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Xrnt's note
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/xrntkk/xrntkk.github.io" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    xrntkk.github.io
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Web
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Web
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_1" id="__nav_2_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Web基础
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            Web基础
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Web/Web%E5%9F%BA%E7%A1%80/Header%E5%A4%B4/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Header头
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Web/Web%E5%9F%BA%E7%A1%80/nodejs%E5%8E%9F%E5%9E%8B%E9%93%BE%E6%B1%A1%E6%9F%93/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    nodejs原型链污染
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Web/Web%E5%9F%BA%E7%A1%80/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    php反序列化
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Web/Web%E5%9F%BA%E7%A1%80/php%E5%8E%9F%E7%94%9F%E7%B1%BB/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    php原生类
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Web/Web%E5%9F%BA%E7%A1%80/pickle%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    pickle反序列化
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Web/Web%E5%9F%BA%E7%A1%80/python%E5%8E%9F%E5%9E%8B%E9%93%BE%E6%B1%A1%E6%9F%93/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    python原型链污染
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Web/Web%E5%9F%BA%E7%A1%80/Redis%E6%9C%AA%E6%8E%88%E6%9D%83%E5%88%A9%E7%94%A8%E6%80%BB%E7%BB%93/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Redis未授权利用总结
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Web/Web%E5%9F%BA%E7%A1%80/Ruby%E7%B1%BB%E6%B1%A1%E6%9F%93%E5%8F%8A%E5%85%B6%E4%BE%8B%E9%A2%98WP.pdf" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Ruby类污染及其例题WP
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Web/Web%E5%9F%BA%E7%A1%80/sql%E6%B3%A8%E5%85%A5/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    sql注入
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Web/Web%E5%9F%BA%E7%A1%80/cakephp%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    cakephp反序列化
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Web/Web%E5%9F%BA%E7%A1%80/SSTI/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SSTI
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Web/Web%E5%9F%BA%E7%A1%80/%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    命令执行
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Web/Web%E5%9F%BA%E7%A1%80/%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    任意文件读取
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Web/Web%E5%9F%BA%E7%A1%80/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    正则表达式
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Web/Web%E5%9F%BA%E7%A1%80/%E7%BD%91%E7%AB%99%E6%94%B6%E9%9B%86/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    网站收集
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    网安Web培训
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            网安Web培训
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Web/%E7%BD%91%E5%AE%89Web%E5%9F%B9%E8%AE%AD/http%2Bpython%E5%9F%BA%E7%A1%80%2Bpython%E6%8A%93%E5%8C%85%E5%8F%91%E5%8C%852/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    http+python基础+python抓包发包
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Web/%E7%BD%91%E5%AE%89Web%E5%9F%B9%E8%AE%AD/%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    命令执行
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Web/%E7%BD%91%E5%AE%89Web%E5%9F%B9%E8%AE%AD/%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E8%BF%9B%E9%98%B6/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    命令执行进阶
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Java学习
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            Java学习
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Web/Java%E5%AD%A6%E4%B9%A0/Fastjson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Fastjson
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Web/Java%E5%AD%A6%E4%B9%A0/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%9F%BA%E7%A1%80%26cc%E9%93%BE/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Java反序列化基础&cc链
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Web/Java%E5%AD%A6%E4%B9%A0/JDBC%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    JDBC反序列化
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Crypto
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Crypto
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    网安Crypto培训
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            网安Crypto培训
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Crypto基础
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Crypto基础
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#0" class="md-nav__link">
+    <span class="md-ellipsis">
+      0、一些常用的工具网站
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      一、编码
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="一、编码">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1ascii" class="md-nav__link">
+    <span class="md-ellipsis">
+      1、ASCII编码
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2hex" class="md-nav__link">
+    <span class="md-ellipsis">
+      2、Hex编码
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3base" class="md-nav__link">
+    <span class="md-ellipsis">
+      3、base家族
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3、base家族">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#base16" class="md-nav__link">
+    <span class="md-ellipsis">
+      base16
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#base32" class="md-nav__link">
+    <span class="md-ellipsis">
+      base32
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#base64" class="md-nav__link">
+    <span class="md-ellipsis">
+      base64
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#base58" class="md-nav__link">
+    <span class="md-ellipsis">
+      base58
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#base100" class="md-nav__link">
+    <span class="md-ellipsis">
+      base100
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4url" class="md-nav__link">
+    <span class="md-ellipsis">
+      4、url编码
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5unicode" class="md-nav__link">
+    <span class="md-ellipsis">
+      5、Unicode编码
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6html" class="md-nav__link">
+    <span class="md-ellipsis">
+      6、HTML实体编码
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7" class="md-nav__link">
+    <span class="md-ellipsis">
+      7、摩尔斯电码（摩斯密码）
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#8jsfuck" class="md-nav__link">
+    <span class="md-ellipsis">
+      8、jsfuck编码
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#9brainfuck" class="md-nav__link">
+    <span class="md-ellipsis">
+      9、brainfuck编码
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#10ook" class="md-nav__link">
+    <span class="md-ellipsis">
+      10、Ook编码
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      二、古典密码
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="二、古典密码">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1hash" class="md-nav__link">
+    <span class="md-ellipsis">
+      1、hash
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      2、凯撒密码
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      3、栅栏密码
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4rot" class="md-nav__link">
+    <span class="md-ellipsis">
+      4、ROT编码
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    <span class="md-ellipsis">
+      5、维吉尼亚密码
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6rabbit" class="md-nav__link">
+    <span class="md-ellipsis">
+      6、Rabbit加密
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7des" class="md-nav__link">
+    <span class="md-ellipsis">
+      7、DES算法
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#8aes" class="md-nav__link">
+    <span class="md-ellipsis">
+      8、AES算法
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      三、现代密码学
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="三、现代密码学">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rsa" class="md-nav__link">
+    <span class="md-ellipsis">
+      RSA
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="RSA">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      简介
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      数学背景
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rsa_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      RSA原理
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rsa_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      RSA变式
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="RSA变式">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dp" class="md-nav__link">
+    <span class="md-ellipsis">
+      DP泄露
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dp_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      DP高位泄露
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      低解密指数攻击
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      低加密指数攻击
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      低加密指数广播攻击
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      共模攻击
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#coppersmith" class="md-nav__link">
+    <span class="md-ellipsis">
+      Coppersmith攻击
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#p" class="md-nav__link">
+    <span class="md-ellipsis">
+      已知P高位攻击
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#m" class="md-nav__link">
+    <span class="md-ellipsis">
+      已知m高位攻击
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#d" class="md-nav__link">
+    <span class="md-ellipsis">
+      已知D低位攻击
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    密码学习
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            密码学习
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../%E5%AF%86%E7%A0%81%E5%AD%A6%E4%B9%A0/RSA%E7%AE%97%E6%B3%95/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    RSA算法
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Writeup
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Writeup
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Writeup/Web/ctfshow_web%E5%85%A5%E9%97%A8/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ctfshow_Web入门
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Writeup/NSSCTF/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NSSCTF
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Writeup/ctfshow%E5%8D%95%E8%BA%AB%E6%9D%AF_2024/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ctfshow单身杯_2024
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Writeup/Web/%E5%81%9A%E7%9A%84%E4%B8%80%E4%BA%9B%E6%9D%82%E9%A2%98/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    杂题集
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Writeup/Web/SHCTF_2024/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SHCTF2024
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Writeup/%E5%9B%BD%E5%9F%8E%E6%9D%AF_2024/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    国城杯_2024
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Writeup/%E5%BC%BA%E7%BD%91%E6%8B%9F%E6%80%81_2024/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    强网拟态_2024
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Writeup/Web/SUCTF_2024.md.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SUCTF_2024 复现
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Writeup/%E8%A5%BF%E6%B9%96%E8%AE%BA%E5%89%91_2025/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    西湖论剑_2025
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Python
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Python
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../python/2_Python%E6%95%B0%E6%8D%AE%E5%AE%B9%E5%99%A8/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Python数据容器
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../about/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    About
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#0" class="md-nav__link">
+    <span class="md-ellipsis">
+      0、一些常用的工具网站
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      一、编码
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="一、编码">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1ascii" class="md-nav__link">
+    <span class="md-ellipsis">
+      1、ASCII编码
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2hex" class="md-nav__link">
+    <span class="md-ellipsis">
+      2、Hex编码
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3base" class="md-nav__link">
+    <span class="md-ellipsis">
+      3、base家族
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3、base家族">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#base16" class="md-nav__link">
+    <span class="md-ellipsis">
+      base16
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#base32" class="md-nav__link">
+    <span class="md-ellipsis">
+      base32
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#base64" class="md-nav__link">
+    <span class="md-ellipsis">
+      base64
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#base58" class="md-nav__link">
+    <span class="md-ellipsis">
+      base58
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#base100" class="md-nav__link">
+    <span class="md-ellipsis">
+      base100
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4url" class="md-nav__link">
+    <span class="md-ellipsis">
+      4、url编码
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5unicode" class="md-nav__link">
+    <span class="md-ellipsis">
+      5、Unicode编码
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6html" class="md-nav__link">
+    <span class="md-ellipsis">
+      6、HTML实体编码
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7" class="md-nav__link">
+    <span class="md-ellipsis">
+      7、摩尔斯电码（摩斯密码）
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#8jsfuck" class="md-nav__link">
+    <span class="md-ellipsis">
+      8、jsfuck编码
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#9brainfuck" class="md-nav__link">
+    <span class="md-ellipsis">
+      9、brainfuck编码
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#10ook" class="md-nav__link">
+    <span class="md-ellipsis">
+      10、Ook编码
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      二、古典密码
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="二、古典密码">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1hash" class="md-nav__link">
+    <span class="md-ellipsis">
+      1、hash
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2" class="md-nav__link">
+    <span class="md-ellipsis">
+      2、凯撒密码
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3" class="md-nav__link">
+    <span class="md-ellipsis">
+      3、栅栏密码
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4rot" class="md-nav__link">
+    <span class="md-ellipsis">
+      4、ROT编码
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5" class="md-nav__link">
+    <span class="md-ellipsis">
+      5、维吉尼亚密码
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6rabbit" class="md-nav__link">
+    <span class="md-ellipsis">
+      6、Rabbit加密
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7des" class="md-nav__link">
+    <span class="md-ellipsis">
+      7、DES算法
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#8aes" class="md-nav__link">
+    <span class="md-ellipsis">
+      8、AES算法
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      三、现代密码学
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="三、现代密码学">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rsa" class="md-nav__link">
+    <span class="md-ellipsis">
+      RSA
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="RSA">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      简介
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      数学背景
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rsa_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      RSA原理
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rsa_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      RSA变式
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="RSA变式">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dp" class="md-nav__link">
+    <span class="md-ellipsis">
+      DP泄露
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dp_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      DP高位泄露
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      低解密指数攻击
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      低加密指数攻击
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      低加密指数广播攻击
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_9" class="md-nav__link">
+    <span class="md-ellipsis">
+      共模攻击
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#coppersmith" class="md-nav__link">
+    <span class="md-ellipsis">
+      Coppersmith攻击
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#p" class="md-nav__link">
+    <span class="md-ellipsis">
+      已知P高位攻击
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#m" class="md-nav__link">
+    <span class="md-ellipsis">
+      已知m高位攻击
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#d" class="md-nav__link">
+    <span class="md-ellipsis">
+      已知D低位攻击
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<h1 id="crypto">Crypto<a class="headerlink" href="#crypto" title="Permanent link">&para;</a></h1>
+<h2 id="0">0、一些常用的工具网站<a class="headerlink" href="#0" title="Permanent link">&para;</a></h2>
+<p>赛博厨子，工具很多   <a href="https://cyberchef.cn/">CyberChef</a></p>
+<p>ctf工具箱，有些编码有bug <a href="http://www.hiencode.com/">CTF在线工具</a></p>
+<p>base100 <a href="http://www.atoolbox.net/Tool.php?Id=936">Base100编码/解码</a></p>
+<p>ook和Brainfuck   <a href="https://www.splitbrain.org/blog">splitbrain.org</a></p>
+<h2 id="_1">一、编码<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<h3 id="1ascii">1、ASCII编码<a class="headerlink" href="#1ascii" title="Permanent link">&para;</a></h3>
+<p>现今最通用的单字节编码系统，并等同于国际标准ISO/IEC 646</p>
+<p>可以分作三部分组成</p>
+<p>第一部分是：ASCII非打印控制字符</p>
+<p>第二部分是：ASCII打印字符；</p>
+<p>第三部分是：扩展ASCII打印字符</p>
+<p>c++书后面有码表</p>
+<h3 id="2hex">2、Hex编码<a class="headerlink" href="#2hex" title="Permanent link">&para;</a></h3>
+<p>Hex 全称 是Intel HEX。Hex文件是由一行行符合Intel HEX文件格式的文本所构成的ASCII文本文件。在Intel HEX文件中，每一行包含一个HEX记录。这些记录由对应机器语言码和/或常量数据的<strong>十六进制编码数字</strong>组成。</p>
+<p><strong>特征</strong></p>
+<p>十六进制（Hexadecimal）</p>
+<p>它是计算机中数据的一种表示方法，<strong>由0-9，A-F组成，字母不区分大小写</strong>。</p>
+<p>与10进制的对应关系是0-9不变，A-F对应10-15。</p>
+<p><strong>样例</strong></p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span>
+<span class="normal"><a href="#__codelineno-0-2">2</a></span>
+<span class="normal"><a href="#__codelineno-0-3">3</a></span>
+<span class="normal"><a href="#__codelineno-0-4">4</a></span>
+<span class="normal"><a href="#__codelineno-0-5">5</a></span>
+<span class="normal"><a href="#__codelineno-0-6">6</a></span>
+<span class="normal"><a href="#__codelineno-0-7">7</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a>明文：hello
+<a id="__codelineno-0-2" name="__codelineno-0-2"></a>
+<a id="__codelineno-0-3" name="__codelineno-0-3"></a>密文：
+<a id="__codelineno-0-4" name="__codelineno-0-4"></a>68656c6c6f
+<a id="__codelineno-0-5" name="__codelineno-0-5"></a>0x680x650x6c0x6c0x6f
+<a id="__codelineno-0-6" name="__codelineno-0-6"></a>\x68\x65\x6c\x6c\x6f
+<a id="__codelineno-0-7" name="__codelineno-0-7"></a>。。。
+</code></pre></div></td></tr></table></div>
+<h3 id="3base">3、base家族<a class="headerlink" href="#3base" title="Permanent link">&para;</a></h3>
+<h4 id="base16">base16<a class="headerlink" href="#base16" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Base16编码是将二进制文件转换成由16个字符组成的文本（也可以当成是hex）</li>
+</ul>
+<p><strong>特性</strong></p>
+<p>大写字母(A-Z)和数字(0-9)，不用‘=’补齐</p>
+<p><strong>样例</strong></p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span>
+<span class="normal"><a href="#__codelineno-1-2">2</a></span>
+<span class="normal"><a href="#__codelineno-1-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1"></a>hello,world
+<a id="__codelineno-1-2" name="__codelineno-1-2"></a>
+<a id="__codelineno-1-3" name="__codelineno-1-3"></a>68656C6C6F2C776F726C64
+</code></pre></div></td></tr></table></div>
+<h4 id="base32">base32<a class="headerlink" href="#base32" title="Permanent link">&para;</a></h4>
+<ul>
+<li>base32的编码表是由（A-Z、2-7）32个可见字符构成，“=”符号用作后缀填充。</li>
+</ul>
+<p><strong>特征</strong></p>
+<p>大写字母(A-Z)和数字(2-7)，不满5的倍数，用‘=’补齐。</p>
+<p><strong>样例</strong></p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1">1</a></span>
+<span class="normal"><a href="#__codelineno-2-2">2</a></span>
+<span class="normal"><a href="#__codelineno-2-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a>hello,world
+<a id="__codelineno-2-2" name="__codelineno-2-2"></a>
+<a id="__codelineno-2-3" name="__codelineno-2-3"></a>NBSWY3DPFR3W64TMMQ======
+</code></pre></div></td></tr></table></div>
+<h4 id="base64">base64<a class="headerlink" href="#base64" title="Permanent link">&para;</a></h4>
+<ul>
+<li>base64的编码表是由（A-Z、a-z、0-9、+、/）64个可见字符构成，“=”符号用作后缀填充。</li>
+</ul>
+<p><strong>特征</strong></p>
+<p>大小写字母（A-Z，a-z）和数字（0-9）以及特殊字符‘+’，‘/’，不满3的倍数，用‘=’补齐。</p>
+<p><strong>样例</strong></p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1">1</a></span>
+<span class="normal"><a href="#__codelineno-3-2">2</a></span>
+<span class="normal"><a href="#__codelineno-3-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1"></a>hello,world
+<a id="__codelineno-3-2" name="__codelineno-3-2"></a>
+<a id="__codelineno-3-3" name="__codelineno-3-3"></a>aGVsbG8sd29ybGQ=
+</code></pre></div></td></tr></table></div>
+<h4 id="base58">base58<a class="headerlink" href="#base58" title="Permanent link">&para;</a></h4>
+<ul>
+<li>base58的编码表相比base64少了数字0，大写字母I，O，小写字母l(这个是L），以及符号‘+’和‘/’</li>
+</ul>
+<p><strong>特征</strong></p>
+<p>相比Base64，Base58不使用数字"0"，字母大写"O"，字母大写"I"，和字母小写"l"，以及"+"和"/"符号，最主要的是后面不会出现'='。</p>
+<p><strong>样例</strong></p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-4-1">1</a></span>
+<span class="normal"><a href="#__codelineno-4-2">2</a></span>
+<span class="normal"><a href="#__codelineno-4-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1"></a>hello,world
+<a id="__codelineno-4-2" name="__codelineno-4-2"></a>
+<a id="__codelineno-4-3" name="__codelineno-4-3"></a>StV1DL6Jv3wuEJw
+</code></pre></div></td></tr></table></div>
+<h4 id="base100">base100<a class="headerlink" href="#base100" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Base100编码/解码工具（又名Emoji表情符号编码/解码），可将文本内容编码为Emoji表情符号；同时也可以将编码后的Emoji表情符号内容解码为文本。</li>
+</ul>
+<p><strong>特征</strong></p>
+<p>一堆Emoji表情</p>
+<p><strong>样例</strong></p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-5-1">1</a></span>
+<span class="normal"><a href="#__codelineno-5-2">2</a></span>
+<span class="normal"><a href="#__codelineno-5-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1"></a>hello,world
+<a id="__codelineno-5-2" name="__codelineno-5-2"></a>
+<a id="__codelineno-5-3" name="__codelineno-5-3"></a>👟👜👣👣👦🐣👮👦👩👣👛
+</code></pre></div></td></tr></table></div>
+<p>题目：</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-6-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1"></a>4d4e4d4534354b5a474e4a47325a4c324b56354532563256504a4d585551544d4a524c554d32535a4b524958495453484c4a574532364a524e42485549524a554a524c564b3653324b354b5855574b554d3432453436535247424845514d4235
+</code></pre></div></td></tr></table></div>
+<h3 id="4url">4、url编码<a class="headerlink" href="#4url" title="Permanent link">&para;</a></h3>
+<p>url编码又叫百分号编码，是统一资源定位(URL)编码方式</p>
+<p>URL地址（常说网址）规定了常用地数字，字母可以直接使用，另外一批作为特殊用户字符也可以直接用（/,:@等），剩下的其它所有字符必须通过在该字节ascii码的的16进制字符前面加%编码处理</p>
+<p>js：有encodeURI、encodeURIComponent</p>
+<p>PHP有 urlencode、urldecode等</p>
+<p>url编码和双重编码是绕过时常用手段。</p>
+<p><strong>特征</strong></p>
+<p>编码前面都有%</p>
+<p><strong>样例</strong></p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-7-1">1</a></span>
+<span class="normal"><a href="#__codelineno-7-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1"></a>%0a 回车
+<a id="__codelineno-7-2" name="__codelineno-7-2"></a>%20 空格
+</code></pre></div></td></tr></table></div>
+<h3 id="5unicode">5、Unicode编码<a class="headerlink" href="#5unicode" title="Permanent link">&para;</a></h3>
+<p>Unicode（统一码、万国码、单一码）是一种在计算机上使用的字符编码。</p>
+<p>它用两个字节来编码一个字符,字符编码一般用十六进制来表示。</p>
+<p><strong>样例</strong></p>
+<p>Unicode有以下四种编码方式：</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-8-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-8-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-8-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-8-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-8-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-8-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-8-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-8-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-8-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-8-10">10</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1"></a>明文：hello，world.
+<a id="__codelineno-8-2" name="__codelineno-8-2"></a>
+<a id="__codelineno-8-3" name="__codelineno-8-3"></a>密文：
+<a id="__codelineno-8-4" name="__codelineno-8-4"></a>&amp;#x [hex]：&amp;#x0068;&amp;#x0065;&amp;#x006C;&amp;#x006C;&amp;#x006F;&amp;#xFF0C;&amp;#x0077;&amp;#x006F;&amp;#x0072;&amp;#x006C;&amp;#x0064;&amp;#x002E;
+<a id="__codelineno-8-5" name="__codelineno-8-5"></a>
+<a id="__codelineno-8-6" name="__codelineno-8-6"></a>&amp;# ：&amp;#00104;&amp;#00101;&amp;#00108;&amp;#00108;&amp;#00111;&amp;#65292;&amp;#00119;&amp;#00111;&amp;#00114;&amp;#00108;&amp;#00100;&amp;#00046;
+<a id="__codelineno-8-7" name="__codelineno-8-7"></a>
+<a id="__codelineno-8-8" name="__codelineno-8-8"></a>\u [hex]：\U0068\U0065\U006C\U006C\U006F\U002C\U0077\U006F\U0072\U006C\U0064\U002E
+<a id="__codelineno-8-9" name="__codelineno-8-9"></a>
+<a id="__codelineno-8-10" name="__codelineno-8-10"></a>\u+ [hex]：\U+0068\U+0065\U+006C\U+006C\U+006F\U+FF0C\U+0077\U+006F\U+0072\U+006C\U+0064\U+002E
+</code></pre></div></td></tr></table></div>
+<h3 id="6html">6、HTML实体编码<a class="headerlink" href="#6html" title="Permanent link">&para;</a></h3>
+<p>HTML 中的预留字符必须被替换为字符实体</p>
+<p>一些在键盘上找不到的字符也可以使用字符实体来替换</p>
+<p>在使用浏览器访问网页时会将这个编号解析还原为字符以供阅读。</p>
+<p><strong>特征</strong></p>
+<p>以<code>&amp;#</code>开头</p>
+<p><strong>样例</strong></p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-9-1">1</a></span>
+<span class="normal"><a href="#__codelineno-9-2">2</a></span>
+<span class="normal"><a href="#__codelineno-9-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1"></a>明文：hello，world.
+<a id="__codelineno-9-2" name="__codelineno-9-2"></a>十进制：&amp;#104;&amp;#101;&amp;#108;&amp;#108;&amp;#111;&amp;#65292;&amp;#119;&amp;#111;&amp;#114;&amp;#108;&amp;#100;&amp;#46;
+<a id="__codelineno-9-3" name="__codelineno-9-3"></a>十六进制：&amp;#x68;&amp;#x65;&amp;#x6C;&amp;#x6C;&amp;#x6F;&amp;#xFF0C;&amp;#x77;&amp;#x6F;&amp;#x72;&amp;#x6C;&amp;#x64;&amp;#x2E;
+</code></pre></div></td></tr></table></div>
+<h3 id="7">7、摩尔斯电码（摩斯密码）<a class="headerlink" href="#7" title="Permanent link">&para;</a></h3>
+<p>大名鼎鼎的morse电码</p>
+<ul>
+<li>
+<p>早期的数字化通信形式</p>
+</li>
+<li>
+<p>不同于现代只使用0和1两种状态的二进制代码</p>
+</li>
+<li>
+<p>代码包括五种：</p>
+</li>
+</ul>
+<p>点（.）</p>
+<p>划（-）</p>
+<p>每个字符间短的停顿（在点和划之间的停顿）</p>
+<p>每个词之间中等的停顿</p>
+<p>句子之间长的停顿</p>
+<p><strong>特征</strong></p>
+<p>由点(.)和划(-)组成</p>
+<p><strong>样例</strong></p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-10-1">1</a></span>
+<span class="normal"><a href="#__codelineno-10-2">2</a></span>
+<span class="normal"><a href="#__codelineno-10-3">3</a></span>
+<span class="normal"><a href="#__codelineno-10-4">4</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1"></a>hello,world
+<a id="__codelineno-10-2" name="__codelineno-10-2"></a>
+<a id="__codelineno-10-3" name="__codelineno-10-3"></a>.... . .-.. .-.. --- --..-- .-- --- .-. .-.. -..
+<a id="__codelineno-10-4" name="__codelineno-10-4"></a>...././.-../.-../---/--..--/.--/---/.-./.-../-..
+</code></pre></div></td></tr></table></div>
+<p>题目：</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-11-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1"></a>qsnctf{.----/-----/.-/----./...--/./-----/-.../-....-/....-/...--/...../...--/-....-/....-/---../....-/.-/-....-/----./..-./..---/--.../-....-/-.-./..-./-..../-..../-.-./--.../.-/---../-.../..---/...--/.....}
+</code></pre></div></td></tr></table></div>
+<h3 id="8jsfuck">8、jsfuck编码<a class="headerlink" href="#8jsfuck" title="Permanent link">&para;</a></h3>
+<p>原理：<a href="https://www.cnblogs.com/mq0036/p/13931405.html">只用 6 个字符，就可以写出任意 JavaScript 代码！---- JSFuck原理解析</a></p>
+<p>JSFuck是一种深奥的 JavaScript 编程风格。以这种风格写成的代码中仅使用 [、]、(、)、! 和 + 六种字符。此编程风格的名字派生自仅使用较少符号写代码的Brainfuck语言</p>
+<p><strong>特征</strong></p>
+<p>只有<code>( ) + [ ] !</code> 而且很长</p>
+<p><strong>样例</strong></p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-12-1">1</a></span>
+<span class="normal"><a href="#__codelineno-12-2">2</a></span>
+<span class="normal"><a href="#__codelineno-12-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1"></a>hello,world
+<a id="__codelineno-12-2" name="__codelineno-12-2"></a>
+<a id="__codelineno-12-3" name="__codelineno-12-3"></a>(+(+!+[]+[+[]]+[+!+[]]))[(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+(![]+[])[!+[]+!+[]]+(![]+[])[+!+[]]+(!![]+[])[+[]]])[+!+[]+[+[]]]+([]+[])[([][(![]+[])[+[]]+(![]+[])[!+[]+!+[]]+(![]+[])[+!+[]]+(!![]+[])[+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+(![]+[])[!+[]+!+[]]+(![]+[])[+!+[]]+(!![]+[])[+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+(![]+[])[!+[]+!+[]]+(![]+[])[+!+[]]+(!![]+[])[+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+(![]+[])[!+[]+!+[]]+(![]+[])[+!+[]]+(!![]+[])[+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]][([][[]]+[])[+!+[]]+(![]+[])[+!+[]]+((+[])[([][(![]+[])[+[]]+(![]+[])[!+[]+!+[]]+(![]+[])[+!+[]]+(!![]+[])[+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+(![]+[])[!+[]+!+[]]+(![]+[])[+!+[]]+(!![]+[])[+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+(![]+[])[!+[]+!+[]]+(![]+[])[+!+[]]+(!![]+[])[+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+(![]+[])[!+[]+!+[]]+(![]+[])[+!+[]]+(!![]+[])[+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]]+[])[+!+[]+[+!+[]]]+(!![]+[])[!+[]+!+[]+!+[]]]](!+[]+!+[]+[+!+[]])[+!+[]]+(!![]+[])[!+[]+!+[]+!+[]]+(![]+[])[!+[]+!+[]]+(![]+[])[!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+(![]+[])[!+[]+!+[]]+(![]+[])[+!+[]]+(!![]+[])[+[]]])[+!+[]+[+[]]]+[[]][([][(![]+[])[+[]]+(![]+[])[!+[]+!+[]]+(![]+[])[+!+[]]+(!![]+[])[+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+(![]+[])[!+[]+!+[]]+(![]+[])[+!+[]]+(!![]+[])[+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+([][(![]+[])[+[]]+(![]+[])[!+[]+!+[]]+(![]+[])[+!+[]]+(!![]+[])[+[]]]+[])[!+[]+!+[]+!+[]]+(![]+[])[+!+[]]+(!![]+[])[+[]]]([[]])+[]+(+(!+[]+!+[]+!+[]+[!+[]+!+[]]))[(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+(![]+[])[!+[]+!+[]]+(![]+[])[+!+[]]+(!![]+[])[+[]]])[+!+[]+[+[]]]+([]+[])[([][(![]+[])[+[]]+(![]+[])[!+[]+!+[]]+(![]+[])[+!+[]]+(!![]+[])[+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+(![]+[])[!+[]+!+[]]+(![]+[])[+!+[]]+(!![]+[])[+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+(![]+[])[!+[]+!+[]]+(![]+[])[+!+[]]+(!![]+[])[+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+(![]+[])[!+[]+!+[]]+(![]+[])[+!+[]]+(!![]+[])[+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]][([][[]]+[])[+!+[]]+(![]+[])[+!+[]]+((+[])[([][(![]+[])[+[]]+(![]+[])[!+[]+!+[]]+(![]+[])[+!+[]]+(!![]+[])[+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[][(![]+[])[+[]]+(![]+[])[!+[]+!+[]]+(![]+[])[+!+[]]+(!![]+[])[+[]]])[+!+[]+[+[]]]+([][[]]+[])[+!+[]]+(![]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[])[+!+[]]+([][[]]+[])[+[]]+([][(![]+[])[+[]]+(![]+[])[!+[]+!+[]]+(![]+[])[+!+[]]+(!![]+[])[+[]]]+[])[!+[]+!+[]+!+[]]+(!![]+[])[+[]]+(!![]+[][(![]+[])[+[]]+(![]+[])[!+[]+!+[]]+(![]+[])[+!+[]]+(!![]+[])[+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]]+[])[+!+[]+[+!+[]]]+(!![]+[])[!+[]+!+[]+!+[]]]](!+[]+!+[]+!+[]+[!+[]+!+[]+!+[]])+(!![]+[][(![]+[])[+[]]+(![]+[])[!+[]+!+[]]+(![]+[])[+!+[]]+(!![]+[])[+[]]])[+!+[]+[+[]]]+(!![]+[])[+!+[]]+(![]+[])[!+[]+!+[]]+([][[]]+[])[!+[]+!+[]]
+</code></pre></div></td></tr></table></div>
+<p>题目：</p>
+<p>1-8</p>
+<h3 id="9brainfuck">9、brainfuck编码<a class="headerlink" href="#9brainfuck" title="Permanent link">&para;</a></h3>
+<p>Brainfuck是一种极小化的计算机语言，按照”Turingcomplete（完整图灵机）”思想设计的语言，它的主要设计思路是用最小的概念实现一种“简单”的语言。</p>
+<p><strong>特征</strong></p>
+<p>BrainFuck语言只有八种符号，所有的操作都由这八种符号<strong>(&gt;&lt;±.,[])</strong>的组合来完成。</p>
+<p><strong>举例</strong></p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-13-1">1</a></span>
+<span class="normal"><a href="#__codelineno-13-2">2</a></span>
+<span class="normal"><a href="#__codelineno-13-3">3</a></span>
+<span class="normal"><a href="#__codelineno-13-4">4</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1"></a>明文：hello,world.
+<a id="__codelineno-13-2" name="__codelineno-13-2"></a>密文：+++++ +++++ [-&gt;++ +++++ +++&lt;] &gt;++++ .---. +++++ ++..+ ++.&lt;+ +++++ ++[-&gt;
+<a id="__codelineno-13-3" name="__codelineno-13-3"></a>----- ---&lt;] &gt;---. &lt;++++ ++++[ -&gt;+++ +++++ &lt;]&gt;++ +++++ ++++. ----- ---.+
+<a id="__codelineno-13-4" name="__codelineno-13-4"></a>++.-- ----. ----- ---.&lt; +++++ ++[-&gt; ----- --&lt;]&gt; ----- .&lt;
+</code></pre></div></td></tr></table></div>
+<p>题目：</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-14-1">1</a></span>
+<span class="normal"><a href="#__codelineno-14-2">2</a></span>
+<span class="normal"><a href="#__codelineno-14-3">3</a></span>
+<span class="normal"><a href="#__codelineno-14-4">4</a></span>
+<span class="normal"><a href="#__codelineno-14-5">5</a></span>
+<span class="normal"><a href="#__codelineno-14-6">6</a></span>
+<span class="normal"><a href="#__codelineno-14-7">7</a></span>
+<span class="normal"><a href="#__codelineno-14-8">8</a></span>
+<span class="normal"><a href="#__codelineno-14-9">9</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1"></a>+++++ +++++ [-&gt;++ +++++ +++&lt;] &gt;++.+ +++++ .&lt;+++ [-&gt;-- -&lt;]&gt;- -.+++ +++.&lt;
+<a id="__codelineno-14-2" name="__codelineno-14-2"></a>++++[ -&gt;+++ +&lt;]&gt;+ +++.&lt; +++++ +++[- &gt;---- ----&lt; ]&gt;--. .--.- -.-.- --.-.
+<a id="__codelineno-14-3" name="__codelineno-14-3"></a>+++++ +..-- -..&lt;+ +++++ +[-&gt;+ +++++ +&lt;]&gt;+ +.&lt;++ ++++[ -&gt;--- ---&lt;] &gt;----
+<a id="__codelineno-14-4" name="__codelineno-14-4"></a>----- .---- -.&lt;++ ++++[ -&gt;+++ +++&lt;] &gt;++++ +++++ +++.&lt; +++++ ++[-&gt; -----
+<a id="__codelineno-14-5" name="__codelineno-14-5"></a>--&lt;]&gt; .++.- ----. &lt;++++ +++[- &gt;++++ +++&lt;] &gt;+++. --.&lt;+ +++++ [-&gt;-- ----&lt;
+<a id="__codelineno-14-6" name="__codelineno-14-6"></a>]&gt;--- ----- ---.+ .&lt;+++ +++[- &gt;++++ ++&lt;]&gt; +++++ +++++ ++.&lt;+ +++++ [-&gt;--
+<a id="__codelineno-14-7" name="__codelineno-14-7"></a>----&lt; ]&gt;--- ----- ---.- .++++ .&lt;+++ +++[- &gt;++++ ++&lt;]&gt; +++++ +++.&lt; +++++
+<a id="__codelineno-14-8" name="__codelineno-14-8"></a>+[-&gt;- ----- &lt;]&gt;-- ----- ---.- ----- .++++ +++++ .---- ----. &lt;++++ ++[-&gt;
+<a id="__codelineno-14-9" name="__codelineno-14-9"></a>+++++ +&lt;]&gt;+ +++++ +++++ +.&lt;++ +++[- &gt;++++ +&lt;]&gt;+ ++.&lt;
+</code></pre></div></td></tr></table></div>
+<h3 id="10ook">10、Ook编码<a class="headerlink" href="#10ook" title="Permanent link">&para;</a></h3>
+<p>Ook编码实际上就是在brainfuck的基础上进行了转换，类似于摩斯密码</p>
+<p><strong>特征</strong></p>
+<p>Ook开头带上符号，但不完全是，重点在Ook后边的符号。</p>
+<p><strong>样例</strong></p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-15-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-15-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-15-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-15-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-15-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-15-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-15-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-15-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-15-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-15-10">10</a></span>
+<span class="normal"><a href="#__codelineno-15-11">11</a></span>
+<span class="normal"><a href="#__codelineno-15-12">12</a></span>
+<span class="normal"><a href="#__codelineno-15-13">13</a></span>
+<span class="normal"><a href="#__codelineno-15-14">14</a></span>
+<span class="normal"><a href="#__codelineno-15-15">15</a></span>
+<span class="normal"><a href="#__codelineno-15-16">16</a></span>
+<span class="normal"><a href="#__codelineno-15-17">17</a></span>
+<span class="normal"><a href="#__codelineno-15-18">18</a></span>
+<span class="normal"><a href="#__codelineno-15-19">19</a></span>
+<span class="normal"><a href="#__codelineno-15-20">20</a></span>
+<span class="normal"><a href="#__codelineno-15-21">21</a></span>
+<span class="normal"><a href="#__codelineno-15-22">22</a></span>
+<span class="normal"><a href="#__codelineno-15-23">23</a></span>
+<span class="normal"><a href="#__codelineno-15-24">24</a></span>
+<span class="normal"><a href="#__codelineno-15-25">25</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1"></a>hello,world.
+<a id="__codelineno-15-2" name="__codelineno-15-2"></a>
+<a id="__codelineno-15-3" name="__codelineno-15-3"></a>Ook. Ook. Ook. Ook. Ook. Ook. Ook. Ook. Ook. Ook. Ook. Ook. Ook. Ook. Ook.
+<a id="__codelineno-15-4" name="__codelineno-15-4"></a>Ook. Ook. Ook. Ook. Ook. Ook! Ook? Ook! Ook! Ook. Ook? Ook. Ook. Ook. Ook.
+<a id="__codelineno-15-5" name="__codelineno-15-5"></a>Ook. Ook. Ook. Ook. Ook. Ook. Ook. Ook. Ook. Ook. Ook. Ook. Ook. Ook. Ook.
+<a id="__codelineno-15-6" name="__codelineno-15-6"></a>Ook. Ook? Ook. Ook? Ook! Ook. Ook? Ook. Ook. Ook. Ook. Ook. Ook. Ook. Ook.
+<a id="__codelineno-15-7" name="__codelineno-15-7"></a>Ook! Ook. Ook! Ook! Ook! Ook! Ook! Ook! Ook! Ook. Ook. Ook. Ook. Ook. Ook.
+<a id="__codelineno-15-8" name="__codelineno-15-8"></a>Ook. Ook. Ook. Ook. Ook. Ook. Ook. Ook. Ook. Ook! Ook. Ook! Ook. Ook. Ook.
+<a id="__codelineno-15-9" name="__codelineno-15-9"></a>Ook. Ook. Ook. Ook. Ook! Ook. Ook? Ook. Ook. Ook. Ook. Ook. Ook. Ook. Ook.
+<a id="__codelineno-15-10" name="__codelineno-15-10"></a>Ook. Ook. Ook. Ook. Ook. Ook. Ook. Ook. Ook. Ook! Ook? Ook! Ook! Ook. Ook?
+<a id="__codelineno-15-11" name="__codelineno-15-11"></a>Ook! Ook! Ook! Ook! Ook! Ook! Ook! Ook! Ook! Ook! Ook! Ook! Ook! Ook! Ook!
+<a id="__codelineno-15-12" name="__codelineno-15-12"></a>Ook! Ook? Ook. Ook? Ook! Ook. Ook? Ook! Ook! Ook! Ook! Ook! Ook! Ook! Ook.
+<a id="__codelineno-15-13" name="__codelineno-15-13"></a>Ook? Ook. Ook. Ook. Ook. Ook. Ook. Ook. Ook. Ook. Ook. Ook. Ook. Ook. Ook.
+<a id="__codelineno-15-14" name="__codelineno-15-14"></a>Ook. Ook. Ook. Ook! Ook? Ook! Ook! Ook. Ook? Ook. Ook. Ook. Ook. Ook. Ook.
+<a id="__codelineno-15-15" name="__codelineno-15-15"></a>Ook. Ook. Ook. Ook. Ook. Ook. Ook. Ook. Ook. Ook. Ook? Ook. Ook? Ook! Ook.
+<a id="__codelineno-15-16" name="__codelineno-15-16"></a>Ook? Ook. Ook. Ook. Ook. Ook. Ook. Ook. Ook. Ook. Ook. Ook. Ook. Ook. Ook.
+<a id="__codelineno-15-17" name="__codelineno-15-17"></a>Ook. Ook. Ook. Ook. Ook. Ook. Ook. Ook. Ook! Ook. Ook! Ook! Ook! Ook! Ook!
+<a id="__codelineno-15-18" name="__codelineno-15-18"></a>Ook! Ook! Ook! Ook! Ook! Ook! Ook! Ook! Ook! Ook! Ook! Ook! Ook. Ook. Ook.
+<a id="__codelineno-15-19" name="__codelineno-15-19"></a>Ook. Ook. Ook. Ook. Ook! Ook. Ook! Ook! Ook! Ook! Ook! Ook! Ook! Ook! Ook!
+<a id="__codelineno-15-20" name="__codelineno-15-20"></a>Ook! Ook! Ook! Ook! Ook. Ook! Ook! Ook! Ook! Ook! Ook! Ook! Ook! Ook! Ook!
+<a id="__codelineno-15-21" name="__codelineno-15-21"></a>Ook! Ook! Ook! Ook! Ook! Ook! Ook! Ook. Ook? Ook. Ook. Ook. Ook. Ook. Ook.
+<a id="__codelineno-15-22" name="__codelineno-15-22"></a>Ook. Ook. Ook. Ook. Ook. Ook. Ook. Ook. Ook. Ook! Ook? Ook! Ook! Ook. Ook?
+<a id="__codelineno-15-23" name="__codelineno-15-23"></a>Ook! Ook! Ook! Ook! Ook! Ook! Ook! Ook! Ook! Ook! Ook! Ook! Ook! Ook! Ook?
+<a id="__codelineno-15-24" name="__codelineno-15-24"></a>Ook. Ook? Ook! Ook. Ook? Ook! Ook! Ook! Ook! Ook! Ook! Ook! Ook! Ook! Ook!
+<a id="__codelineno-15-25" name="__codelineno-15-25"></a>Ook! Ook. Ook? Ook. 
+</code></pre></div></td></tr></table></div>
+<p>题目：</p>
+<p>1-10</p>
+<p>还有很多编码，需要大家自行了解，比如：</p>
+<p>社会主义编码，特征是12字真言</p>
+<p>与佛论禅，特征是与关佛经的汉字</p>
+<p>尊嘟假嘟，特征是<code>O.o</code>，在线网站：<a href="https://zdjd.vercel.app/">尊嘟假嘟翻译器O.o</a></p>
+<p>。。。</p>
+<h2 id="_2">二、古典密码<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<h3 id="1hash">1、hash<a class="headerlink" href="#1hash" title="Permanent link">&para;</a></h3>
+<p>常见的由md5，sha1，sha256等</p>
+<p><strong>特征</strong></p>
+<p>不可逆，有固定的长度</p>
+<p><strong>样例</strong></p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-16-1">1</a></span>
+<span class="normal"><a href="#__codelineno-16-2">2</a></span>
+<span class="normal"><a href="#__codelineno-16-3">3</a></span>
+<span class="normal"><a href="#__codelineno-16-4">4</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1"></a>hello,world.
+<a id="__codelineno-16-2" name="__codelineno-16-2"></a>
+<a id="__codelineno-16-3" name="__codelineno-16-3"></a>md5: 3cb95cfbe1035bce8c448fcaf80fe7d9
+<a id="__codelineno-16-4" name="__codelineno-16-4"></a>sha1: 6ff8595f00a0bc53e22c67c8a47f91d1aacd10c1
+</code></pre></div></td></tr></table></div>
+<p>这类密码想要得到明文只能暴力破解，通过穷举所有组合试出值相同的字符串。</p>
+<p>注意：MD5本身存在漏洞</p>
+<p>题目：</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-17-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1"></a>a8db1d82db78ed452ba0882fb9554fc
+</code></pre></div></td></tr></table></div>
+<p><a href="https://www.cmd5.com/">cmd5</a></p>
+<p><a href="https://md5.cn/">md5.cn</a></p>
+<h3 id="2">2、凯撒密码<a class="headerlink" href="#2" title="Permanent link">&para;</a></h3>
+<p>凯撒密码主要通过偏移来实现加密，偏移量是几，密文就是明文在字母表上向后移几位所对应的字母，由于凯撒密码所操作的范围只有字母表上的26个英文字母，所以当偏移量大于26时，密文就会在字母表上绕一圈绕回来。</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-18-1">1</a></span>
+<span class="normal"><a href="#__codelineno-18-2">2</a></span>
+<span class="normal"><a href="#__codelineno-18-3">3</a></span>
+<span class="normal"><a href="#__codelineno-18-4">4</a></span>
+<span class="normal"><a href="#__codelineno-18-5">5</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1"></a>key是密钥
+<a id="__codelineno-18-2" name="__codelineno-18-2"></a>
+<a id="__codelineno-18-3" name="__codelineno-18-3"></a>加密公式：f(a) = (a+key) % 26
+<a id="__codelineno-18-4" name="__codelineno-18-4"></a>
+<a id="__codelineno-18-5" name="__codelineno-18-5"></a>解密公式：f(a) = (a+(a-key)) % 26
+</code></pre></div></td></tr></table></div>
+<p><strong>样例</strong></p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-19-1">1</a></span>
+<span class="normal"><a href="#__codelineno-19-2">2</a></span>
+<span class="normal"><a href="#__codelineno-19-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1"></a>hello,world.    key:3
+<a id="__codelineno-19-2" name="__codelineno-19-2"></a>
+<a id="__codelineno-19-3" name="__codelineno-19-3"></a>khoor,zruog.
+</code></pre></div></td></tr></table></div>
+<p>题目：</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-20-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1"></a>kqfl{hf3x4w&#39;x_h1umjw_n5_a4wd_3fed}
+</code></pre></div></td></tr></table></div>
+<h3 id="3">3、栅栏密码<a class="headerlink" href="#3" title="Permanent link">&para;</a></h3>
+<p>栅栏密码是一种简单的移动字符位置的加密方法，规则简单，容易破解。栅栏密码的加密方式：把文本按照一定的字数分成多个组，取每组第一个字连起来得到密文1，再取每组第二个字连起来得到密文2……最后把密文1、密文2……连成整段密文。</p>
+<p>例：</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-21-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-21-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-21-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-21-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-21-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-21-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-21-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-21-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-21-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-21-10">10</a></span>
+<span class="normal"><a href="#__codelineno-21-11">11</a></span>
+<span class="normal"><a href="#__codelineno-21-12">12</a></span>
+<span class="normal"><a href="#__codelineno-21-13">13</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1"></a>明文：abcdefgh
+<a id="__codelineno-21-2" name="__codelineno-21-2"></a>每组字数：4
+<a id="__codelineno-21-3" name="__codelineno-21-3"></a>
+<a id="__codelineno-21-4" name="__codelineno-21-4"></a>把明文分组：
+<a id="__codelineno-21-5" name="__codelineno-21-5"></a>abcd
+<a id="__codelineno-21-6" name="__codelineno-21-6"></a>efgh
+<a id="__codelineno-21-7" name="__codelineno-21-7"></a>
+<a id="__codelineno-21-8" name="__codelineno-21-8"></a>取每组第一个字符：ae
+<a id="__codelineno-21-9" name="__codelineno-21-9"></a>取每组第二个字符：bf
+<a id="__codelineno-21-10" name="__codelineno-21-10"></a>取每组第三个字符：cg
+<a id="__codelineno-21-11" name="__codelineno-21-11"></a>取每组第四个字符：dh
+<a id="__codelineno-21-12" name="__codelineno-21-12"></a>
+<a id="__codelineno-21-13" name="__codelineno-21-13"></a>所以密文为：aebfcgdh
+</code></pre></div></td></tr></table></div>
+<p>解密过程反推即可</p>
+<p>题目：</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-22-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1"></a>fa{ereigtepanet6680}lgrodrn_h_litx#8fc3
+</code></pre></div></td></tr></table></div>
+<p>进阶版：W形栅栏密码</p>
+<h3 id="4rot">4、ROT编码<a class="headerlink" href="#4rot" title="Permanent link">&para;</a></h3>
+<p>ROT编码是一种简单的码元位置顺序替换暗码。此类编码具有可逆性，可以自我解密。</p>
+<p>ROT5：只对数字进行编码，用当前数字往后数的第5个数字替换当前数字。
+例：1——&gt;6。</p>
+<p>ROT13：只对字母进行编码，用当前字母往后数的第13个字母替换当前字母。（凯撒密码，密钥是13）
+例：A——&gt;N</p>
+<p>ROT18：这是一个异类，本来没有，它是将ROT5和ROT13组合在一起。
+例：1a——&gt;6n</p>
+<p>ROT47：对数字、字母、常用符号进行编码，按照它们的ASCII值进行位置替换，用当前字符ASCII值往前或后数的第47位对应字符替换当前字符。
+例：0——&gt;_ ，z——K</p>
+<h3 id="5">5、维吉尼亚密码<a class="headerlink" href="#5" title="Permanent link">&para;</a></h3>
+<p>维吉尼亚密码（Vigenère cipher）是一种基于多个凯撒密码组合而成的加密算法，由布鲁托·德维吉尼亚（Blaise de Vigenère）在16世纪提出。相比于凯撒密码，维吉尼亚密码更加复杂和安全。</p>
+<ul>
+<li>
+<p>密钥：维吉尼亚密码使用一个密钥来加密和解密文本。密钥是一个字符串，通常由一个或多个字母组成。密钥的长度可以与明文的长度相同，也可以比明文长。（a对应0，b对应1，z对应25，以此类推）</p>
+</li>
+<li>
+<p>重复密钥：维吉尼亚密码中的关键概念是重复密钥。如果密钥比明文短，则会将密钥重复使用直到与明文长度相匹配。例如，如果明文是"HELLO"，而密钥是"KEY"，则密钥将被重复使用为"KEYKE"。</p>
+</li>
+<li>
+<p>字母表表格：维吉尼亚密码使用一个字母表表格（也称为Vigenère Square）来进行加密和解密。字母表表格是一个26x26的矩阵，包含了所有字母在凯撒密码中的偏移结果。</p>
+</li>
+<li>
+<p>加密过程：对于加密，将明文中的每个字母与对应位置的密钥字母相匹配，找到字母表表格中对应位置的字母，即为密文。例如，如果明文是"HELLO"，密钥是"KEY"，则将"H"与"K"匹配，得到密文中的第一个字母，以此类推。</p>
+</li>
+<li>
+<p>解密过程：对于解密，将密文中的每个字母与对应位置的密钥字母相匹配，找到字母表表格中对应行的字母，即为明文。例如，如果密文是"RIJVS"，密钥是"KEY"，则将"R"与"K"匹配，得到明文中的第一个字母，以此类推。</p>
+</li>
+</ul>
+<p><strong>样例</strong></p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-23-1">1</a></span>
+<span class="normal"><a href="#__codelineno-23-2">2</a></span>
+<span class="normal"><a href="#__codelineno-23-3">3</a></span>
+<span class="normal"><a href="#__codelineno-23-4">4</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1"></a>hello,world.    key:ok
+<a id="__codelineno-23-2" name="__codelineno-23-2"></a>okokokokoko
+<a id="__codelineno-23-3" name="__codelineno-23-3"></a>
+<a id="__codelineno-23-4" name="__codelineno-23-4"></a>vozvc,gcbzn.
+</code></pre></div></td></tr></table></div>
+<p>题目：</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-24-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1"></a>pqcq{qc_m1kt4_njn_5slp0b_lkyacx_gcdy1ud4_g3nv5x0}
+</code></pre></div></td></tr></table></div>
+<p><a href="https://www.guballa.de/vigenere-solver">Vigenère Solver</a></p>
+<h3 id="6rabbit">6、Rabbit加密<a class="headerlink" href="#6rabbit" title="Permanent link">&para;</a></h3>
+<p>Rabbit加密算法是一个可逆加密算法，是一个高性能的流密码加密方式，Rabbit算法属于对称加密算法。</p>
+<p>在线网站：<a href="https://www.baidu.com/link?url=2Na-KiVsicPGk_R0OzYnX9tqVo5uCNZMVspPkIOLDPzhRjJ1KFqHrjnYd-EXaUro&amp;wd=&amp;eqid=9c3ed5a7001b34c50000000665689146">Rabbit加密-<em>Rabbit解密</em>-<em>在线Rabbit</em>加密解密工具</a></p>
+<p><strong>特征</strong></p>
+<p>以<code>U2FsdGvk</code>开头</p>
+<p>有base64的所有特征</p>
+<p><strong>样例</strong></p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-25-1">1</a></span>
+<span class="normal"><a href="#__codelineno-25-2">2</a></span>
+<span class="normal"><a href="#__codelineno-25-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1"></a>hello,world.    key:123456
+<a id="__codelineno-25-2" name="__codelineno-25-2"></a>
+<a id="__codelineno-25-3" name="__codelineno-25-3"></a>U2FsdGVkX1+MqBxN2PP9vPW0v2Q1s+rZcqMdtA==
+</code></pre></div></td></tr></table></div>
+<p>题目：</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-26-1">1</a></span>
+<span class="normal"><a href="#__codelineno-26-2">2</a></span>
+<span class="normal"><a href="#__codelineno-26-3">3</a></span>
+<span class="normal"><a href="#__codelineno-26-4">4</a></span>
+<span class="normal"><a href="#__codelineno-26-5">5</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-26-1" name="__codelineno-26-1"></a>密文：
+<a id="__codelineno-26-2" name="__codelineno-26-2"></a>U2FsdGVkX19mGsGlfI3nciNVpWZZRqZO2PYjJ1ZQuRqoiknyHSWeQv8ol0uRZP94
+<a id="__codelineno-26-3" name="__codelineno-26-3"></a>MqeD2xz+
+<a id="__codelineno-26-4" name="__codelineno-26-4"></a>密钥：
+<a id="__codelineno-26-5" name="__codelineno-26-5"></a>加密方式名称
+</code></pre></div></td></tr></table></div>
+<h3 id="7des">7、DES算法<a class="headerlink" href="#7des" title="Permanent link">&para;</a></h3>
+<p>参考链接：<a href="https://ctf-wiki.org/crypto/blockcipher/des/">DES</a></p>
+<p>Data Encryption Standard(DES)，数据加密标准，是典型的块加密，其基本信息如下</p>
+<ul>
+<li>输入 64 位。</li>
+<li>输出 64 位。</li>
+<li>密钥 64 位，使用 64 位密钥中的 56 位，剩余的 8 位要么丢弃，要么作为奇偶校验位。</li>
+<li>Feistel 迭代结构</li>
+<li>明文经过 16 轮迭代得到密文。</li>
+<li>密文经过类似的 16 轮迭代得到明文。</li>
+</ul>
+<p>题目：</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-27-1">1</a></span>
+<span class="normal"><a href="#__codelineno-27-2">2</a></span>
+<span class="normal"><a href="#__codelineno-27-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-27-1" name="__codelineno-27-1"></a>key: ctfctfer
+<a id="__codelineno-27-2" name="__codelineno-27-2"></a>iv: ctfctfer
+<a id="__codelineno-27-3" name="__codelineno-27-3"></a>output: 1603da7cd65377c7f5587407d188ffbd4514a941f9289e7be3000cd223878a0d
+</code></pre></div></td></tr></table></div>
+<h3 id="8aes">8、AES算法<a class="headerlink" href="#8aes" title="Permanent link">&para;</a></h3>
+<p>参考链接：<a href="https://ctf-wiki.org/crypto/blockcipher/aes/#2018-crackmec">AES</a></p>
+<p>Advanced Encryption Standard（AES），高级加密标准，是典型的块加密，被设计来取代 DES，由 Joan Daemen 和 Vincent Rijmen 所设计。其基本信息如下</p>
+<ul>
+<li>输入：128 比特。</li>
+<li>输出：128 比特。</li>
+<li>SPN 网络结构。</li>
+</ul>
+<p>其迭代轮数与密钥长度有关系</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">密钥长度（比特）</th>
+<th style="text-align: center;">迭代轮数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">128</td>
+<td style="text-align: center;">10</td>
+</tr>
+<tr>
+<td style="text-align: center;">192</td>
+<td style="text-align: center;">12</td>
+</tr>
+<tr>
+<td style="text-align: center;">256</td>
+<td style="text-align: center;">14</td>
+</tr>
+</tbody>
+</table>
+<p>AES跟DES非常相像。但是值得注意一点的是，AES取代了DES成为21世纪的加密标准。是因为以其密匙长度和高安全性获得了先天优势。虽然界面上看上去没多大区别，但是破解难度远远大于DES。</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Python</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-28-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-28-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-28-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-28-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-28-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-28-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-28-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-28-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-28-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-28-10">10</a></span>
+<span class="normal"><a href="#__codelineno-28-11">11</a></span>
+<span class="normal"><a href="#__codelineno-28-12">12</a></span>
+<span class="normal"><a href="#__codelineno-28-13">13</a></span>
+<span class="normal"><a href="#__codelineno-28-14">14</a></span>
+<span class="normal"><a href="#__codelineno-28-15">15</a></span>
+<span class="normal"><a href="#__codelineno-28-16">16</a></span>
+<span class="normal"><a href="#__codelineno-28-17">17</a></span>
+<span class="normal"><a href="#__codelineno-28-18">18</a></span>
+<span class="normal"><a href="#__codelineno-28-19">19</a></span>
+<span class="normal"><a href="#__codelineno-28-20">20</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-28-1" name="__codelineno-28-1"></a><span class="kn">from</span> <span class="nn">Crypto.Cipher</span> <span class="kn">import</span> <span class="n">AES</span>
+<a id="__codelineno-28-2" name="__codelineno-28-2"></a><span class="kn">import</span> <span class="nn">os</span>
+<a id="__codelineno-28-3" name="__codelineno-28-3"></a><span class="kn">import</span> <span class="nn">gmpy2</span>
+<a id="__codelineno-28-4" name="__codelineno-28-4"></a><span class="kn">from</span> <span class="nn">flag</span> <span class="kn">import</span> <span class="n">FLAG</span>
+<a id="__codelineno-28-5" name="__codelineno-28-5"></a><span class="kn">from</span> <span class="nn">Crypto.Util.number</span> <span class="kn">import</span> <span class="o">*</span>
+<a id="__codelineno-28-6" name="__codelineno-28-6"></a>
+<a id="__codelineno-28-7" name="__codelineno-28-7"></a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+<a id="__codelineno-28-8" name="__codelineno-28-8"></a>    <span class="n">key</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">urandom</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="mi">16</span>  <span class="c1"># 生成一个随机的密钥，长度为32字节（256位）</span>
+<a id="__codelineno-28-9" name="__codelineno-28-9"></a>    <span class="n">iv</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">urandom</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span>  <span class="c1"># 生成一个随机的初始化向量，长度为16字节（128位）</span>
+<a id="__codelineno-28-10" name="__codelineno-28-10"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">bytes_to_long</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">^</span> <span class="n">bytes_to_long</span><span class="p">(</span><span class="n">iv</span><span class="p">))</span>  <span class="c1"># 将密钥和初始化向量转换为长整数，并执行异或操作，然后打印结果</span>
+<a id="__codelineno-28-11" name="__codelineno-28-11"></a>    <span class="n">aes</span> <span class="o">=</span> <span class="n">AES</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">AES</span><span class="o">.</span><span class="n">MODE_CBC</span><span class="p">,</span> <span class="n">iv</span><span class="p">)</span>  <span class="c1"># 使用密钥、模式（CBC）和初始化向量创建一个新的AES加密对象</span>
+<a id="__codelineno-28-12" name="__codelineno-28-12"></a>    <span class="n">enc_flag</span> <span class="o">=</span> <span class="n">aes</span><span class="o">.</span><span class="n">encrypt</span><span class="p">(</span><span class="n">FLAG</span><span class="p">)</span>  <span class="c1"># 使用AES加密对象对FLAG进行加密，并将加密后的结果存储在enc_flag变量中</span>
+<a id="__codelineno-28-13" name="__codelineno-28-13"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">enc_flag</span><span class="p">)</span>  <span class="c1"># 打印加密后的FLAG</span>
+<a id="__codelineno-28-14" name="__codelineno-28-14"></a>
+<a id="__codelineno-28-15" name="__codelineno-28-15"></a><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<a id="__codelineno-28-16" name="__codelineno-28-16"></a>    <span class="n">main</span><span class="p">()</span>  <span class="c1"># 如果当前模块是主模块，则调用main函数</span>
+<a id="__codelineno-28-17" name="__codelineno-28-17"></a><span class="sd">&quot;&quot;&quot;</span>
+<a id="__codelineno-28-18" name="__codelineno-28-18"></a><span class="sd">106369350061263593452198373990890812979078483995852080721044353515739899408954</span>
+<a id="__codelineno-28-19" name="__codelineno-28-19"></a><span class="sd">b&#39;I\x973\x14\x8c\xb7\x1c{v\xa6\x03\xcf\xecG\x1e\xb7\xa0V\xedj\xef\x167*\xcd&lt;\xf2I\x01{\xd3\xca&#39;</span>
+<a id="__codelineno-28-20" name="__codelineno-28-20"></a><span class="sd">&quot;&quot;&quot;</span>
+</code></pre></div></td></tr></table></div>
+<h2 id="_3">三、现代密码学<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<h3 id="rsa">RSA<a class="headerlink" href="#rsa" title="Permanent link">&para;</a></h3>
+<h4 id="_4">简介<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h4>
+<blockquote>
+<p>1977年，三位数学家Rivest、Shamir 和 Adleman
+设计了一种算法，可以实现非对称加密。这种算法用他们三个人的名字命名，叫做RSA算法。
+从那时直到现在，RSA算法一直是最广为使用的"非对称加密算法"。</p>
+</blockquote>
+<h4 id="_5">数学背景<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h4>
+<p><strong>互质</strong></p>
+<p>从小学开始，我们就了解了什么是质数。互质是针对多个数字而言的，如果两个正整数，除了1以外，没有其他公因子，那么就称这两个数是互质关系（注意，这里并没有说这两个数一定是质数或有一个为质数。比如15跟4就是互质关系）。以下有一些关于质数与互质的性质：</p>
+<ul>
+<li>质数只能被1和它自身整除</li>
+<li>任意两个质数都是互质关系</li>
+<li>如果两个数之中，较大的那个数是质数，则两者构成互质关系</li>
+<li>如果两个数之中，较小的那个数是质数，且较大数不为较小数的整数倍，则两者构成互质关系 1和任意一个自然数是都是互质关系</li>
+<li>p是大于1的整数，则p和p-1构成互质关系 p是大于1的奇数，则p和p-2构成互质关系</li>
+</ul>
+<p><strong>欧拉函数</strong></p>
+<p>简单定义：对于一个整数 n，我们用欧拉函数 <span class="arithmatex">\(φ(n)\)</span> 来表示小于<code>n</code>并与之互质的正整数</p>
+<ul>
+<li>如果 <code>n</code> 是质数，则  <span class="arithmatex">\(φ(n) = n-1\)</span></li>
+<li>如果n可以表示成2个互质的数的乘积，即 <span class="arithmatex">\(n = p * q\)</span> ，那么 <span class="arithmatex">\(φ(n) = φ(p)*φ(q)\)</span>。</li>
+</ul>
+<p><strong>欧拉定理变型</strong></p>
+<p>欧拉定理为：如果m与n互质，则 <span class="arithmatex">\(m^{φ(n)}=kn+1\)</span> ，即模n余1
+等式两边同时取整数 l 次方，并再乘上m，得
+$$
+m<sup>{lφ(n)+1}=m(kn+1)</sup>l = k'n+m
+$$
+如果<code>m &lt; n</code> ，则有
+$$
+m^{lφ(n)+1} mod(n) = m
+$$
+显然这是一个很好地恢复原数（m 看做是传输的信息）的算法，这也为后面RSA的算法提供了思路</p>
+<p><strong>模反元素</strong></p>
+<blockquote>
+<p>定义：如果两个正整数a和n互质，那么一定可以找到整数b，使得 ab-1 被n整除，或者说ab被n除的余数是1。</p>
+</blockquote>
+<p>根据欧拉定理我们知道，<span class="arithmatex">\(m * m^{φ(n)-1}=kn+1\)</span> </p>
+<p>对于互质的两个数e和x，一定存在他的一个模反元素d，满足 <span class="arithmatex">\(e*d=1\ mod(x)\)</span>
+注意，为了书写方便，不同公式出现的符号 <code>k</code> 可以是任何不相等的整数</p>
+<h4 id="rsa_1">RSA原理<a class="headerlink" href="#rsa_1" title="Permanent link">&para;</a></h4>
+<p>RSA是一种算法，并且广泛应用于现代，用于保密通信。</p>
+<blockquote>
+<p>RSA算法涉及三个参数,n,e,d，其中分为私钥和公钥，私钥是n,d，公钥是n,e</p>
+</blockquote>
+<p>非对称公钥加密算法可以由下列几步实现：</p>
+<ul>
+<li>
+<p>信息接收方产生公钥pk与私钥sk，公钥可以给任何人，私钥自己保存；</p>
+</li>
+<li>
+<p>信息发送方将要发送的信息m与公钥pk一起用特定的加密算法加密，即密文c；</p>
+</li>
+<li>信息接收方接收到密文c，与私钥 sk一起用特定解密算法恢复明文。</li>
+</ul>
+<p><img alt="image-20241116121900379" src="image-20241116121900379.png" /></p>
+<p>加密过程：</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-29-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-29-1" name="__codelineno-29-1"></a>c = pow(m,e,n)
+</code></pre></div></td></tr></table></div>
+<p>$$
+c = m^e mod(n)
+$$
+解密过程：</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-30-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-30-1" name="__codelineno-30-1"></a>m = pow(c,d,n)
+</code></pre></div></td></tr></table></div>
+<div class="arithmatex">\[
+m = c^d\ mod(n)
+\]</div>
+<p>求解私钥d：</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-31-1">1</a></span>
+<span class="normal"><a href="#__codelineno-31-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-31-1" name="__codelineno-31-1"></a>phi = (p-1)*(q-1)
+<a id="__codelineno-31-2" name="__codelineno-31-2"></a>d = gmpy2.invert(e, phi)
+</code></pre></div></td></tr></table></div>
+<div class="arithmatex">\[
+d = e^{-1}\ mod(phi)
+\]</div>
+<p>简单模板：</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Python</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-32-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-32-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-32-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-32-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-32-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-32-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-32-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-32-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-32-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-32-10">10</a></span>
+<span class="normal"><a href="#__codelineno-32-11">11</a></span>
+<span class="normal"><a href="#__codelineno-32-12">12</a></span>
+<span class="normal"><a href="#__codelineno-32-13">13</a></span>
+<span class="normal"><a href="#__codelineno-32-14">14</a></span>
+<span class="normal"><a href="#__codelineno-32-15">15</a></span>
+<span class="normal"><a href="#__codelineno-32-16">16</a></span>
+<span class="normal"><a href="#__codelineno-32-17">17</a></span>
+<span class="normal"><a href="#__codelineno-32-18">18</a></span>
+<span class="normal"><a href="#__codelineno-32-19">19</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-32-1" name="__codelineno-32-1"></a><span class="kn">import</span> <span class="nn">gmpy2</span>
+<a id="__codelineno-32-2" name="__codelineno-32-2"></a><span class="kn">from</span> <span class="nn">Crypto.Util.number</span> <span class="kn">import</span> <span class="o">*</span>
+<a id="__codelineno-32-3" name="__codelineno-32-3"></a>
+<a id="__codelineno-32-4" name="__codelineno-32-4"></a><span class="c1">#填p</span>
+<a id="__codelineno-32-5" name="__codelineno-32-5"></a><span class="n">p</span> <span class="o">=</span> 
+<a id="__codelineno-32-6" name="__codelineno-32-6"></a>
+<a id="__codelineno-32-7" name="__codelineno-32-7"></a><span class="c1">#填q</span>
+<a id="__codelineno-32-8" name="__codelineno-32-8"></a><span class="n">q</span> <span class="o">=</span> 
+<a id="__codelineno-32-9" name="__codelineno-32-9"></a>
+<a id="__codelineno-32-10" name="__codelineno-32-10"></a><span class="n">n</span><span class="o">=</span><span class="n">p</span><span class="o">*</span><span class="n">q</span>
+<a id="__codelineno-32-11" name="__codelineno-32-11"></a>
+<a id="__codelineno-32-12" name="__codelineno-32-12"></a><span class="n">e</span> <span class="o">=</span> <span class="mi">65537</span>
+<a id="__codelineno-32-13" name="__codelineno-32-13"></a><span class="c1">#填c</span>
+<a id="__codelineno-32-14" name="__codelineno-32-14"></a><span class="n">c</span><span class="o">=</span>
+<a id="__codelineno-32-15" name="__codelineno-32-15"></a>
+<a id="__codelineno-32-16" name="__codelineno-32-16"></a><span class="n">d</span> <span class="o">=</span> <span class="n">gmpy2</span><span class="o">.</span><span class="n">invert</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="p">(</span><span class="n">p</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">q</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+<a id="__codelineno-32-17" name="__codelineno-32-17"></a><span class="n">m</span> <span class="o">=</span> <span class="nb">pow</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+<a id="__codelineno-32-18" name="__codelineno-32-18"></a><span class="n">flag</span> <span class="o">=</span> <span class="n">long_to_bytes</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+<a id="__codelineno-32-19" name="__codelineno-32-19"></a><span class="nb">print</span><span class="p">(</span><span class="n">flag</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+<p>在线工具：<a href="http://www.factordb.com/index.php">factordb</a></p>
+<p><a href="https://sagecell.sagemath.org/">sage</a></p>
+<h3 id="rsa_2">RSA变式<a class="headerlink" href="#rsa_2" title="Permanent link">&para;</a></h3>
+<h4 id="dp">DP泄露<a class="headerlink" href="#dp" title="Permanent link">&para;</a></h4>
+<p><strong>常见脚本</strong></p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Python</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-33-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-33-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-33-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-33-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-33-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-33-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-33-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-33-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-33-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-33-10">10</a></span>
+<span class="normal"><a href="#__codelineno-33-11">11</a></span>
+<span class="normal"><a href="#__codelineno-33-12">12</a></span>
+<span class="normal"><a href="#__codelineno-33-13">13</a></span>
+<span class="normal"><a href="#__codelineno-33-14">14</a></span>
+<span class="normal"><a href="#__codelineno-33-15">15</a></span>
+<span class="normal"><a href="#__codelineno-33-16">16</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-33-1" name="__codelineno-33-1"></a><span class="kn">from</span> <span class="nn">Crypto.Util.number</span> <span class="kn">import</span> <span class="o">*</span>
+<a id="__codelineno-33-2" name="__codelineno-33-2"></a><span class="kn">import</span> <span class="nn">gmpy2</span>
+<a id="__codelineno-33-3" name="__codelineno-33-3"></a>
+<a id="__codelineno-33-4" name="__codelineno-33-4"></a><span class="n">p</span> <span class="o">=</span> <span class="n">getStrongPrime</span><span class="p">(</span><span class="mi">512</span><span class="p">)</span>
+<a id="__codelineno-33-5" name="__codelineno-33-5"></a><span class="n">q</span> <span class="o">=</span> <span class="n">getStrongPrime</span><span class="p">(</span><span class="mi">512</span><span class="p">)</span>
+<a id="__codelineno-33-6" name="__codelineno-33-6"></a><span class="n">n</span> <span class="o">=</span> <span class="n">p</span> <span class="o">*</span> <span class="n">q</span>
+<a id="__codelineno-33-7" name="__codelineno-33-7"></a><span class="n">phi</span> <span class="o">=</span> <span class="p">(</span><span class="n">p</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">q</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+<a id="__codelineno-33-8" name="__codelineno-33-8"></a><span class="n">e</span> <span class="o">=</span> <span class="mi">7621</span>
+<a id="__codelineno-33-9" name="__codelineno-33-9"></a><span class="n">d</span> <span class="o">=</span> <span class="n">gmpy2</span><span class="o">.</span><span class="n">invert</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">phi</span><span class="p">)</span>
+<a id="__codelineno-33-10" name="__codelineno-33-10"></a>
+<a id="__codelineno-33-11" name="__codelineno-33-11"></a><span class="n">flag</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;flag</span><span class="si">{xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx}</span><span class="s2">&quot;</span>
+<a id="__codelineno-33-12" name="__codelineno-33-12"></a><span class="n">c</span> <span class="o">=</span> <span class="nb">pow</span><span class="p">(</span><span class="n">bytes_to_long</span><span class="p">(</span><span class="n">flag</span><span class="p">),</span> <span class="n">e</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+<a id="__codelineno-33-13" name="__codelineno-33-13"></a>
+<a id="__codelineno-33-14" name="__codelineno-33-14"></a><span class="n">dp</span> <span class="o">=</span> <span class="n">d</span> <span class="o">%</span> <span class="p">(</span><span class="n">p</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+<a id="__codelineno-33-15" name="__codelineno-33-15"></a><span class="nb">print</span><span class="p">(</span><span class="n">dp</span><span class="p">)</span>
+<a id="__codelineno-33-16" name="__codelineno-33-16"></a><span class="nb">print</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+<p><strong>解题思路</strong></p>
+<p><img alt="image-20241116122515109" src="image-20241116122515109.png" /></p>
+<h4 id="dp_1">DP高位泄露<a class="headerlink" href="#dp_1" title="Permanent link">&para;</a></h4>
+<p>常见脚本</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Python</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-34-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-34-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-34-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-34-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-34-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-34-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-34-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-34-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-34-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-34-10">10</a></span>
+<span class="normal"><a href="#__codelineno-34-11">11</a></span>
+<span class="normal"><a href="#__codelineno-34-12">12</a></span>
+<span class="normal"><a href="#__codelineno-34-13">13</a></span>
+<span class="normal"><a href="#__codelineno-34-14">14</a></span>
+<span class="normal"><a href="#__codelineno-34-15">15</a></span>
+<span class="normal"><a href="#__codelineno-34-16">16</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-34-1" name="__codelineno-34-1"></a><span class="kn">from</span> <span class="nn">Crypto.Util.number</span> <span class="kn">import</span> <span class="o">*</span>
+<a id="__codelineno-34-2" name="__codelineno-34-2"></a><span class="kn">import</span> <span class="nn">gmpy2</span>
+<a id="__codelineno-34-3" name="__codelineno-34-3"></a>
+<a id="__codelineno-34-4" name="__codelineno-34-4"></a><span class="n">p</span> <span class="o">=</span> <span class="n">getStrongPrime</span><span class="p">(</span><span class="mi">512</span><span class="p">)</span>
+<a id="__codelineno-34-5" name="__codelineno-34-5"></a><span class="n">q</span> <span class="o">=</span> <span class="n">getStrongPrime</span><span class="p">(</span><span class="mi">512</span><span class="p">)</span>
+<a id="__codelineno-34-6" name="__codelineno-34-6"></a><span class="n">n</span> <span class="o">=</span> <span class="n">p</span> <span class="o">*</span> <span class="n">q</span>
+<a id="__codelineno-34-7" name="__codelineno-34-7"></a><span class="n">phi</span> <span class="o">=</span> <span class="p">(</span><span class="n">p</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">q</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+<a id="__codelineno-34-8" name="__codelineno-34-8"></a><span class="n">e</span> <span class="o">=</span> <span class="mi">7621</span>
+<a id="__codelineno-34-9" name="__codelineno-34-9"></a><span class="n">d</span> <span class="o">=</span> <span class="n">gmpy2</span><span class="o">.</span><span class="n">invert</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">phi</span><span class="p">)</span>
+<a id="__codelineno-34-10" name="__codelineno-34-10"></a>
+<a id="__codelineno-34-11" name="__codelineno-34-11"></a><span class="n">flag</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;flag</span><span class="si">{xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx}</span><span class="s2">&quot;</span>
+<a id="__codelineno-34-12" name="__codelineno-34-12"></a><span class="n">c</span> <span class="o">=</span> <span class="nb">pow</span><span class="p">(</span><span class="n">bytes_to_long</span><span class="p">(</span><span class="n">flag</span><span class="p">),</span> <span class="n">e</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+<a id="__codelineno-34-13" name="__codelineno-34-13"></a>
+<a id="__codelineno-34-14" name="__codelineno-34-14"></a><span class="n">dp</span> <span class="o">=</span> <span class="n">d</span> <span class="o">%</span> <span class="p">(</span><span class="n">p</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+<a id="__codelineno-34-15" name="__codelineno-34-15"></a><span class="nb">print</span><span class="p">(</span><span class="n">dp</span> <span class="o">&gt;&gt;</span> <span class="mi">200</span><span class="p">)</span>
+<a id="__codelineno-34-16" name="__codelineno-34-16"></a><span class="nb">print</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+<p>解题思路</p>
+<p><img alt="image-20241116122647368" src="image-20241116122647368.png" /></p>
+<h4 id="_6">低解密指数攻击<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h4>
+<p>已知N、e，且e过大或过小</p>
+<p><img alt="image-20241116122912981" src="image-20241116122912981.png" /></p>
+<h4 id="_7">低加密指数攻击<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h4>
+<p>n很大，但是e很小，一般e=3n很大时我们就不能因式分解了。</p>
+<p>例如，当e=3 ,就有c=me+kn可以开根，可以对k进行爆破，直到c-kn可以开根，就可以得到m了</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-35-1">1</a></span>
+<span class="normal"><a href="#__codelineno-35-2">2</a></span>
+<span class="normal"><a href="#__codelineno-35-3">3</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-35-1" name="__codelineno-35-1"></a>#n:  0x52d483c27cd806550fbe0e37a61af2e7cf5e0efb723dfc81174c918a27627779b21fa3c851e9e94188eaee3d5cd6f752406a43fbecb53e80836ff1e185d3ccd7782ea846c2e91a7b0808986666e0bdadbfb7bdd65670a589a4d2478e9adcafe97c6ee23614bcb2ecc23580f4d2e3cc1ecfec25c50da4bc754dde6c8bfd8d1fc16956c74d8e9196046a01dc9f3024e11461c294f29d7421140732fedacac97b8fe50999117d27943c953f18c4ff4f8c258d839764078d4b6ef6e8591e0ff5563b31a39e6374d0d41c8c46921c25e5904a817ef8e39e5c9b71225a83269693e0b7e3218fc5e5a1e8412ba16e588b3d6ac536dce39fcdfce81eec79979ea6872793L
+<a id="__codelineno-35-2" name="__codelineno-35-2"></a>#e:  0x3
+<a id="__codelineno-35-3" name="__codelineno-35-3"></a>#c:0x10652cdfaa6b63f6d7bd1109da08181e500e5643f5b240a9024bfa84d5f2cac9310562978347bb232d63e7289283871efab83d84ff5a7b64a94a79d34cfbd4ef121723ba1f663e514f83f6f01492b4e13e1bb4296d96ea5a353d3bf2edd2f449c03c4a3e995237985a596908adc741f32365
+</code></pre></div></td></tr></table></div>
+<h4 id="_8">低加密指数广播攻击<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h4>
+<p>加密指数e非常小</p>
+<p>一份明文使用不同的模数n，相同的加密指数e进行多次加密</p>
+<p>可以拿到每一份加密后的密文和对应的模数n、加密指数e</p>
+<p><strong>解题思路</strong></p>
+<p>由于模数n只能分解为p和q，所以当n很多时，p或q有相同的风险因此不同的模数n中可能存在相同的p或者说q</p>
+<p>求出不同n之间的gcd()，如果大于1说明这里存在漏洞，可以继续攻击</p>
+<p>所得到的最大公约数就是p或q，然后可得d</p>
+<p>有私钥d就能得到明文</p>
+<h4 id="_9">共模攻击<a class="headerlink" href="#_9" title="Permanent link">&para;</a></h4>
+<p>n,m相同，c,e不同</p>
+<p><img alt="image-20241116123156036" src="image-20241116123156036.png" /></p>
+<h4 id="coppersmith">Coppersmith攻击<a class="headerlink" href="#coppersmith" title="Permanent link">&para;</a></h4>
+<p>Coppersmith定理指出在一个e阶的mod n多项式f(x)中，如果有一个根小于n^1/e，就可以运用一个O(log n)的算法求出这些根。
+这个定理可以应用于rsa算法。如果e = 3并且在明文当中只有三分之二的比特是已知的，这种算法可以求出明文中所有的比特。</p>
+<p>Coppersmith攻击有多个分类</p>
+<p>1 已知P高位攻击
+2 已知M高位攻击
+3 已知D的低位攻击
+4 。。。</p>
+<h4 id="p">已知P高位攻击<a class="headerlink" href="#p" title="Permanent link">&para;</a></h4>
+<p>当我们知道一个公钥中模数N的一个因子的较高位时，我们就有一定几率来分解N</p>
+<h4 id="m">已知m高位攻击<a class="headerlink" href="#m" title="Permanent link">&para;</a></h4>
+<p><img alt="image-20241116123329738" src="image-20241116123329738.png" /></p>
+<h4 id="d">已知D低位攻击<a class="headerlink" href="#d" title="Permanent link">&para;</a></h4>
+<p><img alt="image-20241116123349552" src="image-20241116123349552.png" /></p>
+<p>例题：</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-36-1">1</a></span>
+<span class="normal"><a href="#__codelineno-36-2">2</a></span>
+<span class="normal"><a href="#__codelineno-36-3">3</a></span>
+<span class="normal"><a href="#__codelineno-36-4">4</a></span>
+<span class="normal"><a href="#__codelineno-36-5">5</a></span>
+<span class="normal"><a href="#__codelineno-36-6">6</a></span>
+<span class="normal"><a href="#__codelineno-36-7">7</a></span>
+<span class="normal"><a href="#__codelineno-36-8">8</a></span>
+<span class="normal"><a href="#__codelineno-36-9">9</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-36-1" name="__codelineno-36-1"></a>n=92896523979616431783569762645945918751162321185159790302085768095763248357146198882641160678623069857011832929179987623492267852304178894461486295864091871341339490870689110279720283415976342208476126414933914026436666789270209690168581379143120688241413470569887426810705898518783625903350928784794371176183
+<a id="__codelineno-36-2" name="__codelineno-36-2"></a>
+<a id="__codelineno-36-3" name="__codelineno-36-3"></a>e=3
+<a id="__codelineno-36-4" name="__codelineno-36-4"></a>m=random.getrandbits(512)
+<a id="__codelineno-36-5" name="__codelineno-36-5"></a>
+<a id="__codelineno-36-6" name="__codelineno-36-6"></a>c=pow(m,e,n)=56164378185049402404287763972280630295410174183649054805947329504892979921131852321281317326306506444145699012788547718091371389698969718830761120076359634262880912417797038049510647237337251037070369278596191506725812511682495575589039521646062521091457438869068866365907962691742604895495670783101319608530
+<a id="__codelineno-36-7" name="__codelineno-36-7"></a>d&amp;((1&lt;&lt;512)-1)=
+<a id="__codelineno-36-8" name="__codelineno-36-8"></a>787673996295376297668171075170955852109814939442242049800811601753001897317556022653997651874897208487913321031340711138331360350633965420642045383644955
+<a id="__codelineno-36-9" name="__codelineno-36-9"></a>long_to_bytes(m).encode(&#39;hex&#39;)=
+</code></pre></div></td></tr></table></div>
+<p><img alt="image-20241116123410866" src="image-20241116123410866.png" /></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.top", "search.suggest", "search.highlight", "navigation.expand", "search.share"], "search": "../../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.60a45f97.min.js"></script>
+      
+        <script src="../../../javascripts/extra.js"></script>
+      
+    
+  </body>
+</html>

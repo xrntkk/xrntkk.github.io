@@ -1,0 +1,2887 @@
+
+<!doctype html>
+<html lang="zh" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../../Web%E5%9F%BA%E7%A1%80/%E7%BD%91%E7%AB%99%E6%94%B6%E9%9B%86/">
+      
+      
+        <link rel="next" href="../%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C/">
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.5.50">
+    
+    
+      
+        <title>http+python基础+python抓包发包 - Xrnt's note</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.a40c8224.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+  
+  
+    
+    
+  
+    
+    
+  
+    
+    
+  
+    
+    
+  
+    
+    
+  
+    
+    
+  
+    
+    
+  
+    
+    
+  
+    
+    
+  
+    
+    
+  
+    
+    
+  
+    
+    
+  
+  
+  <style>:root{--md-admonition-icon--note:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M1 7.775V2.75C1 1.784 1.784 1 2.75 1h5.025c.464 0 .91.184 1.238.513l6.25 6.25a1.75 1.75 0 0 1 0 2.474l-5.026 5.026a1.75 1.75 0 0 1-2.474 0l-6.25-6.25A1.75 1.75 0 0 1 1 7.775m1.5 0c0 .066.026.13.073.177l6.25 6.25a.25.25 0 0 0 .354 0l5.025-5.025a.25.25 0 0 0 0-.354l-6.25-6.25a.25.25 0 0 0-.177-.073H2.75a.25.25 0 0 0-.25.25ZM6 5a1 1 0 1 1 0 2 1 1 0 0 1 0-2"/></svg>');--md-admonition-icon--abstract:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M2.5 1.75v11.5c0 .138.112.25.25.25h3.17a.75.75 0 0 1 0 1.5H2.75A1.75 1.75 0 0 1 1 13.25V1.75C1 .784 1.784 0 2.75 0h8.5C12.216 0 13 .784 13 1.75v7.736a.75.75 0 0 1-1.5 0V1.75a.25.25 0 0 0-.25-.25h-8.5a.25.25 0 0 0-.25.25m13.274 9.537zl-4.557 4.45a.75.75 0 0 1-1.055-.008l-1.943-1.95a.75.75 0 0 1 1.062-1.058l1.419 1.425 4.026-3.932a.75.75 0 1 1 1.048 1.074M4.75 4h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5M4 7.75A.75.75 0 0 1 4.75 7h2a.75.75 0 0 1 0 1.5h-2A.75.75 0 0 1 4 7.75"/></svg>');--md-admonition-icon--info:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13M6.5 7.75A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75M8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2"/></svg>');--md-admonition-icon--tip:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M3.499.75a.75.75 0 0 1 1.5 0v.996C5.9 2.903 6.793 3.65 7.662 4.376l.24.202c-.036-.694.055-1.422.426-2.163C9.1.873 10.794-.045 12.622.26 14.408.558 16 1.94 16 4.25c0 1.278-.954 2.575-2.44 2.734l.146.508.065.22c.203.701.412 1.455.476 2.226.142 1.707-.4 3.03-1.487 3.898C11.714 14.671 10.27 15 8.75 15h-6a.75.75 0 0 1 0-1.5h1.376a4.5 4.5 0 0 1-.563-1.191 3.84 3.84 0 0 1-.05-2.063 4.65 4.65 0 0 1-2.025-.293.75.75 0 0 1 .525-1.406c1.357.507 2.376-.006 2.698-.318l.009-.01a.747.747 0 0 1 1.06 0 .75.75 0 0 1-.012 1.074c-.912.92-.992 1.835-.768 2.586.221.74.745 1.337 1.196 1.621H8.75c1.343 0 2.398-.296 3.074-.836.635-.507 1.036-1.31.928-2.602-.05-.603-.216-1.224-.422-1.93l-.064-.221c-.12-.407-.246-.84-.353-1.29a2.4 2.4 0 0 1-.507-.441 3.1 3.1 0 0 1-.633-1.248.75.75 0 0 1 1.455-.364c.046.185.144.436.31.627.146.168.353.305.712.305.738 0 1.25-.615 1.25-1.25 0-1.47-.95-2.315-2.123-2.51-1.172-.196-2.227.387-2.706 1.345-.46.92-.27 1.774.019 3.062l.042.19.01.05c.348.443.666.949.94 1.553a.75.75 0 1 1-1.365.62c-.553-1.217-1.32-1.94-2.3-2.768L6.7 5.527c-.814-.68-1.75-1.462-2.692-2.619a3.7 3.7 0 0 0-1.023.88c-.406.495-.663 1.036-.722 1.508.116.122.306.21.591.239.388.038.797-.06 1.032-.19a.75.75 0 0 1 .728 1.31c-.515.287-1.23.439-1.906.373-.682-.067-1.473-.38-1.879-1.193L.75 5.677V5.5c0-.984.48-1.94 1.077-2.664.46-.559 1.05-1.055 1.673-1.353z"/></svg>');--md-admonition-icon--success:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M13.78 4.22a.75.75 0 0 1 0 1.06l-7.25 7.25a.75.75 0 0 1-1.06 0L2.22 9.28a.75.75 0 0 1 .018-1.042.75.75 0 0 1 1.042-.018L6 10.94l6.72-6.72a.75.75 0 0 1 1.06 0"/></svg>');--md-admonition-icon--question:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-6.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13M6.92 6.085h.001a.749.749 0 1 1-1.342-.67c.169-.339.436-.701.849-.977C6.845 4.16 7.369 4 8 4a2.76 2.76 0 0 1 1.637.525c.503.377.863.965.863 1.725 0 .448-.115.83-.329 1.15-.205.307-.47.513-.692.662-.109.072-.22.138-.313.195l-.006.004a6 6 0 0 0-.26.16 1 1 0 0 0-.276.245.75.75 0 0 1-1.248-.832c.184-.264.42-.489.692-.661q.154-.1.313-.195l.007-.004c.1-.061.182-.11.258-.161a1 1 0 0 0 .277-.245C8.96 6.514 9 6.427 9 6.25a.61.61 0 0 0-.262-.525A1.27 1.27 0 0 0 8 5.5c-.369 0-.595.09-.74.187a1 1 0 0 0-.34.398M9 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/></svg>');--md-admonition-icon--warning:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M6.457 1.047c.659-1.234 2.427-1.234 3.086 0l6.082 11.378A1.75 1.75 0 0 1 14.082 15H1.918a1.75 1.75 0 0 1-1.543-2.575Zm1.763.707a.25.25 0 0 0-.44 0L1.698 13.132a.25.25 0 0 0 .22.368h12.164a.25.25 0 0 0 .22-.368Zm.53 3.996v2.5a.75.75 0 0 1-1.5 0v-2.5a.75.75 0 0 1 1.5 0M9 11a1 1 0 1 1-2 0 1 1 0 0 1 2 0"/></svg>');--md-admonition-icon--failure:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M2.344 2.343za8 8 0 0 1 11.314 11.314A8.002 8.002 0 0 1 .234 10.089a8 8 0 0 1 2.11-7.746m1.06 10.253a6.5 6.5 0 1 0 9.108-9.275 6.5 6.5 0 0 0-9.108 9.275M6.03 4.97 8 6.94l1.97-1.97a.749.749 0 0 1 1.275.326.75.75 0 0 1-.215.734L9.06 8l1.97 1.97a.749.749 0 0 1-.326 1.275.75.75 0 0 1-.734-.215L8 9.06l-1.97 1.97a.749.749 0 0 1-1.275-.326.75.75 0 0 1 .215-.734L6.94 8 4.97 6.03a.75.75 0 0 1 .018-1.042.75.75 0 0 1 1.042-.018"/></svg>');--md-admonition-icon--danger:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M9.504.43a1.516 1.516 0 0 1 2.437 1.713L10.415 5.5h2.123c1.57 0 2.346 1.909 1.22 3.004l-7.34 7.142a1.25 1.25 0 0 1-.871.354h-.302a1.25 1.25 0 0 1-1.157-1.723L5.633 10.5H3.462c-1.57 0-2.346-1.909-1.22-3.004zm1.047 1.074L3.286 8.571A.25.25 0 0 0 3.462 9H6.75a.75.75 0 0 1 .694 1.034l-1.713 4.188 6.982-6.793A.25.25 0 0 0 12.538 7H9.25a.75.75 0 0 1-.683-1.06l2.008-4.418.003-.006-.004-.009-.006-.006-.008-.001q-.005 0-.009.004"/></svg>');--md-admonition-icon--bug:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M4.72.22a.75.75 0 0 1 1.06 0l1 .999a3.5 3.5 0 0 1 2.441 0l.999-1a.748.748 0 0 1 1.265.332.75.75 0 0 1-.205.729l-.775.776c.616.63.995 1.493.995 2.444v.327q0 .15-.025.292c.408.14.764.392 1.029.722l1.968-.787a.75.75 0 0 1 .556 1.392L13 7.258V9h2.25a.75.75 0 0 1 0 1.5H13v.5q-.002.615-.141 1.186l2.17.868a.75.75 0 0 1-.557 1.392l-2.184-.873A5 5 0 0 1 8 16a5 5 0 0 1-4.288-2.427l-2.183.873a.75.75 0 0 1-.558-1.392l2.17-.868A5 5 0 0 1 3 11v-.5H.75a.75.75 0 0 1 0-1.5H3V7.258L.971 6.446a.75.75 0 0 1 .558-1.392l1.967.787c.265-.33.62-.583 1.03-.722a1.7 1.7 0 0 1-.026-.292V4.5c0-.951.38-1.814.995-2.444L4.72 1.28a.75.75 0 0 1 0-1.06m.53 6.28a.75.75 0 0 0-.75.75V11a3.5 3.5 0 1 0 7 0V7.25a.75.75 0 0 0-.75-.75ZM6.173 5h3.654A.17.17 0 0 0 10 4.827V4.5a2 2 0 1 0-4 0v.327c0 .096.077.173.173.173"/></svg>');--md-admonition-icon--example:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M5 5.782V2.5h-.25a.75.75 0 0 1 0-1.5h6.5a.75.75 0 0 1 0 1.5H11v3.282l3.666 5.76C15.619 13.04 14.543 15 12.767 15H3.233c-1.776 0-2.852-1.96-1.899-3.458Zm-2.4 6.565a.75.75 0 0 0 .633 1.153h9.534a.75.75 0 0 0 .633-1.153L12.225 10.5h-8.45ZM9.5 2.5h-3V6c0 .143-.04.283-.117.403L4.73 9h6.54L9.617 6.403A.75.75 0 0 1 9.5 6Z"/></svg>');--md-admonition-icon--quote:url('data:image/svg+xml;charset=utf-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M1.75 2.5h10.5a.75.75 0 0 1 0 1.5H1.75a.75.75 0 0 1 0-1.5m4 5h8.5a.75.75 0 0 1 0 1.5h-8.5a.75.75 0 0 1 0-1.5m0 5h8.5a.75.75 0 0 1 0 1.5h-8.5a.75.75 0 0 1 0-1.5M2.5 7.75v6a.75.75 0 0 1-1.5 0v-6a.75.75 0 0 1 1.5 0"/></svg>');}</style>
+
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#http" class="md-skip">
+          跳转至
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="页眉">
+    <a href="../../.." title="Xrnt&#39;s note" class="md-header__button md-logo" aria-label="Xrnt's note" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Xrnt's note
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              http+python基础+python抓包发包
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="black" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="搜索" placeholder="搜索" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="查找">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="分享" aria-label="分享" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="清空当前内容" aria-label="清空当前内容" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            正在初始化搜索引擎
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/xrntkk/xrntkk.github.io" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    xrntkk.github.io
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="标签" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../Web%E5%9F%BA%E7%A1%80/Header%E5%A4%B4/" class="md-tabs__link">
+          
+  
+  Web
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../Crypto/%E7%BD%91%E5%AE%89Crypto%E5%9F%B9%E8%AE%AD/Crypto/" class="md-tabs__link">
+          
+  
+  Crypto
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../Writeup/Web/ctfshow_web%E5%85%A5%E9%97%A8/" class="md-tabs__link">
+          
+  
+  Writeup
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../python/2_Python%E6%95%B0%E6%8D%AE%E5%AE%B9%E5%99%A8/" class="md-tabs__link">
+          
+  
+  Python
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../../about/" class="md-tabs__link">
+        
+  
+    
+  
+  About
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="导航栏" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Xrnt&#39;s note" class="md-nav__button md-logo" aria-label="Xrnt's note" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Xrnt's note
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/xrntkk/xrntkk.github.io" title="前往仓库" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    xrntkk.github.io
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Web
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Web
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_1" id="__nav_2_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Web基础
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            Web基础
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Web%E5%9F%BA%E7%A1%80/Header%E5%A4%B4/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Header头
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Web%E5%9F%BA%E7%A1%80/nodejs%E5%8E%9F%E5%9E%8B%E9%93%BE%E6%B1%A1%E6%9F%93/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    nodejs原型链污染
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Web%E5%9F%BA%E7%A1%80/php%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    php反序列化
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Web%E5%9F%BA%E7%A1%80/php%E5%8E%9F%E7%94%9F%E7%B1%BB/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    php原生类
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Web%E5%9F%BA%E7%A1%80/pickle%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    pickle反序列化
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Web%E5%9F%BA%E7%A1%80/python%E5%8E%9F%E5%9E%8B%E9%93%BE%E6%B1%A1%E6%9F%93/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    python原型链污染
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Web%E5%9F%BA%E7%A1%80/Redis%E6%9C%AA%E6%8E%88%E6%9D%83%E5%88%A9%E7%94%A8%E6%80%BB%E7%BB%93/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Redis未授权利用总结
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Web%E5%9F%BA%E7%A1%80/Ruby%E7%B1%BB%E6%B1%A1%E6%9F%93%E5%8F%8A%E5%85%B6%E4%BE%8B%E9%A2%98WP.pdf" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Ruby类污染及其例题WP
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Web%E5%9F%BA%E7%A1%80/sql%E6%B3%A8%E5%85%A5/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    sql注入
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Web%E5%9F%BA%E7%A1%80/cakephp%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    cakephp反序列化
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Web%E5%9F%BA%E7%A1%80/SSTI/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SSTI
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Web%E5%9F%BA%E7%A1%80/%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    命令执行
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Web%E5%9F%BA%E7%A1%80/%E4%BB%BB%E6%84%8F%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    任意文件读取
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Web%E5%9F%BA%E7%A1%80/%E6%AD%A3%E5%88%99%E8%A1%A8%E8%BE%BE%E5%BC%8F/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    正则表达式
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Web%E5%9F%BA%E7%A1%80/%E7%BD%91%E7%AB%99%E6%94%B6%E9%9B%86/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    网站收集
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    网安Web培训
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            网安Web培训
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    http+python基础+python抓包发包
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    http+python基础+python抓包发包
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#ip" class="md-nav__link">
+    <span class="md-ellipsis">
+      IP地址
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dnsdomain-name-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      DNS（Domain name system域名系统）
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#url" class="md-nav__link">
+    <span class="md-ellipsis">
+      URL
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#http_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      什么是 HTTP
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#http_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      HTTP 协议的工作过程
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      代理抓包
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#http_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      HTTP属性
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#http_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      HTTP请求数据格式
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#http_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      HTTP请求方法
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#http_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      HTTP版本
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#http_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      HTTP请求头
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#http_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      HTTP请求体
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      实践
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    命令执行
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E8%BF%9B%E9%98%B6/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    命令执行进阶
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Java学习
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            Java学习
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Java%E5%AD%A6%E4%B9%A0/Fastjson%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Fastjson
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Java%E5%AD%A6%E4%B9%A0/Java%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%9F%BA%E7%A1%80%26cc%E9%93%BE/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Java反序列化基础&cc链
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Java%E5%AD%A6%E4%B9%A0/JDBC%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    JDBC反序列化
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Crypto
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Crypto
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    网安Crypto培训
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            网安Crypto培训
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Crypto/%E7%BD%91%E5%AE%89Crypto%E5%9F%B9%E8%AE%AD/Crypto/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Crypto基础
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    密码学习
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            密码学习
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Crypto/%E5%AF%86%E7%A0%81%E5%AD%A6%E4%B9%A0/RSA%E7%AE%97%E6%B3%95/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    RSA算法
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Writeup
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Writeup
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Writeup/Web/ctfshow_web%E5%85%A5%E9%97%A8/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ctfshow_Web入门
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Writeup/NSSCTF/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    NSSCTF
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Writeup/ctfshow%E5%8D%95%E8%BA%AB%E6%9D%AF_2024/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    ctfshow单身杯_2024
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Writeup/Web/%E5%81%9A%E7%9A%84%E4%B8%80%E4%BA%9B%E6%9D%82%E9%A2%98/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    杂题集
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Writeup/Web/SHCTF_2024/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SHCTF2024
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Writeup/%E5%9B%BD%E5%9F%8E%E6%9D%AF_2024/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    国城杯_2024
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Writeup/%E5%BC%BA%E7%BD%91%E6%8B%9F%E6%80%81_2024/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    强网拟态_2024
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Writeup/Web/SUCTF_2024.md.md" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    SUCTF_2024 复现
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../Writeup/%E8%A5%BF%E6%B9%96%E8%AE%BA%E5%89%91_2025/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    西湖论剑_2025
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Python
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            Python
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../python/2_Python%E6%95%B0%E6%8D%AE%E5%AE%B9%E5%99%A8/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Python数据容器
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../about/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    About
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="目录">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      目录
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#ip" class="md-nav__link">
+    <span class="md-ellipsis">
+      IP地址
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dnsdomain-name-system" class="md-nav__link">
+    <span class="md-ellipsis">
+      DNS（Domain name system域名系统）
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#url" class="md-nav__link">
+    <span class="md-ellipsis">
+      URL
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#http_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      什么是 HTTP
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#http_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      HTTP 协议的工作过程
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      代理抓包
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#http_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      HTTP属性
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#http_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      HTTP请求数据格式
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#http_5" class="md-nav__link">
+    <span class="md-ellipsis">
+      HTTP请求方法
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#http_6" class="md-nav__link">
+    <span class="md-ellipsis">
+      HTTP版本
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#http_7" class="md-nav__link">
+    <span class="md-ellipsis">
+      HTTP请求头
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#http_8" class="md-nav__link">
+    <span class="md-ellipsis">
+      HTTP请求体
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      实践
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<p>http+python基础+python发包抓包</p>
+<h1 id="http">HTTP<a class="headerlink" href="#http" title="Permanent link">&para;</a></h1>
+<h2 id="ip">IP地址<a class="headerlink" href="#ip" title="Permanent link">&para;</a></h2>
+<ul>
+<li>连入互联网的计算机，每台计算机或者路由器都有一个<strong><em>*由授权机构分配的号码*</em></strong>，IP地址代表这一台<strong><em>*计算机在网络中的地址*</em></strong></li>
+<li><strong>ipv4用来表示地址(127.0.0.1)，127.0.0.1是互联网上的环回地址，用于主机自我通信，也就是本机地址</strong></li>
+<li><strong>ipv6（十六进制），目前全球接入太多互联网设备了，ipv4不够用了，ipv6是未来的方向</strong></li>
+</ul>
+<h2 id="dnsdomain-name-system">DNS（Domain name system域名系统）<a class="headerlink" href="#dnsdomain-name-system" title="Permanent link">&para;</a></h2>
+<p><strong>用来将域名解析为ip地址</strong></p>
+<h2 id="url">URL<a class="headerlink" href="#url" title="Permanent link">&para;</a></h2>
+<p><strong>URL 是统一资源定位符，它代表了 Web 资源的唯一标识</strong>，如同电脑上的盘符路径。最常见的 URL 格式如下所示：</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span>
+<span class="normal"><a href="#__codelineno-0-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a>protocol://[user[:password]@]hostname[:post]/[path]/file[?param=value]
+<a id="__codelineno-0-2" name="__codelineno-0-2"></a>协议   分隔符   用户信息        域名      端口   路径   资源文件   参数键   参数值
+</code></pre></div></td></tr></table></div>
+<p>协议：通常来说是<strong>http或者https，还有ftp</strong>（File Transfer Protocol，文本传输协议）</p>
+<p>域名：<strong>由于IP地址具有不方便记忆并且不能显示地址组织的名称和性质等缺点，人们设计出了域名</strong>，并通过网域名称系统（DNS，Domain Name System）来将域名和IP地址相互映射，使人更方便地访问互联网，而不用去记住能够被机器直接读取的IP地址数串。例子：（www.baidu.com）。</p>
+<p>顶级域名是域名系统中最高级别的域名，位于域名的最右边。它通常由几个字母组成，代表<a href="https://so.csdn.net/so/search?q=不同的&amp;spm=1001.2101.3001.7020">不同的</a>含义和分类。顶级域名分为两种类型：通用顶级域名和国家顶级域名。（通用顶级域名：.com：代表商业，是最常见和最受欢迎的顶级域名之一 .net：代表网络，通常被网络服务提供商或技术相关机构使用。.org：代表组织，通常被非盈利组织或公益机构使用。）</p>
+<p>国家顶级域名代表特定的国家或地区。每个国家或地区都有自己的国家顶级域名，例如：.cn：代表中国 .uk：代表英国 .jp：代表日本</p>
+<p>一级域名baidu.com</p>
+<p>二级级域名www.baidu.com，万维网，万维网利用网页之间的链接将不同网站的网页链接成一张逻辑上的信息网，从而用户可以方便的从internet上的一个站点去访问另一个站点 。</p>
+<p>域名等级由点号个数区分</p>
+<p>端口：ip比作宿舍，端口就像宿舍门牌号（80，443）</p>
+<h2 id="http_1">什么是 HTTP<a class="headerlink" href="#http_1" title="Permanent link">&para;</a></h2>
+<p>HTTP 是 Web 领域的核心通信协议。最初的 HTTP 支持基于文本的静态资源获取，随着协议版本的不断迭代，它已经支持如今常见的复杂分布式应用程序。</p>
+<p>HTTP 使用一种基于消息的模型，建立于 TCP 层之上。由客户端发送一条请求消息，而后由服务器返回一条响应消息。</p>
+<p>（<strong>hypertext transfer protocol超文本传输协议，hypertext是一种文本类型，它允许通过链接（通常称为超链接）从一个文档跳转到另一个文档或文档中的特定部分</strong>。）</p>
+<h2 id="http_2">HTTP 协议的工作过程<a class="headerlink" href="#http_2" title="Permanent link">&para;</a></h2>
+<p>当我们在浏览器输入一个网址，此时浏览器就会给对应的服务器发送一个 HTTP 请求，对应的服务器收到这个请求之后，经过计算处理，就会返回一个 HTTP 响应。并且当我们访问一个网站时，可能涉及不止一次的 HTTP 请求和响应的交互过程。</p>
+<p><strong>基础术语：</strong></p>
+<ul>
+<li><strong>客户端：</strong> 主动发起网络请求的一端</li>
+<li><strong>服务器：</strong> 被动接收网络请求的一端</li>
+<li><strong>请求：</strong> 客户端给服务器发送的数据</li>
+<li><strong>响应：</strong> 服务器给客户端返回的数据</li>
+<li><strong>HTTP 协议的重要特点：</strong> 一发一收，一问一答</li>
+</ul>
+<h2 id="_1">代理抓包<a class="headerlink" href="#_1" title="Permanent link">&para;</a></h2>
+<p>burpsuite</p>
+<p>原理：我们在客户端和服务器中间加了一个代理。<strong>代理，也可以理解为中介或代购，就比如你想通过中介去租房或者买房，你会将你的需求告诉给中介，中介就会去寻找房源并将找到的结果的详细情况反应给你</strong>。代理将服务器的响应内容抓了下来。对于客户端来说，代理就相当于服务器，对于服务器来说代理就相当于客户端。</p>
+<h2 id="http_3">HTTP属性<a class="headerlink" href="#http_3" title="Permanent link">&para;</a></h2>
+<p>常见状态码</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-1-1">1</a></span>
+<span class="normal"><a href="#__codelineno-1-2">2</a></span>
+<span class="normal"><a href="#__codelineno-1-3">3</a></span>
+<span class="normal"><a href="#__codelineno-1-4">4</a></span>
+<span class="normal"><a href="#__codelineno-1-5">5</a></span>
+<span class="normal"><a href="#__codelineno-1-6">6</a></span>
+<span class="normal"><a href="#__codelineno-1-7">7</a></span>
+<span class="normal"><a href="#__codelineno-1-8">8</a></span>
+<span class="normal"><a href="#__codelineno-1-9">9</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1"></a>100 //请求者应当继续提出请求。 请求的初始部分已经被服务器收到，并且没有被服务器拒绝。客户端应该继续发送剩余的请求，如果请求已经完成，就忽略这个响应。服务器必须在请求完成后发送一个最终的响应。
+<a id="__codelineno-1-2" name="__codelineno-1-2"></a>200 OK //客户端请求成功
+<a id="__codelineno-1-3" name="__codelineno-1-3"></a>4xx：客户端错误 5xx：服务端错误
+<a id="__codelineno-1-4" name="__codelineno-1-4"></a>400 Bad Request //客户端请求有语法错误，不能被服务器所理解
+<a id="__codelineno-1-5" name="__codelineno-1-5"></a>401 Unauthorized //请求未经授权，这个状态代码必须和WWW-Authenticate报头域一起使用
+<a id="__codelineno-1-6" name="__codelineno-1-6"></a>403 Forbidden //服务器收到请求，但是拒绝提供服务（权限限制，ip限制）
+<a id="__codelineno-1-7" name="__codelineno-1-7"></a>404 Not Found //请求资源不存在，eg：输入了错误的URL
+<a id="__codelineno-1-8" name="__codelineno-1-8"></a>500 Internal Server Error //服务器发生不可预期的错误
+<a id="__codelineno-1-9" name="__codelineno-1-9"></a>503 Server Unavailable //服务器当前不能处理客户端的请求，一段时间后可能恢复正常
+</code></pre></div></td></tr></table></div>
+<h2 id="http_4">HTTP请求数据格式<a class="headerlink" href="#http_4" title="Permanent link">&para;</a></h2>
+<p>HTTP请求格式是由三部分组成：</p>
+<p>请求行（Request line）：包括请求方法、URL和协议版本。请求方法（Request method）：表示要执行的操作，常见的方法有GET、POST、PUT、DELETE等。
+URL（Uniform Resource Locator）：表示要访问的资源路径。
+协议版本（Protocol version）：表示使用的HTTP协议版本，如HTTP/1.1。</p>
+<p>请求头部（Request headers）：包括一些关于请求的额外信息，如User-Agent、Content-Type、Authorization等。</p>
+<p>请求体（Request body）：用于传输请求的数据，对于GET请求来说，请求体通常为空。</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-2-1">1</a></span>
+<span class="normal"><a href="#__codelineno-2-2">2</a></span>
+<span class="normal"><a href="#__codelineno-2-3">3</a></span>
+<span class="normal"><a href="#__codelineno-2-4">4</a></span>
+<span class="normal"><a href="#__codelineno-2-5">5</a></span>
+<span class="normal"><a href="#__codelineno-2-6">6</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1"></a>GET /index.html HTTP/1.1
+<a id="__codelineno-2-2" name="__codelineno-2-2"></a>Host: www.example.com
+<a id="__codelineno-2-3" name="__codelineno-2-3"></a>User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3
+<a id="__codelineno-2-4" name="__codelineno-2-4"></a>Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
+<a id="__codelineno-2-5" name="__codelineno-2-5"></a>Accept-Encoding: gzip, deflate, br
+<a id="__codelineno-2-6" name="__codelineno-2-6"></a>Accept-Language: en-US,en;q=0.9
+</code></pre></div></td></tr></table></div>
+<p>上图是一个示例http请求的格式</p>
+<p>在这个示例中：</p>
+<p>请求行包括<strong><em>*GET方法*</em></strong>、<strong><em>*URL为/index.html*</em></strong>（这个不是完整的url，仅包含请求资源的路径）和<strong><em>*协议版本为HTTP/1.1*</em></strong>。</p>
+<p>请求头部包括<strong>Host</strong>、<strong>User-Agent</strong>、<strong>Accept</strong>、<strong>Accept-Encoding</strong>和<strong>Accept-Language</strong>等字段。</p>
+<p>请求体为空，因为这是一个GET请求。</p>
+<h2 id="http_5">HTTP请求方法<a class="headerlink" href="#http_5" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>请求方法</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GET</td>
+<td>请求获取 URL 资源</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>执行操作，请求 URL 资源后附加新的数据</td>
+</tr>
+<tr>
+<td>HEAD</td>
+<td>只获取资源响应消息报头</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>请求服务器存储一个资源</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td>请求服务器删除资源</td>
+</tr>
+<tr>
+<td>TRACE</td>
+<td>请求服务器回送收到的信息</td>
+</tr>
+<tr>
+<td>OPTIONS</td>
+<td>查询服务器的支持选项</td>
+</tr>
+</tbody>
+</table>
+<ol>
+<li>GET：用于从服务器获取资源，也是最常见的请求方式。GET请求将请求的参数附加在URL的末尾，发送给服务器。（安全性低于post）</li>
+<li>POST：用于向服务器提交数据，一般用于发送表单数据。POST请求将请求的参数放在请求体中，而不是URL中。</li>
+<li>此外，对于其他一些不太常见的请求方式，比如PATCH、TRACE等，用途较少。</li>
+</ol>
+<h2 id="http_6">HTTP版本<a class="headerlink" href="#http_6" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>版本</th>
+<th>简述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HTTP 0.9</td>
+<td>该版本只允许 GET 方法，具有典型的无状态性，无协议头和状态码，支持纯文本</td>
+</tr>
+<tr>
+<td>HTTP 1.0</td>
+<td>增加了 HEAD 和 POST 方法，支持长连接、缓存和身份认证</td>
+</tr>
+<tr>
+<td>HTTP 1.1</td>
+<td>增加了 Keep-alive 机制和 PipeLining 流水线，新增了 OPTIONS、PUT、DELETE、TRACE、CONNECT 方法</td>
+</tr>
+<tr>
+<td>HTTP 2.0</td>
+<td>增加了多路复用、头部压缩、随时复位等功能</td>
+</tr>
+</tbody>
+</table>
+<p>一般来说1.1用的最多</p>
+<h2 id="http_7">HTTP请求头<a class="headerlink" href="#http_7" title="Permanent link">&para;</a></h2>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-3-1">1</a></span>
+<span class="normal"><a href="#__codelineno-3-2">2</a></span>
+<span class="normal"><a href="#__codelineno-3-3">3</a></span>
+<span class="normal"><a href="#__codelineno-3-4">4</a></span>
+<span class="normal"><a href="#__codelineno-3-5">5</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1"></a>Host: www.example.com
+<a id="__codelineno-3-2" name="__codelineno-3-2"></a>User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3
+<a id="__codelineno-3-3" name="__codelineno-3-3"></a>Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
+<a id="__codelineno-3-4" name="__codelineno-3-4"></a>Accept-Encoding: gzip, deflate, br
+<a id="__codelineno-3-5" name="__codelineno-3-5"></a>Accept-Language: en-US,en;q=0.9
+</code></pre></div></td></tr></table></div>
+<p>常用的请求头参数</p>
+<p>Accept-Language：接受的语言类型</p>
+<p>Accept：接受的内容类型</p>
+<p>Host：从HTTP / 1.1开始，HTTP Host标头是必需的请求标头。 它指定客户端要访问的域名。</p>
+<p>Cookie：cookie的中文翻译是曲奇，小甜饼的意思。cookie其实就是一些数据信息，类型为“小型文本文件”，存储于电脑上的文本文件中。我们想象一个场景，当我们打开一个网站时，如果这个网站我们曾经登录过，那么当我们再次打开网站时，发现就不需要再次登录了，而是直接进入了首页。例如bilibili，csdn等网站。这是怎么做到的呢？用户第一次访问网站时，服务器对用户没有任何了解，于是通过http响应给用户发送一个cookie，让浏览器存下来，浏览器记住这个cookie之后，用户再向这个网站发送http请求的时候就带上这个cookie，服务器收到这个cookie后就能识别出这个特定的用户。一般情况下，cookie是以键值对进行表示的(key-value)，例如name=jack，这个就表示cookie的名字是name，cookie携带的值是jack。总的来说，Cookie 是服务器让浏览器帮忙携带信息的手段，就像饼干里的纸条，<strong>浏览器会储存它，并且在后续的 HTTP 请求中再次发送给服务器</strong>。</p>
+<p>Referer：指定提出当前请求的原始 URL</p>
+<p>User-Agent：提供浏览器或者客户端软件的有关信息</p>
+<p>X-Forwarded-For：xff是告诉服务器当前请求者的最终ip的http请求头字段</p>
+<h2 id="http_8">HTTP请求体<a class="headerlink" href="#http_8" title="Permanent link">&para;</a></h2>
+<p>post传参，是键值对</p>
+<h2 id="_2">实践<a class="headerlink" href="#_2" title="Permanent link">&para;</a></h2>
+<p>buuctf 极客大挑战2019 http</p>
+<p>​            newstarctf 公开赛道http Content-Type: application/x-www-form-urlencoded</p>
+<p>​            bugku[MoeCTF 2021]Do you know HTTP</p>
+<p>​            newstarctf 2023公开赛道 begin of http</p>
+<p><code>Content-Type</code>头部用于指明发送到服务器的数据类型，以便服务器正确解析请求体中的数据。</p>
+<p>禁用xff怎么办</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-4-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-4-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-4-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-4-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-4-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-4-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-4-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-4-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-4-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-4-10">10</a></span>
+<span class="normal"><a href="#__codelineno-4-11">11</a></span>
+<span class="normal"><a href="#__codelineno-4-12">12</a></span>
+<span class="normal"><a href="#__codelineno-4-13">13</a></span>
+<span class="normal"><a href="#__codelineno-4-14">14</a></span>
+<span class="normal"><a href="#__codelineno-4-15">15</a></span>
+<span class="normal"><a href="#__codelineno-4-16">16</a></span>
+<span class="normal"><a href="#__codelineno-4-17">17</a></span>
+<span class="normal"><a href="#__codelineno-4-18">18</a></span>
+<span class="normal"><a href="#__codelineno-4-19">19</a></span>
+<span class="normal"><a href="#__codelineno-4-20">20</a></span>
+<span class="normal"><a href="#__codelineno-4-21">21</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1"></a>***Client-IP:127.0.0.1
+<a id="__codelineno-4-2" name="__codelineno-4-2"></a>***X-Real-IP:127.0.0.1 
+<a id="__codelineno-4-3" name="__codelineno-4-3"></a>X-Forwarded-For:127.0.0.1
+<a id="__codelineno-4-4" name="__codelineno-4-4"></a>X-Forwarded:127.0.0.1
+<a id="__codelineno-4-5" name="__codelineno-4-5"></a>Forwarded-For:127.0.0.1
+<a id="__codelineno-4-6" name="__codelineno-4-6"></a>Forwarded:127.0.0.1
+<a id="__codelineno-4-7" name="__codelineno-4-7"></a>X-Forwarded-Host:127.0.0.1 
+<a id="__codelineno-4-8" name="__codelineno-4-8"></a>X-remote-IP:127.0.0.1 
+<a id="__codelineno-4-9" name="__codelineno-4-9"></a>X-remote-addr:127.0.0.1 
+<a id="__codelineno-4-10" name="__codelineno-4-10"></a>True-Client-IP:127.0.0.1 
+<a id="__codelineno-4-11" name="__codelineno-4-11"></a>X-Client-IP:127.0.0.1 
+<a id="__codelineno-4-12" name="__codelineno-4-12"></a>Ali-CDN-Real-IP:127.0.0.1 
+<a id="__codelineno-4-13" name="__codelineno-4-13"></a>Cdn-Src-Ip:127.0.0.1 
+<a id="__codelineno-4-14" name="__codelineno-4-14"></a>Cdn-Real-Ip:127.0.0.1 
+<a id="__codelineno-4-15" name="__codelineno-4-15"></a>CF-Connecting-IP:127.0.0.1 
+<a id="__codelineno-4-16" name="__codelineno-4-16"></a>X-Cluster-Client-IP:127.0.0.1 
+<a id="__codelineno-4-17" name="__codelineno-4-17"></a>WL-Proxy-Client-IP:127.0.0.1 
+<a id="__codelineno-4-18" name="__codelineno-4-18"></a>Proxy-Client-IP:127.0.0.1 
+<a id="__codelineno-4-19" name="__codelineno-4-19"></a>Fastly-Client-Ip:127.0.0.1
+<a id="__codelineno-4-20" name="__codelineno-4-20"></a>True-Client-Ip:127.0.0.1
+<a id="__codelineno-4-21" name="__codelineno-4-21"></a>Host: 127.0.0.1
+</code></pre></div></td></tr></table></div>
+<h1 id="python">Python基础<a class="headerlink" href="#python" title="Permanent link">&para;</a></h1>
+<h2 id="python_1">Python环境配置<a class="headerlink" href="#python_1" title="Permanent link">&para;</a></h2>
+<p>https://www.python.org/</p>
+<p>https://www.jetbrains.com/pycharm/download/?section=windows</p>
+<p>python下载勾选</p>
+<p>pycharm解释器（python下载路径）</p>
+<h2 id="python_2">Python中文编码<a class="headerlink" href="#python_2" title="Permanent link">&para;</a></h2>
+<p>utf-8可以用来中文编码</p>
+<p>python3默认使用utf-8编码，无需指定</p>
+<h2 id="python_3">Python基础语法<a class="headerlink" href="#python_3" title="Permanent link">&para;</a></h2>
+<p>不向下兼容：python3是不兼容python2的</p>
+<p>交互式编程（cmd）：交互式编程不需要创建脚本文件，是通过 Python 解释器的交互模式进来编写代码。可以即时反馈，立刻看到代码的效果，但是不可重用，每次退出之后之前的代码不会保存</p>
+<p>脚本式编程（pycharm）：代码通常保存在一个或多个.py文件中。通过Python解释器执行这些文件。适用于编写复杂程序、算法或长时间运行的任务。脚本可以多次运行，无需每次重新输入代码。</p>
+<p>python标识符：标识符就是我们编程的时候使用的“名字“ , 给类、接口、方法、变量、常量名，包名等起名字的字符序列。在 Python 里，标识符由字母、数字、下划线组成，但是不能以数字开头。</p>
+<p>python保留字符：</p>
+<table>
+<thead>
+<tr>
+<th>and</th>
+<th>exec</th>
+<th>not</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>assert</td>
+<td>finally</td>
+<td>or</td>
+</tr>
+<tr>
+<td>break</td>
+<td>for</td>
+<td>pass</td>
+</tr>
+<tr>
+<td>class</td>
+<td>from</td>
+<td>print</td>
+</tr>
+<tr>
+<td>continue</td>
+<td>global</td>
+<td>raise</td>
+</tr>
+<tr>
+<td>def</td>
+<td>if</td>
+<td>return</td>
+</tr>
+<tr>
+<td>del</td>
+<td>import</td>
+<td>try</td>
+</tr>
+<tr>
+<td>elif</td>
+<td>in</td>
+<td>while</td>
+</tr>
+<tr>
+<td>else</td>
+<td>is</td>
+<td>with</td>
+</tr>
+<tr>
+<td>except</td>
+<td>lambda</td>
+<td>yield</td>
+</tr>
+</tbody>
+</table>
+<p>列表显示了在Python中的保留字。这些保留字不能用作常数或变数，或任何其他标识符名称。</p>
+<p>行和缩进：学习 Python 与其他语言最大的区别就是，Python 的代码块不使用大括号 <strong>{}</strong> 来控制类，函数以及其他逻辑判断。python 最具特色的就是用缩进来写模块。缩进的空白数量是可变的，但是所有代码块语句必须包含相同的缩进空白数量，这个必须严格执行。</p>
+<p>结束符：Python语句中一般以新行作为语句的结束符。如果要在一行内写多条语句，就要用‘；’。</p>
+<p>python引号：Python 可以使用引号( <strong>'</strong> )、双引号( <strong>"</strong> )、三引号( <strong>'''</strong> 或 <strong>"""</strong> ) 来表示字符串，引号的开始与结束必须是相同类型的</p>
+<p>python注释：python中单行注释采用 <strong>#</strong> 开头。</p>
+<p>print：python3中的print是个函数，因此必须要加（），python2不用。</p>
+<h2 id="python_4">Python变量类型<a class="headerlink" href="#python_4" title="Permanent link">&para;</a></h2>
+<p>赋值：“=”</p>
+<p>多变量赋值：a=b=c=1、a,b,c=1,2,3</p>
+<p>标准数据类型：数字，字符串，列表，元组，字典</p>
+<p>数字：int，long，float，complex</p>
+<p>字符串：str="very good"</p>
+<ul>
+<li>从左到右索引默认0开始的，最大范围是字符串长度少1</li>
+<li>从右到左索引默认-1开始的，最大范围是字符串开头</li>
+</ul>
+<p>如果你要实现从字符串中获取一段子字符串的话，可以使用 <strong>[头下标:尾下标]</strong> 来截取相应的字符串，其中下标是从 0 开始算起，可以是正数或负数，下标可以为空表示取到头或尾。(左闭右开)</p>
+<p>列表：a=[1,2,3,"haha"]</p>
+<p>List（列表） 是 Python 中使用最频繁的数据类型。</p>
+<p>列表用 <strong>[ ]</strong> 标识，是 python 最通用的复合数据类型。</p>
+<p>列表可以完成大多数集合类的数据结构实现。它支持字符，数字，字符串甚至可以包含列表（即嵌套）。</p>
+<p>列表中值的切割也可以用到变量 <strong>[头下标:尾下标]</strong> ，就可以截取相应的列表，从左到右索引默认 0 开始，从右到左索引默认 -1 开始，下标可以为空表示取到头或尾。</p>
+<p>元组：a=(1,2,3,"haha")</p>
+<p>元组是另一个数据类型，类似于 List（列表）。</p>
+<p>元组用 <strong>()</strong> 标识。内部元素用逗号隔开。但是元组不能<strong>二次赋值</strong>，相当于只读列表。</p>
+<p>字典：a={"1"=1,"2"="haha"}</p>
+<p>字典(dictionary)是除列表以外python之中最灵活的内置数据结构类型。列表是有序的对象集合，字典是无序的对象集合。</p>
+<p>两者之间的区别在于：字典当中的元素是通过<strong>键</strong>来存取的，而不是通过偏移存取。</p>
+<p>字典用"{ }"标识。字典由索引(key)和它对应的值value组成。</p>
+<h2 id="python_5">Python运算符<a class="headerlink" href="#python_5" title="Permanent link">&para;</a></h2>
+<p>算数运算符：</p>
+<p>以下假设变量： <strong>a=10，b=20</strong>：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">运算符</th>
+<th style="text-align: left;">描述</th>
+<th style="text-align: left;">实例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">+</td>
+<td style="text-align: left;">加 - 两个对象相加</td>
+<td style="text-align: left;">a + b 输出结果 30</td>
+</tr>
+<tr>
+<td style="text-align: left;">-</td>
+<td style="text-align: left;">减 - 得到负数或是一个数减去另一个数</td>
+<td style="text-align: left;">a - b 输出结果 -10</td>
+</tr>
+<tr>
+<td style="text-align: left;">*</td>
+<td style="text-align: left;">乘 - 两个数相乘或是返回一个被重复若干次的字符串</td>
+<td style="text-align: left;">a * b 输出结果 200</td>
+</tr>
+<tr>
+<td style="text-align: left;">/</td>
+<td style="text-align: left;">除 - x除以y</td>
+<td style="text-align: left;">b / a 输出结果 2</td>
+</tr>
+<tr>
+<td style="text-align: left;">%</td>
+<td style="text-align: left;">取模 - 返回除法的余数</td>
+<td style="text-align: left;">b % a 输出结果 0</td>
+</tr>
+<tr>
+<td style="text-align: left;">**</td>
+<td style="text-align: left;">幂 - 返回x的y次幂</td>
+<td style="text-align: left;">a**b 为10的20次方， 输出结果 100000000000000000000</td>
+</tr>
+<tr>
+<td style="text-align: left;">//</td>
+<td style="text-align: left;">取整除 - 返回商的整数部分（<strong>向下取整</strong>）</td>
+<td style="text-align: left;"><code>&gt;&gt;&gt; 9//2 4 &gt;&gt;&gt; -9//2 -5</code></td>
+</tr>
+</tbody>
+</table>
+<p>比较运算符：</p>
+<p>以下假设变量a为10，变量b为20：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">运算符</th>
+<th style="text-align: left;">描述</th>
+<th style="text-align: left;">实例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">==</td>
+<td style="text-align: left;">等于 - 比较对象是否相等</td>
+<td style="text-align: left;">(a == b) 返回 False。</td>
+</tr>
+<tr>
+<td style="text-align: left;">!=</td>
+<td style="text-align: left;">不等于 - 比较两个对象是否不相等</td>
+<td style="text-align: left;">(a != b) 返回 True。</td>
+</tr>
+<tr>
+<td style="text-align: left;">&lt;&gt;</td>
+<td style="text-align: left;">不等于 - 比较两个对象是否不相等。<strong>python3 已废弃。</strong></td>
+<td style="text-align: left;">(a &lt;&gt; b) 返回 True。这个运算符类似 != 。</td>
+</tr>
+<tr>
+<td style="text-align: left;">&gt;</td>
+<td style="text-align: left;">大于 - 返回x是否大于y</td>
+<td style="text-align: left;">(a &gt; b) 返回 False。</td>
+</tr>
+<tr>
+<td style="text-align: left;">&lt;</td>
+<td style="text-align: left;">小于 - 返回x是否小于y。所有比较运算符返回1表示真，返回0表示假。这分别与特殊的变量 True 和 False 等价。</td>
+<td style="text-align: left;">(a &lt; b) 返回 True。</td>
+</tr>
+<tr>
+<td style="text-align: left;">&gt;=</td>
+<td style="text-align: left;">大于等于 - 返回x是否大于等于y。</td>
+<td style="text-align: left;">(a &gt;= b) 返回 False。</td>
+</tr>
+<tr>
+<td style="text-align: left;">&lt;=</td>
+<td style="text-align: left;">小于等于 - 返回x是否小于等于y。</td>
+<td style="text-align: left;">(a &lt;= b) 返回 True。</td>
+</tr>
+</tbody>
+</table>
+<p>赋值运算符：</p>
+<p>以下假设变量a为10，变量b为20：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">运算符</th>
+<th style="text-align: left;">描述</th>
+<th style="text-align: left;">实例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">=</td>
+<td style="text-align: left;">简单的赋值运算符</td>
+<td style="text-align: left;">c = a + b 将 a + b 的运算结果赋值为 c</td>
+</tr>
+<tr>
+<td style="text-align: left;">+=</td>
+<td style="text-align: left;">加法赋值运算符</td>
+<td style="text-align: left;">c += a 等效于 c = c + a</td>
+</tr>
+<tr>
+<td style="text-align: left;">-=</td>
+<td style="text-align: left;">减法赋值运算符</td>
+<td style="text-align: left;">c -= a 等效于 c = c - a</td>
+</tr>
+<tr>
+<td style="text-align: left;">*=</td>
+<td style="text-align: left;">乘法赋值运算符</td>
+<td style="text-align: left;">c *= a 等效于 c = c * a</td>
+</tr>
+<tr>
+<td style="text-align: left;">/=</td>
+<td style="text-align: left;">除法赋值运算符</td>
+<td style="text-align: left;">c /= a 等效于 c = c / a</td>
+</tr>
+<tr>
+<td style="text-align: left;">%=</td>
+<td style="text-align: left;">取模赋值运算符</td>
+<td style="text-align: left;">c %= a 等效于 c = c % a</td>
+</tr>
+<tr>
+<td style="text-align: left;">**=</td>
+<td style="text-align: left;">幂赋值运算符</td>
+<td style="text-align: left;">c **= a 等效于 c = c ** a</td>
+</tr>
+<tr>
+<td style="text-align: left;">//=</td>
+<td style="text-align: left;">取整除赋值运算符</td>
+<td style="text-align: left;">c //= a 等效于 c = c // a</td>
+</tr>
+</tbody>
+</table>
+<p>在python中没有++自增</p>
+<p>逻辑运算符：</p>
+<p>and（&amp;&amp;），or（||)，not（!）</p>
+<p>成员运算符：</p>
+<p>除了以上的一些运算符之外，Python还支持成员运算符，测试实例中包含了一系列的成员，包括字符串，列表或元组。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">运算符</th>
+<th style="text-align: left;">描述</th>
+<th style="text-align: left;">实例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;">in</td>
+<td style="text-align: left;">如果在指定的序列中找到值返回 True，否则返回 False。</td>
+<td style="text-align: left;">x 在 y 序列中 , 如果 x 在 y 序列中返回 True。</td>
+</tr>
+<tr>
+<td style="text-align: left;">not in</td>
+<td style="text-align: left;">如果在指定的序列中没有找到值返回 True，否则返回 False。</td>
+<td style="text-align: left;">x 不在 y 序列中 , 如果 x 不在 y 序列中返回 True。</td>
+</tr>
+</tbody>
+</table>
+<h2 id="python_6">Python条件语句<a class="headerlink" href="#python_6" title="Permanent link">&para;</a></h2>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Python</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-5-1">1</a></span>
+<span class="normal"><a href="#__codelineno-5-2">2</a></span>
+<span class="normal"><a href="#__codelineno-5-3">3</a></span>
+<span class="normal"><a href="#__codelineno-5-4">4</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1"></a><span class="k">if</span> <span class="n">判断条件</span><span class="err">：</span>
+<a id="__codelineno-5-2" name="__codelineno-5-2"></a>    <span class="n">执行语句</span><span class="err">……</span>
+<a id="__codelineno-5-3" name="__codelineno-5-3"></a><span class="k">else</span><span class="err">：</span>
+<a id="__codelineno-5-4" name="__codelineno-5-4"></a>    <span class="n">执行语句</span><span class="err">……</span>
+</code></pre></div></td></tr></table></div>
+<h2 id="python_7">Python循环语句<a class="headerlink" href="#python_7" title="Permanent link">&para;</a></h2>
+<p>while循环语句</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Python</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-6-1">1</a></span>
+<span class="normal"><a href="#__codelineno-6-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="k">while</span> <span class="n">判断条件</span><span class="p">(</span><span class="n">condition</span><span class="p">)</span><span class="err">：</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2"></a>    <span class="n">执行语句</span><span class="p">(</span><span class="n">statements</span><span class="p">)</span><span class="err">……</span>
+</code></pre></div></td></tr></table></div>
+<p>for循环语句</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Text Only</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-7-1">1</a></span>
+<span class="normal"><a href="#__codelineno-7-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1"></a>for iterating_var in sequence:
+<a id="__codelineno-7-2" name="__codelineno-7-2"></a>   statements(s)
+</code></pre></div></td></tr></table></div>
+<h2 id="breakcontinue">break，continue<a class="headerlink" href="#breakcontinue" title="Permanent link">&para;</a></h2>
+<p>break跳出循环，continue进行下一次循环</p>
+<h1 id="python_8">Python抓包发包<a class="headerlink" href="#python_8" title="Permanent link">&para;</a></h1>
+<h2 id="python_9">Python库，包，模块<a class="headerlink" href="#python_9" title="Permanent link">&para;</a></h2>
+<p>库&gt;包&gt;模块&gt;类&gt;函数&gt;变量</p>
+<p>类中包含了一些方法（函数）和变量，模块是一个.py文件，一个包是几个模块的集合，一个库是几个包的集合</p>
+<h2 id="python-request">Python request库<a class="headerlink" href="#python-request" title="Permanent link">&para;</a></h2>
+<p>用来get和post</p>
+<p>requests.get(url).(text（源代码）,headers（请求头信息）, params=? )，如果get后没东西，会输出状态码</p>
+<p>requests.post(url,data=data)，和get差不多，但多了一个要传入的post参数，记住是键值对，在python中就是字典</p>
+<p>request.Session()</p>
+<h2 id="session">Session<a class="headerlink" href="#session" title="Permanent link">&para;</a></h2>
+<p>中文直译就是会话</p>
+<p>http协议是<strong>无状态性的</strong>。每条http请求/响应是互相独立的，服务器并不知道两条http请求是同一用户发送的还是不同的用户发送的，就好比生活中常见的饮料自动贩售机，投入硬币，选择饮料，然后饮料出来，买饮料的人拿到饮料，整个过程中贩售机只负责识别要买的是哪种饮料并且给出饮料，并没有记录是哪个人买的，以及某个人买了哪几种，每种买了几瓶。如果考虑现在的购物网站的购物车功能，记录用户状态就很有必要了，这就需要用到会话，而http协议由于本身的无状态性就需要cookie来实现会话。Session可以让cookie保持在后续的一串请求中</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Python</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-8-1">1</a></span>
+<span class="normal"><a href="#__codelineno-8-2">2</a></span>
+<span class="normal"><a href="#__codelineno-8-3">3</a></span>
+<span class="normal"><a href="#__codelineno-8-4">4</a></span>
+<span class="normal"><a href="#__codelineno-8-5">5</a></span>
+<span class="normal"><a href="#__codelineno-8-6">6</a></span>
+<span class="normal"><a href="#__codelineno-8-7">7</a></span>
+<span class="normal"><a href="#__codelineno-8-8">8</a></span>
+<span class="normal"><a href="#__codelineno-8-9">9</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1"></a><span class="kn">import</span> <span class="nn">requests</span>
+<a id="__codelineno-8-2" name="__codelineno-8-2"></a>
+<a id="__codelineno-8-3" name="__codelineno-8-3"></a><span class="n">s</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span>
+<a id="__codelineno-8-4" name="__codelineno-8-4"></a><span class="c1"># 第一步：发送一个请求，用于设置请求中的cookies</span>
+<a id="__codelineno-8-5" name="__codelineno-8-5"></a><span class="c1"># tips: http://httpbin.org能够用于测试http请求和响应</span>
+<a id="__codelineno-8-6" name="__codelineno-8-6"></a><span class="n">s</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;http://httpbin.org/cookies/set/sessioncookie/123456789&#39;</span><span class="p">)</span>
+<a id="__codelineno-8-7" name="__codelineno-8-7"></a><span class="c1"># 第二步：再发送一个请求，用于查看当前请求中的cookies</span>
+<a id="__codelineno-8-8" name="__codelineno-8-8"></a><span class="n">r</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;http://httpbin.org/cookies&quot;</span><span class="p">)</span>
+<a id="__codelineno-8-9" name="__codelineno-8-9"></a><span class="nb">print</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+<h2 id="python-re">Python re库<a class="headerlink" href="#python-re" title="Permanent link">&para;</a></h2>
+<p>正则表达式</p>
+<h2 id="_3">正则表达式基础<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
+<p>python re库</p>
+<p>在Python中需要通过正则表达式对字符串进行匹配的时候，可以使⽤⼀个python自带的模块，名字为re。</p>
+<p>正则表达式的大致匹配过程是：
+1.依次拿出表达式和文本中的字符比较，
+2.如果每一个字符都能匹配，则匹配成功；一旦有匹配不成功的字符则匹配失败。
+3.如果表达式中有量词或边界，这个过程会稍微有一些不同。</p>
+<p>r：Python 中字符串的前导 r 代表原始字符串标识符，该字符串中的特殊符号不会被转义，适用于正则表达式中繁杂的特殊符号表示。 因此 r"\n" 表示包含 '\' 和 'n' 两个字符的字符串，而 "\n" 则表示只包含一个换行符的字符串。</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Python</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-9-1">1</a></span>
+<span class="normal"><a href="#__codelineno-9-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1"></a><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">n&quot;</span><span class="p">)</span> <span class="c1"># 输出 \n</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2"></a><span class="nb">print</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\n&quot;</span><span class="p">)</span> <span class="c1">#输出 \n</span>
+</code></pre></div></td></tr></table></div>
+<p>re.match()</p>
+<p>语法：re.match(pattern, string, flags=0)</p>
+<p>尝试从字符串的起始位置匹配一个模式，如果不是起始位置匹配成功的话，match()就返回none。匹配成功re.match方法返回一个匹配的对象。</p>
+<p>如果上⼀步匹配到数据的话，可以使⽤group⽅法来提取数据。以使用group(num) 或 groups() 匹配对象函数来获取匹配表达式。</p>
+<p>group()用来提出分组截获的字符串，（）用来分组，group() 同group（0）就是匹配正则表达式整体结果，group(1) 列出第一个括号匹配部分，group(2) 列出第二个括号匹配部分，group(3) 列出第三个括号匹配部分。没有匹配成功的，re.search()返回None。</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Python</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-10-1">1</a></span>
+<span class="normal"><a href="#__codelineno-10-2">2</a></span>
+<span class="normal"><a href="#__codelineno-10-3">3</a></span>
+<span class="normal"><a href="#__codelineno-10-4">4</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1"></a><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">re</span>
+<a id="__codelineno-10-2" name="__codelineno-10-2"></a><span class="o">&gt;&gt;&gt;</span> <span class="n">result</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">&quot;itcast&quot;</span><span class="p">,</span><span class="s2">&quot;itcast.cn&quot;</span><span class="p">)</span>
+<a id="__codelineno-10-3" name="__codelineno-10-3"></a><span class="o">&gt;&gt;&gt;</span> <span class="n">result</span><span class="o">.</span><span class="n">group</span><span class="p">()</span>
+<a id="__codelineno-10-4" name="__codelineno-10-4"></a><span class="s1">&#39;itcast&#39;</span>
+</code></pre></div></td></tr></table></div>
+<p>字符  功能  位置
+.   匹配任意1个字符（除了\n）<br />
+[ ] 匹配[ ]中列举的字符 
+\d  匹配数字，即0-9   可以写在字符集[...]中
+\D  匹配⾮数字，即不是数字 可以写在字符集[...]中
+\s  匹配空⽩，即空格，tab键   可以写在字符集[...]中
+\S  匹配⾮空⽩字符 可以写在字符集[...]中
+\w  匹配单词字符，即a-z、A-Z、0-9、_   可以写在字符集[...]中
+\W  匹配⾮单词字符 可以写在字符集[...]中</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Python</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-11-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-11-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-11-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-11-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-11-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-11-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-11-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-11-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-11-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-11-10">10</a></span>
+<span class="normal"><a href="#__codelineno-11-11">11</a></span>
+<span class="normal"><a href="#__codelineno-11-12">12</a></span>
+<span class="normal"><a href="#__codelineno-11-13">13</a></span>
+<span class="normal"><a href="#__codelineno-11-14">14</a></span>
+<span class="normal"><a href="#__codelineno-11-15">15</a></span>
+<span class="normal"><a href="#__codelineno-11-16">16</a></span>
+<span class="normal"><a href="#__codelineno-11-17">17</a></span>
+<span class="normal"><a href="#__codelineno-11-18">18</a></span>
+<span class="normal"><a href="#__codelineno-11-19">19</a></span>
+<span class="normal"><a href="#__codelineno-11-20">20</a></span>
+<span class="normal"><a href="#__codelineno-11-21">21</a></span>
+<span class="normal"><a href="#__codelineno-11-22">22</a></span>
+<span class="normal"><a href="#__codelineno-11-23">23</a></span>
+<span class="normal"><a href="#__codelineno-11-24">24</a></span>
+<span class="normal"><a href="#__codelineno-11-25">25</a></span>
+<span class="normal"><a href="#__codelineno-11-26">26</a></span>
+<span class="normal"><a href="#__codelineno-11-27">27</a></span>
+<span class="normal"><a href="#__codelineno-11-28">28</a></span>
+<span class="normal"><a href="#__codelineno-11-29">29</a></span>
+<span class="normal"><a href="#__codelineno-11-30">30</a></span>
+<span class="normal"><a href="#__codelineno-11-31">31</a></span>
+<span class="normal"><a href="#__codelineno-11-32">32</a></span>
+<span class="normal"><a href="#__codelineno-11-33">33</a></span>
+<span class="normal"><a href="#__codelineno-11-34">34</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1"></a><span class="kn">import</span> <span class="nn">re</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2"></a><span class="n">ret</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span><span class="s2">&quot;M&quot;</span><span class="p">)</span>
+<a id="__codelineno-11-3" name="__codelineno-11-3"></a><span class="nb">print</span><span class="p">(</span><span class="n">ret</span><span class="o">.</span><span class="n">group</span><span class="p">())</span>
+<a id="__codelineno-11-4" name="__codelineno-11-4"></a><span class="n">ret</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">&quot;t.o&quot;</span><span class="p">,</span><span class="s2">&quot;too&quot;</span><span class="p">)</span>
+<a id="__codelineno-11-5" name="__codelineno-11-5"></a><span class="nb">print</span><span class="p">(</span><span class="n">ret</span><span class="o">.</span><span class="n">group</span><span class="p">())</span>
+<a id="__codelineno-11-6" name="__codelineno-11-6"></a><span class="n">ret</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">&quot;t.o&quot;</span><span class="p">,</span><span class="s2">&quot;two&quot;</span><span class="p">)</span>
+<a id="__codelineno-11-7" name="__codelineno-11-7"></a><span class="nb">print</span><span class="p">(</span><span class="n">ret</span><span class="o">.</span><span class="n">group</span><span class="p">())</span>
+<a id="__codelineno-11-8" name="__codelineno-11-8"></a><span class="c1"># 如果hello的⾸字符⼩写，那么正则表达式需要⼩写的h</span>
+<a id="__codelineno-11-9" name="__codelineno-11-9"></a><span class="n">ret</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">&quot;h&quot;</span><span class="p">,</span><span class="s2">&quot;hello Python&quot;</span><span class="p">)</span>
+<a id="__codelineno-11-10" name="__codelineno-11-10"></a><span class="nb">print</span><span class="p">(</span><span class="n">ret</span><span class="o">.</span><span class="n">group</span><span class="p">())</span>
+<a id="__codelineno-11-11" name="__codelineno-11-11"></a><span class="c1"># 如果hello的⾸字符⼤写，那么正则表达式需要⼤写的H</span>
+<a id="__codelineno-11-12" name="__codelineno-11-12"></a><span class="n">ret</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">&quot;H&quot;</span><span class="p">,</span><span class="s2">&quot;Hello Python&quot;</span><span class="p">)</span>
+<a id="__codelineno-11-13" name="__codelineno-11-13"></a><span class="nb">print</span><span class="p">(</span><span class="n">ret</span><span class="o">.</span><span class="n">group</span><span class="p">())</span>
+<a id="__codelineno-11-14" name="__codelineno-11-14"></a><span class="c1"># ⼤⼩写h都可以的情况</span>
+<a id="__codelineno-11-15" name="__codelineno-11-15"></a><span class="n">ret</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">&quot;[hH]&quot;</span><span class="p">,</span><span class="s2">&quot;hello Python&quot;</span><span class="p">)</span>
+<a id="__codelineno-11-16" name="__codelineno-11-16"></a><span class="nb">print</span><span class="p">(</span><span class="n">ret</span><span class="o">.</span><span class="n">group</span><span class="p">())</span>
+<a id="__codelineno-11-17" name="__codelineno-11-17"></a><span class="n">ret</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">&quot;[hH]&quot;</span><span class="p">,</span><span class="s2">&quot;Hello Python&quot;</span><span class="p">)</span>
+<a id="__codelineno-11-18" name="__codelineno-11-18"></a><span class="nb">print</span><span class="p">(</span><span class="n">ret</span><span class="o">.</span><span class="n">group</span><span class="p">())</span>
+<a id="__codelineno-11-19" name="__codelineno-11-19"></a><span class="n">ret</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">&quot;[hH]ello Python&quot;</span><span class="p">,</span><span class="s2">&quot;Hello Python&quot;</span><span class="p">)</span>
+<a id="__codelineno-11-20" name="__codelineno-11-20"></a><span class="nb">print</span><span class="p">(</span><span class="n">ret</span><span class="o">.</span><span class="n">group</span><span class="p">())</span>
+<a id="__codelineno-11-21" name="__codelineno-11-21"></a><span class="c1"># 匹配0到9的多种写法</span>
+<a id="__codelineno-11-22" name="__codelineno-11-22"></a><span class="n">ret</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">&quot;[0123456789]Hello Python&quot;</span><span class="p">,</span><span class="s2">&quot;7Hello Python&quot;</span><span class="p">)</span>
+<a id="__codelineno-11-23" name="__codelineno-11-23"></a><span class="nb">print</span><span class="p">(</span><span class="n">ret</span><span class="o">.</span><span class="n">group</span><span class="p">())</span>
+<a id="__codelineno-11-24" name="__codelineno-11-24"></a><span class="n">ret</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">&quot;[0-9]Hello Python&quot;</span><span class="p">,</span><span class="s2">&quot;7Hello Python&quot;</span><span class="p">)</span>
+<a id="__codelineno-11-25" name="__codelineno-11-25"></a><span class="nb">print</span><span class="p">(</span><span class="n">ret</span><span class="o">.</span><span class="n">group</span><span class="p">())</span>
+<a id="__codelineno-11-26" name="__codelineno-11-26"></a><span class="c1"># 匹配0到3和5-9</span>
+<a id="__codelineno-11-27" name="__codelineno-11-27"></a><span class="n">ret</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">&quot;[0-35-9]Hello Python&quot;</span><span class="p">,</span><span class="s2">&quot;7Hello Python&quot;</span><span class="p">)</span>
+<a id="__codelineno-11-28" name="__codelineno-11-28"></a><span class="nb">print</span><span class="p">(</span><span class="n">ret</span><span class="o">.</span><span class="n">group</span><span class="p">())</span>
+<a id="__codelineno-11-29" name="__codelineno-11-29"></a><span class="n">ret</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">&quot;[0-35-9]Hello Python&quot;</span><span class="p">,</span><span class="s2">&quot;4Hello Python&quot;</span><span class="p">)</span>
+<a id="__codelineno-11-30" name="__codelineno-11-30"></a><span class="c1">#print(ret.group())</span>
+<a id="__codelineno-11-31" name="__codelineno-11-31"></a><span class="n">ret</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">&quot;嫦娥\d号&quot;</span><span class="p">,</span><span class="s2">&quot;嫦娥1号发射成功&quot;</span><span class="p">)</span>
+<a id="__codelineno-11-32" name="__codelineno-11-32"></a><span class="nb">print</span><span class="p">(</span><span class="n">ret</span><span class="o">.</span><span class="n">group</span><span class="p">())</span>
+<a id="__codelineno-11-33" name="__codelineno-11-33"></a><span class="n">ret</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">&quot;嫦娥\d号&quot;</span><span class="p">,</span><span class="s2">&quot;嫦娥2号发射成功&quot;</span><span class="p">)</span>
+<a id="__codelineno-11-34" name="__codelineno-11-34"></a><span class="nb">print</span><span class="p">(</span><span class="n">ret</span><span class="o">.</span><span class="n">group</span><span class="p">())</span>
+</code></pre></div></td></tr></table></div>
+<p>结果：</p>
+<p>M
+too
+two
+h
+H
+h
+H
+Hello Python
+7Hello Python
+7Hello Python
+7Hello Python</p>
+<p>报错</p>
+<p>嫦娥1号
+嫦娥2号</p>
+<table>
+<thead>
+<tr>
+<th>字符</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>^</td>
+<td>匹配字符串开头</td>
+</tr>
+<tr>
+<td>$</td>
+<td>匹配字符串结尾</td>
+</tr>
+</tbody>
+</table>
+<p>字符  功能  位置  表达式实例   完整匹配的字符串</p>
+<ul>
+<li>
+<p>匹配前⼀个字符出现0次或者⽆限次，即可有可⽆  用在字符或(...)之后    abc*    abccc</p>
+</li>
+<li>
+<p>匹配前⼀个字符出现1次或者⽆限次，即⾄少有1次 用在字符或(...)之后    abc+    abccc
+  ? 匹配前⼀个字符出现1次或者0次，即要么有1次，要么没有 用在字符或(...)之后    abc?    ab,abc
+  {m}   匹配前⼀个字符出现m次 用在字符或(...)之后    ab{2}c  abbc
+  {m,n} 匹配前⼀个字符出现从m到n次，若省略m，则匹配0到n次，若省略n，则匹配m到无限次   用在字符或(...)之后    ab{1,2}c 对应的是abc,abbc</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>字符</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>|</td>
+<td>匹配左右任意⼀个表达式</td>
+</tr>
+<tr>
+<td>(ab)</td>
+<td>将括号中字符作为⼀个分组</td>
+</tr>
+<tr>
+<td>\num</td>
+<td>引⽤分组num匹配到的字符串</td>
+</tr>
+<tr>
+<td>(?P<name>)</td>
+<td>分组起别名，匹配到的子串组在外部是通过定义的 <em>name</em> 来获取的</td>
+</tr>
+<tr>
+<td>(?P=name)</td>
+<td>引⽤别名为name分组匹配到的字符串</td>
+</tr>
+</tbody>
+</table>
+<p>举例：|</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Python</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-12-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-12-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-12-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-12-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-12-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-12-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-12-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-12-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-12-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-12-10">10</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1"></a><span class="c1">#匹配出0-100之间的数字</span>
+<a id="__codelineno-12-2" name="__codelineno-12-2"></a><span class="kn">import</span> <span class="nn">re</span>
+<a id="__codelineno-12-3" name="__codelineno-12-3"></a><span class="n">ret</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">&quot;[1-9]?\d$|100&quot;</span><span class="p">,</span><span class="s2">&quot;8&quot;</span><span class="p">)</span>
+<a id="__codelineno-12-4" name="__codelineno-12-4"></a><span class="nb">print</span><span class="p">(</span><span class="n">ret</span><span class="o">.</span><span class="n">group</span><span class="p">())</span> <span class="c1"># 8</span>
+<a id="__codelineno-12-5" name="__codelineno-12-5"></a><span class="n">ret</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">&quot;[1-9]?\d$|100&quot;</span><span class="p">,</span><span class="s2">&quot;78&quot;</span><span class="p">)</span>
+<a id="__codelineno-12-6" name="__codelineno-12-6"></a><span class="nb">print</span><span class="p">(</span><span class="n">ret</span><span class="o">.</span><span class="n">group</span><span class="p">())</span> <span class="c1"># 78</span>
+<a id="__codelineno-12-7" name="__codelineno-12-7"></a><span class="n">ret</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">&quot;[1-9]?\d$|100&quot;</span><span class="p">,</span><span class="s2">&quot;08&quot;</span><span class="p">)</span>
+<a id="__codelineno-12-8" name="__codelineno-12-8"></a><span class="c1"># print(ret.group()) # 不是0-100之间</span>
+<a id="__codelineno-12-9" name="__codelineno-12-9"></a><span class="n">ret</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">&quot;[1-9]?\d$|100&quot;</span><span class="p">,</span><span class="s2">&quot;100&quot;</span><span class="p">)</span>
+<a id="__codelineno-12-10" name="__codelineno-12-10"></a><span class="nb">print</span><span class="p">(</span><span class="n">ret</span><span class="o">.</span><span class="n">group</span><span class="p">())</span> <span class="c1"># 100</span>
+</code></pre></div></td></tr></table></div>
+<p>举例：()</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Python</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-13-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-13-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-13-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-13-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-13-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-13-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-13-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-13-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-13-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-13-10">10</a></span>
+<span class="normal"><a href="#__codelineno-13-11">11</a></span>
+<span class="normal"><a href="#__codelineno-13-12">12</a></span>
+<span class="normal"><a href="#__codelineno-13-13">13</a></span>
+<span class="normal"><a href="#__codelineno-13-14">14</a></span>
+<span class="normal"><a href="#__codelineno-13-15">15</a></span>
+<span class="normal"><a href="#__codelineno-13-16">16</a></span>
+<span class="normal"><a href="#__codelineno-13-17">17</a></span>
+<span class="normal"><a href="#__codelineno-13-18">18</a></span>
+<span class="normal"><a href="#__codelineno-13-19">19</a></span>
+<span class="normal"><a href="#__codelineno-13-20">20</a></span>
+<span class="normal"><a href="#__codelineno-13-21">21</a></span>
+<span class="normal"><a href="#__codelineno-13-22">22</a></span>
+<span class="normal"><a href="#__codelineno-13-23">23</a></span>
+<span class="normal"><a href="#__codelineno-13-24">24</a></span>
+<span class="normal"><a href="#__codelineno-13-25">25</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1"></a><span class="c1">#需求：匹配出163、126、qq邮箱</span>
+<a id="__codelineno-13-2" name="__codelineno-13-2"></a><span class="n">ret</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">&quot;\w{4,20}@163\.com&quot;</span><span class="p">,</span> <span class="s2">&quot;test@163.com&quot;</span><span class="p">)</span>
+<a id="__codelineno-13-3" name="__codelineno-13-3"></a><span class="nb">print</span><span class="p">(</span><span class="n">ret</span><span class="o">.</span><span class="n">group</span><span class="p">())</span> <span class="c1"># test@163.com</span>
+<a id="__codelineno-13-4" name="__codelineno-13-4"></a><span class="n">ret</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">&quot;\w{4,20}@(163|126|qq)\.com&quot;</span><span class="p">,</span> <span class="s2">&quot;test@126.com&quot;</span><span class="p">)</span>
+<a id="__codelineno-13-5" name="__codelineno-13-5"></a><span class="nb">print</span><span class="p">(</span><span class="n">ret</span><span class="o">.</span><span class="n">group</span><span class="p">())</span> <span class="c1"># test@126.com</span>
+<a id="__codelineno-13-6" name="__codelineno-13-6"></a><span class="n">ret</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">&quot;\w{4,20}@(163|126|qq)\.com&quot;</span><span class="p">,</span> <span class="s2">&quot;test@qq.com&quot;</span><span class="p">)</span>
+<a id="__codelineno-13-7" name="__codelineno-13-7"></a><span class="nb">print</span><span class="p">(</span><span class="n">ret</span><span class="o">.</span><span class="n">group</span><span class="p">())</span> <span class="c1"># test@qq.com</span>
+<a id="__codelineno-13-8" name="__codelineno-13-8"></a><span class="n">ret</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">&quot;\w{4,20}@(163|126|qq)\.com&quot;</span><span class="p">,</span> <span class="s2">&quot;test@gmail.com&quot;</span><span class="p">)</span>
+<a id="__codelineno-13-9" name="__codelineno-13-9"></a><span class="k">if</span> <span class="n">ret</span><span class="p">:</span>
+<a id="__codelineno-13-10" name="__codelineno-13-10"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">ret</span><span class="o">.</span><span class="n">group</span><span class="p">())</span>
+<a id="__codelineno-13-11" name="__codelineno-13-11"></a><span class="k">else</span><span class="p">:</span>
+<a id="__codelineno-13-12" name="__codelineno-13-12"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;不是163、126、qq邮箱&quot;</span><span class="p">)</span> <span class="c1"># 不是163、126、qq邮箱</span>
+<a id="__codelineno-13-13" name="__codelineno-13-13"></a><span class="c1">#不是以4、7结尾的⼿机号码(11位)</span>
+<a id="__codelineno-13-14" name="__codelineno-13-14"></a><span class="n">tels</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;13100001234&quot;</span><span class="p">,</span> <span class="s2">&quot;18912344321&quot;</span><span class="p">,</span> <span class="s2">&quot;10086&quot;</span><span class="p">,</span> <span class="s2">&quot;18800007777&quot;</span><span class="p">]</span>
+<a id="__codelineno-13-15" name="__codelineno-13-15"></a><span class="k">for</span> <span class="n">tel</span> <span class="ow">in</span> <span class="n">tels</span><span class="p">:</span>
+<a id="__codelineno-13-16" name="__codelineno-13-16"></a>    <span class="n">ret</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">&quot;1\d</span><span class="si">{9}</span><span class="s2">[0-35-68-9]&quot;</span><span class="p">,</span> <span class="n">tel</span><span class="p">)</span>
+<a id="__codelineno-13-17" name="__codelineno-13-17"></a>    <span class="k">if</span> <span class="n">ret</span><span class="p">:</span>
+<a id="__codelineno-13-18" name="__codelineno-13-18"></a>        <span class="nb">print</span><span class="p">(</span><span class="n">ret</span><span class="o">.</span><span class="n">group</span><span class="p">())</span>
+<a id="__codelineno-13-19" name="__codelineno-13-19"></a>    <span class="k">else</span><span class="p">:</span>
+<a id="__codelineno-13-20" name="__codelineno-13-20"></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> 不是想要的⼿机号&quot;</span> <span class="o">%</span> <span class="n">tel</span><span class="p">)</span>
+<a id="__codelineno-13-21" name="__codelineno-13-21"></a><span class="c1">#提取区号和电话号码</span>
+<a id="__codelineno-13-22" name="__codelineno-13-22"></a><span class="n">ret</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">&quot;([^-]*)-(\d+)&quot;</span><span class="p">,</span><span class="s2">&quot;010-12345678&quot;</span><span class="p">)</span>
+<a id="__codelineno-13-23" name="__codelineno-13-23"></a><span class="nb">print</span><span class="p">(</span><span class="n">ret</span><span class="o">.</span><span class="n">group</span><span class="p">())</span>
+<a id="__codelineno-13-24" name="__codelineno-13-24"></a><span class="nb">print</span><span class="p">(</span><span class="n">ret</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+<a id="__codelineno-13-25" name="__codelineno-13-25"></a><span class="nb">print</span><span class="p">(</span><span class="n">ret</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+</code></pre></div></td></tr></table></div>
+<p>举例：\number</p>
+<p>匹配数字代表的组合。每个括号是一个组合，组合从1开始编号。比如 (.+) \1 匹配 'the the' 或者 '55 55', 但不会匹配 'thethe' (注意组合后面的空格)。这个特殊序列只能用于匹配前面99个组合。如果 number 的第一个数位是0， 或者 number 是三个八进制数，它将不会被看作是一个组合，而是八进制的数字值。在 '[' 和 ']' 字符集合内，任何数字转义都被看作是字符。</p>
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Python</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-14-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-14-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-14-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-14-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-14-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-14-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-14-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-14-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-14-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-14-10">10</a></span>
+<span class="normal"><a href="#__codelineno-14-11">11</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1"></a><span class="kn">import</span> <span class="nn">re</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2"></a><span class="c1"># 正确的理解思路：如果在第⼀对&lt;&gt;中是什么，按理说在后⾯的那对&lt;&gt;中就应该是什么。通过引⽤分组中匹配到的数据即可，但是要注意是元字符串，即类似 r&quot;&quot;这种格式。</span>
+<a id="__codelineno-14-3" name="__codelineno-14-3"></a><span class="n">ret</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;&lt;([a-zA-Z]*)&gt;\w*&lt;/\1&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;html&gt;hh&lt;/html&gt;&quot;</span><span class="p">)</span>
+<a id="__codelineno-14-4" name="__codelineno-14-4"></a><span class="c1"># 因为2对&lt;&gt;中的数据不⼀致，所以没有匹配出来</span>
+<a id="__codelineno-14-5" name="__codelineno-14-5"></a><span class="n">test_label</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&lt;html&gt;hh&lt;/html&gt;&quot;</span><span class="p">,</span><span class="s2">&quot;&lt;html&gt;hh&lt;/htmlbalabala&gt;&quot;</span><span class="p">]</span>
+<a id="__codelineno-14-6" name="__codelineno-14-6"></a><span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">test_label</span><span class="p">:</span>
+<a id="__codelineno-14-7" name="__codelineno-14-7"></a>    <span class="n">ret</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;&lt;([a-zA-Z]*)&gt;\w*&lt;/\1&gt;&quot;</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span>
+<a id="__codelineno-14-8" name="__codelineno-14-8"></a>    <span class="k">if</span> <span class="n">ret</span><span class="p">:</span>
+<a id="__codelineno-14-9" name="__codelineno-14-9"></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> 这是一对正确的标签&quot;</span> <span class="o">%</span> <span class="n">ret</span><span class="o">.</span><span class="n">group</span><span class="p">())</span>
+<a id="__codelineno-14-10" name="__codelineno-14-10"></a>    <span class="k">else</span><span class="p">:</span>
+<a id="__codelineno-14-11" name="__codelineno-14-11"></a>        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> 这是⼀对不正确的标签&quot;</span> <span class="o">%</span> <span class="n">label</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+<p>结果：</p>
+<html>hh</html>
+<p>这是一对正确的标签</p>
+<html>hh</htmlbalabala> 这是⼀对不正确的标签
+
+  例子2：匹配出 <html><h1>www.itcast.cn</h1></html>
+
+## Python base64库
+
+可以用来base64解码
+
+base64.b64decode
+
+## bugku 秋名山车神
+
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Python</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-15-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-15-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-15-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-15-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-15-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-15-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-15-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-15-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-15-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-15-10">10</a></span>
+<span class="normal"><a href="#__codelineno-15-11">11</a></span>
+<span class="normal"><a href="#__codelineno-15-12">12</a></span>
+<span class="normal"><a href="#__codelineno-15-13">13</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1"></a><span class="kn">import</span> <span class="nn">re</span>
+<a id="__codelineno-15-2" name="__codelineno-15-2"></a><span class="kn">import</span> <span class="nn">requests</span>
+<a id="__codelineno-15-3" name="__codelineno-15-3"></a>
+<a id="__codelineno-15-4" name="__codelineno-15-4"></a><span class="n">s</span><span class="o">=</span><span class="n">requests</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span>
+<a id="__codelineno-15-5" name="__codelineno-15-5"></a><span class="n">url</span><span class="o">=</span><span class="s2">&quot;http://114.67.175.224:19399/&quot;</span>
+<a id="__codelineno-15-6" name="__codelineno-15-6"></a><span class="n">n</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+<a id="__codelineno-15-7" name="__codelineno-15-7"></a><span class="n">res</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s2">&quot;&lt;div&gt;(.*)=&quot;</span><span class="p">,</span><span class="n">n</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+<a id="__codelineno-15-8" name="__codelineno-15-8"></a><span class="n">p</span><span class="o">=</span><span class="n">res</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<a id="__codelineno-15-9" name="__codelineno-15-9"></a><span class="n">num</span><span class="o">=</span><span class="nb">eval</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+<a id="__codelineno-15-10" name="__codelineno-15-10"></a><span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;value&quot;</span><span class="p">:</span><span class="n">num</span><span class="p">}</span>
+<a id="__codelineno-15-11" name="__codelineno-15-11"></a><span class="n">re1</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+<a id="__codelineno-15-12" name="__codelineno-15-12"></a><span class="n">re1</span><span class="o">.</span><span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span>
+<a id="__codelineno-15-13" name="__codelineno-15-13"></a><span class="nb">print</span><span class="p">(</span><span class="n">re1</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+
+
+
+## bugku 速度要快
+
+<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">Python</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-16-1"> 1</a></span>
+<span class="normal"><a href="#__codelineno-16-2"> 2</a></span>
+<span class="normal"><a href="#__codelineno-16-3"> 3</a></span>
+<span class="normal"><a href="#__codelineno-16-4"> 4</a></span>
+<span class="normal"><a href="#__codelineno-16-5"> 5</a></span>
+<span class="normal"><a href="#__codelineno-16-6"> 6</a></span>
+<span class="normal"><a href="#__codelineno-16-7"> 7</a></span>
+<span class="normal"><a href="#__codelineno-16-8"> 8</a></span>
+<span class="normal"><a href="#__codelineno-16-9"> 9</a></span>
+<span class="normal"><a href="#__codelineno-16-10">10</a></span>
+<span class="normal"><a href="#__codelineno-16-11">11</a></span>
+<span class="normal"><a href="#__codelineno-16-12">12</a></span>
+<span class="normal"><a href="#__codelineno-16-13">13</a></span>
+<span class="normal"><a href="#__codelineno-16-14">14</a></span>
+<span class="normal"><a href="#__codelineno-16-15">15</a></span>
+<span class="normal"><a href="#__codelineno-16-16">16</a></span>
+<span class="normal"><a href="#__codelineno-16-17">17</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1"></a><span class="kn">import</span> <span class="nn">requests</span>
+<a id="__codelineno-16-2" name="__codelineno-16-2"></a><span class="kn">import</span> <span class="nn">re</span>
+<a id="__codelineno-16-3" name="__codelineno-16-3"></a><span class="kn">import</span> <span class="nn">base64</span>
+<a id="__codelineno-16-4" name="__codelineno-16-4"></a>
+<a id="__codelineno-16-5" name="__codelineno-16-5"></a><span class="n">s</span><span class="o">=</span><span class="n">requests</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span>
+<a id="__codelineno-16-6" name="__codelineno-16-6"></a><span class="n">url</span><span class="o">=</span><span class="s2">&quot;http://114.67.175.224:16814/&quot;</span>
+<a id="__codelineno-16-7" name="__codelineno-16-7"></a><span class="n">get</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+<a id="__codelineno-16-8" name="__codelineno-16-8"></a><span class="n">get</span><span class="o">.</span><span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span>
+<a id="__codelineno-16-9" name="__codelineno-16-9"></a><span class="n">head</span><span class="o">=</span><span class="n">get</span><span class="o">.</span><span class="n">headers</span>
+<a id="__codelineno-16-10" name="__codelineno-16-10"></a><span class="n">flag</span><span class="o">=</span><span class="n">head</span><span class="p">[</span><span class="s2">&quot;Flag&quot;</span><span class="p">]</span>
+<a id="__codelineno-16-11" name="__codelineno-16-11"></a><span class="n">ba1</span><span class="o">=</span><span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">flag</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+<a id="__codelineno-16-12" name="__codelineno-16-12"></a><span class="n">re1</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s2">&quot;:(.*)&quot;</span><span class="p">,</span><span class="n">ba1</span><span class="p">)</span>
+<a id="__codelineno-16-13" name="__codelineno-16-13"></a><span class="n">ba2</span><span class="o">=</span><span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">re1</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+<a id="__codelineno-16-14" name="__codelineno-16-14"></a><span class="n">payload</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;margin&quot;</span><span class="p">:</span><span class="n">ba2</span><span class="p">}</span>
+<a id="__codelineno-16-15" name="__codelineno-16-15"></a><span class="n">post</span><span class="o">=</span><span class="n">s</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span><span class="n">payload</span><span class="p">)</span>
+<a id="__codelineno-16-16" name="__codelineno-16-16"></a><span class="n">post</span><span class="o">.</span><span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span>
+<a id="__codelineno-16-17" name="__codelineno-16-17"></a><span class="nb">print</span><span class="p">(</span><span class="n">post</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  回到页面顶部
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.top", "search.suggest", "search.highlight", "navigation.expand", "search.share"], "search": "../../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "\u5df2\u590d\u5236", "clipboard.copy": "\u590d\u5236", "search.result.more.one": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.more.other": "\u5728\u8be5\u9875\u4e0a\u8fd8\u6709 # \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.none": "\u6ca1\u6709\u627e\u5230\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.one": "\u627e\u5230 1 \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.other": "# \u4e2a\u7b26\u5408\u6761\u4ef6\u7684\u7ed3\u679c", "search.result.placeholder": "\u952e\u5165\u4ee5\u5f00\u59cb\u641c\u7d22", "search.result.term.missing": "\u7f3a\u5c11", "select.version": "\u9009\u62e9\u5f53\u524d\u7248\u672c"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.60a45f97.min.js"></script>
+      
+        <script src="../../../javascripts/extra.js"></script>
+      
+    
+  </body>
+</html>
