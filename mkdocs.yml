@@ -14,6 +14,8 @@ nav:
     - Redis未授权利用总结: Web/Web基础/Redis未授权利用总结.md
     - Ruby类污染及其例题WP: Web/Web基础/Ruby类污染及其例题WP.pdf
     - sql注入: Web/Web基础/sql注入.md
+    - cakephp反序列化: Web/Web基础/cakephp反序列化.md
+    - 
     # - ssrf: 
     - SSTI: Web/Web基础/SSTI.md
     - 命令执行: Web/Web基础/命令执行.md
@@ -39,14 +41,17 @@ nav:
     - RSA算法: Crypto/密码学习/RSA算法.md
 
 - Writeup :  
-  - SHCTF2024: Writeup/Web/SHCTF_2024.md
   - ctfshow_Web入门: Writeup/Web/ctfshow_web入门.md
-  - 杂题集: Writeup/Web/做的一些杂题.md
+  - NSSCTF: Writeup/NSSCTF.md
   - ctfshow单身杯_2024: Writeup/ctfshow单身杯_2024.md
+  - 杂题集: Writeup/Web/做的一些杂题.md
+  - SHCTF2024: Writeup/Web/SHCTF_2024.md
   # - WuCup_2024: Writeup/WuCup_2024.md
   - 国城杯_2024: Writeup/国城杯_2024.md
   - 强网拟态_2024: Writeup/强网拟态_2024.md
   # - 蜀道山_2024: Writeup/蜀道山_2024.md
+  - SUCTF_2024 复现 : Writeup/Web/SUCTF_2024.md
+  - 西湖论剑_2024: Writeup/西湖论剑_2024.md
 
 - Python:
   - Python数据容器: python/2_Python数据容器.md
