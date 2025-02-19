@@ -52,7 +52,8 @@ outputs:
     - RSS # 这个其实无所谓
     - JSON # necessary for search, 这里的配置修改好之后，一定要重新生成一下
 
-paginate: 8
+pagination: 
+  pagerSize: 8
 
 params:
   env: production # to enable google analytics, opengraph, twitter-cards and schema.
@@ -75,17 +76,19 @@ params:
 
   homeInfoParams:
     # 首页的 profile 内容
-    Title: "Hey Guys 👋"
+    Title: "Welcome to my Blog!"
     # 首页的 profile 内容
     Content: >
-      Welcome to my Blog! 这里主要用来记录一些个人的学习笔记
+      这里主要是用来记录一些个人的学习笔记和解题思路
+      <br>
+
+
 
   # 社交帐号的按钮
   socialIcons:
     - name: github
       title: Follow my Github
       url: "https://github.com/xrntkk"
-
     # - name: Bilibili
     #   title: 关注我的 B 站帐号
     #   url: "https://space.bilibili.com/687535538?spm_id_from=333.1007.0.0"
