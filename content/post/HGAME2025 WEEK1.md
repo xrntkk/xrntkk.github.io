@@ -2,9 +2,11 @@
 date = '2025-02-20T00:27:55+08:00'
 draft = true
 title = 'HGAME2025 WEEK1'
-+++
-# 
 
+categories = ["Writeup"]
+tags = ["writeup", "ctf", "Web"]
+
++++
 ## Web
 
 ### week1
