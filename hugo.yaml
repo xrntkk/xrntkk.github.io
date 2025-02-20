@@ -93,20 +93,20 @@ params:
       title: Follow my Steam
       url: "https://steamcommunity.com/profiles/76561199199934712/"
     - name: rss
-    # - name: Telegram
-    #   title: Contact Me
-    #   url: "https://t.me/sonnycalcr"
+      url: "./index.xml"
+    - name: email
+      title: xrntkk@163.com
 
  
  
   # 设置网站的标签页的图标，即 favicon
-  # assets:
-  #     favicon: "favicon.png"
-  #     favicon16x16: "favicon.png"
-  #     favicon32x32: "favicon.png"
-  #     apple_touch_icon: "favicon.png"
-  #     safari_pinned_tab: "favicon.png"
-  #     disableHLJS: true
+  assets:
+      favicon: "favicon.jpg"
+      favicon16x16: "favicon.jpg"
+      favicon32x32: "favicon.jpg"
+      apple_touch_icon: "favicon.jpg"
+      safari_pinned_tab: "favicon.jpg"
+      disableHLJS: true
       
   #搜索
   fuseOpts:
