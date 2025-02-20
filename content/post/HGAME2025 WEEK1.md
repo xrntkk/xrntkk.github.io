@@ -13,11 +13,11 @@ tags = ["writeup", "ctf", "Web"]
 
 拿到环境
 
-![image-20250206151704506](./assets/image-20250206151704506.png)
+![image-20250206151704506](../assets/image-20250206151704506.png)
 
 一个小游戏，猜测应该是js审计
 
-![image-20250206151846623](./assets/image-20250206151846623.png)
+![image-20250206151846623](../assets/image-20250206151846623.png)
 
 查看index.js发现代码进行了混淆
 
@@ -27,15 +27,15 @@ https://tool.yuanrenxue.cn/decode_obfuscator
 
 
 
-![image-20250206152531656](./assets/image-20250206152531656.png)
+![image-20250206152531656](../assets/image-20250206152531656.png)
 
 反混淆之后找到这个
 
-![image-20250206152608227](./assets/image-20250206152608227.png)
+![image-20250206152608227](../assets/image-20250206152608227.png)
 
 感觉是栅栏，解密拿到flag
 
-![image-20250206152742122](./assets/image-20250206152742122.png)
+![image-20250206152742122](../assets/image-20250206152742122.png)
 
 
 
@@ -47,7 +47,7 @@ https://tool.yuanrenxue.cn/decode_obfuscator
 
 
 
-![image-20250206152938301](./assets/image-20250206152938301.png)
+![image-20250206152938301](../assets/image-20250206152938301.png)
 
 
 
@@ -198,15 +198,15 @@ eval.ejs
 
 将ejs上传
 
-![image-20250206154845681](./assets/image-20250206154845681.png)
+![image-20250206154845681](../assets/image-20250206154845681.png)
 
 覆写原来的ejs
 
-![image-20250206155252476](./assets/image-20250206155252476.png)
+![image-20250206155252476](../assets/image-20250206155252476.png)
 
 访问/
 
-![image-20250206155341848](./assets/image-20250206155341848.png)
+![image-20250206155341848](../assets/image-20250206155341848.png)
 
 这题flag藏在环境变量里
 
@@ -229,7 +229,7 @@ payload:
 
 
 
-![image-20250206155810074](./assets/image-20250206155810074.png)
+![image-20250206155810074](../assets/image-20250206155810074.png)
 
 
 
@@ -237,13 +237,13 @@ payload:
 
 密码爆破，XSS cookie窃取
 
-![image-20250206160024933](./assets/image-20250206160024933.png)
+![image-20250206160024933](../assets/image-20250206160024933.png)
 
 爆出来 shallot/888888
 
 登进去看到一个留言板
 
-![image-20250206160118188](./assets/image-20250206160118188.png)
+![image-20250206160118188](../assets/image-20250206160118188.png)
 
 猜测是xss，测试一下
 
@@ -251,13 +251,13 @@ payload:
 <script>alert('XSS')</script> 
 ```
 
-![image-20250206160225628](./assets/image-20250206160225628.png)
+![image-20250206160225628](../assets/image-20250206160225628.png)
 
 同时通过dirsearch扫到了/admin路由
 
-![image-20250206160449456](./assets/image-20250206160449456.png)
+![image-20250206160449456](../assets/image-20250206160449456.png)
 
-![image-20250206160507469](./assets/image-20250206160507469.png)
+![image-20250206160507469](../assets/image-20250206160507469.png)
 
 根据这句话大概可以猜到，访问/admin路由的时候应该会在后端以admin的身份来访问留言板
 
@@ -281,7 +281,7 @@ payload:
 
 ### Level 25 双面人派对
 
-![image-20250206161540205](./assets/image-20250206161540205.png)
+![image-20250206161540205](../assets/image-20250206161540205.png)
 
 这道题有两个环境，一开始以为是re，其实感觉更像是misc
 
@@ -291,7 +291,7 @@ payload:
 
 用exeinfo PE查到用upx加壳了
 
-![image-20250206161827725](./assets/image-20250206161827725.png)
+![image-20250206161827725](../assets/image-20250206161827725.png)
 
 用upx官方工具就可以脱壳
 
@@ -299,7 +299,7 @@ https://github.com/upx/upx/releases/latest
 
 脱壳之后用ida打开
 
-![image-20250206162100313](./assets/image-20250206162100313.png)
+![image-20250206162100313](../assets/image-20250206162100313.png)
 
 可以找到一段关于minio的密钥信息
 
@@ -311,15 +311,15 @@ https://github.com/upx/upx/releases/latest
 
 用mc通过Access Key和Secret Key连接上去
 
-![image-20250206162349506](./assets/image-20250206162349506.png)
+![image-20250206162349506](../assets/image-20250206162349506.png)
 
 里面有两个储存桶
 
-![image-20250206162644906](./assets/image-20250206162644906.png)
+![image-20250206162644906](../assets/image-20250206162644906.png)
 
 将两个储存桶都下载下来
 
-![image-20250206162716208](./assets/image-20250206162716208.png)
+![image-20250206162716208](../assets/image-20250206162716208.png)
 
 /hints里面放的是8080服务的源码，/prodbucket里面是源码编译后的文件叫做update，猜测是热更新
 
@@ -401,15 +401,15 @@ func program(state overseer.State) {
 
 将源码编译后覆写到储存桶上
 
-![image-20250206163859652](./assets/image-20250206163859652.png)
+![image-20250206163859652](../assets/image-20250206163859652.png)
 
 访问/abc
 
-![image-20250206164000985](./assets/image-20250206164000985.png)
+![image-20250206164000985](../assets/image-20250206164000985.png)
 
 拿到flag
 
-![image-20250206164029974](./assets/image-20250206164029974.png)
+![image-20250206164029974](../assets/image-20250206164029974.png)
 
 
 
@@ -417,15 +417,15 @@ func program(state overseer.State) {
 
 ssti/条件竞争
 
-![image-20250206164229496](./assets/image-20250206164229496.png)
+![image-20250206164229496](../assets/image-20250206164229496.png)
 
 /robots.txt有个/app.conf
 
-![image-20250206164257706](./assets/image-20250206164257706.png)
+![image-20250206164257706](../assets/image-20250206164257706.png)
 
 访问/app.conf
 
-![image-20250206164413970](./assets/image-20250206164413970.png)
+![image-20250206164413970](../assets/image-20250206164413970.png)
 
 这里展示了httpd.conf的片段
 
@@ -433,13 +433,13 @@ ssti/条件竞争
 
 同时在响应标头能找到Apache的版本信息
 
-![image-20250206164739551](./assets/image-20250206164739551.png)
+![image-20250206164739551](../assets/image-20250206164739551.png)
 
 可以找到这个版本的apache存在源码泄露，而且是跟重写规则有关
 
 CVE-2024-38475
 
-![image-20250206165000233](./assets/image-20250206165000233.png)
+![image-20250206165000233](../assets/image-20250206165000233.png)
 
 网上没找到什么poc
 
@@ -457,7 +457,7 @@ http://node1.hgame.vidar.club:31155/admin/usr/local/apache2/app/app.py%3F
 
 这道题多了一个**RewriteCond "%{HTTP_USER_AGENT}" "^L1nk/"**，只需要在user-agent前面加上L1nk/即可
 
-![image-20250206165543890](./assets/image-20250206165543890.png)
+![image-20250206165543890](../assets/image-20250206165543890.png)
 
 拿到源码
 

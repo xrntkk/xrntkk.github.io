@@ -23,15 +23,15 @@
 &lt;h3 id=&#34;week1&#34;&gt;week1&lt;/h3&gt;
 &lt;h3 id=&#34;level-24-pacman&#34;&gt;Level 24 Pacman&lt;/h3&gt;
 &lt;p&gt;拿到环境&lt;/p&gt;
-&lt;p&gt;&lt;img alt=&#34;image-20250206151704506&#34; loading=&#34;lazy&#34; src=&#34;./assets/image-20250206151704506.png&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt=&#34;image-20250206151704506&#34; loading=&#34;lazy&#34; src=&#34;../assets/image-20250206151704506.png&#34;&gt;&lt;/p&gt;
 &lt;p&gt;一个小游戏，猜测应该是js审计&lt;/p&gt;
-&lt;p&gt;&lt;img alt=&#34;image-20250206151846623&#34; loading=&#34;lazy&#34; src=&#34;./assets/image-20250206151846623.png&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt=&#34;image-20250206151846623&#34; loading=&#34;lazy&#34; src=&#34;../assets/image-20250206151846623.png&#34;&gt;&lt;/p&gt;
 &lt;p&gt;查看index.js发现代码进行了混淆&lt;/p&gt;
 &lt;p&gt;可以用工具反混淆一下，增加一下可读性&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;https://tool.yuanrenxue.cn/decode_obfuscator&#34;&gt;https://tool.yuanrenxue.cn/decode_obfuscator&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt=&#34;image-20250206152531656&#34; loading=&#34;lazy&#34; src=&#34;./assets/image-20250206152531656.png&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt=&#34;image-20250206152531656&#34; loading=&#34;lazy&#34; src=&#34;../assets/image-20250206152531656.png&#34;&gt;&lt;/p&gt;
 &lt;p&gt;反混淆之后找到这个&lt;/p&gt;
-&lt;p&gt;&lt;img alt=&#34;image-20250206152608227&#34; loading=&#34;lazy&#34; src=&#34;./assets/image-20250206152608227.png&#34;&gt;&lt;/p&gt;</description>
+&lt;p&gt;&lt;img alt=&#34;image-20250206152608227&#34; loading=&#34;lazy&#34; src=&#34;../assets/image-20250206152608227.png&#34;&gt;&lt;/p&gt;</description>
     </item>
     <item>
       <title>关于</title>
