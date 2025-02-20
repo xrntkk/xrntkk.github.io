@@ -271,7 +271,7 @@ payload:
 
 将payload输出在留言板，然后访问/admin
 
-![f01e1737d9537ace6383c2aa28b8be2](./assets/f01e1737d9537ace6383c2aa28b8be2.jpg)
+![f01e1737d9537ace6383c2aa28b8be2](../assets/f01e1737d9537ace6383c2aa28b8be2.jpg)
 
 成功拿到admin的cookie
 
@@ -447,7 +447,7 @@ CVE-2024-38475
 
 https://blog.orange.tw/posts/2024-08-confusion-attacks-en/
 
-![2dbfbdadba8694e40ae73db901c8c4e](./assets/2dbfbdadba8694e40ae73db901c8c4e.jpg)
+![2dbfbdadba8694e40ae73db901c8c4e](../assets/2dbfbdadba8694e40ae73db901c8c4e.jpg)
 
 根据这篇文章我们可以构造出paylaod
 
@@ -563,5 +563,5 @@ while True:
 
 成功执行，拿到flag
 
-![ce7c9af5b1c85c5b5c60632c51b313a](./assets/ce7c9af5b1c85c5b5c60632c51b313a.png)
+![ce7c9af5b1c85c5b5c60632c51b313a](../assets/ce7c9af5b1c85c5b5c60632c51b313a.png)
 
