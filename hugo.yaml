@@ -89,12 +89,10 @@ params:
     - name: github
       title: Follow my Github
       url: "https://github.com/xrntkk"
-    # - name: Bilibili
-    #   title: 关注我的 B 站帐号
-    #   url: "https://space.bilibili.com/687535538?spm_id_from=333.1007.0.0"
-    # - name: Youtube
-    #   title: Follow my Youtube Channel
-    #   url: "https://youtube.com/@sonnycalcr"
+    - name: steam
+      title: Follow my Steam
+      url: "https://steamcommunity.com/profiles/76561199199934712/"
+    - name: rss
     # - name: Telegram
     #   title: Contact Me
     #   url: "https://t.me/sonnycalcr"

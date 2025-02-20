@@ -2,7 +2,7 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>Writeup on Xrntkk&#39;s Blog</title>
-    <link>http://localhost:56686/categories/writeup/</link>
+    <link>http://localhost:1313/categories/writeup/</link>
     <description>Recent content in Writeup on Xrntkk&#39;s Blog</description>
     <image>
       <title>Xrntkk&#39;s Blog</title>
@@ -13,12 +13,12 @@
     <language>zh</language>
     <copyright>©2024 Xrntkk&amp;rsquo;s Blog</copyright>
     <lastBuildDate>Thu, 20 Feb 2025 00:27:55 +0800</lastBuildDate>
-    <atom:link href="http://localhost:56686/categories/writeup/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:1313/categories/writeup/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>HGAME2025 WEEK1</title>
-      <link>http://localhost:56686/post/hgame2025-week1/</link>
+      <link>http://localhost:1313/post/hgame2025-week1/</link>
       <pubDate>Thu, 20 Feb 2025 00:27:55 +0800</pubDate>
-      <guid>http://localhost:56686/post/hgame2025-week1/</guid>
+      <guid>http://localhost:1313/post/hgame2025-week1/</guid>
       <description>&lt;h2 id=&#34;web&#34;&gt;Web&lt;/h2&gt;
 &lt;h3 id=&#34;week1&#34;&gt;week1&lt;/h3&gt;
 &lt;h3 id=&#34;level-24-pacman&#34;&gt;Level 24 Pacman&lt;/h3&gt;
