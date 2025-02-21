@@ -95,6 +95,7 @@ params:
     - name: rss
       url: "./index.xml"
     - name: email
+      Email: "xrntkk@163.com"
       title: xrntkk@163.com
 
  
