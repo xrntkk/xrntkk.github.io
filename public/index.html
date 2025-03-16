@@ -222,7 +222,24 @@ peass-ng/PEASS-ng: PEASS - Privilege Escalation Awesome Scripts SUITE (with colo
 
 <article class="post-entry"> 
   <header class="entry-header">
-    <h2 class="entry-hint-parent">HGAME2025 WEEK1
+    <h2 class="entry-hint-parent">GHCTF-2025-Web-Writeup
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>战队名：我要打奥斯汀major
+比赛排名：5
+Web upload?SSTI! 读取文件中的内容并进行模板渲染，存在ssti
+有waf
+1def contains_dangerous_keywords(file_path): 2 dangerous_keywords = [&#39;_&#39;, &#39;os&#39;, &#39;subclasses&#39;, &#39;__builtins__&#39;, &#39;__globals__&#39;,&#39;flag&#39;,] 3 4 with open(file_path, &#39;rb&#39;) as f: 5 file_content = str(f.read()) 6 7 for keyword in dangerous_keywords: 8 if keyword in file_content: 9 return True # 找到危险关键字，返回 True 简单绕一下
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-03-09 00:27:55 +0800 CST'>2025-03-09</span>&nbsp;·&nbsp;6 分钟&nbsp;·&nbsp;Xrntkk</footer>
+  <a class="entry-link" aria-label="post link to GHCTF-2025-Web-Writeup" href="http://localhost:1313/post/ghctf_2025/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">HGAME2025-Web-Writeup
     </h2>
   </header>
   <div class="entry-content">
@@ -234,8 +251,8 @@ https://tool.yuanrenxue.cn/decode_obfuscator
 反混淆之后找到这个
 ...</p>
   </div>
-  <footer class="entry-footer"><span title='2025-02-20 00:27:55 +0800 CST'>2025-02-20</span>&nbsp;·&nbsp;5 分钟&nbsp;·&nbsp;Xrntkk</footer>
-  <a class="entry-link" aria-label="post link to HGAME2025 WEEK1" href="http://localhost:1313/post/hgame2025-week1/"></a>
+  <footer class="entry-footer"><span title='2025-02-20 00:27:55 +0800 CST'>2025-02-20</span>&nbsp;·&nbsp;9 分钟&nbsp;·&nbsp;Xrntkk</footer>
+  <a class="entry-link" aria-label="post link to HGAME2025-Web-Writeup" href="http://localhost:1313/post/hgame2025/"></a>
 </article>
     </main>
     

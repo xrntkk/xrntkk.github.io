@@ -4,3 +4,7 @@ layout: "about"
 url: "/about/"
 summary: about
 ---
+
+
+
+A common student at GDUFS...

