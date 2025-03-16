@@ -40,9 +40,12 @@ languages:
         - name: 搜索
           pageRef: search/
           weight: 20
+        - name: 友链
+          url: links/
+          weight: 21
         - name: 关于
           pageRef: about/
-          weight: 21
+          weight: 22
 
 # https://github.com/adityatelange/hugo-PaperMod/wiki/Features#search-page
 
