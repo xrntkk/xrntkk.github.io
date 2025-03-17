@@ -1,5 +1,5 @@
 +++
-date = '2025-02-20T00:27:55+08:00'
+date = '2025-03-15T00:27:55+08:00'
 title = 'TPCTF2025-Web-赛后复现Writeup'
 categories = ["Writeup"]
 tags = ["writeup", "ctf", "Web"]

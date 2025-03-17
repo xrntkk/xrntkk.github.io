@@ -40,9 +40,9 @@ languages:
         - name: 搜索
           pageRef: search/
           weight: 20
-        - name: 友链
-          url: links/
-          weight: 21
+        # - name: 友链
+        #   url: links/
+        #   weight: 21
         - name: 关于
           pageRef: about/
           weight: 22
