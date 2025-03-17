@@ -12,19 +12,70 @@
     <generator>Hugo -- 0.144.1</generator>
     <language>zh</language>
     <copyright>©2024 Xrntkk&amp;rsquo;s Blog</copyright>
-    <lastBuildDate>Wed, 12 Mar 2025 22:03:55 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 17 Mar 2025 22:02:55 +0800</lastBuildDate>
     <atom:link href="http://localhost:1313/categories/writeup/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>春秋云镜-Tsclient-Writeup</title>
-      <link>http://localhost:1313/post/%E6%98%A5%E7%A7%8B%E4%BA%91%E9%95%9C-tsclient-writeup/</link>
-      <pubDate>Wed, 12 Mar 2025 22:03:55 +0800</pubDate>
-      <guid>http://localhost:1313/post/%E6%98%A5%E7%A7%8B%E4%BA%91%E9%95%9C-tsclient-writeup/</guid>
-      <description>&lt;p&gt;Tsclient是一套难度为中等的靶场环境，完成该挑战可以帮助玩家了解内网渗透中的代理转发、内网扫描、信息收集、特权提升以及横向移动技术方法，加强对域环境核心认证机制的理解，以及掌握域环境渗透中一些有趣的技术要点。该靶场共有3个flag，分布于不同的靶机。&lt;/p&gt;</description>
+      <title>春秋云镜-Brute4Road-Writeup</title>
+      <link>http://localhost:1313/post/%E6%98%A5%E7%A7%8B%E4%BA%91%E9%95%9C-brute4road-writeup/</link>
+      <pubDate>Mon, 17 Mar 2025 22:02:55 +0800</pubDate>
+      <guid>http://localhost:1313/post/%E6%98%A5%E7%A7%8B%E4%BA%91%E9%95%9C-brute4road-writeup/</guid>
+      <description>&lt;p&gt;参考文章&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&#34;https://bowuchuling.github.io/posts/chunqiuBrute4Road.html&#34;&gt;https://bowuchuling.github.io/posts/chunqiuBrute4Road.html&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://h0ny.github.io/posts/Brute4Road-%E6%98%A5%E7%A7%8B%E4%BA%91%E5%A2%83&#34;&gt;https://h0ny.github.io/posts/Brute4Road-%E6%98%A5%E7%A7%8B%E4%BA%91%E5%A2%83&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://xz.aliyun.com/news/12189#toc-6&#34;&gt;文章 - 浅谈约束委派攻击 - 先知社区&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
+&lt;h3 id=&#34;flag1&#34;&gt;FLAG1&lt;/h3&gt;
+&lt;p&gt;拿到靶机先用fscan扫一扫&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;┌──────────────────────────────────────────────┐
+│    ___                              _        │
+│   / _ \     ___  ___ _ __ __ _  ___| | __    │
+│  / /_\/____/ __|/ __| &amp;#39;__/ _` |/ __| |/ /    │
+│ / /_\\_____\__ \ (__| | | (_| | (__|   &amp;lt;     │
+│ \____/     |___/\___|_|  \__,_|\___|_|\_\    │
+└──────────────────────────────────────────────┘
+      Fscan Version: 2.0.0
+
+[2025-03-17 14:12:55] [INFO] 暴力破解线程数: 1
+[2025-03-17 14:12:55] [INFO] 开始信息扫描
+[2025-03-17 14:12:55] [INFO] 最终有效主机数量: 1
+[2025-03-17 14:12:55] [INFO] 开始主机扫描
+[2025-03-17 14:12:55] [INFO] 有效端口数量: 233
+[2025-03-17 14:12:55] [SUCCESS] 端口开放 39.98.114.207:80
+[2025-03-17 14:12:55] [SUCCESS] 端口开放 39.98.114.207:22
+[2025-03-17 14:12:55] [SUCCESS] 端口开放 39.98.114.207:6379
+[2025-03-17 14:12:55] [SUCCESS] 端口开放 39.98.114.207:21
+[2025-03-17 14:12:55] [SUCCESS] 服务识别 39.98.114.207:22 =&amp;gt; [ssh] 版本:7.4 产品:OpenSSH 信息:protocol 2.0 Banner:[SSH-2.0-OpenSSH_7.4.]
+[2025-03-17 14:12:55] [SUCCESS] 服务识别 39.98.114.207:21 =&amp;gt; [ftp] 版本:3.0.2 产品:vsftpd 系统:Unix Banner:[220 (vsFTPd 3.0.2).]
+[2025-03-17 14:13:00] [SUCCESS] 服务识别 39.98.114.207:80 =&amp;gt; [http] 版本:1.20.1 产品:nginx
+[2025-03-17 14:13:00] [SUCCESS] 服务识别 39.98.114.207:6379 =&amp;gt; [redis] 版本:5.0.12 产品:Redis key-value store
+[2025-03-17 14:13:06] [INFO] 存活端口数量: 4
+[2025-03-17 14:13:06] [INFO] 开始漏洞扫描
+[2025-03-17 14:13:06] [INFO] 加载的插件: ftp, redis, ssh, webpoc, webtitle
+[2025-03-17 14:13:06] [SUCCESS] 网站标题 http://39.98.114.207      状态码:200 长度:4833   标题:Welcome to CentOS
+[2025-03-17 14:13:07] [SUCCESS] 匿名登录成功!
+[2025-03-17 14:13:09] [SUCCESS] Redis 39.98.114.207:6379 发现未授权访问 文件位置:/usr/local/redis/db/dump.rdb
+[2025-03-17 14:13:13] [SUCCESS] Redis无密码连接成功: 39.98.114.207:6379
+[2025-03-17 14:13:18] [SUCCESS] 扫描已完成: 5/5
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;发现redis不需要密码&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>TPCTF2025-Web-赛后复现Writeup</title>
+      <link>http://localhost:1313/post/tpctf_2025/</link>
+      <pubDate>Sat, 15 Mar 2025 00:27:55 +0800</pubDate>
+      <guid>http://localhost:1313/post/tpctf_2025/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;参考文章&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://blog.0xfff.team/posts/tpctf_2025_writeup/&#34;&gt;https://blog.0xfff.team/posts/tpctf_2025_writeup/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://z3n1th1.com/2025/03/tpctf2025-writeup/&#34;&gt;https://z3n1th1.com/2025/03/tpctf2025-writeup/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://blog.xmcve.com/2025/03/11/TPCTF2025-Writeup/&#34;&gt;TPCTF2025 Writeup - 星盟安全团队&lt;/a&gt;&lt;/p&gt;&lt;/blockquote&gt;
+&lt;h3 id=&#34;baby-layout&#34;&gt;baby layout&lt;/h3&gt;
+&lt;p&gt;这是一道关于绕过DOMPurify库，进行xss cookie窃取的题目&lt;/p&gt;
+&lt;p&gt;DOMPurify 是一个专门用于清理 HTML 输入的 JavaScript 库，旨在防止跨站脚本 (XSS) 攻击。它通过过滤和净化用户提供的 HTML 内容，确保其安全地嵌入到网页中，避免恶意代码的执行。&lt;/p&gt;</description>
     </item>
     <item>
       <title>春秋云镜-Initial-Writeup</title>
       <link>http://localhost:1313/post/%E6%98%A5%E7%A7%8B%E4%BA%91%E9%95%9C-initial-writeup/</link>
-      <pubDate>Wed, 12 Mar 2025 22:02:55 +0800</pubDate>
+      <pubDate>Wed, 12 Mar 2025 22:03:55 +0800</pubDate>
       <guid>http://localhost:1313/post/%E6%98%A5%E7%A7%8B%E4%BA%91%E9%95%9C-initial-writeup/</guid>
       <description>&lt;blockquote&gt;
 &lt;p&gt;参考文章&lt;/p&gt;
@@ -40,6 +91,13 @@
 &lt;p&gt;先用vshell上线&lt;/p&gt;
 &lt;p&gt;读flag需要提权&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;https://github.com/peass-ng/PEASS-ng&#34;&gt;peass-ng/PEASS-ng: PEASS - Privilege Escalation Awesome Scripts SUITE (with colors)&lt;/a&gt;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>春秋云镜-Tsclient-Writeup</title>
+      <link>http://localhost:1313/post/%E6%98%A5%E7%A7%8B%E4%BA%91%E9%95%9C-tsclient-writeup/</link>
+      <pubDate>Wed, 12 Mar 2025 22:03:55 +0800</pubDate>
+      <guid>http://localhost:1313/post/%E6%98%A5%E7%A7%8B%E4%BA%91%E9%95%9C-tsclient-writeup/</guid>
+      <description>&lt;p&gt;Tsclient是一套难度为中等的靶场环境，完成该挑战可以帮助玩家了解内网渗透中的代理转发、内网扫描、信息收集、特权提升以及横向移动技术方法，加强对域环境核心认证机制的理解，以及掌握域环境渗透中一些有趣的技术要点。该靶场共有3个flag，分布于不同的靶机。&lt;/p&gt;</description>
     </item>
     <item>
       <title>GHCTF-2025-Web-Writeup</title>
@@ -82,6 +140,163 @@
 &lt;p&gt;&lt;img alt=&#34;image-20250206152531656&#34; loading=&#34;lazy&#34; src=&#34;../assets/image-20250206152531656.png&#34;&gt;&lt;/p&gt;
 &lt;p&gt;反混淆之后找到这个&lt;/p&gt;
 &lt;p&gt;&lt;img alt=&#34;image-20250206152608227&#34; loading=&#34;lazy&#34; src=&#34;../assets/image-20250206152608227.png&#34;&gt;&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>CTFSHOW-SQL注入-Writeup</title>
+      <link>http://localhost:1313/post/ctfshow/ctfshow_sql%E6%B3%A8%E5%85%A5/</link>
+      <pubDate>Wed, 22 Jan 2025 00:27:55 +0800</pubDate>
+      <guid>http://localhost:1313/post/ctfshow/ctfshow_sql%E6%B3%A8%E5%85%A5/</guid>
+      <description>&lt;h4 id=&#34;无过滤注入对输出内容进行过滤&#34;&gt;&lt;strong&gt;无过滤注入&lt;/strong&gt;（对输出内容进行过滤）&lt;/h4&gt;
+&lt;h4 id=&#34;web171&#34;&gt;web171&lt;/h4&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;$sql = &amp;#34;select username,password from user where username !=&amp;#39;flag&amp;#39; and id = &amp;#39;&amp;#34;.$_GET[&amp;#39;id&amp;#39;].&amp;#34;&amp;#39; limit 1;&amp;#34;;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;flag是存在于username为flag的用户的数据中，我们只需要通过&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;1&amp;#39; or 1=1 --+
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;即可输出所有用户数据&lt;/p&gt;
+&lt;h4 id=&#34;web172&#34;&gt;web172&lt;/h4&gt;
+&lt;p&gt;相比上一题，这题增加了过滤&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>CTFSHOW-反序列化-Writeup</title>
+      <link>http://localhost:1313/post/ctfshow/ctfshow_%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/</link>
+      <pubDate>Sun, 22 Dec 2024 00:27:55 +0800</pubDate>
+      <guid>http://localhost:1313/post/ctfshow/ctfshow_%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/</guid>
+      <description>&lt;h4 id=&#34;php的魔法方法&#34;&gt;PHP的魔法方法&lt;/h4&gt;
+&lt;p&gt;PHP 将所有以 __（两个下划线）开头的类方法保留为魔术方法。所以在定义类方法时，除了上述魔术方法，建议不要以 __ 为前缀。 常见的魔法方法如下：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-scss&#34; data-lang=&#34;scss&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt; 1&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nt&#34;&gt;__construct&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;()&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;，&lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;类的构造函数&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt; 2&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt; 3&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nt&#34;&gt;__destruct&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;()&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;，&lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;类的析构函数&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt; 4&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt; 5&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nt&#34;&gt;__call&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;()&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;，&lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;在对象中调用一个不可访问方法时调用&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt; 6&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt; 7&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nt&#34;&gt;__callStatic&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;()&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;，&lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;用静态方式中调用一个不可访问方法时调用&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt; 8&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt; 9&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nt&#34;&gt;__get&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;()&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;，&lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;获得一个类的成员变量时调用&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt;10&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt;11&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nt&#34;&gt;__set&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;()&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;，&lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;设置一个类的成员变量时调用&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt;12&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt;13&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nt&#34;&gt;__isset&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;()&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;，&lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;当对不可访问属性调用isset&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;()&lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;或empty&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;()&lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;时调用&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt;14&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt;15&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nt&#34;&gt;__unset&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;()&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;，&lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;当对不可访问属性调用unset&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;()&lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;时被调用&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;。&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt;16&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt;17&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nt&#34;&gt;__sleep&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;()&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;，&lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;执行serialize&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;()&lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;时&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;，&lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;先会调用这个函数&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt;18&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt;19&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nt&#34;&gt;__wakeup&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;()&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;，&lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;执行unserialize&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;()&lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;时&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;，&lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;先会调用这个函数&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt;20&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt;21&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nt&#34;&gt;__toString&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;()&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;，&lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;类被当成字符串时的回应方法&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt;22&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt;23&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nt&#34;&gt;__invoke&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;()&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;，&lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;调用函数的方式调用一个对象时的回应方法&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt;24&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt;25&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nt&#34;&gt;__set_state&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;()&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;，&lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;调用var_export&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;()&lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;导出类时&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;，&lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;此静态方法会被调用&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;。&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt;26&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt;27&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nt&#34;&gt;__clone&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;()&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;，&lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;当对象复制完成时调用&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt;28&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt;29&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nt&#34;&gt;__autoload&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;()&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;，&lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;尝试加载未定义的类&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt;30&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt;31&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nt&#34;&gt;__debugInfo&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;()&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;，&lt;/span&gt;&lt;span class=&#34;nt&#34;&gt;打印所需调试信息&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h4 id=&#34;web254&#34;&gt;web254&lt;/h4&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-php&#34; data-lang=&#34;php&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;&amp;lt;?&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;php&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                &lt;span class=&#34;cp&#34;&gt;?&amp;gt;&lt;/span&gt;&lt;span class=&#34;err&#34;&gt;&amp;#39;;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt;4&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;err&#34;&gt;    public $code=&amp;#39;xrntkk&amp;#39;;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt;5&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;err&#34;&gt;}
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt;6&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;err&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt;7&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;err&#34;&gt;$poc = new ctfshowvip();
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt;8&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;err&#34;&gt;echo urlencode(serialize($poc));
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h4 id=&#34;web262&#34;&gt;web262&lt;/h4&gt;
+&lt;p&gt;字符串逃逸&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>CTFSHOW-命令执行-Writeup</title>
+      <link>http://localhost:1313/post/ctfshow/ctfshow_%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C/</link>
+      <pubDate>Sun, 22 Dec 2024 00:27:55 +0800</pubDate>
+      <guid>http://localhost:1313/post/ctfshow/ctfshow_%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C/</guid>
+      <description>&lt;h4 id=&#34;web29&#34;&gt;web29&lt;/h4&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre tabindex=&#34;0&#34; class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-php&#34; data-lang=&#34;php&#34;&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt; 1&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;o&#34;&gt;&amp;lt;?&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;php&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt; 2&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt; 3&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cm&#34;&gt;/*
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt; 4&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cm&#34;&gt;# -*- coding: utf-8 -*-
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt; 5&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cm&#34;&gt;# @Author: h1xa
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt; 6&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cm&#34;&gt;# @Date:   2020-09-04 00:12:34
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt; 7&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cm&#34;&gt;# @Last Modified by:   h1xa
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt; 8&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cm&#34;&gt;# @Last Modified time: 2020-09-04 00:26:48
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt; 9&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cm&#34;&gt;# @email: h1xa@ctfer.com
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt;10&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cm&#34;&gt;# @link: https://ctfer.com
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt;11&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cm&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt;12&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;cm&#34;&gt;*/&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt;13&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt;14&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;nx&#34;&gt;error_reporting&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;mi&#34;&gt;0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt;15&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;k&#34;&gt;if&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;isset&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$_GET&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;c&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;])){&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt;16&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;nv&#34;&gt;$c&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$_GET&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;[&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;c&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;];&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt;17&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;k&#34;&gt;if&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;o&#34;&gt;!&lt;/span&gt;&lt;span class=&#34;nx&#34;&gt;preg_match&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s2&#34;&gt;&amp;#34;/flag/i&amp;#34;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;,&lt;/span&gt; &lt;span class=&#34;nv&#34;&gt;$c&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;)){&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt;18&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;        &lt;span class=&#34;k&#34;&gt;eval&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$c&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt;19&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt;20&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;    
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt;21&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;&lt;span class=&#34;k&#34;&gt;else&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;{&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt;22&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;    &lt;span class=&#34;nx&#34;&gt;highlight_file&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;no&#34;&gt;__FILE__&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;);&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;span class=&#34;line&#34;&gt;&lt;span class=&#34;ln&#34;&gt;23&lt;/span&gt;&lt;span class=&#34;cl&#34;&gt;&lt;span class=&#34;p&#34;&gt;}&lt;/span&gt;
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;可以看到通过eval函数可以执行php代码或者系统命令，其中过滤了flag。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>CTFSHOW-文件包含-Writeup</title>
+      <link>http://localhost:1313/post/ctfshow/ctfshow_%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB/</link>
+      <pubDate>Sun, 22 Dec 2024 00:27:55 +0800</pubDate>
+      <guid>http://localhost:1313/post/ctfshow/ctfshow_%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB/</guid>
+      <description>&lt;blockquote&gt;
+&lt;p&gt;以PHP为例,常用的文件包含函数有以下四种include(),require(),include_once(),require_once()&lt;/p&gt;&lt;/blockquote&gt;
+&lt;h4 id=&#34;web78&#34;&gt;Web78&lt;/h4&gt;
+&lt;p&gt;php伪协议&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>CTFSHOW-文件上传-Writeup</title>
+      <link>http://localhost:1313/post/ctfshow/ctfshow_%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/</link>
+      <pubDate>Sun, 22 Dec 2024 00:27:55 +0800</pubDate>
+      <guid>http://localhost:1313/post/ctfshow/ctfshow_%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/</guid>
+      <description>&lt;h4 id=&#34;web151&#34;&gt;web151&lt;/h4&gt;
+&lt;p&gt;&lt;img alt=&#34;image-20250126161249975&#34; loading=&#34;lazy&#34; src=&#34;../assets/image-20250126161249975.png&#34;&gt;&lt;/p&gt;
+&lt;p&gt;前台验证&lt;/p&gt;
+&lt;p&gt;将一句话木马改成png，抓包修改后缀即可&lt;/p&gt;
+&lt;p&gt;&lt;img alt=&#34;image-20250126162045356&#34; loading=&#34;lazy&#34; src=&#34;../assets/image-20250126162045356.png&#34;&gt;&lt;/p&gt;
+&lt;p&gt;payload:&lt;/p&gt;
+&lt;pre tabindex=&#34;0&#34;&gt;&lt;code&gt;1=system(&amp;#39;cat /var/www/html/flag.php&amp;#39;);
+&lt;/code&gt;&lt;/pre&gt;&lt;h4 id=&#34;web152&#34;&gt;web152&lt;/h4&gt;
+&lt;p&gt;这道题没有前端检验，但是解法跟web151是一样的&lt;/p&gt;
+&lt;p&gt;&lt;img alt=&#34;image-20250126162605410&#34; loading=&#34;lazy&#34; src=&#34;../assets/image-20250126162605410.png&#34;&gt;&lt;/p&gt;
+&lt;h4 id=&#34;web153&#34;&gt;web153&lt;/h4&gt;
+&lt;p&gt;一开始尝试了大小写绕过&lt;/p&gt;
+&lt;p&gt;&lt;img alt=&#34;image-20250126162904156&#34; loading=&#34;lazy&#34; src=&#34;../assets/image-20250126162904156.png&#34;&gt;&lt;/p&gt;
+&lt;p&gt;上传后发现服务器不解析&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>CTFSHOW-爆破-Writeup</title>
+      <link>http://localhost:1313/post/ctfshow/ctfshow_%E7%88%86%E7%A0%B4/</link>
+      <pubDate>Sun, 20 Oct 2024 00:27:55 +0800</pubDate>
+      <guid>http://localhost:1313/post/ctfshow/ctfshow_%E7%88%86%E7%A0%B4/</guid>
+      <description>&lt;h4 id=&#34;web21&#34;&gt;web21&lt;/h4&gt;
+&lt;p&gt;&lt;img alt=&#34;image-20241123165104490&#34; loading=&#34;lazy&#34; src=&#34;../assets/image-20241123165104490.png&#34;&gt;&lt;/p&gt;
+&lt;p&gt;抓个包&lt;/p&gt;
+&lt;p&gt;&lt;img alt=&#34;image-20241123165621808&#34; loading=&#34;lazy&#34; src=&#34;../assets/image-20241123165621808.png&#34;&gt;&lt;/p&gt;
+&lt;p&gt;我们可以看到他的账号密码是通过base64编码加密后再发送的，问题不大&lt;/p&gt;
+&lt;p&gt;payload设置如下&lt;/p&gt;
+&lt;p&gt;&lt;img alt=&#34;image-20241123165947562&#34; loading=&#34;lazy&#34; src=&#34;../assets/image-20241123165947562.png&#34;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img alt=&#34;image-20241123170139759&#34; loading=&#34;lazy&#34; src=&#34;../assets/image-20241123170139759.png&#34;&gt;&lt;/p&gt;
+&lt;p&gt;我们还要设置一下payload处理&lt;/p&gt;
+&lt;p&gt;&lt;img alt=&#34;image-20241123170509504&#34; loading=&#34;lazy&#34; src=&#34;../assets/image-20241123170509504.png&#34;&gt;&lt;/p&gt;
+&lt;p&gt;开始爆破，根据长度或者状态码判断即可&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>CTFSHOW-信息收集-Writeup</title>
+      <link>http://localhost:1313/post/ctfshow/ctfshow_%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/</link>
+      <pubDate>Sun, 20 Oct 2024 00:27:55 +0800</pubDate>
+      <guid>http://localhost:1313/post/ctfshow/ctfshow_%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/</guid>
+      <description>&lt;h4 id=&#34;web-1-5&#34;&gt;Web 1-5&lt;/h4&gt;
+&lt;ul&gt;
+&lt;li&gt;查看网页源代码&lt;/li&gt;
+&lt;li&gt;抓个包看有没有藏东西&lt;/li&gt;
+&lt;li&gt;查看robots.txt&lt;/li&gt;
+&lt;li&gt;phps源码泄露，访问index.phps，通过其源码泄露，在其中找到flag&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h4 id=&#34;web6&#34;&gt;Web6&lt;/h4&gt;
+&lt;p&gt;网页提示下载源码查看，访问url/www.zip得到源码文件&lt;/p&gt;</description>
     </item>
   </channel>
 </rss>

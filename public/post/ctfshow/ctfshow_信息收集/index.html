@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>CTFSHOW-信息收集-Writeup | Xrntkk&#39;s Blog</title>
+<meta name="keywords" content="writeup, ctf, Web">
+<meta name="description" content="Web 1-5
+
+查看网页源代码
+抓个包看有没有藏东西
+查看robots.txt
+phps源码泄露，访问index.phps，通过其源码泄露，在其中找到flag
+
+Web6
+网页提示下载源码查看，访问url/www.zip得到源码文件">
+<meta name="author" content="Xrntkk">
+<link rel="canonical" href="http://localhost:1313/post/ctfshow/ctfshow_%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.2b4603ab7eabc3642d3649f5b8728329d021f06eb40817493eab54c5172e9a52.css" integrity="sha256-K0YDq36rw2QtNkn1uHKDKdAh8G60CBdJPqtUxRcumlI=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="zh" href="http://localhost:1313/post/ctfshow/ctfshow_%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+<meta name="baidu-site-verification" content="codeva-snmPZ4WZk8" /><meta property="og:url" content="http://localhost:1313/post/ctfshow/ctfshow_%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/">
+  <meta property="og:site_name" content="Xrntkk&#39;s Blog">
+  <meta property="og:title" content="CTFSHOW-信息收集-Writeup">
+  <meta property="og:description" content="Web 1-5 查看网页源代码 抓个包看有没有藏东西 查看robots.txt phps源码泄露，访问index.phps，通过其源码泄露，在其中找到flag Web6 网页提示下载源码查看，访问url/www.zip得到源码文件">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="post">
+    <meta property="article:published_time" content="2024-10-20T00:27:55+08:00">
+    <meta property="article:modified_time" content="2024-10-20T00:27:55+08:00">
+    <meta property="article:tag" content="Writeup">
+    <meta property="article:tag" content="Ctf">
+    <meta property="article:tag" content="Web">
+      <meta property="og:image" content="https://i.postimg.cc/7hwBy7VS/calcr.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://i.postimg.cc/7hwBy7VS/calcr.png">
+<meta name="twitter:title" content="CTFSHOW-信息收集-Writeup">
+<meta name="twitter:description" content="Web 1-5
+
+查看网页源代码
+抓个包看有没有藏东西
+查看robots.txt
+phps源码泄露，访问index.phps，通过其源码泄露，在其中找到flag
+
+Web6
+网页提示下载源码查看，访问url/www.zip得到源码文件">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "http://localhost:1313/post/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "CTFSHOW-信息收集-Writeup",
+      "item": "http://localhost:1313/post/ctfshow/ctfshow_%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "CTFSHOW-信息收集-Writeup",
+  "name": "CTFSHOW-信息收集-Writeup",
+  "description": "Web 1-5 查看网页源代码 抓个包看有没有藏东西 查看robots.txt phps源码泄露，访问index.phps，通过其源码泄露，在其中找到flag Web6 网页提示下载源码查看，访问url/www.zip得到源码文件\n",
+  "keywords": [
+    "writeup", "ctf", "Web"
+  ],
+  "articleBody": "Web 1-5 查看网页源代码 抓个包看有没有藏东西 查看robots.txt phps源码泄露，访问index.phps，通过其源码泄露，在其中找到flag Web6 网页提示下载源码查看，访问url/www.zip得到源码文件\n解压文件我们得到\n打开fl00g.txt，没有我们想要的flag\n打开index.php\n1\u003c?php 2 3/* 4# -*- coding: utf-8 -*- 5# @Author: h1xa 6# @Date: 2020-09-01 14:37:13 7# @Last Modified by: h1xa 8# @Last Modified time: 2020-09-01 14:42:44 9# @email: h1xa@ctfer.com 10# @link: https://ctfer.com 11 12*/ 13//flag in fl000g.txt 14echo \"web6:where is flag?\" 15?\u003e 显示flag in fl00g.txt\n直接访问url/fl00g.txt得到flag\nweb7 git泄露，访问url/.git即可得到flag\nweb8 svn泄露，访问url/.git即可得到flag\nweb9 vim缓存信息泄露，访问url/index.php.swp，打开下载的index.php.swp即可得到flag\nweb10 根据hint查看cookie可以看到\ncookie:flag=ctfshow%7B3ac14c03-64d1-41aa-9328-c97bcceeb840%7D\n进行url解码即可得到flag\nweb11 域名解析\n我们可以通过nslookup来进行域名解析查询\nnslookup -qt=格式 URL nslookup -qt=any URL //遍历所有格式 nslookup -qt=TXT URL\r//查询txt格式 web12 hint：有时候网站上的公开信息，就是管理员常用密码\n先用dirsearch扫一下\n访问admin，要求我们输入管理员账号密码，根据后台路径我们可以猜测账号为admin\n回到主页，在网页的底部我们可以看到一个电话Help Line Number : 372619038\n猜测电话为管理员密码，输入后成功得到flag\nweb13 在页面底部可以看到一个document\n点击发现下载了一个document.pdf文件，文件里有后台的地址和账号密码\nd\n登录后台即可得到flag\nweb14 根据hint知道editor处应该有信息泄漏(虽然不知道什么是editor)\n我们先用dirsearch扫一下后台\n访问url/editor\n是一个文字编辑的页面，我们可以发现在上传附件📎出可以调用出到服务器的文件管理器\n在服务器的根目录没看到flag，尝试查看网站的根目录(var/www/html),看看有没有隐藏页面\n发现nothinghere文件夹中有个fl00g.txt文件\n访问url/nothinghere/f1000g.txt即可得到flag\nweb15 扫描到后台为url/admin，打开看到有个忘记密码，要求输入城市\n根据hint我们可以在主页底部找到一个qq邮箱，查询一下qq号\n得到信息，现居陕西西安\n输入西安成功重置密码，输入重置密码和帐号admin，成功得到flag\nWeb16 探针泄漏\ndirsearch 扫描不到这个探针，看wp才知道的\n探针在url/tz.php\n访问探针\n在指针里面可以找到phpinfo页面\n打开在phpinfo里面可以找到flag\nweb17 sql备份泄漏\n用dirsearch扫出来存在sql备份泄漏，下载backup.sql，打开得到flag\nweb18 本题是一个游戏，玩到101分就能得到flag\n我们直接看js\nFlappy_js.js\n审一下代码，我们可以看到当分数大于100的时候会输出这段文字，这段文字看着像unidcode编码，解码试试\n根据提示访问url/110.php,得到flag\nweb19 题目是一个登录的页面，根据hint查看网页源代码\n根据提示，这道题应该是一道对密码进行了加密的题目\n审阅一下代码我们得到这些信息\nmode模式： CBC padding 填充方式： ZeroPadding 密文输出编码： 十六进制hex 偏移量iv: ilove36dverymuch 密钥：0000000372619038 密文为： a599ac85a73384ee3219fa684296eaa62667238d608efa81837030bd1ce1bf04\nAES 加密/解密 - 锤子在线工具\n用解密工具解密一下密文我们可以得到密码为\n输入密码，得到flag\nweb20 hint：mdb文件是早期asp+access构架的数据库文件，文件泄露相当于数据库被脱裤了。\n这是一个使用access数据库的asp程序\n根据提示本题存在mdb文件泄露，那我们直接访问url/db/db.mdb\n下载db.mdb文件后用记事本打开搜索flag，即可得到 flag{ctfshow_old_database}\n",
+  "wordCount" : "1494",
+  "inLanguage": "zh",
+  "image": "https://i.postimg.cc/7hwBy7VS/calcr.png","datePublished": "2024-10-20T00:27:55+08:00",
+  "dateModified": "2024-10-20T00:27:55+08:00",
+  "author":{
+    "@type": "Person",
+    "name": "Xrntkk"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://localhost:1313/post/ctfshow/ctfshow_%E4%BF%A1%E6%81%AF%E6%94%B6%E9%9B%86/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Xrntkk's Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://localhost:1313/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class=" dark" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="Xrntkk&#39;s Blog (Alt + H)">Xrntkk&#39;s Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/" title="Xrntkk&#39;s Blog">
+                    <span>首页</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/archives/" title="归档">
+                    <span>归档</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/categories/" title="Categories">
+                    <span>分类</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="Tags">
+                    <span>标签</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search/" title="搜索">
+                    <span>搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/about/" title="关于">
+                    <span>关于</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      CTFSHOW-信息收集-Writeup
+    </h1>
+    <div class="post-meta"><span title='2024-10-20 00:27:55 +0800 CST'>2024-10-20</span>&nbsp;·&nbsp;3 分钟&nbsp;·&nbsp;Xrntkk
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">目录</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#web-1-5" aria-label="Web 1-5">Web 1-5</a></li>
+                <li>
+                    <a href="#web6" aria-label="Web6">Web6</a></li>
+                <li>
+                    <a href="#web7" aria-label="web7">web7</a></li>
+                <li>
+                    <a href="#web8" aria-label="web8">web8</a></li>
+                <li>
+                    <a href="#web9" aria-label="web9">web9</a></li>
+                <li>
+                    <a href="#web10" aria-label="web10">web10</a></li>
+                <li>
+                    <a href="#web11" aria-label="web11">web11</a></li>
+                <li>
+                    <a href="#web12" aria-label="web12">web12</a></li>
+                <li>
+                    <a href="#web13" aria-label="web13">web13</a></li>
+                <li>
+                    <a href="#web14" aria-label="web14">web14</a></li>
+                <li>
+                    <a href="#web15" aria-label="web15">web15</a></li>
+                <li>
+                    <a href="#web16" aria-label="Web16">Web16</a></li>
+                <li>
+                    <a href="#web17" aria-label="web17">web17</a></li>
+                <li>
+                    <a href="#web18" aria-label="web18">web18</a></li>
+                <li>
+                    <a href="#web19" aria-label="web19">web19</a></li>
+                <li>
+                    <a href="#web20" aria-label="web20">web20</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h4 id="web-1-5">Web 1-5<a hidden class="anchor" aria-hidden="true" href="#web-1-5">#</a></h4>
+<ul>
+<li>查看网页源代码</li>
+<li>抓个包看有没有藏东西</li>
+<li>查看robots.txt</li>
+<li>phps源码泄露，访问index.phps，通过其源码泄露，在其中找到flag</li>
+</ul>
+<h4 id="web6">Web6<a hidden class="anchor" aria-hidden="true" href="#web6">#</a></h4>
+<p>网页提示下载源码查看，访问url/www.zip得到源码文件</p>
+<p>解压文件我们得到</p>
+<img src="assets/202411102303478.png" alt="image-20241102003213997" style="zoom:200%;" />
+<p>打开fl00g.txt，没有我们想要的flag</p>
+<p>打开index.php</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-php" data-lang="php"><span class="line"><span class="ln"> 1</span><span class="cl"><span class="o">&lt;?</span><span class="nx">php</span>
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl"><span class="cm">/*
+</span></span></span><span class="line"><span class="ln"> 4</span><span class="cl"><span class="cm"># -*- coding: utf-8 -*-
+</span></span></span><span class="line"><span class="ln"> 5</span><span class="cl"><span class="cm"># @Author: h1xa
+</span></span></span><span class="line"><span class="ln"> 6</span><span class="cl"><span class="cm"># @Date:   2020-09-01 14:37:13
+</span></span></span><span class="line"><span class="ln"> 7</span><span class="cl"><span class="cm"># @Last Modified by:   h1xa
+</span></span></span><span class="line"><span class="ln"> 8</span><span class="cl"><span class="cm"># @Last Modified time: 2020-09-01 14:42:44
+</span></span></span><span class="line"><span class="ln"> 9</span><span class="cl"><span class="cm"># @email: h1xa@ctfer.com
+</span></span></span><span class="line"><span class="ln">10</span><span class="cl"><span class="cm"># @link: https://ctfer.com
+</span></span></span><span class="line"><span class="ln">11</span><span class="cl"><span class="cm">
+</span></span></span><span class="line"><span class="ln">12</span><span class="cl"><span class="cm">*/</span>
+</span></span><span class="line"><span class="ln">13</span><span class="cl"><span class="c1">//flag in fl000g.txt
+</span></span></span><span class="line"><span class="ln">14</span><span class="cl"><span class="c1"></span><span class="k">echo</span> <span class="s2">&#34;web6:where is flag?&#34;</span>
+</span></span><span class="line"><span class="ln">15</span><span class="cl"><span class="cp">?&gt;</span><span class="err">
+</span></span></span></code></pre></div><p>显示flag in fl00g.txt</p>
+<p>直接访问url/fl00g.txt得到flag</p>
+<h4 id="web7">web7<a hidden class="anchor" aria-hidden="true" href="#web7">#</a></h4>
+<p>git泄露，访问url/.git即可得到flag</p>
+<h4 id="web8">web8<a hidden class="anchor" aria-hidden="true" href="#web8">#</a></h4>
+<p>svn泄露，访问url/.git即可得到flag</p>
+<h4 id="web9">web9<a hidden class="anchor" aria-hidden="true" href="#web9">#</a></h4>
+<p>vim缓存信息泄露，访问url/index.php.swp，打开下载的index.php.swp即可得到flag</p>
+<h4 id="web10">web10<a hidden class="anchor" aria-hidden="true" href="#web10">#</a></h4>
+<p>根据hint查看cookie可以看到</p>
+<blockquote>
+<p>cookie:flag=ctfshow%7B3ac14c03-64d1-41aa-9328-c97bcceeb840%7D</p></blockquote>
+<p>进行url解码即可得到flag</p>
+<p><img alt="image-20241106010021516" loading="lazy" src="assets/202411072207591.png"></p>
+<h4 id="web11">web11<a hidden class="anchor" aria-hidden="true" href="#web11">#</a></h4>
+<p>域名解析</p>
+<p>我们可以通过nslookup来进行域名解析查询</p>
+<pre tabindex="0"><code>nslookup -qt=格式 URL
+</code></pre><pre tabindex="0"><code>nslookup -qt=any URL 
+//遍历所有格式
+</code></pre><pre tabindex="0"><code>nslookup -qt=TXT URL
+//查询txt格式
+</code></pre><h4 id="web12">web12<a hidden class="anchor" aria-hidden="true" href="#web12">#</a></h4>
+<p>hint：有时候网站上的公开信息，就是管理员常用密码</p>
+<p>先用dirsearch扫一下</p>
+<p><img alt="image-20241106092048352" loading="lazy" src="assets/202411072207900.png"></p>
+<p>访问admin，要求我们输入管理员账号密码，根据后台路径我们可以猜测账号为<code>admin</code></p>
+<p>回到主页，在网页的底部我们可以看到一个电话<code>Help Line Number : 372619038</code></p>
+<p>猜测电话为管理员密码，输入后成功得到flag</p>
+<h4 id="web13">web13<a hidden class="anchor" aria-hidden="true" href="#web13">#</a></h4>
+<p>在页面底部可以看到一个document</p>
+<p><img alt="image-20241106121019219" loading="lazy" src="assets/202411072207995.png"></p>
+<p>点击发现下载了一个document.pdf文件，文件里有后台的地址和账号密码</p>
+<p><img alt="image-20241106121415093" loading="lazy" src="assets/202411072207016.png">d</p>
+<p>登录后台即可得到flag</p>
+<h4 id="web14">web14<a hidden class="anchor" aria-hidden="true" href="#web14">#</a></h4>
+<p>根据hint知道editor处应该有信息泄漏(虽然不知道什么是editor)</p>
+<p>我们先用dirsearch扫一下后台</p>
+<img src="assets/NUQB3oh7mj5ATvJ.png" alt="image-20241106202626586" style="zoom:50%;" />
+<p>访问url/editor</p>
+<img src="assets/UvozfSbVdp3xLPW.png" alt="image-20241106202742084" style="zoom: 50%;" />
+<p>是一个文字编辑的页面，我们可以发现在上传附件📎出可以调用出到服务器的文件管理器</p>
+<p>在服务器的根目录没看到flag，尝试查看网站的根目录(var/www/html),看看有没有隐藏页面</p>
+<p>发现nothinghere文件夹中有个fl00g.txt文件</p>
+<p>访问url/nothinghere/f1000g.txt即可得到flag</p>
+<h4 id="web15">web15<a hidden class="anchor" aria-hidden="true" href="#web15">#</a></h4>
+<p>扫描到后台为url/admin，打开看到有个忘记密码，要求输入城市</p>
+<p><img alt="image-20241112203115743" loading="lazy" src="../assets/image-20241112203115743.png"></p>
+<p><img alt="image-20241112203225217" loading="lazy" src="../assets/image-20241112203225217.png"></p>
+<p>根据hint我们可以在主页底部找到一个qq邮箱，查询一下qq号</p>
+<img src="../assets/image-20241112203325025.png" alt="image-20241112203325025" style="zoom:50%;" />
+<p>得到信息，现居陕西西安</p>
+<p>输入西安成功重置密码，输入重置密码和帐号admin，成功得到flag</p>
+<h4 id="web16">Web16<a hidden class="anchor" aria-hidden="true" href="#web16">#</a></h4>
+<p>探针泄漏</p>
+<p>dirsearch 扫描不到这个探针，看wp才知道的</p>
+<p>探针在url/tz.php</p>
+<p>访问探针</p>
+<p><img alt="image-20241112204025693" loading="lazy" src="../assets/image-20241112204025693.png"></p>
+<p><img alt="image-20241112204437105" loading="lazy" src="../assets/image-20241112204437105.png"></p>
+<p>在指针里面可以找到phpinfo页面</p>
+<p>打开在phpinfo里面可以找到flag</p>
+<p><img loading="lazy" src="../assets/image-20241112204552383.png"></p>
+<h4 id="web17">web17<a hidden class="anchor" aria-hidden="true" href="#web17">#</a></h4>
+<p>sql备份泄漏</p>
+<p><img alt="image-20241112205219664" loading="lazy" src="../assets/image-20241112205219664.png"></p>
+<p>用dirsearch扫出来存在sql备份泄漏，下载backup.sql，打开得到flag</p>
+<p><img alt="image-20241112205527202" loading="lazy" src="../assets/image-20241112205527202.png"></p>
+<h4 id="web18">web18<a hidden class="anchor" aria-hidden="true" href="#web18">#</a></h4>
+<p>本题是一个游戏，玩到101分就能得到flag</p>
+<p>我们直接看js</p>
+<p>Flappy_js.js</p>
+<p><img alt="image-20241113125910231" loading="lazy" src="assets/image-20241113125910231.png"></p>
+<p>审一下代码，我们可以看到当分数大于100的时候会输出这段文字，这段文字看着像unidcode编码，解码试试</p>
+<p><img alt="image-20241113130107163" loading="lazy" src="assets/image-20241113130107163.png"></p>
+<p>根据提示访问url/110.php,得到flag</p>
+<h4 id="web19">web19<a hidden class="anchor" aria-hidden="true" href="#web19">#</a></h4>
+<p>题目是一个登录的页面，根据hint查看网页源代码</p>
+<p><img alt="image-20241113132533968" loading="lazy" src="assets/image-20241113132533968.png"></p>
+<p>根据提示，这道题应该是一道对密码进行了加密的题目</p>
+<p>审阅一下代码我们得到这些信息</p>
+<blockquote>
+<p>mode模式： CBC padding 填充方式： ZeroPadding
+密文输出编码： 十六进制hex 偏移量iv: ilove36dverymuch 密钥：0000000372619038
+密文为： a599ac85a73384ee3219fa684296eaa62667238d608efa81837030bd1ce1bf04</p></blockquote>
+<p><a href="https://www.toolhelper.cn/SymmetricEncryption/AES">AES 加密/解密 - 锤子在线工具</a></p>
+<p>用解密工具解密一下密文我们可以得到密码为</p>
+<p><img alt="image-20241113133003036" loading="lazy" src="assets/image-20241113133003036.png"></p>
+<p>输入密码，得到flag</p>
+<h4 id="web20">web20<a hidden class="anchor" aria-hidden="true" href="#web20">#</a></h4>
+<blockquote>
+<p>hint：mdb文件是早期asp+access构架的数据库文件，文件泄露相当于数据库被脱裤了。</p></blockquote>
+<p>这是一个使用access数据库的asp程序</p>
+<p>根据提示本题存在mdb文件泄露，那我们直接访问url/db/db.mdb</p>
+<p>下载db.mdb文件后用记事本打开搜索flag，即可得到 flag{ctfshow_old_database}</p>
+<p><img alt="image-20241113134305246" loading="lazy" src="assets/image-20241113134305246.png"></p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/writeup/">Writeup</a></li>
+      <li><a href="http://localhost:1313/tags/ctf/">Ctf</a></li>
+      <li><a href="http://localhost:1313/tags/web/">Web</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="http://localhost:1313/post/ctfshow/ctfshow_%E7%88%86%E7%A0%B4/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>CTFSHOW-爆破-Writeup</span>
+  </a>
+</nav>
+
+  </footer><div id="tw-comment"></div>
+<script>
+    
+    const getStoredTheme = () => localStorage.getItem("pref-theme") === "light" ? "light" : "dark";
+    const setGiscusTheme = () => {
+        const sendMessage = (message) => {
+            const iframe = document.querySelector('iframe.giscus-frame');
+            if (iframe) {
+                iframe.contentWindow.postMessage({giscus: message}, 'https://giscus.app');
+            }
+        }
+        sendMessage({setConfig: {theme: getStoredTheme()}})
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const giscusAttributes = {
+            "src": "https://giscus.app/client.js",
+            "data-repo": "sonnycalcr\/sonnycalcr.github.io",
+            "data-repo-id": "xxxxxx",
+            "data-category": "Announcements",
+            "data-category-id": "xxxxx",
+            "data-mapping": "pathname",
+            "data-strict": "0",
+            "data-reactions-enabled": "1",
+            "data-emit-metadata": "0",
+            "data-input-position": "bottom",
+            "data-theme": getStoredTheme(),
+            "data-lang": "zh-CN",
+            "data-loading": "lazy",
+            "crossorigin": "anonymous",
+        };
+
+        
+        const giscusScript = document.createElement("script");
+        Object.entries(giscusAttributes).forEach(
+                ([key, value]) => giscusScript.setAttribute(key, value));
+        document.querySelector("#tw-comment").appendChild(giscusScript);
+
+        
+        const themeSwitcher = document.querySelector("#theme-toggle");
+        if (themeSwitcher) {
+            themeSwitcher.addEventListener("click", setGiscusTheme);
+        }
+        const themeFloatSwitcher = document.querySelector("#theme-toggle-float");
+        if (themeFloatSwitcher) {
+            themeFloatSwitcher.addEventListener("click", setGiscusTheme);
+        }
+    });
+</script>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span><a href="https://blog.xrntkk.top/">©2024 Xrntkk&rsquo;s Blog</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = '复制';
+
+        function copyingDone() {
+            copybutton.innerHTML = '已复制！';
+            setTimeout(() => {
+                copybutton.innerHTML = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
