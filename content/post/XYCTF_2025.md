@@ -632,7 +632,8 @@ startTime=66666666666666
 ```
 {{open('/flag').read()}}
 替换
-{{%bapen('/flag').read()}}
+{\{%bapen('/flag').read()}}  //这里的"\"是防止hugo报错加的，实际不需要
 ```
 
 ![image-20250418142714072](../assets/image-20250418142714072.png)                           
+

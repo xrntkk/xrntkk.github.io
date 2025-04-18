@@ -131,6 +131,50 @@
 
 <article class="post-entry tag-entry"> 
   <header class="entry-header">
+    <h2 class="entry-hint-parent">TGCTF-2025-Web-Writeup
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Web (ez)upload hint写有源码泄露
+index.php.bak拿源码
+1&lt;?php 2define(&#39;UPLOAD_PATH&#39;, __DIR__ . &#39;/uploads/&#39;); 3$is_upload = false; 4$msg = null; 5$status_code = 200; // 默认状态码为 200 6if (isset($_POST[&#39;submit&#39;])) { 7 if (file_exists(UPLOAD_PATH)) { 8 $deny_ext = array(&#34;php&#34;, &#34;php5&#34;, &#34;php4&#34;, &#34;php3&#34;, &#34;php2&#34;, &#34;html&#34;, &#34;htm&#34;, &#34;phtml&#34;, &#34;pht&#34;, &#34;jsp&#34;, &#34;jspa&#34;, &#34;jspx&#34;, &#34;jsw&#34;, &#34;jsv&#34;, &#34;jspf&#34;, &#34;jtml&#34;, &#34;asp&#34;, &#34;aspx&#34;, &#34;asa&#34;, &#34;asax&#34;, &#34;ascx&#34;, &#34;ashx&#34;, &#34;asmx&#34;, &#34;cer&#34;, &#34;swf&#34;, &#34;htaccess&#34;); 9 10 if (isset($_GET[&#39;name&#39;])) { 11 $file_name = $_GET[&#39;name&#39;]; 12 } else { 13 $file_name = basename($_FILES[&#39;name&#39;][&#39;name&#39;]); 14 } 15 $file_ext = pathinfo($file_name, PATHINFO_EXTENSION); 16 17 if (!in_array($file_ext, $deny_ext)) { 18 $temp_file = $_FILES[&#39;name&#39;][&#39;tmp_name&#39;]; 19 $file_content = file_get_contents($temp_file); 20 21 if (preg_match(&#39;/.&#43;?&lt;/s&#39;, $file_content)) { 22 $msg = &#39;文件内容包含非法字符，禁止上传！&#39;; 23 $status_code = 403; // 403 表示禁止访问 24 } else { 25 $img_path = UPLOAD_PATH . $file_name; 26 if (move_uploaded_file($temp_file, $img_path)) { 27 $is_upload = true; 28 $msg = &#39;文件上传成功！&#39;; 29 } else { 30 $msg = &#39;上传出错！&#39;; 31 $status_code = 500; // 500 表示服务器内部错误 32 } 33 } 34 } else { 35 $msg = &#39;禁止保存为该类型文件！&#39;; 36 $status_code = 403; // 403 表示禁止访问 37 } 38 } else { 39 $msg = UPLOAD_PATH . &#39;文件夹不存在,请手工创建！&#39;; 40 $status_code = 404; // 404 表示资源未找到 41 } 42} 43 44// 设置 HTTP 状态码 45http_response_code($status_code); 46 47// 输出结果 48echo json_encode([ 49 &#39;status_code&#39; =&gt; $status_code, 50 &#39;msg&#39; =&gt; $msg, 51]); 审计一下代码，看到有个name，可以对文件名进行修改，想到目录穿越
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-04-18 00:27:55 +0800 CST'>2025-04-18</span>&nbsp;·&nbsp;7 分钟&nbsp;·&nbsp;Xrntkk</footer>
+  <a class="entry-link" aria-label="post link to TGCTF-2025-Web-Writeup" href="http://localhost:1313/post/tgctf_2025/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">XYCTF-2025-Web-Writeup
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Web Signin 题目
+1# -*- encoding: utf-8 -*- 2&#39;&#39;&#39; 3@File : main.py 4@Time : 2025/03/28 22:20:49 5@Author : LamentXU 6&#39;&#39;&#39; 7&#39;&#39;&#39; 8flag in /flag_{uuid4} 9&#39;&#39;&#39; 10from bottle import Bottle, request, response, redirect, static_file, run, route 11with open(&#39;../../secret.txt&#39;, &#39;r&#39;) as f: 12 secret = f.read() 13 14app = Bottle() 15@route(&#39;/&#39;) 16def index(): 17 return &#39;&#39;&#39;HI&#39;&#39;&#39; 18@route(&#39;/download&#39;) 19def download(): 20 name = request.query.filename 21 if &#39;../../&#39; in name or name.startswith(&#39;/&#39;) or name.startswith(&#39;../&#39;) or &#39;\\&#39; in name: 22 response.status = 403 23 return &#39;Forbidden&#39; 24 with open(name, &#39;rb&#39;) as f: 25 data = f.read() 26 return data 27 28@route(&#39;/secret&#39;) 29def secret_page(): 30 try: 31 session = request.get_cookie(&#34;name&#34;, secret=secret) 32 if not session or session[&#34;name&#34;] == &#34;guest&#34;: 33 session = {&#34;name&#34;: &#34;guest&#34;} 34 response.set_cookie(&#34;name&#34;, session, secret=secret) 35 return &#39;Forbidden!&#39; 36 if session[&#34;name&#34;] == &#34;admin&#34;: 37 return &#39;The secret has been deleted!&#39; 38 except: 39 return &#34;Error!&#34; 40run(host=&#39;0.0.0.0&#39;, port=8080, debug=False) 目录穿越拿secret
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-04-10 00:27:55 +0800 CST'>2025-04-10</span>&nbsp;·&nbsp;6 分钟&nbsp;·&nbsp;Xrntkk</footer>
+  <a class="entry-link" aria-label="post link to XYCTF-2025-Web-Writeup" href="http://localhost:1313/post/xyctf_2025/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">NCTF-2025-Web-Writeup
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>sqlmap-master 题目
+1from fastapi import FastAPI, Request 2from fastapi.responses import FileResponse, StreamingResponse 3import subprocess 4 5app = FastAPI() 6 7@app.get(&#34;/&#34;) 8async def index(): 9 return FileResponse(&#34;index.html&#34;) 10 11@app.post(&#34;/run&#34;) 12async def run(request: Request): 13 data = await request.json() 14 url = data.get(&#34;url&#34;) 15 16 if not url: 17 return {&#34;error&#34;: &#34;URL is required&#34;} 18 19 command = f&#39;sqlmap -u {url} --batch --flush-session&#39; 20 21 def generate(): 22 process = subprocess.Popen( 23 command.split(), 24 stdout=subprocess.PIPE, 25 stderr=subprocess.STDOUT, 26 shell=False 27 ) 28 29 while True: 30 output = process.stdout.readline() 31 if output == &#39;&#39; and process.poll() is not None: 32 break 33 if output: 34 yield output 35 36 return StreamingResponse(generate(), media_type=&#34;text/plain&#34;) 其实就是一个网页端的sqlmap
+看一下sqlmap的使用文档
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-03-24 00:27:55 +0800 CST'>2025-03-24</span>&nbsp;·&nbsp;2 分钟&nbsp;·&nbsp;Xrntkk</footer>
+  <a class="entry-link" aria-label="post link to NCTF-2025-Web-Writeup" href="http://localhost:1313/post/nctf_2024/"></a>
+</article>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
     <h2 class="entry-hint-parent">TPCTF2025-Web-赛后复现Writeup
     </h2>
   </header>
@@ -179,7 +223,7 @@ https://tool.yuanrenxue.cn/decode_obfuscator
 ...</p>
   </div>
   <footer class="entry-footer"><span title='2025-02-20 00:27:55 +0800 CST'>2025-02-20</span>&nbsp;·&nbsp;9 分钟&nbsp;·&nbsp;Xrntkk</footer>
-  <a class="entry-link" aria-label="post link to HGAME2025-Web-Writeup" href="http://localhost:1313/post/hgame2025/"></a>
+  <a class="entry-link" aria-label="post link to HGAME2025-Web-Writeup" href="http://localhost:1313/post/hgame_2025/"></a>
 </article>
 
 <article class="post-entry tag-entry"> 
@@ -199,61 +243,18 @@ web172 相比上一题，这题增加了过滤
 
 <article class="post-entry tag-entry"> 
   <header class="entry-header">
-    <h2 class="entry-hint-parent">CTFSHOW-反序列化-Writeup
+    <h2 class="entry-hint-parent">国城杯决赛-Web-Writeup
     </h2>
   </header>
   <div class="entry-content">
-    <p>PHP的魔法方法 PHP 将所有以 __（两个下划线）开头的类方法保留为魔术方法。所以在定义类方法时，除了上述魔术方法，建议不要以 __ 为前缀。 常见的魔法方法如下：
-1__construct()，类的构造函数 2 3__destruct()，类的析构函数 4 5__call()，在对象中调用一个不可访问方法时调用 6 7__callStatic()，用静态方式中调用一个不可访问方法时调用 8 9__get()，获得一个类的成员变量时调用 10 11__set()，设置一个类的成员变量时调用 12 13__isset()，当对不可访问属性调用isset()或empty()时调用 14 15__unset()，当对不可访问属性调用unset()时被调用。 16 17__sleep()，执行serialize()时，先会调用这个函数 18 19__wakeup()，执行unserialize()时，先会调用这个函数 20 21__toString()，类被当成字符串时的回应方法 22 23__invoke()，调用函数的方式调用一个对象时的回应方法 24 25__set_state()，调用var_export()导出类时，此静态方法会被调用。 26 27__clone()，当对象复制完成时调用 28 29__autoload()，尝试加载未定义的类 30 31__debugInfo()，打印所需调试信息 web254 1&lt;?php 2 3 ?&gt;&#39;; 4 public $code=&#39;xrntkk&#39;; 5} 6 7$poc = new ctfshowvip(); 8echo urlencode(serialize($poc)); web262 字符串逃逸
+    <p>CTF mountain Python Bottle框架伪造session打pickle反序列化
+拿到题目看一下源码，有hint
+访问/display
+根据提示，尝试用photo参数读图片
 ...</p>
   </div>
-  <footer class="entry-footer"><span title='2024-12-22 00:27:55 +0800 CST'>2024-12-22</span>&nbsp;·&nbsp;6 分钟&nbsp;·&nbsp;Xrntkk</footer>
-  <a class="entry-link" aria-label="post link to CTFSHOW-反序列化-Writeup" href="http://localhost:1313/post/ctfshow/ctfshow_%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/"></a>
-</article>
-
-<article class="post-entry tag-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">CTFSHOW-命令执行-Writeup
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>web29 1&lt;?php 2 3/* 4# -*- coding: utf-8 -*- 5# @Author: h1xa 6# @Date: 2020-09-04 00:12:34 7# @Last Modified by: h1xa 8# @Last Modified time: 2020-09-04 00:26:48 9# @email: h1xa@ctfer.com 10# @link: https://ctfer.com 11 12*/ 13 14error_reporting(0); 15if(isset($_GET[&#39;c&#39;])){ 16 $c = $_GET[&#39;c&#39;]; 17 if(!preg_match(&#34;/flag/i&#34;, $c)){ 18 eval($c); 19 } 20 21}else{ 22 highlight_file(__FILE__); 23} 可以看到通过eval函数可以执行php代码或者系统命令，其中过滤了flag。
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2024-12-22 00:27:55 +0800 CST'>2024-12-22</span>&nbsp;·&nbsp;26 分钟&nbsp;·&nbsp;Xrntkk</footer>
-  <a class="entry-link" aria-label="post link to CTFSHOW-命令执行-Writeup" href="http://localhost:1313/post/ctfshow/ctfshow_%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C/"></a>
-</article>
-
-<article class="post-entry tag-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">CTFSHOW-文件包含-Writeup
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p> 以PHP为例,常用的文件包含函数有以下四种include(),require(),include_once(),require_once()
-Web78 php伪协议
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2024-12-22 00:27:55 +0800 CST'>2024-12-22</span>&nbsp;·&nbsp;37 分钟&nbsp;·&nbsp;Xrntkk</footer>
-  <a class="entry-link" aria-label="post link to CTFSHOW-文件包含-Writeup" href="http://localhost:1313/post/ctfshow/ctfshow_%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB/"></a>
-</article>
-
-<article class="post-entry tag-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">CTFSHOW-文件上传-Writeup
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>web151 前台验证
-将一句话木马改成png，抓包修改后缀即可
-payload:
-1=system(&#39;cat /var/www/html/flag.php&#39;); web152 这道题没有前端检验，但是解法跟web151是一样的
-web153 一开始尝试了大小写绕过
-上传后发现服务器不解析
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2024-12-22 00:27:55 +0800 CST'>2024-12-22</span>&nbsp;·&nbsp;6 分钟&nbsp;·&nbsp;Xrntkk</footer>
-  <a class="entry-link" aria-label="post link to CTFSHOW-文件上传-Writeup" href="http://localhost:1313/post/ctfshow/ctfshow_%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/"></a>
+  <footer class="entry-footer"><span title='2024-12-27 22:03:55 +0800 CST'>2024-12-27</span>&nbsp;·&nbsp;7 分钟&nbsp;·&nbsp;Xrntkk</footer>
+  <a class="entry-link" aria-label="post link to 国城杯决赛-Web-Writeup" href="http://localhost:1313/post/%E5%9B%BD%E5%9F%8E%E6%9D%AF_2024%E5%86%B3%E8%B5%9B/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">

