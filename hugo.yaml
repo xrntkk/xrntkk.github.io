@@ -158,4 +158,7 @@ markup:
 sitemap:
   changeFreq: ""
   filename: sitemap.xml
-  priority: -1    
+  priority: -1   
+   
+busuanzi:
+  enable: true
