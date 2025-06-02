@@ -58,7 +58,9 @@ outputs:
 pagination: 
   pagerSize: 8
 
-params:
+params:  
+  busuanzi:
+    enable: true
   env: production # to enable google analytics, opengraph, twitter-cards and schema.
   description: "Theme PaperMod - https://github.com/adityatelange/hugo-PaperMod"
   author: Xrntkk
@@ -84,6 +86,7 @@ params:
     Content: >
       这里主要是用来记录一些个人的学习笔记和解题思路
       <br>
+
 
 
 
@@ -159,6 +162,4 @@ sitemap:
   changeFreq: ""
   filename: sitemap.xml
   priority: -1   
-   
-busuanzi:
-  enable: true
+

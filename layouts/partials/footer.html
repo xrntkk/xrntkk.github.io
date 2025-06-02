@@ -14,20 +14,22 @@
         {{- print " · "}}
     {{- end }}
 
+
     <span>
         Powered by
         <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
         <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
     </span>
-{{ if .Site.Params.busuanzi.enable -}}
-  <div class="busuanzi-footer">
-    {{ if eq $lang "zh" }}
-    <span id="busuanzi_container_site_pv">站点访问量：<span id="busuanzi_value_site_pv"></span></span>
-    {{- else }}
-    <span id="busuanzi_container_site_pv">Site Visits：<span id="busuanzi_value_site_pv"></span></span>
+    {{ if .Site.Params.busuanzi.enable -}}
+    <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv">
+        Total Visits: <span id="busuanzi_value_site_pv"></span>
+    </span>
+    <span id="busuanzi_container_site_uv">
+        Unique Visitor: <span id="busuanzi_value_site_uv"></span>
+    </span>
+    </div>
     {{- end -}}
-  </div>
-{{- end -}}
 </footer>
 {{- end }}
 
