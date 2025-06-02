@@ -1,6 +1,6 @@
 +++
 date = '2025-05-12T22:03:55+08:00'
-title = '春秋云镜-Tsclient-Writeup'
+title = '春秋云镜-网鼎2022半决复盘-Writeup'
 categories = ["Writeup"]
 tags = ["writeup", "渗透", "春秋云镜"]
 
