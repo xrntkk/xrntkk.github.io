@@ -108,11 +108,11 @@ params:
  
   # 设置网站的标签页的图标，即 favicon
   assets:
-      favicon: "favicon.jpg"
-      favicon16x16: "favicon.jpg"
-      favicon32x32: "favicon.jpg"
-      apple_touch_icon: "favicon.jpg"
-      safari_pinned_tab: "favicon.jpg"
+      favicon: "favicon.ico"
+      favicon16x16: "favicon.ico"
+      favicon32x32: "favicon.ico"
+      apple_touch_icon: "favicon.ico"
+      safari_pinned_tab: "favicon.ico"
       disableHLJS: true
       
   #搜索
