@@ -20,11 +20,11 @@ tags = ["writeup", "渗透", "春秋云镜"]
 
 先扫一下端口，扫出来8080端口有个后台服务
 
-![image-20250516123814347](./assets/image-20250516123814347.png)
+![image-20250516123814347](../assets/image-20250516123814347.png)
 
 访问8080端口
 
-![image-20250516123833250](./assets/image-20250516123833250.png)
+![image-20250516123833250](../assets/image-20250516123833250.png)
 
 发现这玩意根本不会发起登录请求，就是个前端壳子
 
@@ -73,15 +73,15 @@ Task Completed
 
 /index.php/login/
 
-![image-20250516124058153](./assets/image-20250516124058153.png)
+![image-20250516124058153](../assets/image-20250516124058153.png)
 
 直接上工具扫
 
-![image-20250516124239086](./assets/image-20250516124239086.png)
+![image-20250516124239086](../assets/image-20250516124239086.png)
 
 可以RCE
 
-![image-20250516124321744](./assets/image-20250516124321744.png)
+![image-20250516124321744](../assets/image-20250516124321744.png)
 
 FLAG1
 
@@ -196,11 +196,11 @@ www-data@portal:/tmp$ fscan -h 172.28.23.0/24
 
 其中33扫出来存在spring Actuator未授权访问和env泄露
 
-![image-20250516130937261](./assets/image-20250516130937261.png)
+![image-20250516130937261](../assets/image-20250516130937261.png)
 
 [Springboot Actuator未授权访问漏洞复现-腾讯云开发者社区-腾讯云](https://cloud.tencent.com/developer/article/2070446)
 
-![image-20250516131046898](./assets/image-20250516131046898.png)
+![image-20250516131046898](../assets/image-20250516131046898.png)
 
 /actuator/env
 
@@ -210,7 +210,7 @@ www-data@portal:/tmp$ fscan -h 172.28.23.0/24
 
 用[whwlsfb/JDumpSpider: HeapDump敏感信息提取工具](https://github.com/whwlsfb/JDumpSpider)自动提取heapdump敏感信息
 
-![image-20250516133111669](./assets/image-20250516133111669.png)
+![image-20250516133111669](../assets/image-20250516133111669.png)
 
 可以拿到shiro key
 
@@ -223,7 +223,7 @@ algMode = GCM, key = AZYyIgMYhG6/CzIJlvpR2g==, algName = AES
 ===========================================
 ```
 
-![image-20250516133356045](./assets/image-20250516133356045.png)
+![image-20250516133356045](../assets/image-20250516133356045.png)
 
 shiro反序列化打CB链，成功RCE
 
@@ -252,7 +252,7 @@ flag03: flag{6a326f94-6526-4586-8233-152d137281fd}
 
 匿名用户可以直接登录
 
-![image-20250522112350742](./assets/image-20250522112350742.png)
+![image-20250522112350742](../assets/image-20250522112350742.png)
 
 可以拿到oa的源码，扒下来审计
 
@@ -322,15 +322,15 @@ pcntl_alarm,pcntl_fork,pcntl_waitpid,pcntl_wait,pcntl_wifexited,pcntl_wifstopped
 
 蚁剑中有插件
 
-![image-20250522120131429](./assets/image-20250522120131429.png)
+![image-20250522120131429](../assets/image-20250522120131429.png)
 
 修改一下.antproxy.php中的url路径
 
-![image-20250522120923285](./assets/image-20250522120923285.png)
+![image-20250522120923285](../assets/image-20250522120923285.png)
 
 不知道这里一句话木马为什么不能用POST传参，用GET就可以正常RCEl
 
-![image-20250522155422629](./assets/image-20250522155422629.png)
+![image-20250522155422629](../assets/image-20250522155422629.png)
 
 发现没办法直接读flag，需要提权
 
@@ -360,9 +360,9 @@ pcntl_alarm,pcntl_fork,pcntl_waitpid,pcntl_wait,pcntl_wifexited,pcntl_wifstopped
 
 用base32实现提权
 
-![image-20250522155605726](./assets/image-20250522155605726.png)
+![image-20250522155605726](../assets/image-20250522155605726.png)
 
-![image-20250522160019399](./assets/image-20250522160019399.png)
+![image-20250522160019399](../assets/image-20250522160019399.png)
 
 payload
 
@@ -382,7 +382,7 @@ flag02: flag{56d37734-5f73-447f-b1a5-a83f45549b28}
 
 传个fscan进行信息收集
 
-![image-20250522162347925](./assets/image-20250522162347925.png)
+![image-20250522162347925](../assets/image-20250522162347925.png)
 
 ip addr
 
@@ -485,17 +485,17 @@ fscan
 
 可以看到172.22.14.46上存在Swagger未授权访问，但是没什么用
 
-![image-20250522173242235](./assets/image-20250522173242235.png)
+![image-20250522173242235](../assets/image-20250522173242235.png)
 
 Harbor的版本为 v2.10
 
-![image-20250522173335511](./assets/image-20250522173335511.png)
+![image-20250522173335511](../assets/image-20250522173335511.png)
 
 尝试打Harbor未授权
 
 [404tk/CVE-2022-46463: harbor unauthorized detection](https://github.com/404tk/CVE-2022-46463)
 
-![image-20250522173828907](./assets/image-20250522173828907.png)
+![image-20250522173828907](../assets/image-20250522173828907.png)
 
 看到有个叫做harbor/secret的镜像，我们把它dump下来
 
@@ -503,7 +503,7 @@ Harbor的版本为 v2.10
 python harbor.py http://172.22.14.46/ --dump harbor/secret --v2
 ```
 
-![image-20250522180342278](./assets/image-20250522180342278.png)
+![image-20250522180342278](../assets/image-20250522180342278.png)
 
 dump下来之后可以找到flag
 
@@ -517,7 +517,7 @@ flag05: flag{8c89ccd3-029d-41c8-8b47-98fb2006f0cf}
 
 通过fscan的端口扫描，我们可以发现6443端口存在K8s API server未授权
 
-![image-20250522190528918](./assets/image-20250522190528918.png)
+![image-20250522190528918](../assets/image-20250522190528918.png)
 
 [浅析K8S各种未授权攻击方法 - 火线 Zone-安全攻防社区](https://zone.huoxian.cn/d/1153-k8s)
 
@@ -543,7 +543,7 @@ flag05: flag{8c89ccd3-029d-41c8-8b47-98fb2006f0cf}
 .\kubectl.exe --insecure-skip-tls-verify -s https://172.22.14.37:6443/ exec -it nginx-deployment /bin/bash
 ```
 
-![image-20250522191728023](./assets/image-20250522191728023.png)
+![image-20250522191728023](../assets/image-20250522191728023.png)
 
 本地kali生成一个公钥，并写入
 
@@ -557,7 +557,7 @@ kali连ssh
  proxychains4 ssh -i /root/.ssh/id_rsa root@172.22.14.37
 ```
 
-![image-20250522193504687](./assets/image-20250522193504687.png)
+![image-20250522193504687](../assets/image-20250522193504687.png)
 
 当前目录可以看到一个.mysql_history
 
@@ -594,7 +594,7 @@ quit
 
 看到flag04，base64解码后拿到flag
 
-![image-20250522193658783](./assets/image-20250522193658783.png)
+![image-20250522193658783](../assets/image-20250522193658783.png)
 
 ```
 flag{da69c459-7fe5-4535-b8d1-15fff496a29f}
@@ -672,17 +672,17 @@ flag{da69c459-7fe5-4535-b8d1-15fff496a29f}
 
 在Harbor的project/projectadmin镜像中有可以找到服务的jar包
 
-![image-20250522183204595](./assets/image-20250522183204595.png)
+![image-20250522183204595](../assets/image-20250522183204595.png)
 
 反编译后在application.properties中可以找到关于mysql的配置文件
 
-![image-20250522183619872](./assets/image-20250522183619872.png)
+![image-20250522183619872](../assets/image-20250522183619872.png)
 
 可以看到数据库地址就是这台机子
 
 MDUT一把梭拿到flag
 
-![image-20250522184006046](./assets/image-20250522184006046.png)
+![image-20250522184006046](../assets/image-20250522184006046.png)
 
 ```
 flag06: flag{413ac6ad-1d50-47cb-9cf3-17354b751741}

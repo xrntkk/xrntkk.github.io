@@ -155,7 +155,7 @@ while True:
 [*]Result : dtfrtkcc0czkoua9S
 ```
 
-![image](assets/image-20250407001235-klyirfh.png)
+![image](../assets/image-20250407001235-klyirfh.png)
 
 在doublecheck.php中输入拿到的key后，会跳转到index.php，可以进行命令执行但是无回显
 
@@ -570,21 +570,21 @@ if __name__ == '__main__':
 
 查看puzzle.js，看到有一大段base64
 
-![image](assets/image-20250407010141-zyhi1kf.png)
+![image](../assets/image-20250407010141-zyhi1kf.png)
 
 cyberchef转换一下
 
-![image](assets/image-20250407002109-6kytcop.png)
+![image](../assets/image-20250407002109-6kytcop.png)
 
 发现是zlib
 
-![image](assets/image-20250407002221-409o1nm.png)
+![image](../assets/image-20250407002221-409o1nm.png)
 
 看到一串hex
 
 反转一下转字符串就能拿到flag
 
-![image](assets/image-20250407002351-jsv6pho.png)
+![image](../assets/image-20250407002351-jsv6pho.png)
 
 
 
