@@ -1,0 +1,11 @@
+<article class="friend-card">
+  <a class="friend-link" href="{{ .Get "url" }}" target="_blank">
+    <div class="friend-logo">
+      <img src="{{ .Get "logo" }}" alt="友链LOGO" loading="lazy">
+    </div>
+    <div class="friend-info">
+      <div class="friend-name">{{ .Get "name" }}</div>
+      <div class="friend-slogan">{{ .Get "slogan" }}</div>
+    </div>
+  </a>
+</article>

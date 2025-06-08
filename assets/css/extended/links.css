@@ -1,57 +1,86 @@
-.friendurl {
-	text-decoration: none !important;
-	color: black;
+.friend-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  margin: 20px 0;
 }
 
-.myfriend {
-	width: 56px !important;
-	height: 56px !important;
-	border-radius: 50% !important;
-	border: 1px solid #ddd;
-	padding: 2px;
-	box-shadow: 1px 1px 1px rgba(0,0,0, .15);
-	margin-top: 14px !important;
-	margin-left: 14px !important;
-	background-color: #fff;
+.friend-card {
+  flex: 0 1 200px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  min-height: 250px; /* 确保卡片高度一致 */
 }
 
-.frienddiv {
-	height: 92px;
-	margin-top: 10px;
-	width: 48%;
-	display: inline-block !important;
+.friend-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
 
-.frienddiv:hover {
-	background: rgba(87, 142, 224, 0.15);
+.friend-link {
+  display: block;
+  text-decoration: none;
+  color: var(--content);
+  padding: 15px;
+  text-align: center;
 }
 
-.frienddiv:hover .frienddivleft img {
-	transition: .9s!important;
-	-webkit-transition: .9s!important;
-	-moz-transition: .9s!important;
-	-o-transition: .9s!important;
-	-ms-transition: .9s!important;
-	transform: rotate(360deg)!important;
-	-webkit-transform: rotate(360deg)!important;
-	-moz-transform: rotate(360deg)!important;
-	-o-transform: rotate(360deg)!important;
-	-ms-transform: rotate(360deg)!important;
+.friend-logo {
+  width: 100%;
+  height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f7f7f7;
 }
 
-.frienddivleft {
-	width: 92px;
-	float: left;
+.friend-logo img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  transition: opacity 0.3s ease;
 }
 
-.frienddivleft {
-	margin-right: 2px;
+.friend-logo:hover img {
+  opacity: 0.8;
 }
 
-.frienddivright {
-	margin-top: 18px;
-	margin-right: 18px;
-	text-overflow: ellipsis;
-	overflow: hidden;
-	white-space: nowrap;
+.friend-info {
+  padding: 10px;
+  text-align: center;
+  min-height: 100px; /* 确保有足够空间容纳slogan */
+}
+
+.friend-name {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 5px 0;
+}
+
+.friend-slogan {
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .friend-card {
+    flex: 0 1 150px;
+  }
+  
+  .friend-logo {
+    height: 120px;
+  }
+  
+  .friend-name {
+    font-size: 16px;
+  }
+  
+  .friend-slogan {
+    font-size: 12px;
+  }
 }

@@ -20,12 +20,9 @@
       <pubDate>Mon, 02 Jun 2025 16:00:00 +0800</pubDate>
       <guid>http://localhost:1313/post/d3ctf_2025/</guid>
       <description>&lt;h2 id=&#34;web&#34;&gt;Web&lt;/h2&gt;
+&lt;p&gt;比赛时就打出了d3invitation和d3model，比赛结束复现一下，还是学到了不少新东西。&lt;/p&gt;
 &lt;h3 id=&#34;d3invitation&#34;&gt;d3invitation&lt;/h3&gt;
-&lt;p&gt;第一次在大赛中拿到血，纪念一下（新手就是爱记录&lt;/p&gt;
-&lt;p&gt;&lt;img alt=&#34;image-20250602120715844&#34; loading=&#34;lazy&#34; src=&#34;../assets/image-20250602120715844.png&#34;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img alt=&#34;image-20250602123008860&#34; loading=&#34;lazy&#34; src=&#34;../assets/image-20250602123008860.png&#34;&gt;&lt;/p&gt;
-&lt;p&gt;这是一个利用minio作为oss来储存用户头像的一个生成邀请函的服务&lt;/p&gt;
-&lt;p&gt;可以看到/static/js/tools.js&lt;/p&gt;</description>
+&lt;p&gt;第一次在大赛中拿到血，纪念一下（新手就是爱记录&lt;/p&gt;</description>
     </item>
     <item>
       <title>春秋云镜-长城杯2024-Writeup</title>
@@ -536,7 +533,7 @@
       <description>about</description>
     </item>
     <item>
-      <title>友链</title>
+      <title>友链🎈</title>
       <link>http://localhost:1313/links/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>http://localhost:1313/links/</guid>
