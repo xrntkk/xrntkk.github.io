@@ -1,10 +1,11 @@
 +++
-date = '2025-06-08T22:29:55+00:00'
-title = 'H&NCTF2025-Web-Writeup'
+date = '2025-06-09T22:29:00+08:00'
+title = 'H&NCTF-2025-Web-Writeup'
 categories = ["Writeup"]
 tags = ["writeup", "ctf", "Web"]
 
 +++
+
 
 ## Web
 
