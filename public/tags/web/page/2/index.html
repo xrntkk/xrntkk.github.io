@@ -13,7 +13,7 @@
 
 <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
   <meta name="referrer" content="no-referrer-when-downgrade">
-<link crossorigin="anonymous" href="/assets/css/stylesheet.3fcf74ad9d359e0c6c3d2b51a42f684a692fd9cd053c3829756ad5f3e4c4649b.css" integrity="sha256-P890rZ01ngxsPStRpC9oSmkv2c0FPDgpdWrV8&#43;TEZJs=" rel="preload stylesheet" as="style">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.da3d1fce642585ca4a88e6246f264be963280e57889197b482bc138b96068178.css" integrity="sha256-2j0fzmQlhcpKiOYkbyZL6WMoDleIkZe0grwTi5YGgXg=" rel="preload stylesheet" as="style">
 <link rel="icon" href="http://localhost:1313/favicon.ico">
 <link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
 <link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
@@ -131,6 +131,21 @@
     </a>
   </h1>
 </header>
+
+<article class="post-entry tag-entry"> 
+  <header class="entry-header">
+    <h2 class="entry-hint-parent">CTFSHOW-SQL注入-Writeup
+    </h2>
+  </header>
+  <div class="entry-content">
+    <p>无过滤注入（对输出内容进行过滤） web171 $sql = &#34;select username,password from user where username !=&#39;flag&#39; and id = &#39;&#34;.$_GET[&#39;id&#39;].&#34;&#39; limit 1;&#34;; flag是存在于username为flag的用户的数据中，我们只需要通过
+1&#39; or 1=1 --&#43; 即可输出所有用户数据
+web172 相比上一题，这题增加了过滤
+...</p>
+  </div>
+  <footer class="entry-footer"><span title='2025-01-22 00:27:55 +0800 CST'>2025-01-22</span>&nbsp;·&nbsp;35 分钟&nbsp;·&nbsp;Xrntkk</footer>
+  <a class="entry-link" aria-label="post link to CTFSHOW-SQL注入-Writeup" href="http://localhost:1313/post/ctfshow/ctfshow_sql%E6%B3%A8%E5%85%A5/"></a>
+</article>
 
 <article class="post-entry tag-entry"> 
   <header class="entry-header">
