@@ -4,7 +4,10 @@ layout: links
 summary: links
 ---
 
+<div class="friend-container">
+{{< friendlink name="s1mh0" url="https://www.s1mh0.cn/" logo="/friendlogo/3007dfa5eff070909514528214cba92.jpg" slogan="前GWHT,现Xp0int的渗透,Web及Misc大手子" >}}
 
+</div>
 
 
 
