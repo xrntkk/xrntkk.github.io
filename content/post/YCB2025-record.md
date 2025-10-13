@@ -1,5 +1,5 @@
 +++
-date = '2025-10-13T14:00:55+08:00'
+date = '2025-10-13T14:00:00+08:00'
 title = '羊城杯2025 金Java&ezsigin Writeup'
 categories = ["Writeup"]
 tags = ["writeup", "ctf", "Web"]
