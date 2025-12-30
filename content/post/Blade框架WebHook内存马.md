@@ -103,7 +103,7 @@ public class BladeMemHook extends AbstractTranslet {
 
             Class routeMethodHandlerClass = routeMethodHandler.getClass();
             Field hasBeforeHook = routeMethodHandlerClass.getDeclaredField("hasBeforeHook");
-            Field modifiersField = Field.class.getDeclaredField("modifiers"); //①
+            Field modifiersField = Field.class.getDeclaredField("modifiers"); 
             modifiersField.setAccessible(true);
             modifiersField.setInt(hasBeforeHook , hasBeforeHook.getModifiers() & ~Modifier.FINAL);
             hasBeforeHook.setAccessible(true);
