@@ -10,7 +10,7 @@ tags = ["Javasec", "Web","Java"]
 
 com.hellokaton.blade.mvc.route.RouteBuilder#addWebHook
 
-![image-20251230170027238](assets/image-20251230170027238.png)
+![image-20251230170027238](../assets/image-20251230170027238.png)
 
 ```java
 package com.xrntkk.Memshell;
