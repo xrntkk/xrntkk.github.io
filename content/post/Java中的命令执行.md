@@ -3,6 +3,7 @@ date = '2025-12-30T15:27:00+08:00'
 title = '总结一下Java中的命令执行'
 categories = ["Java"]
 tags = ["Javasec", "Web","Java"]
+mermaid = true
 
 +++
 

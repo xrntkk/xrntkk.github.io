@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh" dir="auto" data-theme="dark">
 
-<head><meta charset="utf-8">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="robots" content="index, follow">
@@ -9,19 +9,19 @@
 <meta name="keywords" content="writeup, 渗透, 春秋云镜">
 <meta name="description" content="Tsclient是一套难度为中等的靶场环境，完成该挑战可以帮助玩家了解内网渗透中的代理转发、内网扫描、信息收集、特权提升以及横向移动技术方法，加强对域环境核心认证机制的理解，以及掌握域环境渗透中一些有趣的技术要点。该靶场共有3个flag，分布于不同的靶机。">
 <meta name="author" content="Xrntkk">
-<link rel="canonical" href="https://blog.xrntkk.top/post/%E6%98%A5%E7%A7%8B%E4%BA%91%E5%A2%83-tsclient-writeup/">
+<link rel="canonical" href="http://localhost:1313/post/%E6%98%A5%E7%A7%8B%E4%BA%91%E5%A2%83-tsclient-writeup/">
 
 <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
   <meta name="referrer" content="no-referrer-when-downgrade">
 <link crossorigin="anonymous" href="/assets/css/stylesheet.317863601f03c2b94974bf53f8aaac583e7d21f7d74106e5602576c147c6f679.css" integrity="sha256-MXhjYB8DwrlJdL9T&#43;KqsWD59IffXQQblYCV2wUfG9nk=" rel="preload stylesheet" as="style">
-<link rel="icon" href="https://blog.xrntkk.top/favicon.ico">
-<link rel="icon" type="image/png" sizes="16x16" href="https://blog.xrntkk.top/favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="https://blog.xrntkk.top/favicon-32x32.png">
-<link rel="apple-touch-icon" href="https://blog.xrntkk.top/apple-touch-icon.png">
-<link rel="mask-icon" href="https://blog.xrntkk.top/safari-pinned-tab.svg">
+<link rel="icon" href="http://localhost:1313/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://localhost:1313/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://localhost:1313/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://localhost:1313/apple-touch-icon.png">
+<link rel="mask-icon" href="http://localhost:1313/safari-pinned-tab.svg">
 <meta name="theme-color" content="#2e2e33">
 <meta name="msapplication-TileColor" content="#2e2e33">
-<link rel="alternate" hreflang="zh" href="https://blog.xrntkk.top/post/%E6%98%A5%E7%A7%8B%E4%BA%91%E5%A2%83-tsclient-writeup/">
+<link rel="alternate" hreflang="zh" href="http://localhost:1313/post/%E6%98%A5%E7%A7%8B%E4%BA%91%E5%A2%83-tsclient-writeup/">
 <noscript>
     <style>
         #theme-toggle,
@@ -33,7 +33,7 @@
 </noscript><link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap" rel="stylesheet">
-<meta name="baidu-site-verification" content="codeva-snmPZ4WZk8" /><meta property="og:url" content="https://blog.xrntkk.top/post/%E6%98%A5%E7%A7%8B%E4%BA%91%E5%A2%83-tsclient-writeup/">
+<meta name="baidu-site-verification" content="codeva-snmPZ4WZk8" /><meta property="og:url" content="http://localhost:1313/post/%E6%98%A5%E7%A7%8B%E4%BA%91%E5%A2%83-tsclient-writeup/">
   <meta property="og:site_name" content="Xrntkk&#39;s Blog">
   <meta property="og:title" content="春秋云境-Tsclient-Writeup">
   <meta property="og:description" content="Tsclient是一套难度为中等的靶场环境，完成该挑战可以帮助玩家了解内网渗透中的代理转发、内网扫描、信息收集、特权提升以及横向移动技术方法，加强对域环境核心认证机制的理解，以及掌握域环境渗透中一些有趣的技术要点。该靶场共有3个flag，分布于不同的靶机。">
@@ -61,13 +61,13 @@
       "@type": "ListItem",
       "position":  1 ,
       "name": "Posts",
-      "item": "https://blog.xrntkk.top/post/"
+      "item": "http://localhost:1313/post/"
     }, 
     {
       "@type": "ListItem",
       "position":  2 ,
       "name": "春秋云境-Tsclient-Writeup",
-      "item": "https://blog.xrntkk.top/post/%E6%98%A5%E7%A7%8B%E4%BA%91%E5%A2%83-tsclient-writeup/"
+      "item": "http://localhost:1313/post/%E6%98%A5%E7%A7%8B%E4%BA%91%E5%A2%83-tsclient-writeup/"
     }
   ]
 }
@@ -93,14 +93,14 @@
   },
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "https://blog.xrntkk.top/post/%E6%98%A5%E7%A7%8B%E4%BA%91%E5%A2%83-tsclient-writeup/"
+    "@id": "http://localhost:1313/post/%E6%98%A5%E7%A7%8B%E4%BA%91%E5%A2%83-tsclient-writeup/"
   },
   "publisher": {
     "@type": "Organization",
     "name": "Xrntkk's Blog",
     "logo": {
       "@type": "ImageObject",
-      "url": "https://blog.xrntkk.top/favicon.ico"
+      "url": "http://localhost:1313/favicon.ico"
     }
   }
 }
@@ -110,7 +110,7 @@
     <header class="header">
     <nav class="nav">
         <div class="logo">
-            <a href="https://blog.xrntkk.top/" accesskey="h" title="Xrntkk&#39;s Blog (Alt + H)">Xrntkk&#39;s Blog</a>
+            <a href="http://localhost:1313/" accesskey="h" title="Xrntkk&#39;s Blog (Alt + H)">Xrntkk&#39;s Blog</a>
             <div class="logo-switches">
                 <button id="theme-toggle" accesskey="t" title="(Alt + T)" aria-label="Toggle theme">
                     <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
@@ -136,32 +136,32 @@
         </div>
         <ul id="menu">
             <li>
-                <a href="https://blog.xrntkk.top/" title="Xrntkk&#39;s Blog">
+                <a href="http://localhost:1313/" title="Xrntkk&#39;s Blog">
                     <span>首页📔</span>
                 </a>
             </li>
             <li>
-                <a href="https://blog.xrntkk.top/archives/" title="归档">
+                <a href="http://localhost:1313/archives/" title="归档">
                     <span>归档🗃️</span>
                 </a>
             </li>
             <li>
-                <a href="https://blog.xrntkk.top/tags/" title="Tags">
+                <a href="http://localhost:1313/tags/" title="Tags">
                     <span>标签🔖</span>
                 </a>
             </li>
             <li>
-                <a href="https://blog.xrntkk.top/search/" title="搜索">
+                <a href="http://localhost:1313/search/" title="搜索">
                     <span>搜索🔎</span>
                 </a>
             </li>
             <li>
-                <a href="https://blog.xrntkk.top/links/" title="友链🎈">
+                <a href="http://localhost:1313/links/" title="友链🎈">
                     <span>友链🎈</span>
                 </a>
             </li>
             <li>
-                <a href="https://blog.xrntkk.top/about/" title="关于">
+                <a href="http://localhost:1313/about/" title="关于">
                     <span>关于👨‍💻</span>
                 </a>
             </li>
@@ -599,21 +599,19 @@ flag03: flag{410202d3-2e47-4619-a6b0-96051a985f2e}
 </code></pre><p>这题用cs打会方便很多，但是一开始没考虑到，所以后面也一直没用。</p>
 
 
-  </div>
-
-  <footer class="post-footer">
+  </div><footer class="post-footer">
     <ul class="post-tags">
-      <li><a href="https://blog.xrntkk.top/tags/writeup/">Writeup</a></li>
-      <li><a href="https://blog.xrntkk.top/tags/%E6%B8%97%E9%80%8F/">渗透</a></li>
-      <li><a href="https://blog.xrntkk.top/tags/%E6%98%A5%E7%A7%8B%E4%BA%91%E9%95%9C/">春秋云镜</a></li>
+      <li><a href="http://localhost:1313/tags/writeup/">Writeup</a></li>
+      <li><a href="http://localhost:1313/tags/%E6%B8%97%E9%80%8F/">渗透</a></li>
+      <li><a href="http://localhost:1313/tags/%E6%98%A5%E7%A7%8B%E4%BA%91%E9%95%9C/">春秋云镜</a></li>
     </ul>
 <nav class="paginav">
-  <a class="prev" href="https://blog.xrntkk.top/post/%E6%98%A5%E7%A7%8B%E4%BA%91%E5%A2%83-initial-writeup/">
+  <a class="prev" href="http://localhost:1313/post/%E6%98%A5%E7%A7%8B%E4%BA%91%E5%A2%83-initial-writeup/">
     <span class="title">« 上一页</span>
     <br>
     <span>春秋云境-Initial-Writeup</span>
   </a>
-  <a class="next" href="https://blog.xrntkk.top/post/ghctf_2025/">
+  <a class="next" href="http://localhost:1313/post/ghctf_2025/">
     <span class="title">下一页 »</span>
     <br>
     <span>GHCTF-2025-Web-Writeup</span>

@@ -1,0 +1,58 @@
+{{ if .Params.mermaid }}
+<!-- 样式先加载，避免渲染后样式错位 -->
+<style>
+  .mermaid {
+    width: 100%;
+    overflow-x: auto;
+    margin: 20px 0;
+  }
+  .mermaid svg {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+    height: auto;
+  }
+</style>
+
+<!-- 核心逻辑：等待 DOM 加载完成 + 先替换标签 + 再手动渲染 -->
+<script type="module">
+  // 等待页面所有内容渲染完毕
+  document.addEventListener('DOMContentLoaded', async () => {
+    // 1. 先找到所有 Mermaid 代码块（此时内容已渲染，能拿到）
+    const mermaidBlocks = document.querySelectorAll('.language-mermaid');
+    if (mermaidBlocks.length === 0) return;
+
+    try {
+      // 2. 加载 Mermaid v11（兼容你的版本）
+      const mermaidModule = await import('https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs');
+      const mermaid = mermaidModule.default;
+
+      // 3. 初始化：关闭自动加载，避免冲突
+      mermaid.initialize({
+        startOnLoad: false,
+        theme: 'neutral'
+      });
+
+      // 4. 替换 pre/code 为 div.mermaid（核心步骤）
+      mermaidBlocks.forEach(el => {
+        // 用 textContent 避免 HTML 转义问题（比如代码里的 < > 被转义）
+        const mermaidDiv = document.createElement('div');
+        mermaidDiv.className = 'mermaid';
+        mermaidDiv.textContent = el.textContent.trim();
+        // 替换整个 pre 标签（原逻辑只替换 outerHTML 易出错）
+        el.closest('pre').replaceWith(mermaidDiv);
+      });
+
+      // 5. 手动渲染所有 .mermaid 标签
+      await mermaid.run();
+    } catch (error) {
+      console.error('Mermaid 加载/渲染失败:', error);
+      // 降级：给代码块加样式，提示失败
+      mermaidBlocks.forEach(el => {
+        el.style.cssText = 'background: #f8f8f8; padding: 10px; border: 1px solid #eee; border-radius: 4px;';
+        el.innerHTML = '⚠️ 流程图加载失败：<br>' + el.innerHTML;
+      });
+    }
+  });
+</script>
+{{ end }}

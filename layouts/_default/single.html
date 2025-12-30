@@ -21,6 +21,7 @@
     {{- end }}
     {{- if not (.Param "hideMeta") }}
 <div class="post-meta">
+  
   {{- partial "post_meta.html" . -}}
   {{- partial "translation_list.html" . -}}
   {{- partial "edit_post.html" . -}}
@@ -41,11 +42,15 @@
 
   {{- if .Content }}
   <div class="post-content">
+
     {{- if not (.Param "disableAnchoredHeadings") }}
     {{- partial "anchored_headings.html" .Content -}}
     {{- else }}{{ .Content }}{{ end }}
   </div>
   {{- end }}
+  {{- partial "mermaid.html" . -}}
+
+
 
   <footer class="post-footer">
     {{- $tags := .Language.Params.Taxonomies.tag | default "tags" }}
