@@ -25,25 +25,25 @@ languages:
     # https://gohugo.io/content-management/menus/#define-in-site-configuration
     menus:
       main:
-        - name: 首页📔
+        - name: 首页
           pageRef: /
           weight: 4 # 控制在页面上展示的前后顺序
-        - name: 归档🗃️
+        - name: 归档
           pageRef: archives/
           weight: 5
-        # - name: 分类📁
+        # - name: 分类
         #   pageRef: categories/
         #   weight: 10
-        - name: 标签🔖
+        - name: 标签
           pageRef: tags/
           weight: 10
-        - name: 搜索🔎
+        - name: 搜索
           pageRef: search/
           weight: 20
-        - name: 友链🎈
+        - name: 友链
           url: links/
           weight: 21
-        - name: 关于👨‍💻
+        - name: 关于
           pageRef: about/
           weight: 22
 
@@ -64,7 +64,7 @@ params:
   env: production # to enable google analytics, opengraph, twitter-cards and schema.
   description: "Theme PaperMod - https://github.com/adityatelange/hugo-PaperMod"
   author: Xrntkk
-  defaultTheme: dark # 默认是暗色背景
+  defaultTheme: light # 默认是暗色背景
   ShowShareButtons: false # 关闭分享的按钮
   ShowReadingTime: true # 展示预估的阅读时长
   displayFullLangName: true # 展示全名
