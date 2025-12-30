@@ -92,31 +92,62 @@
   }
 }
 
-/* 🌙 深色模式支持 */
-@media (prefers-color-scheme: dark) {
-  .friend-card {
-    border: 1px solid #444;
-    background-color: #1e1e1e;
-    box-shadow:
-      0 -2px 4px rgba(255, 255, 255, 0.1),
-      0 4px 12px rgba(0, 0, 0, 0.5);
-  }
-
-  .friend-card:hover {
-    box-shadow:
-      0 -2px 6px rgba(255, 255, 255, 0.08),
-      0 12px 20px rgba(0, 0, 0, 0.7);
-  }
-
-  .friend-link {
-    color: #ddd;
-  }
-
-  .friend-slogan {
-    color: #aaa;
-  }
-
-  .friend-logo {
-    background-color: #2c2c2c;
-  }
+/* ===== Default (Light) Mode ===== */
+.friend-card {
+  border: 1px solid #ccc;
+  background-color: #fff;
+  box-shadow:
+    0 -2px 4px rgba(255, 255, 255, 0.6),
+    0 4px 12px rgba(0, 0, 0, 0.1);
 }
+
+.friend-card:hover {
+  box-shadow:
+    0 -2px 6px rgba(255, 255, 255, 0.5),
+    0 12px 20px rgba(0, 0, 0, 0.2);
+}
+
+.friend-link {
+  color: var(--content, #333);
+}
+
+.friend-slogan {
+  color: #666;
+}
+
+.friend-logo {
+  background-color: #f7f7f7;
+}
+
+/* ===== Dark Mode (PaperMod) ===== */
+body.dark .friend-card,
+html[data-theme="dark"] .friend-card {
+  border: 1px solid #444;
+  background-color: #1e1e1e;
+  box-shadow:
+    0 -2px 4px rgba(255, 255, 255, 0.1),
+    0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+body.dark .friend-card:hover,
+html[data-theme="dark"] .friend-card:hover {
+  box-shadow:
+    0 -2px 6px rgba(255, 255, 255, 0.08),
+    0 12px 20px rgba(0, 0, 0, 0.7);
+}
+
+body.dark .friend-link,
+html[data-theme="dark"] .friend-link {
+  color: #ddd;
+}
+
+body.dark .friend-slogan,
+html[data-theme="dark"] .friend-slogan {
+  color: #aaa;
+}
+
+body.dark .friend-logo,
+html[data-theme="dark"] .friend-logo {
+  background-color: #2c2c2c;
+}
+
