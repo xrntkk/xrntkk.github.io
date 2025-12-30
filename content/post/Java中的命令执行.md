@@ -463,8 +463,8 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
 
 在Java中一般使用`System.load`和`System.loadLibrary`加载编译好的库文件
 
-- 加载的路径不同：System.load(String filename)是指定动态库的完整路径名；而System.loadLibrary(String libname)则只会从java.library.path指定的路径中查找，并加上lib前缀和.so后缀；
-- 自动加载库的依赖库的不同：System.load(String filename)不会自动加载依赖库；而System.loadLibrary(String libname)会自动加载依赖库。
+- `System.load(String filename)`：必须给出**完整绝对路径**到具体库文件，不做库名映射与路径搜索；
+- `System.loadLibrary(String libname)`：只给库名，JVM 会自动补前后缀并从 `java.library.path` 等路径中搜索。
 
 #### System.loadLibrary
 
